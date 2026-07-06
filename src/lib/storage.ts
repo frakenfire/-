@@ -61,6 +61,17 @@ export function markVisit(dateKey: string): void {
   safeSet(KEYS.lastVisitDate, dateKey);
 }
 
+// ── 쪽지 유형 (테스트 결과) ──
+const TYPE_KEY = 'tomorrowNoteMyType';
+
+export function saveMyType(typeId: string): void {
+  safeSet(TYPE_KEY, typeId);
+}
+
+export function loadMyType(): string | null {
+  return safeGet(TYPE_KEY);
+}
+
 // ── 연속 출석 스트릭 (매일 보고 싶게 만드는 장치) ──
 const STREAK_KEYS = {
   date: 'tomorrowNoteStreakDate',

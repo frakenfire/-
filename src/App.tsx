@@ -31,8 +31,20 @@ import { NotePickScreen } from './screens/NotePickScreen';
 import { RevealScreen } from './screens/RevealScreen';
 import { ResultScreen } from './screens/ResultScreen';
 import { DetailResultScreen } from './screens/DetailResultScreen';
+import { TypeTestScreen } from './screens/TypeTestScreen';
+import { TypeResultScreen } from './screens/TypeResultScreen';
+import { NOTE_TYPES } from './data/noteTypes';
+import type { NoteType, NoteTypeId } from './data/noteTypes';
+import { loadMyType, saveMyType } from './lib/storage';
 
-type ScreenName = 'home' | 'pick' | 'reveal' | 'result' | 'detail';
+type ScreenName =
+  | 'home'
+  | 'pick'
+  | 'reveal'
+  | 'result'
+  | 'detail'
+  | 'typeTest'
+  | 'typeResult';
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -57,6 +69,12 @@ export default function App() {
     () => updateStreak(dateKey, yesterdayKey),
     [dateKey, yesterdayKey],
   );
+
+  // 쪽지 유형 (테스트 결과)
+  const [myType, setMyType] = useState<NoteType | null>(() => {
+    const id = loadMyType();
+    return id && id in NOTE_TYPES ? NOTE_TYPES[id as NoteTypeId] : null;
+  });
 
   // 주기 수신: 구독 상태 + 오늘의 쪽지 도착 여부 + 어제의 쪽지 기록
   const [subscribed, setSubscribed] = useState(() => isSubscribed());
@@ -87,6 +105,30 @@ export default function App() {
     setDelivered(false);
     setFortuneType(t);
     setScreen('pick');
+  }
+
+  function handleTypeDone(t: NoteType) {
+    saveMyType(t.id);
+    setMyType(t);
+    setScreen('typeResult');
+  }
+
+  async function handleTypeShare(t: NoteType) {
+    const text = `[내일쪽지 뽑기] 나의 쪽지 유형은…\n${t.emoji} ${t.name}!\n"${t.tagline}"\n\n너는 무슨 유형이야? 궁합도 볼 수 있대 👀`;
+    const nav = navigator as Navigator & {
+      share?: (data: { text?: string; title?: string }) => Promise<void>;
+    };
+    if (typeof nav.share === 'function') {
+      try {
+        await nav.share({ title: '내일쪽지 뽑기', text });
+        flash('공유 창을 열었어요 💌');
+        return;
+      } catch {
+        /* 복사 폴백 */
+      }
+    }
+    const ok = await copyText(text);
+    flash(ok ? '유형 카드 문구 복사 완료! 💌' : '앗, 공유를 못 했어요');
   }
 
   async function handleSubscribe() {
@@ -178,8 +220,24 @@ export default function App() {
           subscribed={subscribed}
           delivered={delivered}
           yesterdayRecord={yesterdayRecord}
+          myType={myType}
+          onTypeTest={() => setScreen('typeTest')}
+          onTypeResult={() => setScreen('typeResult')}
           onSubscribe={handleSubscribe}
           onSelect={handleType}
+        />
+      )}
+
+      {screen === 'typeTest' && (
+        <TypeTestScreen onDone={handleTypeDone} onBack={() => setScreen('home')} />
+      )}
+
+      {screen === 'typeResult' && myType && (
+        <TypeResultScreen
+          type={myType}
+          onShare={handleTypeShare}
+          onRetake={() => setScreen('typeTest')}
+          onHome={() => setScreen('home')}
         />
       )}
 

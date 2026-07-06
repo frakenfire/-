@@ -6,6 +6,7 @@ import { findNote } from '../data/notes';
 import { HOME } from '../data/copy';
 import type { StoredResult } from '../lib/storage';
 import type { FortuneType } from '../types/fortune';
+import type { NoteType } from '../data/noteTypes';
 
 function todayLabel(): string {
   const d = new Date();
@@ -27,6 +28,9 @@ type Props = {
   subscribed: boolean;
   delivered: boolean;
   yesterdayRecord: StoredResult | null;
+  myType: NoteType | null;
+  onTypeTest: () => void;
+  onTypeResult: () => void;
   onSubscribe: () => void;
   onSelect: (t: FortuneType) => void;
 };
@@ -37,6 +41,9 @@ export function HomeScreen({
   subscribed,
   delivered,
   yesterdayRecord,
+  myType,
+  onTypeTest,
+  onTypeResult,
   onSubscribe,
   onSelect,
 }: Props) {
@@ -83,6 +90,24 @@ export function HomeScreen({
           <span className="arrive-banner__cta">열기 ›</span>
         </button>
       ) : null}
+
+      {/* 쪽지 유형 테스트 — 바이럴 진입점 */}
+      {myType ? (
+        <button type="button" className="mytype-chip" onClick={onTypeResult}>
+          <span aria-hidden>{myType.emoji}</span> 나는 {myType.name} · 궁합 보기 ›
+        </button>
+      ) : (
+        <button type="button" className="type-banner" onClick={onTypeTest}>
+          <span className="type-banner__icon" aria-hidden>
+            💌
+          </span>
+          <span className="type-banner__body">
+            <span className="type-banner__title">나는 어떤 쪽지 유형일까?</span>
+            <span className="type-banner__desc">질문 4개면 끝! 친구랑 궁합도 볼 수 있어요</span>
+          </span>
+          <span className="type-banner__cta">해볼래요</span>
+        </button>
+      )}
 
       <div className="menu-list">
         {FORTUNE_TYPES.map((meta) => (
