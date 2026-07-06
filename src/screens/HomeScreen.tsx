@@ -1,23 +1,34 @@
 import { AppLayout } from '../components/AppLayout';
-import { BottomAction } from '../components/BottomAction';
+import { FortuneTypeButton } from '../components/FortuneTypeButton';
+import { FORTUNE_TYPES } from '../data/fortuneTypes';
 import { HOME } from '../data/copy';
+import type { FortuneType } from '../types/fortune';
 
-// PRD §5.1 — 홈. 진입 직후 광고/바텀시트 없음.
-export function HomeScreen({ onStart }: { onStart: () => void }) {
+function todayLabel(): string {
+  const d = new Date();
+  const week = ['일', '월', '화', '수', '목', '금', '토'][d.getDay()];
+  return `${d.getMonth() + 1}월 ${d.getDate()}일 (${week}) · 오늘의 쪽지`;
+}
+
+// PRD §5.1 + UX 개선 — 홈에서 바로 운세를 고르게(탭 최소화) + 받는 가치 노출.
+// 진입 직후 광고/바텀시트 없음.
+export function HomeScreen({ onSelect }: { onSelect: (t: FortuneType) => void }) {
   return (
-    <AppLayout
-      bottom={
-        <BottomAction onClick={onStart} ariaLabel="내일쪽지 뽑기 시작">
-          {HOME.cta}
-        </BottomAction>
-      }
-    >
-      <div className="center-hero">
-        <div className="note-illust" aria-hidden>
-          📩
-        </div>
+    <AppLayout>
+      <div className="home-hero">
+        <span className="date-pill">{todayLabel()}</span>
         <h1 className="h1">{HOME.title}</h1>
-        <p className="lead">{HOME.lead}</p>
+        <p className="home-hero__sub">
+          쪽지 한 장에 <b>총운 점수</b>, <b>항목별 운세</b>, <b>행운 세트</b>까지.
+          <br />
+          오늘 뭐가 궁금해요?
+        </p>
+      </div>
+
+      <div className="menu-list">
+        {FORTUNE_TYPES.map((meta) => (
+          <FortuneTypeButton key={meta.key} meta={meta} onClick={() => onSelect(meta.key)} />
+        ))}
       </div>
     </AppLayout>
   );

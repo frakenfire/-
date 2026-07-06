@@ -61,8 +61,12 @@
   --shadow-note: 0 4px 16px rgba(0, 0, 0, 0.08);
 
   --font-body:
-    -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard',
-    'Malgun Gothic', 'Segoe UI', Roboto, sans-serif;
+    'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,
+    'Apple SD Gothic Neo', 'Malgun Gothic', 'Segoe UI', Roboto, sans-serif;
+  /* 숫자를 또렷하게 — 토스식 수치 강조 */
+  --font-num:
+    'Pretendard Variable', Pretendard, ui-monospace, 'SF Mono', sans-serif;
+  --fnum: 'tnum' 1, 'ss01' 1;
 
   --max-width: 430px;
 }

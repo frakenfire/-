@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { FortuneResult, FortuneType, Note } from './types/fortune';
 import { NOTES } from './data/notes';
+import { FORTUNE_LABEL } from './data/fortuneTypes';
 import { hashSeed, pickBySeed, todayKey } from './lib/dateSeed';
 import { generateFortune } from './lib/generateFortune';
 import {
@@ -18,12 +19,11 @@ import {
 } from './lib/storage';
 
 import { HomeScreen } from './screens/HomeScreen';
-import { FortuneTypeScreen } from './screens/FortuneTypeScreen';
 import { NotePickScreen } from './screens/NotePickScreen';
 import { ResultScreen } from './screens/ResultScreen';
 import { DetailResultScreen } from './screens/DetailResultScreen';
 
-type ScreenName = 'home' | 'type' | 'pick' | 'result' | 'detail';
+type ScreenName = 'home' | 'pick' | 'result' | 'detail';
 
 export default function App() {
   const [screen, setScreen] = useState<ScreenName>('home');
@@ -51,12 +51,8 @@ export default function App() {
     window.setTimeout(() => setToast((cur) => (cur === msg ? null : cur)), 1800);
   }
 
-  function handleStart() {
-    markVisit(dateKey);
-    setScreen('type');
-  }
-
   function handleType(t: FortuneType) {
+    markVisit(dateKey);
     setFortuneType(t);
     setScreen('pick');
   }
@@ -130,22 +126,15 @@ export default function App() {
 
   return (
     <>
-      {screen === 'home' && <HomeScreen onStart={handleStart} />}
-
-      {screen === 'type' && (
-        <FortuneTypeScreen
-          selected={fortuneType}
-          onSelect={handleType}
-          onBack={() => setScreen('home')}
-        />
-      )}
+      {screen === 'home' && <HomeScreen onSelect={handleType} />}
 
       {screen === 'pick' && (
         <NotePickScreen
           notes={shownNotes}
           busy={busy}
+          fortuneLabel={fortuneType ? FORTUNE_LABEL[fortuneType] : ''}
           onPick={handlePick}
-          onBack={() => setScreen('type')}
+          onBack={() => setScreen('home')}
         />
       )}
 

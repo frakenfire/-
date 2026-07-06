@@ -51,6 +51,16 @@ src/
   types/                  # fortune.ts
 ```
 
+## 폰트 · 완성도
+
+- **Pretendard(제품용 한글 UI 폰트) self-host**: `pretendard` 패키지의 **다이나믹 서브셋**
+  (`pretendardvariable-dynamic-subset.css`)을 import → `unicode-range`로 화면에 실제 쓰이는
+  글자만 런타임에 로드(홈 기준 woff2 7개 ≈ 300KB), CSP 안전. 시스템 폰트 폴백으로 깨지지 않음.
+- **숫자 강조**: 점수·수치에 tabular numeral(`font-num`) 적용(토스식 수치 강조).
+- **홈 개편**: 진입 즉시 7개 운세를 카드로 노출(탭 최소화·breadth 노출) + 받는 가치(총운/항목별/행운세트) 카피 + 날짜 pill.
+- **쪽지 뽑기**: 살짝 기울인 배치 + 순차 등장 애니메이션으로 뽑는 재미.
+- `word-break: keep-all`로 한글 줄바꿈 어색함 방지.
+
 ## 토스 스타일 · 입소문 요소 (인기 운세앱 리서치 반영)
 
 포스텔러(누적 860만, MZ 83%)·펭귄도사·운세도사 등 잘 되는 '오늘의 운세' 앱의
