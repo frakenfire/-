@@ -9,6 +9,9 @@ export type FortuneType =
   | 'caution'
   | 'luck';
 
+// 지금 내 기분 (편지 톤을 결정하는 가벼운 입력)
+export type Mood = 'good' | 'soso' | 'tired' | 'anxious' | 'lonely';
+
 export type Note = {
   id: string;
   name: string;
@@ -30,6 +33,8 @@ export type FortuneResult = {
   luckyPoint: string;
   shareLine: string;
   luck: import('../lib/luck').LuckSet;
+  /** 쪽지 요정의 편지 (문단 배열) */
+  letter: string[];
 };
 
 export type Choice<T extends string> = {

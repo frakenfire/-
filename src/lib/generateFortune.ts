@@ -1,15 +1,17 @@
-import type { FortuneResult, FortuneType, Note } from '../types/fortune';
+import type { FortuneResult, FortuneType, Mood, Note } from '../types/fortune';
 import { hashSeed } from './dateSeed';
 import { computeLuck } from './luck';
+import { composeLetter } from './letter';
 import { FORTUNE_LABEL } from '../data/fortuneTypes';
 import { NOTE_LEAD, TEMPLATES } from '../data/resultTemplates';
 
 // PRD §12 — 결과 생성 로직.
-// AI API 없이 (fortuneType + note + dateSeed) 조합으로 결정적 결과를 만든다.
+// AI API 없이 (fortuneType + note + mood + dateSeed) 조합으로 결정적 결과를 만든다.
 
 export type FortuneInput = {
   fortuneType: FortuneType;
   note: Note;
+  mood: Mood;
   dateKey?: string;
 };
 
@@ -32,14 +34,15 @@ function pickVariantIndex(seed: number, len: number, fortuneType: string): numbe
 }
 
 export function generateFortune(input: FortuneInput): FortuneResult {
-  const { fortuneType, note, dateKey = '' } = input;
-  const seed = hashSeed(`${dateKey}|${fortuneType}|${note.id}`);
+  const { fortuneType, note, mood, dateKey = '' } = input;
+  const seed = hashSeed(`${dateKey}|${fortuneType}|${note.id}|${mood}`);
 
   const variants = TEMPLATES[fortuneType];
   const variant = variants[pickVariantIndex(seed, variants.length, fortuneType)];
 
   const lead = NOTE_LEAD[note.id] ?? '오늘의 쪽지가 도착했어요.';
   const luck = computeLuck(seed);
+  const letter = composeLetter({ mood, variant, seed });
 
   return {
     title: FORTUNE_LABEL[fortuneType],
@@ -52,5 +55,6 @@ export function generateFortune(input: FortuneInput): FortuneResult {
     luckyPoint: variant.lucky,
     shareLine: variant.share,
     luck,
+    letter,
   };
 }

@@ -1,6 +1,6 @@
 import { AppLayout } from '../components/AppLayout';
 import { ScoreRing } from '../components/ScoreRing';
-import { Mascot } from '../components/Mascot';
+import { LetterCard } from '../components/LetterCard';
 import { Disclaimer } from '../components/Disclaimer';
 import { AdBadge, AdBanner } from '../components/AdNotice';
 import type { FortuneResult, Note } from '../types/fortune';
@@ -33,7 +33,11 @@ export function ResultScreen({
 }: Props) {
   const { luck } = result;
   return (
-    <AppLayout onBack={onBack} title="쪽지 결과">
+    <AppLayout onBack={onBack} title="쪽지 요정의 편지">
+      {/* 편지 — 결과의 감성 중심 */}
+      <LetterCard letter={result.letter} score={luck.total} />
+
+      {/* 총운 점수 (재미 요소) */}
       <div className="card card__center fade-in" style={{ position: 'relative', overflow: 'hidden' }}>
         {luck.total >= 88 ? (
           <div className="confetti" aria-hidden>
@@ -44,25 +48,12 @@ export function ResultScreen({
             ))}
           </div>
         ) : null}
-        <div className="result-mascot">
-          <Mascot size={72} score={luck.total} />
-        </div>
         <p className="card__subtitle">
           {note.icon} {result.subtitle}
         </p>
         <p className="card__title">{result.title}</p>
         <ScoreRing score={luck.total} grade={luck.grade} caption="오늘의 총운" />
         <span className="tag-chip">#{luck.tag}</span>
-      </div>
-
-      <div className="pinpoint fade-in">
-        <span className="pinpoint__badge">콕 집은 한마디</span>
-        <p className="pinpoint__text">{result.pinpoint}</p>
-      </div>
-
-      <div className="card fade-in">
-        <p className="section-title">쪽지가 콕 집어준 요약</p>
-        <p className="result-note__summary">{result.summaryLines.join('\n')}</p>
       </div>
 
       <div className="btn-stack">

@@ -1079,6 +1079,100 @@ button {
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+/* ── 쪽지 요정의 편지 ── */
+.letter {
+  background: linear-gradient(180deg, #fffdf7, #fff8ec);
+  border: 1px solid #f0e6d2;
+  border-radius: var(--radius-xl);
+  padding: var(--space-6) var(--space-5) var(--space-5);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-card);
+}
+
+.letter__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-4);
+  border-bottom: 1px dashed #e3d6bb;
+}
+
+.letter__from {
+  font-size: 13px;
+  font-weight: 800;
+  color: #a9852f;
+}
+
+.letter__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.letter__p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.85;
+  color: #4a3f2e;
+  white-space: pre-line;
+  word-break: keep-all;
+}
+
+.letter__sign {
+  margin: var(--space-5) 0 0;
+  text-align: right;
+  font-size: 15px;
+  font-weight: 800;
+  color: #a9852f;
+}
+
+/* ── 기분 입력 ── */
+.mood-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}
+
+.mood-btn {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 62px;
+  padding: var(--space-3) var(--space-5);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  transition:
+    border-color 0.12s ease,
+    background 0.12s ease,
+    transform 0.06s ease;
+}
+
+.mood-btn:active {
+  transform: scale(0.98);
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+
+.mood-btn__emoji {
+  font-size: 28px;
+}
+
+.mood-btn__label {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+
+.mood-mascot {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--space-6);
+  animation: bob 2.6s ease-in-out infinite;
+}
+
 /* ── 콕 집은 한마디 (핀포인트 훅) ── */
 .pinpoint {
   background: var(--brand);

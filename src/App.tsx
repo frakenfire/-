@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import type { FortuneResult, FortuneType, Note } from './types/fortune';
+import type { FortuneResult, FortuneType, Mood, Note } from './types/fortune';
 import { NOTES } from './data/notes';
 import { FORTUNE_LABEL } from './data/fortuneTypes';
 import { hashSeed, pickBySeed, todayKey } from './lib/dateSeed';
@@ -27,12 +27,13 @@ import {
 } from './lib/subscribe';
 
 import { HomeScreen } from './screens/HomeScreen';
+import { MoodScreen } from './screens/MoodScreen';
 import { NotePickScreen } from './screens/NotePickScreen';
 import { RevealScreen } from './screens/RevealScreen';
 import { ResultScreen } from './screens/ResultScreen';
 import { DetailResultScreen } from './screens/DetailResultScreen';
 
-type ScreenName = 'home' | 'pick' | 'reveal' | 'result' | 'detail';
+type ScreenName = 'home' | 'mood' | 'pick' | 'reveal' | 'result' | 'detail';
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -44,6 +45,7 @@ export default function App() {
   const [toast, setToast] = useState<string | null>(null);
 
   const [fortuneType, setFortuneType] = useState<FortuneType | null>(null);
+  const [mood, setMood] = useState<Mood | null>(null);
   const [note, setNote] = useState<Note | null>(null);
   const [drawNonce, setDrawNonce] = useState(0);
 
@@ -72,9 +74,9 @@ export default function App() {
   }, [dateKey, drawNonce]);
 
   const result: FortuneResult | null = useMemo(() => {
-    if (!fortuneType || !note) return null;
-    return generateFortune({ fortuneType, note, dateKey });
-  }, [fortuneType, note, dateKey]);
+    if (!fortuneType || !note || !mood) return null;
+    return generateFortune({ fortuneType, note, mood, dateKey });
+  }, [fortuneType, note, mood, dateKey]);
 
   function flash(msg: string) {
     setToast(msg);
@@ -86,6 +88,11 @@ export default function App() {
     markDelivered(dateKey);
     setDelivered(false);
     setFortuneType(t);
+    setScreen('mood');
+  }
+
+  function handleMood(m: Mood) {
+    setMood(m);
     setScreen('pick');
   }
 
@@ -183,6 +190,14 @@ export default function App() {
         />
       )}
 
+      {screen === 'mood' && (
+        <MoodScreen
+          fortuneLabel={fortuneType ? FORTUNE_LABEL[fortuneType] : ''}
+          onSelect={handleMood}
+          onBack={() => setScreen('home')}
+        />
+      )}
+
       {screen === 'reveal' && fortuneType && (
         <RevealScreen fortuneType={fortuneType} />
       )}
@@ -194,7 +209,7 @@ export default function App() {
           openingId={busy ? note?.id : undefined}
           fortuneLabel={fortuneType ? FORTUNE_LABEL[fortuneType] : ''}
           onPick={handlePick}
-          onBack={() => setScreen('home')}
+          onBack={() => setScreen('mood')}
         />
       )}
 
