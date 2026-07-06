@@ -13,12 +13,30 @@ export type FortuneInput = {
   dateKey?: string;
 };
 
+// 같은 운세를 연달아 볼 때 직전과 같은 텍스트가 나오지 않게 한다.
+// (반복을 두 번 체감하는 순간 "맞는다"는 몰입이 깨지기 때문)
+function pickVariantIndex(seed: number, len: number, fortuneType: string): number {
+  let idx = seed % len;
+  try {
+    const key = `tomorrowNoteLastVariant:${fortuneType}`;
+    const last = window.localStorage.getItem(key);
+    if (len > 1 && last !== null && Number.parseInt(last, 10) === idx) {
+      idx = (idx + 1 + (seed % (len - 1))) % len;
+      if (idx === Number.parseInt(last, 10)) idx = (idx + 1) % len;
+    }
+    window.localStorage.setItem(key, String(idx));
+  } catch {
+    /* localStorage 불가 환경에서는 seed 값 그대로 사용 */
+  }
+  return idx;
+}
+
 export function generateFortune(input: FortuneInput): FortuneResult {
   const { fortuneType, note, dateKey = '' } = input;
   const seed = hashSeed(`${dateKey}|${fortuneType}|${note.id}`);
 
   const variants = TEMPLATES[fortuneType];
-  const variant = variants[seed % variants.length];
+  const variant = variants[pickVariantIndex(seed, variants.length, fortuneType)];
 
   const lead = NOTE_LEAD[note.id] ?? '오늘의 쪽지가 도착했어요.';
   const luck = computeLuck(seed);
