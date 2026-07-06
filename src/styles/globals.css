@@ -542,6 +542,185 @@ button {
   transform: rotate(-3deg);
 }
 
+/* ── 총운 점수 링 ── */
+.score-ring {
+  position: relative;
+  width: 168px;
+  height: 168px;
+  margin: var(--space-2) auto var(--space-4);
+}
+
+.score-ring__center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.score-ring__caption {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+
+.score-ring__value {
+  font-size: 46px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.score-ring__unit {
+  font-size: 18px;
+  font-weight: 800;
+  margin-left: 2px;
+}
+
+.score-ring__grade {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* ── 카테고리 점수 바 ── */
+.cat-scores {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.cat-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.cat-row__label {
+  width: 76px;
+  flex-shrink: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+.cat-row__bar {
+  flex: 1;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--gray-100);
+  overflow: hidden;
+}
+
+.cat-row__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  transition: width 0.5s ease;
+}
+
+.cat-row__score {
+  width: 30px;
+  flex-shrink: 0;
+  text-align: right;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+/* ── 행운 세트 그리드 ── */
+.lucky-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+}
+
+.lucky-cell {
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lucky-cell--wide {
+  grid-column: 1 / -1;
+}
+
+.lucky-cell__k {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-500);
+}
+
+.lucky-cell__v {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--gray-900);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.lucky-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* ── 태그 칩 ── */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--brand);
+  background: var(--brand-soft);
+  padding: 6px 12px;
+  border-radius: 999px;
+}
+
+/* ── 결과 카드 (토스식 화이트 카드) ── */
+.card {
+  background: var(--white);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6) var(--space-5);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--gray-100);
+  margin-bottom: var(--space-4);
+}
+
+.card__center {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.card__title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin: 0;
+}
+
+.card__subtitle {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--brand);
+  margin: 0 0 var(--space-2);
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin: var(--space-2) 0 var(--space-3);
+}
+
 @media (max-width: 360px) {
   .h1 {
     font-size: 24px;
@@ -552,5 +731,9 @@ button {
   }
   .note {
     max-width: 96px;
+  }
+  .score-ring {
+    width: 152px;
+    height: 152px;
   }
 }

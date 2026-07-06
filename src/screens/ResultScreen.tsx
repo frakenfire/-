@@ -1,5 +1,5 @@
 import { AppLayout } from '../components/AppLayout';
-import { ResultNote } from '../components/ResultNote';
+import { ScoreRing } from '../components/ScoreRing';
 import { Disclaimer } from '../components/Disclaimer';
 import { AdBadge, AdBanner } from '../components/AdNotice';
 import type { FortuneResult, Note } from '../types/fortune';
@@ -15,7 +15,7 @@ type Props = {
   onBack: () => void;
 };
 
-// PRD §5.4 — 무료 결과 3줄은 광고 없이. 나머지 CTA 는 보상형/공유.
+// PRD §5.4 + 리서치 반영 — 무료: 총운 점수 + 3줄. 상세(광고)는 항목별·행운세트로 확장.
 export function ResultScreen({
   result,
   note,
@@ -26,14 +26,22 @@ export function ResultScreen({
   onRetry,
   onBack,
 }: Props) {
+  const { luck } = result;
   return (
     <AppLayout onBack={onBack} title="쪽지 결과">
-      <ResultNote
-        icon={note.icon}
-        title={result.title}
-        subtitle={result.subtitle}
-        summaryLines={result.summaryLines}
-      />
+      <div className="card card__center fade-in">
+        <p className="card__subtitle">
+          {note.icon} {result.subtitle}
+        </p>
+        <p className="card__title">{result.title}</p>
+        <ScoreRing score={luck.total} grade={luck.grade} caption="오늘의 총운" />
+        <span className="tag-chip">#{luck.tag}</span>
+      </div>
+
+      <div className="card fade-in">
+        <p className="section-title">쪽지 한 줄 요약</p>
+        <p className="result-note__summary">{result.summaryLines.join('\n')}</p>
+      </div>
 
       <div className="btn-stack">
         <button
@@ -42,7 +50,7 @@ export function ResultScreen({
           disabled={busy}
           onClick={onDetail}
         >
-          상세 운세 보기 <AdBadge label="광고" />
+          항목별 운세 · 행운 세트 보기 <AdBadge label="광고" />
         </button>
 
         {/* 친구도 뽑아주기 — 광고 없음 */}

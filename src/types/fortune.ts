@@ -28,6 +28,7 @@ export type FortuneResult = {
   caution: string;
   luckyPoint: string;
   shareLine: string;
+  luck: import('../lib/luck').LuckSet;
 };
 
 export type Choice<T extends string> = {

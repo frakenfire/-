@@ -1,5 +1,6 @@
 import type { FortuneResult, FortuneType, Note } from '../types/fortune';
 import { hashSeed } from './dateSeed';
+import { computeLuck } from './luck';
 import { FORTUNE_LABEL } from '../data/fortuneTypes';
 import { NOTE_LEAD, TEMPLATES } from '../data/resultTemplates';
 
@@ -20,6 +21,7 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const variant = variants[seed % variants.length];
 
   const lead = NOTE_LEAD[note.id] ?? '오늘의 쪽지가 도착했어요.';
+  const luck = computeLuck(seed);
 
   return {
     title: FORTUNE_LABEL[fortuneType],
@@ -30,5 +32,6 @@ export function generateFortune(input: FortuneInput): FortuneResult {
     caution: variant.caution,
     luckyPoint: variant.lucky,
     shareLine: variant.share,
+    luck,
   };
 }

@@ -1,22 +1,51 @@
-/* PRD §8.3 — 컬러 토큰
-   내부 컬러 가이드: SIGNATURE GREEN #114e48 = CTA·선택 상태.
-   SIGNATURE ORANGE #ff4b00 = 행운 포인트·뱃지·스티커 제한적 사용. */
+/* 디자인 토큰 — 토스 TDS 스타일 뉴트럴 시스템 + 브랜드 그린 액센트.
+   - 캔버스: 화이트, 차콜 헤딩(#191f28), 토스 그레이 램프
+   - 브랜드/CTA: SIGNATURE GREEN #114e48 (내부 컬러 가이드)
+   - 점수/정보 액센트: 토스 블루 #3182f6, 세만틱(green/blue/amber)
+   - 행운 포인트/스티커: SIGNATURE ORANGE #ff4b00 제한 사용 */
 :root {
-  --color-white: #ffffff;
-  --color-dark-gray: #333333;
-  --color-signature-green: #114e48;
-  --color-signature-green-strong: #0d3d38;
-  --color-signature-orange: #ff4b00;
-  --color-cream: #fff8ed;
-  --color-soft-green: #e9f3f1;
-  --color-soft-yellow: #fff2b8;
-  --color-soft-pink: #ffe8ee;
-  --color-border: #e5e8eb;
-  --color-text-secondary: #6b7280;
+  /* Toss grayscale ramp */
+  --gray-900: #191f28;
+  --gray-800: #333d4b;
+  --gray-700: #4e5968;
+  --gray-600: #6b7684;
+  --gray-500: #8b95a1;
+  --gray-400: #b0b8c1;
+  --gray-300: #d1d6db;
+  --gray-200: #e5e8eb;
+  --gray-100: #f2f4f6;
+  --gray-50: #f9fafb;
+  --white: #ffffff;
 
-  --radius-sm: 10px;
+  /* Brand & accents */
+  --brand: #114e48; /* SIGNATURE GREEN */
+  --brand-strong: #0d3d38;
+  --brand-soft: #e7f1ef;
+  --toss-blue: #3182f6;
+  --orange: #ff4b00; /* SIGNATURE ORANGE */
+
+  /* Semantic score colors */
+  --score-high: #12b886;
+  --score-mid: #3182f6;
+  --score-low: #f59f00;
+
+  /* Aliases (기존 클래스 호환) */
+  --color-white: var(--white);
+  --color-dark-gray: var(--gray-900);
+  --color-signature-green: var(--brand);
+  --color-signature-green-strong: var(--brand-strong);
+  --color-signature-orange: var(--orange);
+  --color-cream: var(--white);
+  --color-soft-green: var(--brand-soft);
+  --color-soft-yellow: #fff4cc;
+  --color-soft-pink: #ffe9f0;
+  --color-border: var(--gray-200);
+  --color-text-secondary: var(--gray-600);
+
+  --radius-sm: 12px;
   --radius-md: 16px;
-  --radius-lg: 22px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
 
   --space-1: 4px;
   --space-2: 8px;
@@ -26,9 +55,10 @@
   --space-6: 24px;
   --space-8: 32px;
 
-  --shadow-card: 0 6px 22px rgba(17, 78, 72, 0.1);
-  --shadow-cta: 0 4px 16px rgba(17, 78, 72, 0.24);
-  --shadow-note: 0 8px 20px rgba(51, 51, 51, 0.1);
+  /* 토스식 단일 레이어 소프트 섀도우 */
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-cta: 0 6px 16px rgba(17, 78, 72, 0.2);
+  --shadow-note: 0 4px 16px rgba(0, 0, 0, 0.08);
 
   --font-body:
     -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Pretendard',

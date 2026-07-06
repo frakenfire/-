@@ -84,7 +84,12 @@ export default function App() {
 
   async function handleShare() {
     if (!result) return;
-    const r = await shareOrCopy(result.title, result.shareLine);
+    const r = await shareOrCopy(
+      result.title,
+      result.shareLine,
+      result.luck.total,
+      result.luck.grade,
+    );
     if (r === 'shared') flash('공유 창을 열었어요');
     else if (r === 'copied') flash('공유 문구를 복사했어요');
     else flash('공유를 완료하지 못했어요');
@@ -105,6 +110,9 @@ export default function App() {
       title: result.title,
       subtitle: result.subtitle,
       shareLine: result.shareLine,
+      total: result.luck.total,
+      grade: result.luck.grade,
+      tag: result.luck.tag,
     });
     setBusy(false);
     flash(ok ? '결과 카드를 저장했어요' : '저장을 완료하지 못했어요');

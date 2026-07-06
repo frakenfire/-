@@ -1,9 +1,16 @@
 // PRD §7.2 — 친구도 뽑아주기 / 공유 문구 복사.
 
-const SHARE_INTRO = '내 내일쪽지 결과야. 너도 한 장 뽑아볼래?';
+const SHARE_INTRO = '너도 오늘 쪽지 한 장 뽑아볼래?';
 
-export function buildShareText(title: string, shareLine: string): string {
-  return `[내일쪽지 뽑기]\n${title}\n\n"${shareLine}"\n\n${SHARE_INTRO}`;
+export function buildShareText(
+  title: string,
+  shareLine: string,
+  score?: number,
+  grade?: string,
+): string {
+  const scoreLine =
+    typeof score === 'number' ? `오늘의 총운 ${score}점 (${grade ?? ''})\n` : '';
+  return `[내일쪽지 뽑기] ${title}\n${scoreLine}\n"${shareLine}"\n\n${SHARE_INTRO}`;
 }
 
 export async function copyText(text: string): Promise<boolean> {
@@ -33,8 +40,10 @@ export async function copyText(text: string): Promise<boolean> {
 export async function shareOrCopy(
   title: string,
   shareLine: string,
+  score?: number,
+  grade?: string,
 ): Promise<'shared' | 'copied' | 'failed'> {
-  const text = buildShareText(title, shareLine);
+  const text = buildShareText(title, shareLine, score, grade);
   const nav = navigator as Navigator & {
     share?: (data: { text?: string; title?: string }) => Promise<void>;
   };

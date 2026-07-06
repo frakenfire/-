@@ -1,4 +1,6 @@
 import { AppLayout } from '../components/AppLayout';
+import { CategoryScores } from '../components/CategoryScores';
+import { LuckySetGrid } from '../components/LuckySet';
 import { Disclaimer } from '../components/Disclaimer';
 import type { FortuneResult } from '../types/fortune';
 
@@ -11,7 +13,7 @@ type Props = {
   onBack: () => void;
 };
 
-// PRD §5.5 — 상세 운세: 전체 흐름 / 기대해도 되는 것 / 조심할 것 / 행운 포인트 / 오늘의 한 문장
+// PRD §5.5 + 리서치 반영 — 항목별 점수 · 전체 흐름/기대/조심 · 행운 세트 · 한 문장
 export function DetailResultScreen({
   result,
   busy,
@@ -20,11 +22,17 @@ export function DetailResultScreen({
   onSave,
   onBack,
 }: Props) {
+  const { luck } = result;
   return (
     <AppLayout onBack={onBack} title="상세 운세">
       <span className="eyebrow">{result.subtitle}</span>
 
-      <div className="result-note fade-in" style={{ marginBottom: 'var(--space-4)' }}>
+      <div className="card fade-in">
+        <p className="section-title">항목별 운세</p>
+        <CategoryScores categories={luck.categories} />
+      </div>
+
+      <div className="card fade-in">
         <div className="section">
           <p className="section__label">전체 흐름</p>
           <p className="section__text">{result.detailFlow}</p>
@@ -37,12 +45,11 @@ export function DetailResultScreen({
           <p className="section__label">조심할 것</p>
           <p className="section__text">{result.caution}</p>
         </div>
-        <div className="section">
-          <p className="section__label">행운 포인트</p>
-          <p className="section__text">
-            <span className="lucky">⭐ {result.luckyPoint}</span>
-          </p>
-        </div>
+      </div>
+
+      <div className="card fade-in">
+        <p className="section-title">오늘의 행운 세트</p>
+        <LuckySetGrid luck={luck} />
       </div>
 
       {/* 오늘의 한 문장 — 공유·저장용 */}
@@ -60,11 +67,7 @@ export function DetailResultScreen({
         >
           친구도 뽑아주기
         </button>
-        <button
-          type="button"
-          className="btn btn--secondary"
-          onClick={onCopyLine}
-        >
+        <button type="button" className="btn btn--secondary" onClick={onCopyLine}>
           한 문장 복사하기
         </button>
         <button
