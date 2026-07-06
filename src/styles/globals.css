@@ -733,6 +733,152 @@ button {
   background: var(--brand-soft);
 }
 
+.streak-pill--crown {
+  color: #8a6d00;
+  background: #fff2b8;
+}
+
+/* ── 오늘의 쪽지 도착 배너 ── */
+.arrive-banner {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--brand);
+  color: #fff;
+  text-align: left;
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-cta);
+  animation: fade-in 0.25s ease;
+}
+
+.arrive-banner:active {
+  transform: scale(0.99);
+}
+
+.arrive-banner__icon {
+  font-size: 28px;
+  animation: bob 1.8s ease-in-out infinite;
+}
+
+.arrive-banner__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.arrive-banner__title {
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.arrive-banner__desc {
+  font-size: 12px;
+  opacity: 0.85;
+}
+
+.arrive-banner__cta {
+  font-size: 13px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+/* ── 어제의 쪽지 돌아보기 ── */
+.recap-card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--gray-50);
+  margin-top: var(--space-4);
+}
+
+.recap-card__icon {
+  font-size: 22px;
+}
+
+.recap-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.recap-card__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gray-500);
+}
+
+.recap-card__text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+
+/* ── 매일 받기 구독 카드 ── */
+.subscribe-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--color-soft-yellow);
+  text-align: left;
+  margin-top: var(--space-4);
+  transition: transform 0.06s ease;
+}
+
+.subscribe-card:active {
+  transform: scale(0.99);
+}
+
+.subscribe-card__icon {
+  font-size: 26px;
+}
+
+.subscribe-card__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.subscribe-card__title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+
+.subscribe-card__desc {
+  font-size: 12px;
+  color: var(--gray-600);
+}
+
+.subscribe-card__cta {
+  font-size: 13px;
+  font-weight: 800;
+  color: #fff;
+  background: var(--brand);
+  padding: 8px 14px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.subscribe-done {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-500);
+  margin: var(--space-4) 0 0;
+}
+
 /* ── 고득점 축하 (색종이) ── */
 .confetti {
   position: absolute;

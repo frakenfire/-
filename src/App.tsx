@@ -14,10 +14,17 @@ import { shareOrCopy, copyText } from './lib/share';
 import { saveResultCard } from './lib/saveImage';
 import {
   incrementDailyDrawCount,
+  loadResult,
   markVisit,
   saveResult,
   updateStreak,
 } from './lib/storage';
+import {
+  hasNewDelivery,
+  isSubscribed,
+  markDelivered,
+  subscribeDaily,
+} from './lib/subscribe';
 
 import { HomeScreen } from './screens/HomeScreen';
 import { NotePickScreen } from './screens/NotePickScreen';
@@ -41,11 +48,23 @@ export default function App() {
   const [drawNonce, setDrawNonce] = useState(0);
 
   const dateKey = useMemo(() => todayKey(), []);
-  const streak = useMemo(() => {
+  const yesterdayKey = useMemo(() => {
     const y = new Date();
     y.setDate(y.getDate() - 1);
-    return updateStreak(dateKey, todayKey(y));
-  }, [dateKey]);
+    return todayKey(y);
+  }, []);
+  const streak = useMemo(
+    () => updateStreak(dateKey, yesterdayKey),
+    [dateKey, yesterdayKey],
+  );
+
+  // 주기 수신: 구독 상태 + 오늘의 쪽지 도착 여부 + 어제의 쪽지 기록
+  const [subscribed, setSubscribed] = useState(() => isSubscribed());
+  const [delivered, setDelivered] = useState(() => hasNewDelivery(todayKey()));
+  const yesterdayRecord = useMemo(() => {
+    const r = loadResult();
+    return r && r.dateKey === yesterdayKey ? r : null;
+  }, [yesterdayKey]);
 
   const shownNotes = useMemo(() => {
     const seed = hashSeed(`${dateKey}#${drawNonce}`);
@@ -64,8 +83,20 @@ export default function App() {
 
   function handleType(t: FortuneType) {
     markVisit(dateKey);
+    markDelivered(dateKey);
+    setDelivered(false);
     setFortuneType(t);
     setScreen('pick');
+  }
+
+  async function handleSubscribe() {
+    const ok = await subscribeDaily();
+    if (ok) {
+      setSubscribed(true);
+      flash('내일 아침, 새 쪽지로 찾아올게요 💌');
+    } else {
+      flash('앗, 알림 설정을 못 했어요');
+    }
   }
 
   async function handlePick(picked: Note) {
@@ -141,7 +172,16 @@ export default function App() {
 
   return (
     <>
-      {screen === 'home' && <HomeScreen streak={streak} onSelect={handleType} />}
+      {screen === 'home' && (
+        <HomeScreen
+          streak={streak}
+          subscribed={subscribed}
+          delivered={delivered}
+          yesterdayRecord={yesterdayRecord}
+          onSubscribe={handleSubscribe}
+          onSelect={handleType}
+        />
+      )}
 
       {screen === 'reveal' && fortuneType && (
         <RevealScreen fortuneType={fortuneType} />
@@ -163,6 +203,8 @@ export default function App() {
           result={result}
           note={note}
           busy={busy}
+          subscribed={subscribed}
+          onSubscribe={handleSubscribe}
           onDetail={handleDetail}
           onSave={handleSave}
           onShare={handleShare}

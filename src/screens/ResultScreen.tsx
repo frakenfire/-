@@ -9,6 +9,8 @@ type Props = {
   result: FortuneResult;
   note: Note;
   busy: boolean;
+  subscribed: boolean;
+  onSubscribe: () => void;
   onDetail: () => void;
   onSave: () => void;
   onShare: () => void;
@@ -21,6 +23,8 @@ export function ResultScreen({
   result,
   note,
   busy,
+  subscribed,
+  onSubscribe,
   onDetail,
   onSave,
   onShare,
@@ -100,7 +104,20 @@ export function ResultScreen({
         </button>
       </div>
 
-      <p className="tomorrow-nudge">내일이면 새 쪽지가 도착해요. 내일 또 봐요! 👋</p>
+      {!subscribed ? (
+        <button type="button" className="subscribe-card" onClick={onSubscribe}>
+          <span className="subscribe-card__icon" aria-hidden>
+            🔔
+          </span>
+          <span className="subscribe-card__body">
+            <span className="subscribe-card__title">내일 쪽지도 받아볼래요?</span>
+            <span className="subscribe-card__desc">매일 아침, 쪽지 요정이 배달해드려요</span>
+          </span>
+          <span className="subscribe-card__cta">받을래요</span>
+        </button>
+      ) : (
+        <p className="tomorrow-nudge">내일 아침, 새 쪽지로 찾아올게요 💌</p>
+      )}
 
       <AdBanner />
       <Disclaimer />

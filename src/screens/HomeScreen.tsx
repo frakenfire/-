@@ -1,8 +1,10 @@
 import { AppLayout } from '../components/AppLayout';
 import { FortuneTypeButton } from '../components/FortuneTypeButton';
 import { Mascot } from '../components/Mascot';
-import { FORTUNE_TYPES } from '../data/fortuneTypes';
+import { FORTUNE_TYPES, FORTUNE_LABEL } from '../data/fortuneTypes';
+import { findNote } from '../data/notes';
 import { HOME } from '../data/copy';
+import type { StoredResult } from '../lib/storage';
 import type { FortuneType } from '../types/fortune';
 
 function todayLabel(): string {
@@ -22,11 +24,24 @@ function greeting(): string {
 
 type Props = {
   streak: number;
+  subscribed: boolean;
+  delivered: boolean;
+  yesterdayRecord: StoredResult | null;
+  onSubscribe: () => void;
   onSelect: (t: FortuneType) => void;
 };
 
-// PRD §5.1 + 리텐션 — 스트릭 배지 + 시간대 인사 + 진입 즉시 운세 선택.
-export function HomeScreen({ streak, onSelect }: Props) {
+// PRD §5.1 + 리텐션 — 도착 배너 · 스트릭 · 어제의 쪽지 · 매일 받기 구독.
+export function HomeScreen({
+  streak,
+  subscribed,
+  delivered,
+  yesterdayRecord,
+  onSubscribe,
+  onSelect,
+}: Props) {
+  const yNote = yesterdayRecord ? findNote(yesterdayRecord.noteId) : null;
+
   return (
     <AppLayout>
       <div className="home-hero">
@@ -34,7 +49,9 @@ export function HomeScreen({ streak, onSelect }: Props) {
           <div>
             <div className="pill-row">
               <span className="date-pill">{todayLabel()}</span>
-              {streak >= 2 ? (
+              {streak >= 7 ? (
+                <span className="streak-pill streak-pill--crown">👑 {streak}일째!</span>
+              ) : streak >= 2 ? (
                 <span className="streak-pill">🔥 {streak}일째 쪽지</span>
               ) : (
                 <span className="streak-pill streak-pill--new">🌱 오늘의 첫 쪽지</span>
@@ -53,11 +70,56 @@ export function HomeScreen({ streak, onSelect }: Props) {
         </p>
       </div>
 
+      {/* 오늘의 쪽지 도착 배너 (구독자, 하루 1회) */}
+      {delivered ? (
+        <button type="button" className="arrive-banner" onClick={() => onSelect('tomorrow')}>
+          <span className="arrive-banner__icon" aria-hidden>
+            📬
+          </span>
+          <span className="arrive-banner__body">
+            <span className="arrive-banner__title">오늘의 쪽지가 도착했어요!</span>
+            <span className="arrive-banner__desc">따끈한 새 쪽지, 바로 열어볼까요?</span>
+          </span>
+          <span className="arrive-banner__cta">열기 ›</span>
+        </button>
+      ) : null}
+
       <div className="menu-list">
         {FORTUNE_TYPES.map((meta) => (
           <FortuneTypeButton key={meta.key} meta={meta} onClick={() => onSelect(meta.key)} />
         ))}
       </div>
+
+      {/* 어제의 쪽지 돌아보기 */}
+      {yesterdayRecord && yNote ? (
+        <div className="recap-card">
+          <span className="recap-card__icon" aria-hidden>
+            {yNote.icon}
+          </span>
+          <span className="recap-card__body">
+            <span className="recap-card__label">어제 뽑은 쪽지</span>
+            <span className="recap-card__text">
+              {FORTUNE_LABEL[yesterdayRecord.fortuneType]} · {yNote.name}
+            </span>
+          </span>
+        </div>
+      ) : null}
+
+      {/* 매일 받기 구독 */}
+      {!subscribed ? (
+        <button type="button" className="subscribe-card" onClick={onSubscribe}>
+          <span className="subscribe-card__icon" aria-hidden>
+            🔔
+          </span>
+          <span className="subscribe-card__body">
+            <span className="subscribe-card__title">매일 아침 새 쪽지 받기</span>
+            <span className="subscribe-card__desc">하루 한 장, 쪽지 요정이 배달해드려요</span>
+          </span>
+          <span className="subscribe-card__cta">받을래요</span>
+        </button>
+      ) : (
+        <p className="subscribe-done">💌 매일 아침 쪽지가 도착해요</p>
+      )}
     </AppLayout>
   );
 }

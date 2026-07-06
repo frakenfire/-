@@ -12,10 +12,10 @@ const COMMON_STEPS = [
 ];
 
 const TYPE_STEP: Record<FortuneType, string> = {
-  tomorrow: '내일의 흐름을 미리 엿보는 중… 👀',
-  month: '이번 달 흐름을 쭉 펼쳐보는 중… 🗓️',
+  tomorrow: '내일의 나를 미리 엿보는 중… 👀',
+  month: '이번 달을 쭉 펼쳐보는 중… 🗓️',
   love: '마음의 온도를 재보는 중… 💗',
-  money: '돈의 흐름을 살짝 따라가는 중… 🪙',
+  money: '돈의 기운을 살짝 따라가는 중… 🪙',
   work: '일 기운을 차곡차곡 살피는 중… 💼',
   caution: '조심할 순간을 콕 짚어보는 중… 🔍',
   luck: '행운 세트를 예쁘게 담는 중… 🎁',

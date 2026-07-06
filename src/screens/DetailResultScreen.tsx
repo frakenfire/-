@@ -13,7 +13,7 @@ type Props = {
   onBack: () => void;
 };
 
-// PRD §5.5 + 리서치 반영 — 항목별 점수 · 전체 흐름/기대/조심 · 행운 세트 · 한 문장
+// PRD §5.5 + 리서치 반영 — 항목별 점수 · 오늘의 기류/기대/조심 · 행운 세트 · 한 문장
 export function DetailResultScreen({
   result,
   busy,
@@ -34,7 +34,7 @@ export function DetailResultScreen({
 
       <div className="card fade-in">
         <div className="section">
-          <p className="section__label">전체 흐름</p>
+          <p className="section__label">오늘의 기류</p>
           <p className="section__text">{result.detailFlow}</p>
         </div>
         <div className="section">
