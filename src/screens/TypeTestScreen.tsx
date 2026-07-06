@@ -29,7 +29,7 @@ export function TypeTestScreen({ onDone, onBack }: Props) {
   return (
     <AppLayout onBack={onBack} step={step + 1} totalSteps={QUESTIONS.length}>
       <span className="eyebrow">
-        쪽지 유형 테스트 · {step + 1}/{QUESTIONS.length}
+        🥐 나는 무슨 빵? · {step + 1}/{QUESTIONS.length}
       </span>
       <h2 className="h2" style={{ whiteSpace: 'pre-line' }}>
         {q.q}

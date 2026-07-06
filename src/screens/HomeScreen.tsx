@@ -91,21 +91,21 @@ export function HomeScreen({
         </button>
       ) : null}
 
-      {/* 쪽지 유형 테스트 — 바이럴 진입점 */}
+      {/* 빵 유형 테스트 — 바이럴 진입점 */}
       {myType ? (
         <button type="button" className="mytype-chip" onClick={onTypeResult}>
-          <span aria-hidden>{myType.emoji}</span> 나는 {myType.name} · 궁합 보기 ›
+          <span aria-hidden>{myType.emoji}</span> 나는 {myType.short} · 빵 궁합 보기 ›
         </button>
       ) : (
         <button type="button" className="type-banner" onClick={onTypeTest}>
           <span className="type-banner__icon" aria-hidden>
-            💌
+            🥐
           </span>
           <span className="type-banner__body">
-            <span className="type-banner__title">나는 어떤 쪽지 유형일까?</span>
-            <span className="type-banner__desc">질문 4개면 끝! 친구랑 궁합도 볼 수 있어요</span>
+            <span className="type-banner__title">나는 무슨 빵일까?</span>
+            <span className="type-banner__desc">질문 4개면 끝! 친구랑 빵 궁합도 나와요</span>
           </span>
-          <span className="type-banner__cta">해볼래요</span>
+          <span className="type-banner__cta">구워볼래요</span>
         </button>
       )}
 

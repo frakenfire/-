@@ -114,7 +114,7 @@ export default function App() {
   }
 
   async function handleTypeShare(t: NoteType) {
-    const text = `[내일쪽지 뽑기] 나의 쪽지 유형은…\n${t.emoji} ${t.name}!\n"${t.tagline}"\n\n너는 무슨 유형이야? 궁합도 볼 수 있대 👀`;
+    const text = `나 '${t.name}'이래 ㅋㅋㅋ ${t.emoji}\n"${t.tagline}"\n\n너는 무슨 빵이야? 우리 빵 궁합도 나온대 👀\n[내일쪽지 뽑기]`;
     const nav = navigator as Navigator & {
       share?: (data: { text?: string; title?: string }) => Promise<void>;
     };

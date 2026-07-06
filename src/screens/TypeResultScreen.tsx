@@ -19,13 +19,13 @@ export function TypeResultScreen({ type, onShare, onRetake, onHome }: Props) {
   const spark = NOTE_TYPES[type.sparkMatch];
 
   return (
-    <AppLayout onBack={onHome} title="내 쪽지 유형">
+    <AppLayout onBack={onHome} title="내 빵 유형">
       {/* 유형 카드 */}
       <div className="type-card fade-in">
         <span className="type-card__emoji" aria-hidden>
           {type.emoji}
         </span>
-        <p className="type-card__label">나의 쪽지 유형</p>
+        <p className="type-card__label">오늘의 나는, 이 빵</p>
         <h2 className="type-card__name">{type.name}</h2>
         <p className="type-card__tagline">{type.tagline}</p>
         <div className="type-card__traits">
@@ -38,32 +38,32 @@ export function TypeResultScreen({ type, onShare, onRetake, onHome }: Props) {
         <p className="type-card__cheer">“{type.cheer}”</p>
       </div>
 
-      {/* 잘 맞는 유형 */}
+      {/* 잘 맞는 빵 */}
       <div className="card">
-        <p className="section-title">우리 잘 맞아요</p>
+        <p className="section-title">나랑 잘 맞는 빵</p>
         <div className="match-row">
           <div className="match-cell">
             <span className="match-cell__emoji" aria-hidden>
               {best.emoji}
             </span>
-            <span className="match-cell__label">환상의 짝꿍</span>
+            <span className="match-cell__label">환상의 페어링</span>
             <span className="match-cell__name">{best.name}</span>
           </div>
           <div className="match-cell">
             <span className="match-cell__emoji" aria-hidden>
               {spark.emoji}
             </span>
-            <span className="match-cell__label">티격태격 케미</span>
+            <span className="match-cell__label">단짠 케미</span>
             <span className="match-cell__name">{spark.name}</span>
           </div>
         </div>
       </div>
 
-      {/* 친구 궁합 — 2인 참여 엔진 */}
+      {/* 친구 빵 궁합 — 2인 참여 엔진 */}
       <div className="card">
-        <p className="section-title">친구랑 궁합 보기</p>
+        <p className="section-title">친구랑 빵 궁합 보기</p>
         <p className="lead" style={{ fontSize: 14, marginBottom: 12 }}>
-          친구의 유형을 골라보세요. 모르면 지금 물어봐요 👀
+          친구는 무슨 빵이에요? 모르면 지금 물어봐요 👀
         </p>
         <div className="type-grid">
           {NOTE_TYPE_LIST.map((t) => (
@@ -75,7 +75,7 @@ export function TypeResultScreen({ type, onShare, onRetake, onHome }: Props) {
               }
               onClick={() => setFriendType(t.id)}
             >
-              <span aria-hidden>{t.emoji}</span> {t.name.replace('형', '')}
+              <span aria-hidden>{t.emoji}</span> {t.short}
             </button>
           ))}
         </div>
@@ -93,13 +93,13 @@ export function TypeResultScreen({ type, onShare, onRetake, onHome }: Props) {
 
       <div className="btn-stack">
         <button type="button" className="btn btn--primary" onClick={() => onShare(type)}>
-          친구한테 내 유형 자랑하기 💌
+          나 무슨 빵인지 자랑하기 🥐
         </button>
         <button type="button" className="btn btn--secondary" onClick={onHome}>
           오늘의 쪽지 뽑으러 가기
         </button>
         <button type="button" className="btn btn--ghost" onClick={onRetake}>
-          다시 테스트할래요
+          다시 구워볼래요
         </button>
       </div>
 
