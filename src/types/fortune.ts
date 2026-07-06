@@ -22,6 +22,7 @@ export type NoteColor = 'softGreen' | 'cream' | 'softYellow' | 'softPink';
 export type FortuneResult = {
   title: string;
   subtitle: string;
+  pinpoint: string;
   summaryLines: string[];
   detailFlow: string;
   goodPoint: string;

@@ -38,6 +38,11 @@ export function ResultScreen({
         <span className="tag-chip">#{luck.tag}</span>
       </div>
 
+      <div className="pinpoint fade-in">
+        <span className="pinpoint__badge">콕 집은 한마디</span>
+        <p className="pinpoint__text">{result.pinpoint}</p>
+      </div>
+
       <div className="card fade-in">
         <p className="section-title">쪽지 한 줄 요약</p>
         <p className="result-note__summary">{result.summaryLines.join('\n')}</p>

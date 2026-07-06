@@ -1,5 +1,6 @@
 import { AppLayout } from '../components/AppLayout';
 import { FortuneTypeButton } from '../components/FortuneTypeButton';
+import { Mascot } from '../components/Mascot';
 import { FORTUNE_TYPES } from '../data/fortuneTypes';
 import { HOME } from '../data/copy';
 import type { FortuneType } from '../types/fortune';
@@ -16,8 +17,13 @@ export function HomeScreen({ onSelect }: { onSelect: (t: FortuneType) => void })
   return (
     <AppLayout>
       <div className="home-hero">
-        <span className="date-pill">{todayLabel()}</span>
-        <h1 className="h1">{HOME.title}</h1>
+        <div className="home-hero__top">
+          <div>
+            <span className="date-pill">{todayLabel()}</span>
+            <h1 className="h1">{HOME.title}</h1>
+          </div>
+          <Mascot size={84} />
+        </div>
         <p className="home-hero__sub">
           쪽지 한 장에 <b>총운 점수</b>, <b>항목별 운세</b>, <b>행운 세트</b>까지.
           <br />

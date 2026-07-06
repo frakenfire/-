@@ -26,6 +26,7 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   return {
     title: FORTUNE_LABEL[fortuneType],
     subtitle: `${note.name} 쪽지`,
+    pinpoint: variant.pinpoint,
     summaryLines: [lead, variant.summary[0], variant.summary[1]],
     detailFlow: variant.flow,
     goodPoint: variant.good,

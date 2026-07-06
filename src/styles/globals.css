@@ -550,6 +550,17 @@ button {
   padding: var(--space-2) 0 var(--space-5);
 }
 
+.home-hero__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.home-hero__top .h1 {
+  margin-bottom: 0;
+}
+
 .date-pill {
   display: inline-block;
   font-size: 12px;
@@ -741,6 +752,35 @@ button {
   height: 14px;
   border-radius: 999px;
   border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+/* ── 콕 집은 한마디 (핀포인트 훅) ── */
+.pinpoint {
+  background: var(--brand);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-card);
+}
+
+.pinpoint__badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--brand);
+  background: #fff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-bottom: var(--space-3);
+}
+
+.pinpoint__text {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.6;
+  font-weight: 700;
+  color: #fff;
+  word-break: keep-all;
 }
 
 /* ── 태그 칩 ── */

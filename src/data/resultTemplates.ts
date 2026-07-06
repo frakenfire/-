@@ -1,9 +1,9 @@
 import type { FortuneType } from '../types/fortune';
 
-// PRD §6 / §12 — 결과 템플릿. AI 없이 fortuneType + note + dateSeed 조합.
-// 톤: 가볍고 희망적으로, 해요체. 금지 표현(§10.2) 없음.
+// PRD §6 / §12 + 리서치 — 결과 템플릿. AI 없이 fortuneType + note + dateSeed 조합.
+// 톤: 가볍고 희망적, 해요체. 금지 표현(§10.2) 없음.
+// pinpoint = '콕 집은 한마디'. 구체적·2인칭·타이밍으로 "맞는다" 느낌을 주는 훅.
 
-// 쪽지별 오프닝 한 줄 — 어떤 운세와도 자연스럽게 붙는다 (note 영향 반영).
 export const NOTE_LEAD: Record<string, string> = {
   slowly: '서두르지 않아도 흐름은 천천히 풀리는 쪽이에요.',
   rise: '가라앉았던 기운이 다시 올라오는 신호예요.',
@@ -20,6 +20,7 @@ export const NOTE_LEAD: Record<string, string> = {
 };
 
 export type Variant = {
+  pinpoint: string;
   summary: [string, string];
   flow: string;
   good: string;
@@ -31,6 +32,8 @@ export type Variant = {
 export const TEMPLATES: Record<FortuneType, Variant[]> = {
   tomorrow: [
     {
+      pinpoint:
+        "요즘 '이거 지금 해야 하나' 하고 미뤄둔 일 하나, 떠오르지 않나요? 내일 그걸 건드리면 의외로 술술 풀려요.",
       summary: [
         '내일은 크게 뒤집히기보다 막혀 있던 게 조금씩 풀리는 쪽에 가까워요.',
         '미뤄둔 일 하나를 끝내면 하루가 훨씬 가벼워질 수 있어요.',
@@ -42,6 +45,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
       share: '작게 풀리는 날도 좋은 날이에요.',
     },
     {
+      pinpoint: '요즘 괜히 마음이 바쁘죠. 그런데 내일은 그 속도를 늦춰도 아무 일 안 생겨요.',
       summary: [
         '내일은 잔잔하게 흘러가는 편이라 무리하지 않는 게 좋아요.',
         '작은 루틴 하나를 지키면 기분 좋은 흐름이 이어질 수 있어요.',
@@ -53,6 +57,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
       share: '천천히 가도 충분히 도착해요.',
     },
     {
+      pinpoint: "내일 '이거 먼저 말해볼까' 싶은 순간이 와요. 그때 먼저 꺼내는 게 정답이에요.",
       summary: [
         '내일은 예상 밖의 작은 기회가 슬쩍 다가올 수 있는 날이에요.',
         '너무 재지 말고 가볍게 한 발 내디디면 흐름이 열릴 수 있어요.',
@@ -66,6 +71,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
   ],
   month: [
     {
+      pinpoint: '이번 달 초에 세운 계획, 벌써 조금 흐트러졌죠? 괜찮아요. 진짜는 중순부터예요.',
       summary: [
         '이번 달은 초반보다 중후반으로 갈수록 흐름이 좋아지는 편이에요.',
         '처음부터 결과를 보려 하기보다 루틴을 다시 잡는 쪽이 운을 살려요.',
@@ -77,6 +83,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
       share: '다시 올라오는 흐름 위에 있어요.',
     },
     {
+      pinpoint: "요즘 '이것저것 벌여만 놨다' 싶다면, 이번 달은 딱 하나만 끝내도 충분해요.",
       summary: [
         '이번 달은 새로 벌이기보다 있는 걸 단단하게 만드는 시기예요.',
         '작은 목표 하나를 끝까지 지키면 자신감이 붙을 수 있어요.',
@@ -88,6 +95,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
       share: '이번 달은 다지는 재미가 있어요.',
     },
     {
+      pinpoint: '이번 달, 연락 뜸했던 사람이 문득 떠오를 거예요. 그 사람이 뜻밖의 열쇠가 될 수 있어요.',
       summary: [
         '이번 달은 사람과의 인연에서 기분 좋은 흐름이 생기는 편이에요.',
         '가볍게 안부를 나누다 보면 뜻밖의 도움이 따라올 수 있어요.',
@@ -101,6 +109,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
   ],
   love: [
     {
+      pinpoint: '상대 답장 속도에 은근 신경 쓰고 있죠? 그건 당신이 그만큼 마음 쓰고 있다는 뜻이에요.',
       summary: [
         '상대의 마음을 너무 빨리 단정하지 않는 게 좋아요.',
         '무거운 대화보다 가벼운 말 한마디가 분위기를 바꿀 수 있어요.',
@@ -112,6 +121,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
       share: '가벼운 한마디가 마음을 열어요.',
     },
     {
+      pinpoint: "'내가 먼저 연락하면 지는 건가' 싶었다면, 내일은 먼저가 이겨요.",
       summary: [
         '지금은 밀당보다 솔직함이 더 잘 통하는 흐름이에요.',
         '나를 편하게 해주는 사람에게 마음을 조금 더 써도 좋아요.',
@@ -123,6 +133,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
       share: '편안함이 가장 큰 매력이에요.',
     },
     {
+      pinpoint: "요즘 '이 관계 어떻게 되려나' 조급했다면, 힘을 빼는 순간 분위기가 바뀌어요.",
       summary: [
         '지금은 관계에 조바심을 내려놓으면 분위기가 훨씬 좋아지는 흐름이에요.',
         '연락의 횟수보다 한 번의 다정함이 마음을 더 오래 남길 수 있어요.',
@@ -136,6 +147,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
   ],
   money: [
     {
+      pinpoint: "요즘 '이 정도쯤이야' 하고 긁은 거, 은근 쌓였죠? 딱 하나만 끊어도 숨통이 트여요.",
       summary: [
         '큰돈이 들어오는 운보다 새는 돈을 줄이는 운이 강한 날이에요.',
         '작은 결제 하나만 줄여도 마음이 꽤 편해질 수 있어요.',
@@ -147,17 +159,19 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
       share: '덜 새면 그게 버는 거예요.',
     },
     {
+      pinpoint: '통장 볼 때마다 애매하게 불안하죠. 내일 딱 한 줄만 적어보면 그 불안이 줄어요.',
       summary: [
         '오늘은 지갑을 여는 것보다 흐름을 살펴보는 게 좋은 날이에요.',
         '가계부에 한 줄만 적어도 돈의 방향이 또렷해질 수 있어요.',
       ],
       flow: '돈운은 큰 결정보다 작은 점검이 잘 맞아요. 숫자를 차분히 적어보는 것부터 시작해요.',
       good: '미뤄둔 환급이나 포인트에서 소소한 이득이 생길 수 있어요.',
-      caution: '‘이 정도쯤이야’ 하는 작은 결제가 쌓이지 않게 해요.',
+      caution: "'이 정도쯤이야' 하는 작은 결제가 쌓이지 않게 해요.",
       lucky: '낮 · 겨자색 · 영수증 한 번 보기',
       share: '흐름을 알면 돈이 편해져요.',
     },
     {
+      pinpoint: '잊고 있던 포인트나 환급, 분명 어딘가 있어요. 내일 5분만 찾아보세요.',
       summary: [
         '내일은 작은 보상 하나가 기분 좋게 굴러들어올 수 있는 흐름이에요.',
         '포인트나 쿠폰처럼 잊고 있던 혜택을 챙기면 소소한 이득이 생겨요.',
@@ -171,6 +185,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
   ],
   work: [
     {
+      pinpoint: "새 일 벌이고 싶은 마음 vs 쌓인 일, 지금 둘 다 있죠? 내일은 쌓인 걸 먼저 치우는 게 이득이에요.",
       summary: [
         '내일은 새로 벌이기보다 쌓인 일을 정리하는 쪽이 좋아요.',
         '작은 완료가 하나 생기면 하루 흐름이 훨씬 가벼워질 수 있어요.',
@@ -182,6 +197,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
       share: '작은 완료가 큰 흐름을 만들어요.',
     },
     {
+      pinpoint: '티 안 나게 해온 거, 있죠? 내일은 그걸 슬쩍 드러내도 돼요. 생각보다 알아줘요.',
       summary: [
         '내일은 준비해둔 것을 조용히 꺼내기 좋은 흐름이에요.',
         '티 나지 않던 노력이 가볍게 인정받을 수 있어요.',
@@ -193,6 +209,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
       share: '꾸준함은 결국 티가 나요.',
     },
     {
+      pinpoint: "'아직 덜 다듬었는데' 싶어 못 보낸 거 있죠? 내일은 그냥 공유하는 게 정답이에요.",
       summary: [
         '내일은 아이디어나 제안을 가볍게 꺼내보기 좋은 흐름이에요.',
         '완벽하지 않아도 먼저 공유하면 좋은 피드백이 붙을 수 있어요.',
@@ -206,6 +223,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
   ],
   caution: [
     {
+      pinpoint: "내일 '확인했겠지' 하고 그냥 넘기려는 순간이 와요. 딱 한 번만 다시 봐요.",
       summary: [
         '내일은 큰 위험보다 사소한 실수를 줄이면 좋은 날이에요.',
         '서두르다 놓치기 쉬우니 한 번 더 확인하는 여유를 가져요.',
@@ -217,6 +235,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
       share: '천천히 확인하면 안전해요.',
     },
     {
+      pinpoint: '내일 욱할 순간이 한 번 스쳐가요. 3초만 참으면 그날 하루가 통째로 지켜져요.',
       summary: [
         '내일은 감정이 앞서는 순간만 조심하면 무난한 흐름이에요.',
         '욱하기 전에 한 박자 쉬면 관계도 일도 부드러워져요.',
@@ -228,6 +247,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
       share: '한 박자 쉬면 실수가 줄어요.',
     },
     {
+      pinpoint: '거절을 못 해서 또 떠안으려 하죠? 내일은 하나쯤 가볍게 패스해도 괜찮아요.',
       summary: [
         '내일은 무리한 약속만 피하면 한결 여유로운 하루가 될 수 있어요.',
         '일정을 조금 비워두면 예상 밖의 좋은 흐름이 들어올 자리가 생겨요.',
@@ -241,6 +261,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
   ],
   luck: [
     {
+      pinpoint: '내일 평소 안 하던 사소한 시도 하나가, 기분 좋은 우연을 불러와요.',
       summary: [
         '내일은 작은 행동 하나가 기분 좋은 우연을 부르는 날이에요.',
         '가볍게 움직일수록 예상 밖의 즐거움이 따라올 수 있어요.',
@@ -252,6 +273,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
       share: '가볍게 움직이면 운이 붙어요.',
     },
     {
+      pinpoint: '요즘 남 챙기느라 정작 나는 뒷전이었죠. 내일은 나부터 챙기면 운이 붙어요.',
       summary: [
         '내일은 나에게 다정하게 굴수록 운이 좋아지는 날이에요.',
         '좋아하는 것 하나를 챙기면 하루가 반짝일 수 있어요.',
@@ -263,6 +285,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
       share: '나를 아끼면 운이 따라와요.',
     },
     {
+      pinpoint: '내일 익숙한 길 말고 다른 길로 한 번 가보세요. 거기서 반짝하는 게 있어요.',
       summary: [
         '내일은 새로운 걸 살짝 시도해보면 행운이 반응하는 날이에요.',
         '평소 안 가던 길, 안 듣던 노래 하나가 기분 좋은 우연을 부를 수 있어요.',
