@@ -6,7 +6,6 @@ import { findNote } from '../data/notes';
 import { HOME } from '../data/copy';
 import type { StoredResult } from '../lib/storage';
 import type { FortuneType } from '../types/fortune';
-import type { NoteType } from '../data/noteTypes';
 
 function todayLabel(): string {
   const d = new Date();
@@ -28,9 +27,6 @@ type Props = {
   subscribed: boolean;
   delivered: boolean;
   yesterdayRecord: StoredResult | null;
-  myType: NoteType | null;
-  onTypeTest: () => void;
-  onTypeResult: () => void;
   onSubscribe: () => void;
   onSelect: (t: FortuneType) => void;
 };
@@ -41,9 +37,6 @@ export function HomeScreen({
   subscribed,
   delivered,
   yesterdayRecord,
-  myType,
-  onTypeTest,
-  onTypeResult,
   onSubscribe,
   onSelect,
 }: Props) {
@@ -71,9 +64,7 @@ export function HomeScreen({
         <p className="home-hero__sub">
           {greeting()}
           <br />
-          쪽지 한 장에 <b>총운 점수</b>부터 <b>행운 세트</b>까지 쏙.
-          <br />
-          오늘은 뭐가 궁금해요?
+          내 하루가 어떨지, 쪽지 한 장으로 미리 살짝 봐요.
         </p>
       </div>
 
@@ -91,24 +82,7 @@ export function HomeScreen({
         </button>
       ) : null}
 
-      {/* 동물 유형 테스트 — 바이럴 진입점 */}
-      {myType ? (
-        <button type="button" className="mytype-chip" onClick={onTypeResult}>
-          <span aria-hidden>{myType.emoji}</span> 내 본체는 {myType.short} · 동물 궁합 보기 ›
-        </button>
-      ) : (
-        <button type="button" className="type-banner" onClick={onTypeTest}>
-          <span className="type-banner__icon" aria-hidden>
-            🐾
-          </span>
-          <span className="type-banner__body">
-            <span className="type-banner__title">내 본체는 무슨 동물일까?</span>
-            <span className="type-banner__desc">질문 4개면 끝! 친구랑 동물 궁합도 나와요</span>
-          </span>
-          <span className="type-banner__cta">해볼래요</span>
-        </button>
-      )}
-
+      <p className="menu-heading">오늘은 뭐가 제일 궁금해요?</p>
       <div className="menu-list">
         {FORTUNE_TYPES.map((meta) => (
           <FortuneTypeButton key={meta.key} meta={meta} onClick={() => onSelect(meta.key)} />
