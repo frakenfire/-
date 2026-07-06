@@ -1,8 +1,9 @@
 import { hashSeed } from '../lib/dateSeed';
 
-// "나는 무슨 빵?" 테스트 — 바이럴 공식: 애착 있는 실물(빵)에 대입해야 퍼진다.
-// "나 꽈배기래 ㅋㅋ 너는?"이 되는 순간 공유가 시작된다.
-// (id 는 저장 호환을 위해 유지, 콘텐츠만 빵으로 교체)
+// "나는 무슨 동물?" 테스트 — 실물 대입 바이럴.
+// 동물상 밈(리트리버상·곰상·고양이상)은 자기표현 욕구가 검증된 포맷.
+// "나 마이웨이 고양이래 ㅋㅋ 너는?"이 되는 순간 공유가 시작된다.
+// (id 는 저장 호환을 위해 유지, 콘텐츠만 교체)
 
 export type NoteTypeId =
   | 'sunshine'
@@ -22,98 +23,98 @@ export type NoteType = {
   tagline: string;
   traits: [string, string, string];
   bestMatch: NoteTypeId;
-  sparkMatch: NoteTypeId; // 단짠 케미 (다른데 끌리는 조합)
+  sparkMatch: NoteTypeId; // 톰과 제리 케미 (다른데 끌리는 조합)
   cheer: string;
 };
 
 export const NOTE_TYPES: Record<NoteTypeId, NoteType> = {
   sunshine: {
     id: 'sunshine',
-    emoji: '🧂',
-    name: '겉바속촉 소금빵',
-    short: '소금빵',
-    tagline: '요즘 제일 잘나가는 그 빵, 알고 보면 진국',
-    traits: ['유행은 내가 제일 먼저', '웨이팅도 기꺼이', '겉바속촉 반전 매력'],
+    emoji: '🐶',
+    name: '온동네 인싸 리트리버',
+    short: '리트리버',
+    tagline: '꼬리부터 반기는 에너지, 온 동네가 내 친구',
+    traits: ['먼저 인사하는 쪽', '리액션 자동 발사', '사람이 세상에서 제일 좋아'],
     bestMatch: 'cloud',
     sparkMatch: 'dawn',
-    cheer: '당신 인기, 다 이유가 있어요.',
+    cheer: '당신이 오면 분위기가 켜져요.',
   },
   dawn: {
     id: 'dawn',
-    emoji: '🥐',
-    name: '결결이 크루아상',
-    short: '크루아상',
-    tagline: '결이 몇 겹인지 나도 몰라, 생각 부자 감성러',
-    traits: ['생각이 겹겹이', '감수성 만렙', '혼자 시간 필수'],
+    emoji: '🦉',
+    name: '새벽 감성 부엉이',
+    short: '부엉이',
+    tagline: '낮보다 밤에 더 반짝이는 생각 부자',
+    traits: ['새벽 2시가 골든타임', '긴 답장 전문', '감수성 만렙'],
     bestMatch: 'tree',
     sparkMatch: 'firework',
-    cheer: '겹겹이 쌓인 생각만큼 깊은 사람이에요.',
+    cheer: '깊은 밤의 생각들이 지금의 당신을 만들었어요.',
   },
   stamp: {
     id: 'stamp',
-    emoji: '🧄',
-    name: '못 참는 마늘빵',
-    short: '마늘빵',
-    tagline: '한 입 물면 멈출 수 없는 직진 그 자체',
-    traits: ['직진밖에 몰라요', '호불호? 호가 이겨요', '존재감이 복도 끝까지'],
+    emoji: '🐯',
+    name: '직진밖에 모르는 호랑이',
+    short: '호랑이',
+    tagline: '고민은 3초, 실행은 바로 지금',
+    traits: ['일단 GO', '결정이 시원시원', '추진력이 무기'],
     bestMatch: 'blanket',
     sparkMatch: 'cloud',
-    cheer: '당신의 직진이 누군가에겐 용기가 돼요.',
+    cheer: '당신이 움직이면 길이 생겨요.',
   },
   cloud: {
     id: 'cloud',
-    emoji: '🍰',
-    name: '사르르 카스테라',
-    short: '카스테라',
-    tagline: '닿기만 해도 사르르, 걸어다니는 힐링',
-    traits: ['급할 거 하나 없어요', '옆에 있으면 스르르 힐링', '포근함 그 자체'],
+    emoji: '🦥',
+    name: '마이페이스 나무늘보',
+    short: '나무늘보',
+    tagline: '서두르면 지는 거야, 내 속도로 간다',
+    traits: ['급할 거 하나 없음', '옆에 있으면 저절로 힐링', '평온 그 자체'],
     bestMatch: 'sunshine',
     sparkMatch: 'stamp',
-    cheer: '당신 옆자리가 세상에서 제일 포근해요.',
+    cheer: '당신 옆에서는 시간도 천천히 가요.',
   },
   firework: {
     id: 'firework',
-    emoji: '🥨',
-    name: '배배꼬인 꽈배기',
-    short: '꽈배기',
-    tagline: '인생이 꼬여도 설탕 뿌리면 그만, 웃음 담당',
-    traits: ['드립이 쉴 틈 없음', '흥이 많아도 너무 많음', '꼬여도 달콤하게'],
+    emoji: '🦦',
+    name: '흥폭발 수달',
+    short: '수달',
+    tagline: '노는 게 제일 좋아, 타고난 분위기 메이커',
+    traits: ['드립 자동 생성', '리액션 맛집', '노는 계획은 못 참지'],
     bestMatch: 'breeze',
     sparkMatch: 'dawn',
     cheer: '당신이 웃기면 그 방이 살아나요.',
   },
   tree: {
     id: 'tree',
-    emoji: '🥯',
-    name: '쫀득단단 베이글',
-    short: '베이글',
-    tagline: '겉은 단단, 알고 보면 쫀득한 믿음직 츤데레',
-    traits: ['무뚝뚝한데 다 챙겨줌', '약속은 철벽 수비', '한결같음이 매력'],
+    emoji: '🐻',
+    name: '등 넓은 곰',
+    short: '곰',
+    tagline: '말없이 다 챙겨주는 든든함 그 자체',
+    traits: ['무뚝뚝 츤데레', '약속은 철벽 수비', '기댈 수 있는 등'],
     bestMatch: 'dawn',
     sparkMatch: 'breeze',
     cheer: '묵묵한 당신이 결국 제일 오래 남아요.',
   },
   breeze: {
     id: 'breeze',
-    emoji: '🍈',
-    name: '반전의 멜론빵',
-    short: '멜론빵',
-    tagline: '멜론 없는 멜론빵, 알수록 반전인 사람',
-    traits: ['겉과 속이 달라요', '예측 불가 매력', '알수록 빠져듦'],
+    emoji: '🐈',
+    name: '마이웨이 고양이',
+    short: '고양이',
+    tagline: '부르면 안 오고, 내킬 때 오는 매력',
+    traits: ['마이웨이 그 자체', '츤 90 데레 10', '알수록 빠져듦'],
     bestMatch: 'firework',
     sparkMatch: 'tree',
-    cheer: '당신의 반전은 아는 사람만 아는 매력이에요.',
+    cheer: '당신의 마이웨이가 누군가에겐 로망이에요.',
   },
   blanket: {
     id: 'blanket',
-    emoji: '🥮',
-    name: '속꽉찬 단팥빵',
-    short: '단팥빵',
-    tagline: '수수한 겉모습, 속은 앙금까지 꽉 찬 정 부자',
-    traits: ['겉은 수수 속은 꽉 참', '정이 많아도 너무 많음', '오래 볼수록 최고'],
+    emoji: '🐰',
+    name: '다정한 토끼',
+    short: '토끼',
+    tagline: '작은 것도 다 기억하는 다정함',
+    traits: ['잘 들어주는 귀', '기념일 다 기억함', '따뜻한 말 전문'],
     bestMatch: 'stamp',
     sparkMatch: 'sunshine',
-    cheer: '속 깊은 당신, 오래 볼수록 최고예요.',
+    cheer: '당신의 다정함은 오래 기억돼요.',
   },
 };
 
@@ -151,22 +152,22 @@ export const QUESTIONS: Question[] = [
 
 // 16가지 응답 조합 → 8유형 매핑 (a=1, b=0, [q1q2q3q4])
 const TYPE_MAP: NoteTypeId[] = [
-  'cloud', //    0000 집·혼자·즉흥·토닥 → 카스테라
-  'dawn', //     0001 집·혼자·즉흥·파이팅 → 크루아상
-  'blanket', //  0010 집·혼자·계획·토닥 → 단팥빵
-  'tree', //     0011 집·혼자·계획·파이팅 → 베이글
-  'dawn', //     0100 집·수다·즉흥·토닥 → 크루아상
-  'breeze', //   0101 집·수다·즉흥·파이팅 → 멜론빵
-  'blanket', //  0110 집·수다·계획·토닥 → 단팥빵
-  'tree', //     0111 집·수다·계획·파이팅 → 베이글
-  'breeze', //   1000 밖·혼자·즉흥·토닥 → 멜론빵
-  'firework', // 1001 밖·혼자·즉흥·파이팅 → 꽈배기
-  'cloud', //    1010 밖·혼자·계획·토닥 → 카스테라
-  'stamp', //    1011 밖·혼자·계획·파이팅 → 마늘빵
-  'sunshine', // 1100 밖·수다·즉흥·토닥 → 소금빵
-  'firework', // 1101 밖·수다·즉흥·파이팅 → 꽈배기
-  'sunshine', // 1110 밖·수다·계획·토닥 → 소금빵
-  'stamp', //    1111 밖·수다·계획·파이팅 → 마늘빵
+  'cloud', //    0000 집·혼자·즉흥·토닥 → 나무늘보
+  'dawn', //     0001 집·혼자·즉흥·파이팅 → 부엉이
+  'blanket', //  0010 집·혼자·계획·토닥 → 토끼
+  'tree', //     0011 집·혼자·계획·파이팅 → 곰
+  'dawn', //     0100 집·수다·즉흥·토닥 → 부엉이
+  'breeze', //   0101 집·수다·즉흥·파이팅 → 고양이
+  'blanket', //  0110 집·수다·계획·토닥 → 토끼
+  'tree', //     0111 집·수다·계획·파이팅 → 곰
+  'breeze', //   1000 밖·혼자·즉흥·토닥 → 고양이
+  'firework', // 1001 밖·혼자·즉흥·파이팅 → 수달
+  'cloud', //    1010 밖·혼자·계획·토닥 → 나무늘보
+  'stamp', //    1011 밖·혼자·계획·파이팅 → 호랑이
+  'sunshine', // 1100 밖·수다·즉흥·토닥 → 리트리버
+  'firework', // 1101 밖·수다·즉흥·파이팅 → 수달
+  'sunshine', // 1110 밖·수다·계획·토닥 → 리트리버
+  'stamp', //    1111 밖·수다·계획·파이팅 → 호랑이
 ];
 
 export function computeNoteType(answers: boolean[]): NoteType {
@@ -174,7 +175,7 @@ export function computeNoteType(answers: boolean[]): NoteType {
   return NOTE_TYPES[TYPE_MAP[idx] ?? 'cloud'];
 }
 
-// ── 빵 궁합 (2인 참여 바이럴 엔진) ──
+// ── 동물 궁합 (2인 참여 바이럴 엔진) ──
 export type Compat = {
   score: number;
   title: string;
@@ -189,7 +190,7 @@ export function computeCompat(a: NoteTypeId, b: NoteTypeId): Compat {
   } else if (ta.sparkMatch === b || NOTE_TYPES[b].sparkMatch === a) {
     score = 82 + (hashSeed([a, b].sort().join('|')) % 10); // 82~91
   } else if (a === b) {
-    score = 78 + (hashSeed(a) % 14); // 78~91 (같은 빵)
+    score = 78 + (hashSeed(a) % 14); // 78~91 (같은 동물)
   } else {
     score = 65 + (hashSeed([a, b].sort().join('|')) % 27); // 65~91
   }
@@ -197,20 +198,20 @@ export function computeCompat(a: NoteTypeId, b: NoteTypeId): Compat {
   let title: string;
   let comment: string;
   if (score >= 95) {
-    title = '갓 구운 단짝';
-    comment = '따로 먹어도 맛있는데 같이 두면 완벽해지는 조합이에요. 오늘 안부 한 통이면 더 고소해져요.';
+    title = '운명의 단짝';
+    comment = '전생에 같은 무리였던 게 분명해요. 오늘 안부 한 통이면 꼬리가 두 배로 흔들려요.';
   } else if (score >= 88) {
-    title = '겉바속촉 케미';
-    comment = '서로의 식감을 살려주는 사이예요. 같이 있으면 시간이 순삭이에요.';
+    title = '찰떡 케미';
+    comment = '노는 물이 같은 사이예요. 같이 있으면 시간이 순삭이에요.';
   } else if (score >= 80) {
-    title = '커피랑 빵 사이';
-    comment = '따로 보면 완전 다른데, 같이 두면 그림이 완성되는 조합이에요.';
+    title = '산책 메이트';
+    comment = '걷는 속도는 달라도 같은 길을 걷는 사이예요. 나란히 가면 멀리 가요.';
   } else if (score >= 73) {
-    title = '숙성 중인 반죽';
-    comment = '아직 부풀어 오르는 중이에요. 천천히 구우면 꽤 근사한 사이가 돼요.';
+    title = '서로 길들이는 중';
+    comment = '어린왕자의 여우처럼, 조금씩 특별해지는 중이에요. 서두르지 않아도 돼요.';
   } else {
-    title = '단짠단짠 콤비';
-    comment = '달았다가 짰다가, 그래서 절대 안 질리는 사이예요. 투닥거리며 정들어요.';
+    title = '톰과 제리';
+    comment = '투닥거리는 게 일상인데, 없으면 제일 허전한 사이예요. 그게 정이에요.';
   }
 
   return { score, title, comment };
