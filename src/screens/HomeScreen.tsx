@@ -25,9 +25,9 @@ export function HomeScreen({ onSelect }: { onSelect: (t: FortuneType) => void })
           <Mascot size={84} />
         </div>
         <p className="home-hero__sub">
-          쪽지 한 장에 <b>총운 점수</b>, <b>항목별 운세</b>, <b>행운 세트</b>까지.
+          쪽지 한 장에 <b>총운 점수</b>부터 <b>행운 세트</b>까지 쏙.
           <br />
-          오늘 뭐가 궁금해요?
+          오늘은 뭐가 궁금해요?
         </p>
       </div>
 

@@ -1,11 +1,13 @@
 import { scoreColor } from './luck';
+import { moodFromScore } from '../components/Mascot';
 
-// PRD §7.2 + 리서치 반영 — 세로 공유 카드. 총운 점수를 크게 노출해 공유 욕구 자극.
+// PRD §7.2 + 리서치 — 세로 공유 카드. 마스코트 + 총운 점수 + 콕 집은 한마디로
+// 캡처·공유 욕구를 자극한다.
 
 type SaveInput = {
-  icon: string;
   title: string;
   subtitle: string;
+  pinpoint: string;
   shareLine: string;
   total: number;
   grade: string;
@@ -13,18 +15,13 @@ type SaveInput = {
 };
 
 function resolveScoreColor(score: number): string {
-  // scoreColor 는 CSS 변수 문자열을 반환하므로 캔버스용 hex 로 매핑
   const v = scoreColor(score);
   if (v.includes('high')) return '#12b886';
   if (v.includes('mid')) return '#3182f6';
   return '#f59f00';
 }
 
-function wrapText(
-  ctx: CanvasRenderingContext2D,
-  text: string,
-  maxWidth: number,
-): string[] {
+function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
   const lines: string[] = [];
   let line = '';
   for (const ch of [...text]) {
@@ -38,97 +35,6 @@ function wrapText(
   }
   if (line) lines.push(line);
   return lines;
-}
-
-export async function saveResultCard(input: SaveInput): Promise<boolean> {
-  try {
-    const W = 720;
-    const H = 1080;
-    const canvas = document.createElement('canvas');
-    canvas.width = W;
-    canvas.height = H;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return false;
-
-    // 배경 (토스식 클린 그레이 캔버스)
-    ctx.fillStyle = '#f2f4f6';
-    ctx.fillRect(0, 0, W, H);
-
-    // 화이트 카드
-    const m = 56;
-    ctx.fillStyle = '#ffffff';
-    roundRect(ctx, m, m, W - m * 2, H - m * 2, 36);
-    ctx.fill();
-
-    ctx.textAlign = 'center';
-    const cx = W / 2;
-    const accent = resolveScoreColor(input.total);
-
-    // 상단 라벨
-    ctx.fillStyle = '#114e48';
-    ctx.font = 'bold 28px sans-serif';
-    ctx.fillText(`${input.icon}  ${input.subtitle}`, cx, H * 0.16);
-    ctx.fillStyle = '#191f28';
-    ctx.font = 'bold 40px sans-serif';
-    ctx.fillText(input.title, cx, H * 0.215);
-
-    // 점수 링
-    const ringY = H * 0.4;
-    const r = 128;
-    const stroke = 22;
-    ctx.lineWidth = stroke;
-    ctx.strokeStyle = '#f2f4f6';
-    ctx.beginPath();
-    ctx.arc(cx, ringY, r, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.strokeStyle = accent;
-    ctx.lineCap = 'round';
-    const start = -Math.PI / 2;
-    ctx.beginPath();
-    ctx.arc(cx, ringY, r, start, start + (input.total / 100) * Math.PI * 2);
-    ctx.stroke();
-
-    ctx.fillStyle = '#6b7684';
-    ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('오늘의 총운', cx, ringY - 30);
-    ctx.fillStyle = accent;
-    ctx.font = 'bold 92px sans-serif';
-    ctx.fillText(String(input.total), cx, ringY + 34);
-    ctx.font = 'bold 30px sans-serif';
-    ctx.fillText(input.grade, cx, ringY + 74);
-
-    // 태그 칩
-    ctx.fillStyle = '#e7f1ef';
-    const chipW = 150;
-    roundRect(ctx, cx - chipW / 2, H * 0.55, chipW, 46, 23);
-    ctx.fill();
-    ctx.fillStyle = '#114e48';
-    ctx.font = 'bold 24px sans-serif';
-    ctx.fillText(`#${input.tag}`, cx, H * 0.55 + 31);
-
-    // 한 문장
-    ctx.fillStyle = '#191f28';
-    ctx.font = 'bold 40px sans-serif';
-    const lines = wrapText(ctx, input.shareLine, W - 200);
-    const startY = H * 0.68;
-    lines.forEach((ln, i) => ctx.fillText(ln, cx, startY + i * 58));
-
-    // 워터마크
-    ctx.fillStyle = '#8b95a1';
-    ctx.font = 'bold 26px sans-serif';
-    ctx.fillText('내일쪽지 뽑기', cx, H - 108);
-
-    const dataUrl = canvas.toDataURL('image/png');
-    const a = document.createElement('a');
-    a.href = dataUrl;
-    a.download = 'tomorrow-note.png';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    return true;
-  } catch {
-    return false;
-  }
 }
 
 function roundRect(
@@ -146,4 +52,171 @@ function roundRect(
   ctx.arcTo(x, y + h, x, y, r);
   ctx.arcTo(x, y, x + w, y, r);
   ctx.closePath();
+}
+
+// 캔버스용 마스코트 (Mascot.tsx의 단순화 버전, 점수로 표정 결정)
+function drawMascot(ctx: CanvasRenderingContext2D, cx: number, cy: number, s: number, score: number) {
+  const mood = moodFromScore(score);
+  const u = s / 200; // 200 기준 스케일
+  ctx.save();
+  ctx.translate(cx - s / 2, cy - s / 2);
+  ctx.scale(u, u);
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+
+  // 배경 원
+  ctx.fillStyle = '#e7f1ef';
+  ctx.beginPath();
+  ctx.arc(100, 100, 92, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 쪽지 몸통
+  ctx.fillStyle = '#fff';
+  ctx.strokeStyle = '#114e48';
+  ctx.lineWidth = 5;
+  roundRect(ctx, 46, 66, 94, 80, 10);
+  ctx.fill();
+  ctx.stroke();
+
+  // 볼
+  ctx.fillStyle = '#ffc7b0';
+  ctx.beginPath();
+  ctx.arc(76, 126, 7, 0, Math.PI * 2);
+  ctx.arc(124, 126, 7, 0, Math.PI * 2);
+  ctx.fill();
+
+  // 눈
+  ctx.strokeStyle = '#114e48';
+  ctx.fillStyle = '#114e48';
+  ctx.lineWidth = 5;
+  if (mood === 'grin') {
+    ctx.beginPath();
+    ctx.moveTo(69, 120);
+    ctx.quadraticCurveTo(76, 111, 83, 120);
+    ctx.moveTo(117, 120);
+    ctx.quadraticCurveTo(124, 111, 131, 120);
+    ctx.stroke();
+  } else {
+    const r = mood === 'calm' ? 4.5 : 5.5;
+    ctx.beginPath();
+    ctx.arc(76, 118, r, 0, Math.PI * 2);
+    ctx.arc(124, 118, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  // 입
+  ctx.beginPath();
+  if (mood === 'grin') {
+    ctx.moveTo(85, 130);
+    ctx.quadraticCurveTo(100, 150, 115, 130);
+    ctx.fillStyle = '#114e48';
+    ctx.fill();
+  } else if (mood === 'calm') {
+    ctx.moveTo(92, 132);
+    ctx.quadraticCurveTo(100, 138, 108, 132);
+    ctx.stroke();
+  } else {
+    ctx.moveTo(88, 130);
+    ctx.quadraticCurveTo(100, 142, 112, 130);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+
+export async function saveResultCard(input: SaveInput): Promise<boolean> {
+  try {
+    const W = 720;
+    const H = 1080;
+    const canvas = document.createElement('canvas');
+    canvas.width = W;
+    canvas.height = H;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return false;
+    const cx = W / 2;
+    const accent = resolveScoreColor(input.total);
+
+    // 배경
+    ctx.fillStyle = '#f2f4f6';
+    ctx.fillRect(0, 0, W, H);
+    // 화이트 카드
+    const m = 48;
+    ctx.fillStyle = '#ffffff';
+    roundRect(ctx, m, m, W - m * 2, H - m * 2, 36);
+    ctx.fill();
+
+    ctx.textAlign = 'center';
+
+    // 마스코트
+    drawMascot(ctx, cx, 190, 120, input.total);
+
+    // 제목
+    ctx.fillStyle = '#114e48';
+    ctx.font = 'bold 26px sans-serif';
+    ctx.fillText(input.subtitle, cx, 292);
+    ctx.fillStyle = '#191f28';
+    ctx.font = 'bold 38px sans-serif';
+    ctx.fillText(input.title, cx, 336);
+
+    // 점수 링
+    const ringY = 470;
+    const r = 96;
+    ctx.lineWidth = 20;
+    ctx.strokeStyle = '#f2f4f6';
+    ctx.beginPath();
+    ctx.arc(cx, ringY, r, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.strokeStyle = accent;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.arc(cx, ringY, r, -Math.PI / 2, -Math.PI / 2 + (input.total / 100) * Math.PI * 2);
+    ctx.stroke();
+    ctx.fillStyle = '#6b7684';
+    ctx.font = 'bold 20px sans-serif';
+    ctx.fillText('오늘의 총운', cx, ringY - 20);
+    ctx.fillStyle = accent;
+    ctx.font = 'bold 68px sans-serif';
+    ctx.fillText(String(input.total), cx, ringY + 30);
+    ctx.font = 'bold 24px sans-serif';
+    ctx.fillText(input.grade, cx, ringY + 62);
+
+    // 콕 집은 한마디 (브랜드 박스)
+    const boxX = m + 28;
+    const boxW = W - (m + 28) * 2;
+    const boxY = 630;
+    ctx.font = 'bold 30px sans-serif';
+    const lines = wrapText(ctx, input.pinpoint, boxW - 64);
+    const boxH = 96 + lines.length * 44;
+    ctx.fillStyle = '#114e48';
+    roundRect(ctx, boxX, boxY, boxW, boxH, 26);
+    ctx.fill();
+    // 배지
+    ctx.fillStyle = '#ffffff';
+    roundRect(ctx, boxX + 28, boxY + 26, 168, 40, 20);
+    ctx.fill();
+    ctx.fillStyle = '#114e48';
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillText('콕 집은 한마디', boxX + 28 + 84, boxY + 53);
+    // 문구
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 30px sans-serif';
+    ctx.textAlign = 'left';
+    lines.forEach((ln, i) => ctx.fillText(ln, boxX + 30, boxY + 108 + i * 44));
+    ctx.textAlign = 'center';
+
+    // 워터마크
+    ctx.fillStyle = '#8b95a1';
+    ctx.font = 'bold 24px sans-serif';
+    ctx.fillText('내일쪽지 뽑기 · 오늘 내 쪽지 뽑기', cx, H - 92);
+
+    const dataUrl = canvas.toDataURL('image/png');
+    const a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = 'tomorrow-note.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    return true;
+  } catch {
+    return false;
+  }
 }

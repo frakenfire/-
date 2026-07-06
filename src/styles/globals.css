@@ -294,6 +294,38 @@ button {
   transform: translateY(-6px) rotate(var(--tilt, 0deg)) scale(1.03);
 }
 
+/* 선택돼 펼쳐지는 쪽지 */
+.note--opening {
+  animation: note-open 0.5s ease both !important;
+  border-color: var(--brand);
+  box-shadow: 0 12px 28px rgba(17, 78, 72, 0.24);
+  z-index: 2;
+}
+
+@keyframes note-open {
+  0% {
+    transform: rotate(var(--tilt, 0deg)) scale(1);
+  }
+  40% {
+    transform: rotate(0deg) scale(1.12) rotateY(0deg);
+  }
+  70% {
+    transform: rotate(0deg) scale(1.14) rotateY(180deg);
+  }
+  100% {
+    transform: rotate(0deg) scale(1.14) rotateY(360deg);
+  }
+}
+
+/* 선택 안 된 다른 쪽지는 살짝 물러남 */
+.note--dim {
+  opacity: 0.35;
+  transform: rotate(var(--tilt, 0deg)) scale(0.94);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
 .note__seal {
   font-size: 30px;
   line-height: 1;
@@ -624,6 +656,21 @@ button {
   box-shadow: var(--shadow-note);
   margin-bottom: var(--space-5);
   transform: rotate(-3deg);
+}
+
+.result-mascot {
+  margin-bottom: var(--space-2);
+  animation: bob 2.6s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 /* ── 총운 점수 링 ── */

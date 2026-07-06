@@ -65,10 +65,10 @@ export function DetailResultScreen({
           disabled={busy}
           onClick={onShare}
         >
-          친구도 뽑아주기
+          친구도 쪽지 뽑아주기 💌
         </button>
         <button type="button" className="btn btn--secondary" onClick={onCopyLine}>
-          한 문장 복사하기
+          이 한 문장만 복사할래요
         </button>
         <button
           type="button"
@@ -76,7 +76,7 @@ export function DetailResultScreen({
           disabled={busy}
           onClick={onSave}
         >
-          결과 카드 저장하기
+          결과 카드로 저장하기
         </button>
       </div>
 

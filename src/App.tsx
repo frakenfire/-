@@ -86,15 +86,15 @@ export default function App() {
       result.luck.total,
       result.luck.grade,
     );
-    if (r === 'shared') flash('공유 창을 열었어요');
-    else if (r === 'copied') flash('공유 문구를 복사했어요');
-    else flash('공유를 완료하지 못했어요');
+    if (r === 'shared') flash('공유 창을 열었어요 💌');
+    else if (r === 'copied') flash('공유 문구 복사 완료! 💌');
+    else flash('앗, 공유를 못 했어요');
   }
 
   async function handleCopyLine() {
     if (!result) return;
     const ok = await copyText(result.shareLine);
-    flash(ok ? '오늘의 한 문장을 복사했어요' : '복사를 완료하지 못했어요');
+    flash(ok ? '한 문장 복사 완료! ✨' : '앗, 복사를 못 했어요');
   }
 
   async function handleSave() {
@@ -102,16 +102,16 @@ export default function App() {
     setBusy(true);
     await showRewardAdForSaveImage();
     const ok = await saveResultCard({
-      icon: note.icon,
       title: result.title,
       subtitle: result.subtitle,
+      pinpoint: result.pinpoint,
       shareLine: result.shareLine,
       total: result.luck.total,
       grade: result.luck.grade,
       tag: result.luck.tag,
     });
     setBusy(false);
-    flash(ok ? '결과 카드를 저장했어요' : '저장을 완료하지 못했어요');
+    flash(ok ? '결과 카드 저장 완료! 📸' : '앗, 저장을 못 했어요');
   }
 
   async function handleRetry() {
@@ -132,6 +132,7 @@ export default function App() {
         <NotePickScreen
           notes={shownNotes}
           busy={busy}
+          openingId={busy ? note?.id : undefined}
           fortuneLabel={fortuneType ? FORTUNE_LABEL[fortuneType] : ''}
           onPick={handlePick}
           onBack={() => setScreen('home')}

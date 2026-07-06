@@ -4,17 +4,17 @@ export const APP_NAME = '내일쪽지 뽑기';
 
 export const HOME = {
   title: APP_NAME,
-  lead: '내일의 나,\n이번 달의 흐름,\n보고 싶은 운세를 쪽지 한 장으로 뽑아보세요.',
-  cta: '내일쪽지 뽑기',
+  lead: '오늘도 수고했어요.\n내일은 어떤 하루일까요?\n쪽지 한 장 톡 뽑아볼까요?',
+  cta: '쪽지 뽑으러 가기',
 };
 
 export const QUESTIONS = {
-  fortuneType: '지금 보고 싶은 운세를 골라주세요.',
+  fortuneType: '오늘은 뭐가 제일 궁금해요?',
 };
 
 export const NOTE_PICK = {
-  title: '마음이 가는 쪽지\n한 장을 골라보세요.',
-  lead: '오래 고민하지 않아도 괜찮아요.',
+  title: '끌리는 쪽지\n하나만 골라볼까요?',
+  lead: '너무 고민 말고, 딱 느낌 오는 걸로요.',
 };
 
 // PRD §10.1 — 필수 고지

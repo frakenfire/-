@@ -6,15 +6,23 @@ import type { Note } from '../types/fortune';
 type Props = {
   notes: Note[];
   busy: boolean;
+  openingId?: string;
   fortuneLabel: string;
   onPick: (note: Note) => void;
   onBack: () => void;
 };
 
-// PRD §5.3 — 접힌 쪽지 3장 중 1장 선택.
-export function NotePickScreen({ notes, busy, fortuneLabel, onPick, onBack }: Props) {
+// PRD §5.3 — 접힌 쪽지 3장 중 1장 선택. 선택 시 해당 쪽지가 펼쳐지는 모션.
+export function NotePickScreen({
+  notes,
+  busy,
+  openingId,
+  fortuneLabel,
+  onPick,
+  onBack,
+}: Props) {
   return (
-    <AppLayout onBack={onBack} step={1} totalSteps={2}>
+    <AppLayout onBack={busy ? undefined : onBack} step={1} totalSteps={2}>
       {fortuneLabel ? <span className="eyebrow">{fortuneLabel}</span> : null}
       <h2 className="h2" style={{ whiteSpace: 'pre-line' }}>
         {NOTE_PICK.title}
@@ -28,21 +36,21 @@ export function NotePickScreen({ notes, busy, fortuneLabel, onPick, onBack }: Pr
             note={note}
             faceDown
             index={i}
+            state={
+              openingId
+                ? openingId === note.id
+                  ? 'opening'
+                  : 'dim'
+                : 'idle'
+            }
             onClick={() => !busy && onPick(note)}
           />
         ))}
       </div>
 
-      <p className="note-hint">세 장 중 마음이 가는 쪽지를 눌러보세요 ✨</p>
-
-      {busy ? (
-        <p
-          className="lead"
-          style={{ textAlign: 'center', marginTop: 'var(--space-4)' }}
-        >
-          쪽지를 펼치는 중이에요…
-        </p>
-      ) : null}
+      <p className="note-hint">
+        {busy ? '쪽지 펼치는 중이에요…' : '딱 끌리는 쪽지 하나만 콕 🙂'}
+      </p>
     </AppLayout>
   );
 }
