@@ -663,6 +663,131 @@ button {
   animation: bob 2.6s ease-in-out infinite;
 }
 
+/* ── 몽글 로딩(리빌) 연출 ── */
+.reveal-mascot {
+  animation: reveal-bounce 1.1s ease-in-out infinite;
+  margin-bottom: var(--space-4);
+}
+
+@keyframes reveal-bounce {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+.reveal-msg {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin: 0 0 var(--space-4);
+  animation: fade-in 0.3s ease;
+  min-height: 26px;
+}
+
+.reveal-dots {
+  display: flex;
+  gap: 8px;
+}
+
+.reveal-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--gray-200);
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.reveal-dot--on {
+  background: var(--brand);
+  transform: scale(1.2);
+}
+
+/* ── 스트릭 배지 ── */
+.pill-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: var(--space-3);
+}
+
+.pill-row .date-pill {
+  margin-bottom: 0;
+}
+
+.streak-pill {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--orange);
+  background: #fff1e8;
+  padding: 5px 11px;
+  border-radius: 999px;
+}
+
+.streak-pill--new {
+  color: var(--brand);
+  background: var(--brand-soft);
+}
+
+/* ── 고득점 축하 (색종이) ── */
+.confetti {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.confetti__bit {
+  position: absolute;
+  top: -24px;
+  font-size: 18px;
+  animation: confetti-fall 1.8s ease-in forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  15% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(340px) rotate(240deg);
+    opacity: 0;
+  }
+}
+
+/* 등급 팝 */
+.score-ring__grade--pop {
+  animation: grade-pop 0.35s ease;
+}
+
+@keyframes grade-pop {
+  0% {
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 재방문 넛지 */
+.tomorrow-nudge {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-500);
+  margin: var(--space-4) 0 0;
+}
+
 @keyframes bob {
   0%,
   100% {

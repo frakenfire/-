@@ -30,7 +30,16 @@ export function ResultScreen({
   const { luck } = result;
   return (
     <AppLayout onBack={onBack} title="쪽지 결과">
-      <div className="card card__center fade-in">
+      <div className="card card__center fade-in" style={{ position: 'relative', overflow: 'hidden' }}>
+        {luck.total >= 88 ? (
+          <div className="confetti" aria-hidden>
+            {['🎉', '✨', '⭐', '💚', '✨', '🎊', '⭐', '✨'].map((e, i) => (
+              <span key={i} className="confetti__bit" style={{ left: `${8 + i * 12}%`, animationDelay: `${i * 0.12}s` }}>
+                {e}
+              </span>
+            ))}
+          </div>
+        ) : null}
         <div className="result-mascot">
           <Mascot size={72} score={luck.total} />
         </div>
@@ -90,6 +99,8 @@ export function ResultScreen({
           다른 쪽지도 뽑아볼래요 <AdBadge label="광고" />
         </button>
       </div>
+
+      <p className="tomorrow-nudge">내일이면 새 쪽지가 도착해요. 내일 또 봐요! 👋</p>
 
       <AdBanner />
       <Disclaimer />

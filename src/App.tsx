@@ -16,14 +16,20 @@ import {
   incrementDailyDrawCount,
   markVisit,
   saveResult,
+  updateStreak,
 } from './lib/storage';
 
 import { HomeScreen } from './screens/HomeScreen';
 import { NotePickScreen } from './screens/NotePickScreen';
+import { RevealScreen } from './screens/RevealScreen';
 import { ResultScreen } from './screens/ResultScreen';
 import { DetailResultScreen } from './screens/DetailResultScreen';
 
-type ScreenName = 'home' | 'pick' | 'result' | 'detail';
+type ScreenName = 'home' | 'pick' | 'reveal' | 'result' | 'detail';
+
+function wait(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
 
 export default function App() {
   const [screen, setScreen] = useState<ScreenName>('home');
@@ -35,6 +41,11 @@ export default function App() {
   const [drawNonce, setDrawNonce] = useState(0);
 
   const dateKey = useMemo(() => todayKey(), []);
+  const streak = useMemo(() => {
+    const y = new Date();
+    y.setDate(y.getDate() - 1);
+    return updateStreak(dateKey, todayKey(y));
+  }, [dateKey]);
 
   const shownNotes = useMemo(() => {
     const seed = hashSeed(`${dateKey}#${drawNonce}`);
@@ -61,7 +72,11 @@ export default function App() {
     if (busy) return;
     setNote(picked);
     setBusy(true);
-    await showInterstitialBeforeResult();
+    // 쪽지 오픈 모션(0.5s)을 보여준 뒤 몽글 로딩 연출로 전환
+    await wait(550);
+    setScreen('reveal');
+    // 광고 mock + 로딩 멘트 4단계(620ms×4)가 끝날 시간을 함께 보장
+    await Promise.all([showInterstitialBeforeResult(), wait(2600)]);
     if (fortuneType) {
       incrementDailyDrawCount(dateKey);
       saveResult({ dateKey, fortuneType, noteId: picked.id });
@@ -126,7 +141,11 @@ export default function App() {
 
   return (
     <>
-      {screen === 'home' && <HomeScreen onSelect={handleType} />}
+      {screen === 'home' && <HomeScreen streak={streak} onSelect={handleType} />}
+
+      {screen === 'reveal' && fortuneType && (
+        <RevealScreen fortuneType={fortuneType} />
+      )}
 
       {screen === 'pick' && (
         <NotePickScreen
