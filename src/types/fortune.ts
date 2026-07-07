@@ -37,6 +37,10 @@ export type FortuneResult = {
   letter: LetterParts;
   /** 쪽지 등급 (가챠 희귀도) */
   rarity: import('../lib/rarity').Rarity;
+  /** 오늘의 행동 처방 — 결과의 주인공 */
+  dos: string[]; // ✅ 하면 좋은 것
+  dont: string; // 🚫 피할 것
+  luckyHint: string; // 🍀 행운 타이밍·색 (행동 제외 부분)
 };
 
 // 편지 구조 — 렌더링 위계를 위해 역할별로 분리

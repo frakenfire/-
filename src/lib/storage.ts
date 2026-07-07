@@ -75,8 +75,11 @@ export function loadTodayReading(dateKey: string): TodayReading | null {
   try {
     const r = JSON.parse(raw) as TodayReading;
     if (r.dateKey !== dateKey) return null;
-    // 구버전 스냅샷(문자열 배열 편지)은 새 구조와 호환되지 않으므로 무시
+    // 구버전 스냅샷(배열 편지·처방 없음)은 새 구조와 호환되지 않으므로 무시
     if (!r.result?.letter || Array.isArray(r.result.letter) || !r.result.letter.sign) {
+      return null;
+    }
+    if (!Array.isArray(r.result.dos) || r.result.dos.length === 0) {
       return null;
     }
     return r;

@@ -78,7 +78,9 @@ export function HomeScreen({
         <p className="home-hero__sub">
           {greeting()}
           <br />
-          내 하루가 어떨지, 쪽지 한 장으로 미리 살짝 봐요.
+          오늘 뭘 하면 좋고, 뭘 피해야 할지.
+          <br />
+          쪽지 한 장이면 돼요.
         </p>
       </div>
 

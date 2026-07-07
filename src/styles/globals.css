@@ -1227,6 +1227,132 @@ button {
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
+/* ── 오늘의 처방 브리핑 ── */
+.briefing {
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-card);
+}
+
+.briefing__chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: var(--space-4);
+}
+
+.chip {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 10px;
+  border-radius: 999px;
+}
+
+.chip--type {
+  background: var(--gray-100);
+  color: var(--gray-800);
+}
+
+.chip--score {
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+}
+
+.chip--score b {
+  font-weight: 800;
+}
+
+.briefing__highlight {
+  margin: 0 0 var(--space-5);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1.55;
+  letter-spacing: -0.02em;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+
+.briefing__highlight mark {
+  background: linear-gradient(transparent 62%, var(--brand-soft) 62%);
+  color: inherit;
+  padding: 0 2px;
+}
+
+/* 처방 박스: DO(그린) / DON'T(레드) — 세만틱 컬러 */
+.verdict {
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+}
+
+.verdict--do {
+  background: #e7f8f1;
+}
+
+.verdict--dont {
+  background: #fdeeee;
+}
+
+.verdict__label {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.verdict--do .verdict__label {
+  color: #0ca678;
+}
+
+.verdict--dont .verdict__label {
+  color: #e03131;
+}
+
+.verdict__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.verdict__list li {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+
+.briefing__lucky {
+  margin: var(--space-2) 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+
+.briefing__lucky b {
+  color: var(--orange);
+}
+
+/* 등급별 브리핑 테두리 */
+.briefing--rare {
+  border-color: #cfe0f7;
+}
+.briefing--epic {
+  border-color: #dcc9f5;
+  box-shadow: 0 2px 14px rgba(123, 63, 212, 0.14);
+}
+.briefing--legendary {
+  border: 2px solid #e7c15a;
+  box-shadow: 0 8px 28px rgba(197, 152, 32, 0.22);
+}
+
 /* ── 쪽지 요정의 편지 (토스식 위계) ── */
 .letter {
   background: var(--white);

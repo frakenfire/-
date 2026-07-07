@@ -169,14 +169,16 @@ export default function App() {
   async function handleShare() {
     if (!result) return;
     const gradeText = result.rarity.special
-      ? `${result.rarity.emoji}${result.rarity.label}(${result.rarity.pct})`
+      ? `${result.rarity.emoji}${result.rarity.label}`
       : result.luck.grade;
-    const r = await shareOrCopy(
-      result.title,
-      result.shareLine,
-      result.luck.total,
-      gradeText,
-    );
+    const r = await shareOrCopy({
+      title: result.title,
+      score: result.luck.total,
+      grade: gradeText,
+      doItem: result.dos[0],
+      dontItem: result.dont,
+      shareLine: result.shareLine,
+    });
     if (r === 'shared') flash('공유 창을 열었어요 💌');
     else if (r === 'copied') flash('공유 문구 복사 완료! 💌');
     else flash('앗, 공유를 못 했어요');

@@ -50,6 +50,13 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const rarityLine = RARITY_LINE[rarity.tier];
   if (rarityLine) letter.special = rarityLine;
 
+  // 행동 처방: lucky("타이밍 · 색 · 행동")에서 행동을 분리해 DO 목록으로.
+  const luckyParts = variant.lucky.split(' · ');
+  const luckyAction = luckyParts[luckyParts.length - 1];
+  const luckyHint = luckyParts.slice(0, -1).join(' · ');
+  const dos = [luckyAction, variant.good];
+  const dont = variant.caution;
+
   return {
     title: FORTUNE_LABEL[fortuneType],
     subtitle: `${note.name} 쪽지`,
@@ -63,5 +70,8 @@ export function generateFortune(input: FortuneInput): FortuneResult {
     luck,
     letter,
     rarity,
+    dos,
+    dont,
+    luckyHint,
   };
 }
