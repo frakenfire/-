@@ -11,10 +11,11 @@ export type CategoryScore = { key: string; label: string; emoji: string; score: 
 
 export type LuckSet = {
   total: number; // 65~99 (긍정 스큐)
-  grade: string; // 대길 / 길 / 순조 …
+  grade: string; // 대길 / 길 / 중길 / 소길 / 평
   categories: CategoryScore[];
   color: LuckColor;
   number: number; // 1~45
+  numbers6: number[]; // 행운 번호 6개 (1~45, 재미용)
   direction: string;
   time: string;
   item: string;
@@ -85,7 +86,12 @@ export function computeLuck(seed: number): LuckSet {
   const item = pick(ITEMS, r);
   const tag = pick(TAGS, r);
 
-  return { total, grade: grade(total), categories, color, number, direction, time, item, tag };
+  // 행운 번호 6개 (1~45 중복 없이, 오름차순 — 재미용)
+  const set = new Set<number>();
+  while (set.size < 6) set.add(1 + Math.floor(r() * 45));
+  const numbers6 = [...set].sort((a, b) => a - b);
+
+  return { total, grade: grade(total), categories, color, number, numbers6, direction, time, item, tag };
 }
 
 export function scoreColor(score: number): string {

@@ -4,8 +4,11 @@ import { Mascot } from '../components/Mascot';
 import { FORTUNE_TYPES, FORTUNE_LABEL } from '../data/fortuneTypes';
 import { findNote } from '../data/notes';
 import { HOME } from '../data/copy';
+import { useState } from 'react';
 import { dailyLine } from '../lib/dailyLine';
 import { todayKey } from '../lib/dateSeed';
+import { ZODIACS, zodiacLine } from '../data/zodiac';
+import type { Zodiac, ZodiacId } from '../data/zodiac';
 import type { StoredResult, TodayReading } from '../lib/storage';
 import type { FortuneType } from '../types/fortune';
 
@@ -30,6 +33,8 @@ type Props = {
   delivered: boolean;
   yesterdayRecord: StoredResult | null;
   todayReading: TodayReading | null;
+  zodiac: Zodiac | null;
+  onZodiac: (id: ZodiacId) => void;
   onReopen: () => void;
   onSubscribe: () => void;
   onSelect: (t: FortuneType) => void;
@@ -42,11 +47,14 @@ export function HomeScreen({
   delivered,
   yesterdayRecord,
   todayReading,
+  zodiac,
+  onZodiac,
   onReopen,
   onSubscribe,
   onSelect,
 }: Props) {
   const yNote = yesterdayRecord ? findNote(yesterdayRecord.noteId) : null;
+  const [zodiacOpen, setZodiacOpen] = useState(false);
 
   return (
     <AppLayout>
@@ -74,10 +82,37 @@ export function HomeScreen({
         </p>
       </div>
 
-      {/* 오늘의 한 줄 — 0탭 즉시 보상 */}
+      {/* 오늘의 한 줄 — 0탭 즉시 보상 + 띠별 한 줄 */}
       <div className="daily-line">
         <span className="daily-line__label">✨ 오늘의 한 줄</span>
         <p className="daily-line__text">“{dailyLine(todayKey())}”</p>
+        {zodiac ? (
+          <p className="daily-line__zodiac">
+            {zodiac.emoji} <b>{zodiac.label}의 오늘</b> — {zodiacLine(todayKey(), zodiac.id)}
+          </p>
+        ) : (
+          <button
+            type="button"
+            className="daily-line__zpick"
+            onClick={() => setZodiacOpen((v) => !v)}
+          >
+            🐾 내 띠 고르면 띠별 한 줄도 나와요 {zodiacOpen ? '▴' : '▾'}
+          </button>
+        )}
+        {!zodiac && zodiacOpen ? (
+          <div className="zodiac-grid">
+            {ZODIACS.map((z) => (
+              <button
+                key={z.id}
+                type="button"
+                className="zodiac-chip"
+                onClick={() => onZodiac(z.id)}
+              >
+                {z.emoji} {z.label}
+              </button>
+            ))}
+          </div>
+        ) : null}
         <span className="daily-line__hint">더 자세한 건 쪽지가 알려줄 거예요</span>
       </div>
 

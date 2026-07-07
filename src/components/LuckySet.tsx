@@ -27,6 +27,18 @@ export function LuckySetGrid({ luck }: { luck: LuckSet }) {
         <span className="lucky-cell__k">행운의 아이템</span>
         <span className="lucky-cell__v">{luck.item}</span>
       </div>
+      {luck.numbers6?.length ? (
+        <div className="lucky-cell lucky-cell--wide">
+          <span className="lucky-cell__k">행운 번호 · 재미로만 봐요</span>
+          <span className="lucky-cell__v lucky-cell__v--balls">
+            {luck.numbers6.map((n) => (
+              <span className="lucky-ball" key={n}>
+                {n}
+              </span>
+            ))}
+          </span>
+        </div>
+      ) : null}
     </div>
   );
 }

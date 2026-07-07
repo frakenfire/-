@@ -22,6 +22,9 @@ import {
   updateStreak,
 } from './lib/storage';
 import { findNote } from './data/notes';
+import { findZodiac } from './data/zodiac';
+import type { Zodiac, ZodiacId } from './data/zodiac';
+import { loadMyZodiac, saveMyZodiac } from './lib/storage';
 import {
   hasNewDelivery,
   isSubscribed,
@@ -81,6 +84,20 @@ export default function App() {
 
   // 오늘 이미 받은 편지 (다시 읽기용 스냅샷)
   const [todayReading, setTodayReading] = useState(() => loadTodayReading(todayKey()));
+
+  // 내 띠 (띠별 한 줄용, 선택형 값)
+  const [zodiac, setZodiac] = useState<Zodiac | null>(() => {
+    const id = loadMyZodiac();
+    return id ? (findZodiac(id) ?? null) : null;
+  });
+
+  function handleZodiac(id: ZodiacId) {
+    const z = findZodiac(id);
+    if (!z) return;
+    saveMyZodiac(id);
+    setZodiac(z);
+    flash(`${z.emoji} ${z.label}의 한 줄이 매일 홈에 떠요`);
+  }
 
   function flash(msg: string) {
     setToast(msg);
@@ -208,6 +225,8 @@ export default function App() {
           delivered={delivered}
           yesterdayRecord={yesterdayRecord}
           todayReading={todayReading}
+          zodiac={zodiac}
+          onZodiac={handleZodiac}
           onReopen={handleReopen}
           onSubscribe={handleSubscribe}
           onSelect={handleType}

@@ -827,6 +827,71 @@ button {
   font-weight: 600;
 }
 
+.daily-line__zodiac {
+  margin: 2px 0 6px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.92);
+  word-break: keep-all;
+}
+
+.daily-line__zodiac b {
+  color: #ffd88a;
+}
+
+.daily-line__zpick {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 6px 12px;
+  margin: 2px 0 8px;
+}
+
+.zodiac-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin: 4px 0 10px;
+}
+
+.zodiac-chip {
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 8px 4px;
+  text-align: center;
+}
+
+.zodiac-chip:active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* 행운 번호 볼 */
+.lucky-cell__v--balls {
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.lucky-ball {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand);
+  font-size: 13px;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-variant-numeric: tabular-nums;
+}
+
 /* ── 오늘 받은 편지 다시 읽기 ── */
 .reopen-card {
   width: 100%;

@@ -54,6 +54,17 @@ export function loadResult(): StoredResult | null {
   }
 }
 
+// 내 띠 (12개 중 선택 — 선택형 값)
+const ZODIAC_KEY = 'tomorrowNoteZodiac';
+
+export function saveMyZodiac(id: string): void {
+  safeSet(ZODIAC_KEY, id);
+}
+
+export function loadMyZodiac(): string | null {
+  return safeGet(ZODIAC_KEY);
+}
+
 export function saveTodayReading(reading: TodayReading): void {
   safeSet(KEYS.todayReading, JSON.stringify(reading));
 }
