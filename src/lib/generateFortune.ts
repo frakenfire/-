@@ -70,7 +70,8 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const pickReading = (arr: string[], div: number) =>
     arr[Math.abs(Math.trunc(seed / div)) % arr.length];
   const reading = {
-    overall: `${GRADE_READING[luck.grade] ?? GRADE_READING['평']} ${variant.flow}`,
+    overall: `${GRADE_READING[luck.grade] ?? GRADE_READING['평']}
+${variant.flow}`,
     morning: pickReading(MORNING_READINGS, 3),
     afternoon: pickReading(AFTERNOON_READINGS, 11),
     evening: pickReading(EVENING_READINGS, 17),

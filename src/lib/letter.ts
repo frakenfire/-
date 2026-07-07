@@ -53,9 +53,11 @@ export function composeLetter({ mood, variant, seed, timeSlot }: ComposeInput): 
   const closing = pickFresh(CLOSINGS[mood], Math.floor(seed / 53), `ltr:close:${mood}`);
 
   return {
-    intro: `${greeting} ${empathy}`,
+    intro: `${greeting}
+${empathy}`,
     highlight: variant.pinpoint,
-    body: `${variant.summary[0]} ${variant.summary[1]}`,
+    body: `${variant.summary[0]}
+${variant.summary[1]}`,
     keepIntro,
     lucky: variant.lucky,
     caution: variant.caution,

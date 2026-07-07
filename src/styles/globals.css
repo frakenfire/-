@@ -1290,7 +1290,7 @@ button {
 }
 
 .verdict--do {
-  background: #e7f8f1;
+  background: var(--brand-soft);
 }
 
 .verdict--dont {
@@ -1305,7 +1305,7 @@ button {
 }
 
 .verdict--do .verdict__label {
-  color: #0ca678;
+  color: var(--brand-strong);
 }
 
 .verdict--dont .verdict__label {
@@ -1318,15 +1318,29 @@ button {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
 }
 
 .verdict__list li {
   font-size: 15px;
   font-weight: 600;
-  line-height: 1.6;
+  line-height: 1.7;
   color: var(--gray-900);
   word-break: keep-all;
+  padding-left: 12px;
+  position: relative;
+}
+
+.verdict__list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.72em;
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.4;
 }
 
 .briefing__lucky {
@@ -1383,6 +1397,7 @@ button {
   line-height: 1.7;
   color: var(--gray-600);
   word-break: keep-all;
+  white-space: pre-line;
 }
 
 /* 콕 집은 한마디: 화면에서 제일 크게, 형광 강조 */
@@ -1408,6 +1423,7 @@ button {
   line-height: 1.8;
   color: var(--gray-800);
   word-break: keep-all;
+  white-space: pre-line;
 }
 
 /* 오늘의 부적: 파란 박스로 또렷하게 */
