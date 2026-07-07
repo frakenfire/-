@@ -82,6 +82,9 @@ export function loadTodayReading(dateKey: string): TodayReading | null {
     if (!Array.isArray(r.result.dos) || r.result.dos.length === 0) {
       return null;
     }
+    if (!r.result.reading?.overall) {
+      return null;
+    }
     return r;
   } catch {
     return null;

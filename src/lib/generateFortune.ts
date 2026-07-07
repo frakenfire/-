@@ -5,6 +5,14 @@ import { composeLetter } from './letter';
 import { computeRarity, RARITY_LINE } from './rarity';
 import { FORTUNE_LABEL } from '../data/fortuneTypes';
 import { NOTE_LEAD, TEMPLATES } from '../data/resultTemplates';
+import {
+  AFTERNOON_READINGS,
+  EVENING_READINGS,
+  GRADE_READING,
+  MIND_READINGS,
+  MORNING_READINGS,
+  PEOPLE_READINGS,
+} from '../data/readings';
 
 // PRD §12 — 결과 생성 로직.
 // AI API 없이 (fortuneType + note + mood + dateSeed) 조합으로 결정적 결과를 만든다.
@@ -57,6 +65,19 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const dos = [luckyAction, variant.good];
   const dont = variant.caution;
 
+  // 하루 풀이: 등급 해설 + 시간대·사람·마음 해석을 seed 로 조합.
+  // 서로 다른 소수로 나눠 섹션 간 조합이 매일 갈라지게 한다.
+  const pickReading = (arr: string[], div: number) =>
+    arr[Math.abs(Math.trunc(seed / div)) % arr.length];
+  const reading = {
+    overall: `${GRADE_READING[luck.grade] ?? GRADE_READING['평']} ${variant.flow}`,
+    morning: pickReading(MORNING_READINGS, 3),
+    afternoon: pickReading(AFTERNOON_READINGS, 11),
+    evening: pickReading(EVENING_READINGS, 17),
+    people: pickReading(PEOPLE_READINGS, 23),
+    mind: pickReading(MIND_READINGS, 31),
+  };
+
   return {
     title: FORTUNE_LABEL[fortuneType],
     subtitle: `${note.name} 쪽지`,
@@ -73,5 +94,6 @@ export function generateFortune(input: FortuneInput): FortuneResult {
     dos,
     dont,
     luckyHint,
+    reading,
   };
 }

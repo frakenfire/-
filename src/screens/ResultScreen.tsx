@@ -94,6 +94,35 @@ export function ResultScreen({
         </p>
       </div>
 
+      {/* 하루 풀이 — 매일 볼 만한 해석 */}
+      <div className="card fade-in">
+        <p className="section-title">오늘의 풀이</p>
+        <div className="section">
+          <p className="section__label">🔎 전체 풀이</p>
+          <p className="section__text">{result.reading.overall}</p>
+        </div>
+        <div className="section">
+          <p className="section__label">🌅 오전</p>
+          <p className="section__text">{result.reading.morning}</p>
+        </div>
+        <div className="section">
+          <p className="section__label">☀️ 오후</p>
+          <p className="section__text">{result.reading.afternoon}</p>
+        </div>
+        <div className="section">
+          <p className="section__label">🌙 저녁</p>
+          <p className="section__text">{result.reading.evening}</p>
+        </div>
+        <div className="section">
+          <p className="section__label">🤝 사람과의 사이</p>
+          <p className="section__text">{result.reading.people}</p>
+        </div>
+        <div className="section">
+          <p className="section__label">🫧 마음 관리</p>
+          <p className="section__text">{result.reading.mind}</p>
+        </div>
+      </div>
+
       <div className="btn-stack">
         {/* 공유 = 친구에게 오늘의 처방 보내주기 (광고 없음, 첫 번째 액션) */}
         <button type="button" className="btn btn--primary" disabled={busy} onClick={onShare}>

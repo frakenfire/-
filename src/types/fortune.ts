@@ -41,6 +41,17 @@ export type FortuneResult = {
   dos: string[]; // ✅ 하면 좋은 것
   dont: string; // 🚫 피할 것
   luckyHint: string; // 🍀 행운 타이밍·색 (행동 제외 부분)
+  /** 하루 풀이 — 매일 볼 만한 분량의 해석 */
+  reading: DailyReading;
+};
+
+export type DailyReading = {
+  overall: string; // 전체 풀이 (등급 해설 + 오늘의 결)
+  morning: string;
+  afternoon: string;
+  evening: string;
+  people: string; // 사람과의 사이
+  mind: string; // 마음 관리
 };
 
 // 편지 구조 — 렌더링 위계를 위해 역할별로 분리
