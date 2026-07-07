@@ -15,10 +15,13 @@ import { saveResultCard } from './lib/saveImage';
 import {
   incrementDailyDrawCount,
   loadResult,
+  loadTodayReading,
   markVisit,
   saveResult,
+  saveTodayReading,
   updateStreak,
 } from './lib/storage';
+import { findNote } from './data/notes';
 import {
   hasNewDelivery,
   isSubscribed,
@@ -73,10 +76,11 @@ export default function App() {
     return pickBySeed(NOTES, 3, seed);
   }, [dateKey, drawNonce]);
 
-  const result: FortuneResult | null = useMemo(() => {
-    if (!fortuneType || !note || !mood) return null;
-    return generateFortune({ fortuneType, note, mood, dateKey });
-  }, [fortuneType, note, mood, dateKey]);
+  // 결과는 뽑는 순간 한 번만 생성 (편지 조합의 직전 회피 로직이 재계산에 영향받지 않도록)
+  const [result, setResult] = useState<FortuneResult | null>(null);
+
+  // 오늘 이미 받은 편지 (다시 읽기용 스냅샷)
+  const [todayReading, setTodayReading] = useState(() => loadTodayReading(todayKey()));
 
   function flash(msg: string) {
     setToast(msg);
@@ -107,19 +111,33 @@ export default function App() {
   }
 
   async function handlePick(picked: Note) {
-    if (busy) return;
+    if (busy || !fortuneType || !mood) return;
     setNote(picked);
     setBusy(true);
+    const generated = generateFortune({ fortuneType, note: picked, mood, dateKey });
+    setResult(generated);
     // 쪽지 오픈 모션(0.5s)을 보여준 뒤 몽글 로딩 연출로 전환
     await wait(550);
     setScreen('reveal');
     // 광고 mock + 로딩 멘트 4단계(620ms×4)가 끝날 시간을 함께 보장
     await Promise.all([showInterstitialBeforeResult(), wait(2600)]);
-    if (fortuneType) {
-      incrementDailyDrawCount(dateKey);
-      saveResult({ dateKey, fortuneType, noteId: picked.id });
-    }
+    incrementDailyDrawCount(dateKey);
+    saveResult({ dateKey, fortuneType, noteId: picked.id });
+    const snapshot = { dateKey, fortuneType, noteId: picked.id, result: generated };
+    saveTodayReading(snapshot);
+    setTodayReading(snapshot);
     setBusy(false);
+    setScreen('result');
+  }
+
+  // 오늘 받은 편지 다시 읽기 (스냅샷 그대로 복원)
+  function handleReopen() {
+    if (!todayReading) return;
+    const n = findNote(todayReading.noteId);
+    if (!n) return;
+    setFortuneType(todayReading.fortuneType);
+    setNote(n);
+    setResult(todayReading.result);
     setScreen('result');
   }
 
@@ -188,6 +206,8 @@ export default function App() {
           subscribed={subscribed}
           delivered={delivered}
           yesterdayRecord={yesterdayRecord}
+          todayReading={todayReading}
+          onReopen={handleReopen}
           onSubscribe={handleSubscribe}
           onSelect={handleType}
         />

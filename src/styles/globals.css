@@ -794,6 +794,55 @@ button {
   flex-shrink: 0;
 }
 
+/* ── 오늘 받은 편지 다시 읽기 ── */
+.reopen-card {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #fffdf7, #fff8ec);
+  border: 1px solid #f0e6d2;
+  text-align: left;
+  margin-bottom: var(--space-4);
+}
+
+.reopen-card:active {
+  transform: scale(0.99);
+}
+
+.reopen-card__icon {
+  font-size: 26px;
+}
+
+.reopen-card__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.reopen-card__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #a9852f;
+}
+
+.reopen-card__text {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+
+.reopen-card__cta {
+  font-size: 13px;
+  font-weight: 800;
+  color: #a9852f;
+  flex-shrink: 0;
+}
+
 /* ── 어제의 쪽지 돌아보기 ── */
 .recap-card {
   display: flex;

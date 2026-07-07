@@ -1,9 +1,10 @@
-import type { FortuneType } from '../types/fortune';
+import type { FortuneResult, FortuneType } from '../types/fortune';
 
-// PRD §14 — 개인정보/자유입력 저장 금지. 선택형 값만 localStorage 에 남긴다.
+// PRD §14 — 개인정보/자유입력 저장 금지. 선택형 값 + 생성된 결과 텍스트만 저장.
 
 const KEYS = {
   lastResult: 'tomorrowNoteLastResult',
+  todayReading: 'tomorrowNoteTodayReading',
   dailyDrawCount: 'tomorrowNoteDrawCount',
   lastVisitDate: 'tomorrowNoteLastVisit',
 } as const;
@@ -12,6 +13,15 @@ export type StoredResult = {
   dateKey: string;
   fortuneType: FortuneType;
   noteId: string;
+};
+
+// 오늘의 편지 스냅샷 — 다시 들어와도 같은 편지를 그대로 읽을 수 있게.
+// (편지 조합은 직전 회피 로직 때문에 재생성 시 달라지므로 스냅샷으로 보존)
+export type TodayReading = {
+  dateKey: string;
+  fortuneType: FortuneType;
+  noteId: string;
+  result: FortuneResult;
 };
 
 function safeGet(key: string): string | null {
@@ -39,6 +49,21 @@ export function loadResult(): StoredResult | null {
   if (!raw) return null;
   try {
     return JSON.parse(raw) as StoredResult;
+  } catch {
+    return null;
+  }
+}
+
+export function saveTodayReading(reading: TodayReading): void {
+  safeSet(KEYS.todayReading, JSON.stringify(reading));
+}
+
+export function loadTodayReading(dateKey: string): TodayReading | null {
+  const raw = safeGet(KEYS.todayReading);
+  if (!raw) return null;
+  try {
+    const r = JSON.parse(raw) as TodayReading;
+    return r.dateKey === dateKey ? r : null;
   } catch {
     return null;
   }

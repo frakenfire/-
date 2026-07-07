@@ -4,7 +4,7 @@ import { Mascot } from '../components/Mascot';
 import { FORTUNE_TYPES, FORTUNE_LABEL } from '../data/fortuneTypes';
 import { findNote } from '../data/notes';
 import { HOME } from '../data/copy';
-import type { StoredResult } from '../lib/storage';
+import type { StoredResult, TodayReading } from '../lib/storage';
 import type { FortuneType } from '../types/fortune';
 
 function todayLabel(): string {
@@ -27,16 +27,20 @@ type Props = {
   subscribed: boolean;
   delivered: boolean;
   yesterdayRecord: StoredResult | null;
+  todayReading: TodayReading | null;
+  onReopen: () => void;
   onSubscribe: () => void;
   onSelect: (t: FortuneType) => void;
 };
 
-// PRD §5.1 + 리텐션 — 도착 배너 · 스트릭 · 어제의 쪽지 · 매일 받기 구독.
+// PRD §5.1 + 리텐션 — 도착 배너 · 오늘 편지 다시 읽기 · 스트릭 · 어제의 쪽지 · 구독.
 export function HomeScreen({
   streak,
   subscribed,
   delivered,
   yesterdayRecord,
+  todayReading,
+  onReopen,
   onSubscribe,
   onSelect,
 }: Props) {
@@ -79,6 +83,22 @@ export function HomeScreen({
             <span className="arrive-banner__desc">따끈한 새 쪽지, 바로 열어볼까요?</span>
           </span>
           <span className="arrive-banner__cta">열기 ›</span>
+        </button>
+      ) : null}
+
+      {/* 오늘 받은 편지 다시 읽기 */}
+      {todayReading ? (
+        <button type="button" className="reopen-card" onClick={onReopen}>
+          <span className="reopen-card__icon" aria-hidden>
+            {todayReading.result.rarity?.emoji ?? '📖'}
+          </span>
+          <span className="reopen-card__body">
+            <span className="reopen-card__label">오늘 받은 편지</span>
+            <span className="reopen-card__text">
+              {todayReading.result.title} · 총운 {todayReading.result.luck.total}점
+            </span>
+          </span>
+          <span className="reopen-card__cta">다시 읽기 ›</span>
         </button>
       ) : null}
 
