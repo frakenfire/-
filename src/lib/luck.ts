@@ -64,9 +64,9 @@ function pick<T>(arr: T[], r: () => number): T {
 function grade(total: number): string {
   if (total >= 95) return '대길';
   if (total >= 88) return '길';
-  if (total >= 80) return '순조';
-  if (total >= 73) return '무난';
-  return '차분';
+  if (total >= 80) return '중길';
+  if (total >= 73) return '소길';
+  return '평';
 }
 
 export function computeLuck(seed: number): LuckSet {

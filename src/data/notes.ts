@@ -11,8 +11,8 @@ export const NOTES: Note[] = [
   { id: 'timing', name: '좋은 타이밍', keyword: '타이밍', icon: '⏰', color: 'cream' },
   { id: 'careful', name: '조심스러운 선택', keyword: '신중', icon: '🧭', color: 'softYellow' },
   { id: 'help', name: '뜻밖의 도움', keyword: '인연', icon: '🤝', color: 'softPink' },
-  { id: 'smallWin', name: '작게 성공', keyword: '성취', icon: '🎯', color: 'softGreen' },
-  { id: 'light', name: '마음 가벼움', keyword: '여유', icon: '🎈', color: 'cream' },
+  { id: 'smallWin', name: '작은 성공', keyword: '성취', icon: '🎯', color: 'softGreen' },
+  { id: 'light', name: '홀가분함', keyword: '여유', icon: '🎈', color: 'cream' },
   { id: 'sticker', name: '행운 스티커', keyword: '행운', icon: '⭐', color: 'softYellow' },
 ];
 
