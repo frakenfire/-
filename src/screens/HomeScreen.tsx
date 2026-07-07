@@ -88,7 +88,11 @@ export function HomeScreen({
         <p className="daily-line__text">“{dailyLine(todayKey())}”</p>
         {zodiac ? (
           <p className="daily-line__zodiac">
-            {zodiac.emoji} <b>{zodiac.label}의 오늘</b> — {zodiacLine(todayKey(), zodiac.id)}
+            <b>
+              {zodiac.emoji} {zodiac.label}의 오늘
+            </b>
+            <br />
+            {zodiacLine(todayKey(), zodiac.id)}
           </p>
         ) : (
           <button
