@@ -183,6 +183,7 @@ export default function App() {
       total: result.luck.total,
       grade: result.luck.grade,
       tag: result.luck.tag,
+      rarity: result.rarity,
     });
     setBusy(false);
     flash(ok ? '결과 카드 저장 완료! 📸' : '앗, 저장을 못 했어요');

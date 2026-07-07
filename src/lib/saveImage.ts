@@ -1,8 +1,9 @@
 import { scoreColor } from './luck';
 import { moodFromScore } from '../components/Mascot';
+import type { Rarity } from './rarity';
 
-// PRD §7.2 + 리서치 — 세로 공유 카드. 마스코트 + 총운 점수 + 콕 집은 한마디로
-// 캡처·공유 욕구를 자극한다.
+// PRD §7.2 + 리서치 — 세로 공유 카드. 마스코트 + 총운 점수 + 콕 집은 한마디.
+// 등급(전설/에픽)이 뜨면 카드 자체가 금박/보라 트로피가 되어 자랑을 유발한다.
 
 type SaveInput = {
   title: string;
@@ -12,6 +13,15 @@ type SaveInput = {
   total: number;
   grade: string;
   tag: string;
+  rarity: Rarity;
+};
+
+// 등급별 카드 트리트먼트
+const TIER_STYLE: Record<Rarity['tier'], { bg: string; card: string; border: string | null; accent: string }> = {
+  common: { bg: '#f2f4f6', card: '#ffffff', border: null, accent: '#114e48' },
+  rare: { bg: '#e8f1fd', card: '#f6faff', border: '#9dc3f0', accent: '#2f6fd0' },
+  epic: { bg: '#efe6fc', card: '#faf6ff', border: '#c9a8ef', accent: '#7b3fd4' },
+  legendary: { bg: '#f7ecc8', card: '#fffcef', border: '#e7c15a', accent: '#b8860b' },
 };
 
 function resolveScoreColor(score: number): string {
@@ -134,20 +144,39 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
     if (!ctx) return false;
     const cx = W / 2;
     const accent = resolveScoreColor(input.total);
+    const tier = TIER_STYLE[input.rarity.tier];
 
-    // 배경
-    ctx.fillStyle = '#f2f4f6';
+    // 배경 (등급 톤)
+    ctx.fillStyle = tier.bg;
     ctx.fillRect(0, 0, W, H);
-    // 화이트 카드
+    // 카드 (등급 테두리)
     const m = 48;
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = tier.card;
     roundRect(ctx, m, m, W - m * 2, H - m * 2, 36);
     ctx.fill();
+    if (tier.border) {
+      ctx.strokeStyle = tier.border;
+      ctx.lineWidth = 6;
+      roundRect(ctx, m + 3, m + 3, W - m * 2 - 6, H - m * 2 - 6, 33);
+      ctx.stroke();
+    }
 
     ctx.textAlign = 'center';
 
+    // 등급 뱃지 (에픽 이상)
+    if (input.rarity.special) {
+      const label = `${input.rarity.emoji} ${input.rarity.label} · ${input.rarity.pct}`;
+      ctx.font = 'bold 24px sans-serif';
+      const w = ctx.measureText(label).width + 44;
+      ctx.fillStyle = tier.accent;
+      roundRect(ctx, cx - w / 2, 74, w, 46, 23);
+      ctx.fill();
+      ctx.fillStyle = '#ffffff';
+      ctx.fillText(label, cx, 105);
+    }
+
     // 마스코트
-    drawMascot(ctx, cx, 190, 120, input.total);
+    drawMascot(ctx, cx, 200, 120, input.total);
 
     // 제목
     ctx.fillStyle = '#114e48';

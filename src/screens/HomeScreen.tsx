@@ -4,6 +4,8 @@ import { Mascot } from '../components/Mascot';
 import { FORTUNE_TYPES, FORTUNE_LABEL } from '../data/fortuneTypes';
 import { findNote } from '../data/notes';
 import { HOME } from '../data/copy';
+import { dailyLine } from '../lib/dailyLine';
+import { todayKey } from '../lib/dateSeed';
 import type { StoredResult, TodayReading } from '../lib/storage';
 import type { FortuneType } from '../types/fortune';
 
@@ -70,6 +72,13 @@ export function HomeScreen({
           <br />
           내 하루가 어떨지, 쪽지 한 장으로 미리 살짝 봐요.
         </p>
+      </div>
+
+      {/* 오늘의 한 줄 — 0탭 즉시 보상 */}
+      <div className="daily-line">
+        <span className="daily-line__label">✨ 오늘의 한 줄</span>
+        <p className="daily-line__text">“{dailyLine(todayKey())}”</p>
+        <span className="daily-line__hint">더 자세한 건 쪽지가 알려줄 거예요</span>
       </div>
 
       {/* 오늘의 쪽지 도착 배너 (구독자, 하루 1회) */}
