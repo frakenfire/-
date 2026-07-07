@@ -74,7 +74,12 @@ export function loadTodayReading(dateKey: string): TodayReading | null {
   if (!raw) return null;
   try {
     const r = JSON.parse(raw) as TodayReading;
-    return r.dateKey === dateKey ? r : null;
+    if (r.dateKey !== dateKey) return null;
+    // 구버전 스냅샷(문자열 배열 편지)은 새 구조와 호환되지 않으므로 무시
+    if (!r.result?.letter || Array.isArray(r.result.letter) || !r.result.letter.sign) {
+      return null;
+    }
+    return r;
   } catch {
     return null;
   }

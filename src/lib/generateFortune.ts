@@ -46,9 +46,9 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const rarity = computeRarity(seed);
   const letter = composeLetter({ mood, variant, seed });
 
-  // 에픽 이상이면 요정의 특별 한마디를 맺음말 앞에 끼워 넣는다.
+  // 에픽 이상이면 요정의 특별 한마디를 편지에 담는다.
   const rarityLine = RARITY_LINE[rarity.tier];
-  if (rarityLine) letter.splice(letter.length - 2, 0, rarityLine);
+  if (rarityLine) letter.special = rarityLine;
 
   return {
     title: FORTUNE_LABEL[fortuneType],

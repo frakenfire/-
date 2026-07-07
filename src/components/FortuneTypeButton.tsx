@@ -22,7 +22,9 @@ export function FortuneTypeButton({ meta, selected, onClick }: Props) {
         <span className="menu-row__title">{meta.label}</span>
         <span className="menu-row__desc">{meta.desc}</span>
       </span>
-      <span className="menu-row__cta">{meta.cta} ›</span>
+      <span className="menu-row__chevron" aria-hidden>
+        ›
+      </span>
     </button>
   );
 }

@@ -1,7 +1,6 @@
-import type { Mood } from '../types/fortune';
+import type { LetterParts, Mood } from '../types/fortune';
 import type { Variant } from '../data/resultTemplates';
 import {
-  BRIDGES,
   CLOSINGS,
   EMPATHY,
   GREETINGS,
@@ -43,26 +42,24 @@ type ComposeInput = {
   timeSlot?: TimeSlot;
 };
 
-// 여러 문단짜리 손편지를 조합한다.
-export function composeLetter({ mood, variant, seed, timeSlot }: ComposeInput): string[] {
+// 위계가 있는 손편지 구조를 조합한다.
+export function composeLetter({ mood, variant, seed, timeSlot }: ComposeInput): LetterParts {
   const slot = timeSlot ?? currentTimeSlot();
 
   // 서로 다른 양의 소수로 나눠 각 섹션 인덱스를 탈상관시킨다 (음수 시프트 회피).
   const greeting = pickFresh(GREETINGS[slot], seed, `ltr:greet:${slot}`);
   const empathy = pickFresh(EMPATHY[mood], Math.floor(seed / 7), `ltr:emp:${mood}`);
-  const bridge = pickFresh(BRIDGES, Math.floor(seed / 13), 'ltr:bridge');
   const keepIntro = pickFresh(KEEP_INTROS, Math.floor(seed / 29), 'ltr:keep');
   const closing = pickFresh(CLOSINGS[mood], Math.floor(seed / 53), `ltr:close:${mood}`);
 
-  const body = `${variant.summary[0]} ${variant.summary[1]}`;
-
-  return [
-    greeting,
-    empathy,
-    `${bridge}\n${variant.pinpoint}`,
-    body,
-    `${keepIntro}\n오늘의 행운은 '${variant.lucky}'. 조심할 건 딱 하나, ${variant.caution}`,
+  return {
+    intro: `${greeting} ${empathy}`,
+    highlight: variant.pinpoint,
+    body: `${variant.summary[0]} ${variant.summary[1]}`,
+    keepIntro,
+    lucky: variant.lucky,
+    caution: variant.caution,
     closing,
-    SIGN,
-  ];
+    sign: SIGN,
+  };
 }

@@ -33,10 +33,23 @@ export type FortuneResult = {
   luckyPoint: string;
   shareLine: string;
   luck: import('../lib/luck').LuckSet;
-  /** 쪽지 요정의 편지 (문단 배열) */
-  letter: string[];
+  /** 쪽지 요정의 편지 (위계 구조) */
+  letter: LetterParts;
   /** 쪽지 등급 (가챠 희귀도) */
   rarity: import('../lib/rarity').Rarity;
+};
+
+// 편지 구조 — 렌더링 위계를 위해 역할별로 분리
+export type LetterParts = {
+  intro: string; // 인사 + 공감 (작게, 회색)
+  highlight: string; // 콕 집은 한마디 (크게, 형광 강조)
+  body: string; // 본문
+  keepIntro: string; // 부적 소개
+  lucky: string; // 행운 조합
+  caution: string; // 조심 한 줄
+  special?: string; // 등급 특별 한마디 (에픽 이상)
+  closing: string; // 맺음
+  sign: string; // 서명
 };
 
 export type Choice<T extends string> = {

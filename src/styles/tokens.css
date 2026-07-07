@@ -1,6 +1,6 @@
 /* 디자인 토큰 — 토스 TDS 스타일 뉴트럴 시스템 + 브랜드 그린 액센트.
    - 캔버스: 화이트, 차콜 헤딩(#191f28), 토스 그레이 램프
-   - 브랜드/CTA: SIGNATURE GREEN #114e48 (내부 컬러 가이드)
+   - 브랜드/CTA: 토스 블루 #3182f6
    - 점수/정보 액센트: 토스 블루 #3182f6, 세만틱(green/blue/amber)
    - 행운 포인트/스티커: SIGNATURE ORANGE #ff4b00 제한 사용 */
 :root {
@@ -17,12 +17,12 @@
   --gray-50: #f9fafb;
   --white: #ffffff;
 
-  /* Brand & accents */
-  --brand: #114e48; /* SIGNATURE GREEN */
-  --brand-strong: #0d3d38;
-  --brand-soft: #e7f1ef;
+  /* Brand & accents — 토스 블루 시스템 */
+  --brand: #3182f6;
+  --brand-strong: #1b64da;
+  --brand-soft: #e8f3ff;
   --toss-blue: #3182f6;
-  --orange: #ff4b00; /* SIGNATURE ORANGE */
+  --orange: #ff6b00; /* 포인트(행운)용, 제한 사용 */
 
   /* Semantic score colors */
   --score-high: #12b886;
@@ -57,7 +57,7 @@
 
   /* 토스식 단일 레이어 소프트 섀도우 */
   --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
-  --shadow-cta: 0 6px 16px rgba(17, 78, 72, 0.2);
+  --shadow-cta: 0 6px 16px rgba(49, 130, 246, 0.24);
   --shadow-note: 0 4px 16px rgba(0, 0, 0, 0.08);
 
   --font-body:

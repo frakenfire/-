@@ -1,20 +1,18 @@
 import { Mascot } from './Mascot';
+import type { LetterParts } from '../types/fortune';
 import type { Rarity } from '../lib/rarity';
 
-// 쪽지 요정의 손편지 — 여러 문단, 종이 질감의 카드. 결과의 감성 중심.
-// 등급(가챠)에 따라 편지지 색·뱃지가 바뀌어 '전설 쪽지' 캡처 욕구를 자극한다.
+// 쪽지 요정의 손편지 — 눈에 꽂히는 위계로 렌더링.
+// 인사(작게) → 콕 집은 한마디(크게, 형광 강조) → 본문 → 오늘의 부적(박스) → 맺음 → 서명.
 export function LetterCard({
   letter,
   score,
   rarity,
 }: {
-  letter: string[];
+  letter: LetterParts;
   score: number;
   rarity: Rarity;
 }) {
-  const body = letter.slice(0, -1);
-  const sign = letter[letter.length - 1];
-
   return (
     <div className={`letter letter--${rarity.tier} fade-in`}>
       <div className="letter__head">
@@ -25,14 +23,25 @@ export function LetterCard({
           {rarity.pct ? <b> · {rarity.pct}</b> : null}
         </span>
       </div>
-      <div className="letter__body">
-        {body.map((p, i) => (
-          <p className="letter__p" key={i}>
-            {p}
-          </p>
-        ))}
+
+      <p className="letter__intro">{letter.intro}</p>
+
+      <p className="letter__highlight">
+        <mark>{letter.highlight}</mark>
+      </p>
+
+      <p className="letter__body-text">{letter.body}</p>
+
+      <div className="letter__keep">
+        <span className="letter__keep-label">🍀 {letter.keepIntro}</span>
+        <p className="letter__keep-lucky">{letter.lucky}</p>
+        <p className="letter__keep-caution">조심할 건 딱 하나. {letter.caution}</p>
       </div>
-      <p className="letter__sign">{sign}</p>
+
+      {letter.special ? <p className="letter__special">{letter.special}</p> : null}
+
+      <p className="letter__closing">{letter.closing}</p>
+      <p className="letter__sign">{letter.sign}</p>
     </div>
   );
 }

@@ -200,7 +200,7 @@ button {
   padding: var(--space-4);
   border-radius: var(--radius-md);
   background: var(--color-white);
-  border: 1.5px solid var(--color-border);
+  box-shadow: var(--shadow-card);
   text-align: left;
   transition:
     border-color 0.12s ease,
@@ -225,7 +225,7 @@ button {
   justify-content: center;
   font-size: 24px;
   border-radius: 14px;
-  background: var(--color-cream);
+  background: var(--gray-100);
 }
 
 .menu-row__body {
@@ -247,10 +247,10 @@ button {
   color: var(--color-text-secondary);
 }
 
-.menu-row__cta {
-  font-size: 13px;
+.menu-row__chevron {
+  font-size: 20px;
   font-weight: 700;
-  color: var(--color-signature-green);
+  color: var(--gray-400);
   flex-shrink: 0;
 }
 
@@ -305,7 +305,7 @@ button {
 .note--opening {
   animation: note-open 0.5s ease both !important;
   border-color: var(--brand);
-  box-shadow: 0 12px 28px rgba(17, 78, 72, 0.24);
+  box-shadow: 0 12px 28px rgba(49, 130, 246, 0.28);
   z-index: 2;
 }
 
@@ -900,8 +900,9 @@ button {
   gap: var(--space-3);
   padding: var(--space-4);
   border-radius: var(--radius-lg);
-  background: linear-gradient(180deg, #fffdf7, #fff8ec);
-  border: 1px solid #f0e6d2;
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  box-shadow: var(--shadow-card);
   text-align: left;
   margin-bottom: var(--space-4);
 }
@@ -925,7 +926,7 @@ button {
 .reopen-card__label {
   font-size: 11px;
   font-weight: 700;
-  color: #a9852f;
+  color: var(--gray-500);
 }
 
 .reopen-card__text {
@@ -937,7 +938,7 @@ button {
 .reopen-card__cta {
   font-size: 13px;
   font-weight: 800;
-  color: #a9852f;
+  color: var(--brand);
   flex-shrink: 0;
 }
 
@@ -1226,10 +1227,10 @@ button {
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-/* ── 쪽지 요정의 편지 ── */
+/* ── 쪽지 요정의 편지 (토스식 위계) ── */
 .letter {
-  background: linear-gradient(180deg, #fffdf7, #fff8ec);
-  border: 1px solid #f0e6d2;
+  background: var(--white);
+  border: 1px solid var(--gray-100);
   border-radius: var(--radius-xl);
   padding: var(--space-6) var(--space-5) var(--space-5);
   margin-bottom: var(--space-4);
@@ -1240,75 +1241,130 @@ button {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  padding-bottom: var(--space-4);
-  margin-bottom: var(--space-4);
-  border-bottom: 1px dashed #e3d6bb;
+  margin-bottom: var(--space-5);
 }
 
 .letter__from {
   font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+
+/* 인사+공감: 작게, 조용하게 */
+.letter__intro {
+  margin: 0 0 var(--space-4);
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--gray-600);
+  word-break: keep-all;
+}
+
+/* 콕 집은 한마디: 화면에서 제일 크게, 형광 강조 */
+.letter__highlight {
+  margin: 0 0 var(--space-5);
+  font-size: 21px;
   font-weight: 800;
-  color: #a9852f;
+  line-height: 1.55;
+  letter-spacing: -0.02em;
+  color: var(--gray-900);
+  word-break: keep-all;
 }
 
-.letter__body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
+.letter__highlight mark {
+  background: linear-gradient(transparent 62%, var(--brand-soft) 62%);
+  color: inherit;
+  padding: 0 2px;
 }
 
-.letter__p {
-  margin: 0;
+.letter__body-text {
+  margin: 0 0 var(--space-5);
   font-size: 16px;
-  line-height: 1.85;
-  color: #4a3f2e;
-  white-space: pre-line;
+  line-height: 1.8;
+  color: var(--gray-800);
+  word-break: keep-all;
+}
+
+/* 오늘의 부적: 파란 박스로 또렷하게 */
+.letter__keep {
+  background: var(--brand-soft);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.letter__keep-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--brand-strong);
+  margin-bottom: 6px;
+}
+
+.letter__keep-lucky {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+
+.letter__keep-caution {
+  margin: 0;
+  font-size: 13px;
+  color: var(--gray-600);
+  word-break: keep-all;
+}
+
+.letter__special {
+  margin: 0 0 var(--space-5);
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.7;
+  color: #a9791a;
+  background: #fff7dd;
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  word-break: keep-all;
+}
+
+.letter__closing {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--gray-700);
   word-break: keep-all;
 }
 
 .letter__sign {
-  margin: var(--space-5) 0 0;
+  margin: var(--space-3) 0 0;
   text-align: right;
-  font-size: 15px;
-  font-weight: 800;
-  color: #a9852f;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-500);
 }
 
 /* ── 등급별 편지지 ── */
 .letter--rare {
-  background: linear-gradient(180deg, #f4f9ff, #eaf2ff);
   border-color: #cfe0f7;
+  box-shadow: 0 2px 12px rgba(49, 130, 246, 0.12);
 }
-.letter--rare .letter__from,
-.letter--rare .letter__sign {
+.letter--rare .letter__from {
   color: #2f6fd0;
-}
-.letter--rare .letter__head {
-  border-bottom-color: #d3e3f8;
-}
-.letter--rare .letter__p {
-  color: #2b3a52;
 }
 
 .letter--epic {
-  background: linear-gradient(180deg, #f8f3ff, #f0e7ff);
   border-color: #dcc9f5;
+  box-shadow: 0 2px 14px rgba(123, 63, 212, 0.14);
 }
-.letter--epic .letter__from,
-.letter--epic .letter__sign {
+.letter--epic .letter__from {
   color: #7b3fd4;
 }
-.letter--epic .letter__head {
-  border-bottom-color: #e3d3f7;
-}
-.letter--epic .letter__p {
-  color: #3d2b52;
+.letter--epic .letter__highlight mark {
+  background: linear-gradient(transparent 62%, #efe4fc 62%);
 }
 
 .letter--legendary {
-  background: linear-gradient(180deg, #fffcef, #fff4d1);
   border: 2px solid #e7c15a;
-  box-shadow: 0 8px 28px rgba(197, 152, 32, 0.28);
+  box-shadow: 0 8px 28px rgba(197, 152, 32, 0.22);
   position: relative;
   overflow: hidden;
 }
@@ -1319,12 +1375,7 @@ button {
   left: -60%;
   width: 60%;
   height: 100%;
-  background: linear-gradient(
-    100deg,
-    transparent,
-    rgba(255, 255, 255, 0.55),
-    transparent
-  );
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
   animation: shimmer 2.8s ease-in-out infinite;
   pointer-events: none;
 }
@@ -1337,15 +1388,11 @@ button {
     left: 130%;
   }
 }
-.letter--legendary .letter__from,
-.letter--legendary .letter__sign {
+.letter--legendary .letter__from {
   color: #b8860b;
 }
-.letter--legendary .letter__head {
-  border-bottom-color: #e7d18a;
-}
-.letter--legendary .letter__p {
-  color: #4a3a12;
+.letter--legendary .letter__highlight mark {
+  background: linear-gradient(transparent 62%, #fff0bf 62%);
 }
 
 /* ── 등급 뱃지 ── */
@@ -1378,6 +1425,7 @@ button {
   color: #a9791a;
   box-shadow: 0 0 0 1px #e7c15a inset;
 }
+
 
 /* ── 기분 입력 ── */
 .mood-grid {

@@ -18,7 +18,7 @@ type SaveInput = {
 
 // 등급별 카드 트리트먼트
 const TIER_STYLE: Record<Rarity['tier'], { bg: string; card: string; border: string | null; accent: string }> = {
-  common: { bg: '#f2f4f6', card: '#ffffff', border: null, accent: '#114e48' },
+  common: { bg: '#f2f4f6', card: '#ffffff', border: null, accent: '#333d4b' },
   rare: { bg: '#e8f1fd', card: '#f6faff', border: '#9dc3f0', accent: '#2f6fd0' },
   epic: { bg: '#efe6fc', card: '#faf6ff', border: '#c9a8ef', accent: '#7b3fd4' },
   legendary: { bg: '#f7ecc8', card: '#fffcef', border: '#e7c15a', accent: '#b8860b' },
@@ -75,14 +75,14 @@ function drawMascot(ctx: CanvasRenderingContext2D, cx: number, cy: number, s: nu
   ctx.lineCap = 'round';
 
   // 배경 원
-  ctx.fillStyle = '#e7f1ef';
+  ctx.fillStyle = '#e8f3ff';
   ctx.beginPath();
   ctx.arc(100, 100, 92, 0, Math.PI * 2);
   ctx.fill();
 
   // 쪽지 몸통
   ctx.fillStyle = '#fff';
-  ctx.strokeStyle = '#114e48';
+  ctx.strokeStyle = '#333d4b';
   ctx.lineWidth = 5;
   roundRect(ctx, 46, 66, 94, 80, 10);
   ctx.fill();
@@ -96,8 +96,8 @@ function drawMascot(ctx: CanvasRenderingContext2D, cx: number, cy: number, s: nu
   ctx.fill();
 
   // 눈
-  ctx.strokeStyle = '#114e48';
-  ctx.fillStyle = '#114e48';
+  ctx.strokeStyle = '#333d4b';
+  ctx.fillStyle = '#333d4b';
   ctx.lineWidth = 5;
   if (mood === 'grin') {
     ctx.beginPath();
@@ -119,7 +119,7 @@ function drawMascot(ctx: CanvasRenderingContext2D, cx: number, cy: number, s: nu
   if (mood === 'grin') {
     ctx.moveTo(85, 130);
     ctx.quadraticCurveTo(100, 150, 115, 130);
-    ctx.fillStyle = '#114e48';
+    ctx.fillStyle = '#333d4b';
     ctx.fill();
   } else if (mood === 'calm') {
     ctx.moveTo(92, 132);
@@ -179,7 +179,7 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
     drawMascot(ctx, cx, 200, 120, input.total);
 
     // 제목
-    ctx.fillStyle = '#114e48';
+    ctx.fillStyle = '#333d4b';
     ctx.font = 'bold 26px sans-serif';
     ctx.fillText(input.subtitle, cx, 292);
     ctx.fillStyle = '#191f28';
@@ -215,14 +215,14 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
     ctx.font = 'bold 30px sans-serif';
     const lines = wrapText(ctx, input.pinpoint, boxW - 64);
     const boxH = 96 + lines.length * 44;
-    ctx.fillStyle = '#114e48';
+    ctx.fillStyle = '#333d4b';
     roundRect(ctx, boxX, boxY, boxW, boxH, 26);
     ctx.fill();
     // 배지
     ctx.fillStyle = '#ffffff';
     roundRect(ctx, boxX + 28, boxY + 26, 168, 40, 20);
     ctx.fill();
-    ctx.fillStyle = '#114e48';
+    ctx.fillStyle = '#333d4b';
     ctx.font = 'bold 22px sans-serif';
     ctx.fillText('콕 집은 한마디', boxX + 28 + 84, boxY + 53);
     // 문구
