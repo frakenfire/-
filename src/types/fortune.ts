@@ -35,6 +35,8 @@ export type FortuneResult = {
   luck: import('../lib/luck').LuckSet;
   /** 쪽지 요정의 편지 (문단 배열) */
   letter: string[];
+  /** 쪽지 등급 (가챠 희귀도) */
+  rarity: import('../lib/rarity').Rarity;
 };
 
 export type Choice<T extends string> = {

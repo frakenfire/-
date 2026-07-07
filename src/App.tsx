@@ -133,11 +133,14 @@ export default function App() {
 
   async function handleShare() {
     if (!result) return;
+    const gradeText = result.rarity.special
+      ? `${result.rarity.emoji}${result.rarity.label}(${result.rarity.pct})`
+      : result.luck.grade;
     const r = await shareOrCopy(
       result.title,
       result.shareLine,
       result.luck.total,
-      result.luck.grade,
+      gradeText,
     );
     if (r === 'shared') flash('공유 창을 열었어요 💌');
     else if (r === 'copied') flash('공유 문구 복사 완료! 💌');
@@ -199,7 +202,7 @@ export default function App() {
       )}
 
       {screen === 'reveal' && fortuneType && (
-        <RevealScreen fortuneType={fortuneType} />
+        <RevealScreen fortuneType={fortuneType} special={result?.rarity.special} />
       )}
 
       {screen === 'pick' && (

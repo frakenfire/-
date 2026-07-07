@@ -1127,6 +1127,111 @@ button {
   color: #a9852f;
 }
 
+/* ── 등급별 편지지 ── */
+.letter--rare {
+  background: linear-gradient(180deg, #f4f9ff, #eaf2ff);
+  border-color: #cfe0f7;
+}
+.letter--rare .letter__from,
+.letter--rare .letter__sign {
+  color: #2f6fd0;
+}
+.letter--rare .letter__head {
+  border-bottom-color: #d3e3f8;
+}
+.letter--rare .letter__p {
+  color: #2b3a52;
+}
+
+.letter--epic {
+  background: linear-gradient(180deg, #f8f3ff, #f0e7ff);
+  border-color: #dcc9f5;
+}
+.letter--epic .letter__from,
+.letter--epic .letter__sign {
+  color: #7b3fd4;
+}
+.letter--epic .letter__head {
+  border-bottom-color: #e3d3f7;
+}
+.letter--epic .letter__p {
+  color: #3d2b52;
+}
+
+.letter--legendary {
+  background: linear-gradient(180deg, #fffcef, #fff4d1);
+  border: 2px solid #e7c15a;
+  box-shadow: 0 8px 28px rgba(197, 152, 32, 0.28);
+  position: relative;
+  overflow: hidden;
+}
+.letter--legendary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 255, 255, 0.55),
+    transparent
+  );
+  animation: shimmer 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes shimmer {
+  0% {
+    left: -60%;
+  }
+  60%,
+  100% {
+    left: 130%;
+  }
+}
+.letter--legendary .letter__from,
+.letter--legendary .letter__sign {
+  color: #b8860b;
+}
+.letter--legendary .letter__head {
+  border-bottom-color: #e7d18a;
+}
+.letter--legendary .letter__p {
+  color: #4a3a12;
+}
+
+/* ── 등급 뱃지 ── */
+.rarity-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 4px 9px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.rarity-badge b {
+  font-weight: 800;
+  opacity: 0.85;
+}
+.rarity-badge--common {
+  background: #f2f4f6;
+  color: #6b7684;
+}
+.rarity-badge--rare {
+  background: #e2eefd;
+  color: #2f6fd0;
+}
+.rarity-badge--epic {
+  background: #efe4fc;
+  color: #7b3fd4;
+}
+.rarity-badge--legendary {
+  background: #fff0bf;
+  color: #a9791a;
+  box-shadow: 0 0 0 1px #e7c15a inset;
+}
+
 /* ── 기분 입력 ── */
 .mood-grid {
   display: flex;

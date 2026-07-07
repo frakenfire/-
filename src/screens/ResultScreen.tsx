@@ -35,11 +35,11 @@ export function ResultScreen({
   return (
     <AppLayout onBack={onBack} title="쪽지 요정의 편지">
       {/* 편지 — 결과의 감성 중심 */}
-      <LetterCard letter={result.letter} score={luck.total} />
+      <LetterCard letter={result.letter} score={luck.total} rarity={result.rarity} />
 
       {/* 총운 점수 (재미 요소) */}
       <div className="card card__center fade-in" style={{ position: 'relative', overflow: 'hidden' }}>
-        {luck.total >= 88 ? (
+        {luck.total >= 88 || result.rarity.special ? (
           <div className="confetti" aria-hidden>
             {['🎉', '✨', '⭐', '💚', '✨', '🎊', '⭐', '✨'].map((e, i) => (
               <span key={i} className="confetti__bit" style={{ left: `${8 + i * 12}%`, animationDelay: `${i * 0.12}s` }}>

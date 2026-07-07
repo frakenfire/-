@@ -2,6 +2,7 @@ import type { FortuneResult, FortuneType, Mood, Note } from '../types/fortune';
 import { hashSeed } from './dateSeed';
 import { computeLuck } from './luck';
 import { composeLetter } from './letter';
+import { computeRarity, RARITY_LINE } from './rarity';
 import { FORTUNE_LABEL } from '../data/fortuneTypes';
 import { NOTE_LEAD, TEMPLATES } from '../data/resultTemplates';
 
@@ -42,7 +43,12 @@ export function generateFortune(input: FortuneInput): FortuneResult {
 
   const lead = NOTE_LEAD[note.id] ?? '오늘의 쪽지가 도착했어요.';
   const luck = computeLuck(seed);
+  const rarity = computeRarity(seed);
   const letter = composeLetter({ mood, variant, seed });
+
+  // 에픽 이상이면 요정의 특별 한마디를 맺음말 앞에 끼워 넣는다.
+  const rarityLine = RARITY_LINE[rarity.tier];
+  if (rarityLine) letter.splice(letter.length - 2, 0, rarityLine);
 
   return {
     title: FORTUNE_LABEL[fortuneType],
@@ -56,5 +62,6 @@ export function generateFortune(input: FortuneInput): FortuneResult {
     shareLine: variant.share,
     luck,
     letter,
+    rarity,
   };
 }

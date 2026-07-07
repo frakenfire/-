@@ -22,13 +22,19 @@ const TYPE_STEP: Record<FortuneType, string> = {
 };
 
 const LAST_STEP = '거의 다 됐어요, 두근두근…!';
+const SPECIAL_STEP = '어라…? 이건 좀 특별한 쪽지인데…?! ✨';
 
 type Props = {
   fortuneType: FortuneType;
+  special?: boolean;
 };
 
-export function RevealScreen({ fortuneType }: Props) {
-  const steps = [...COMMON_STEPS, TYPE_STEP[fortuneType], LAST_STEP];
+export function RevealScreen({ fortuneType, special }: Props) {
+  const steps = [
+    ...COMMON_STEPS,
+    TYPE_STEP[fortuneType],
+    special ? SPECIAL_STEP : LAST_STEP,
+  ];
   const [idx, setIdx] = useState(0);
 
   useEffect(() => {
