@@ -59,7 +59,8 @@ ${empathy}`,
     body: `${variant.summary[0]}
 ${variant.summary[1]}`,
     keepIntro,
-    lucky: variant.lucky,
+    // 가운뎃점 나열(AI 티) 대신 자연스러운 쉼표 나열로
+    lucky: variant.lucky.split(' · ').join(', '),
     caution: variant.caution,
     closing,
     sign: SIGN,

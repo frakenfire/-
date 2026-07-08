@@ -34,7 +34,7 @@ export function LetterCard({
 
       <div className="letter__keep">
         <span className="letter__keep-label">🍀 {letter.keepIntro}</span>
-        <p className="letter__keep-lucky">{letter.lucky}</p>
+        <p className="letter__keep-lucky">오늘의 부적은 {letter.lucky}. 곁에 두면 든든해요.</p>
         <p className="letter__keep-caution">조심할 건 딱 하나. {letter.caution}</p>
       </div>
 

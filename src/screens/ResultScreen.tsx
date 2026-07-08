@@ -151,7 +151,7 @@ export function ResultScreen({
       <div className="btn-stack">
         {/* 공유 = 친구에게 오늘의 처방 보내주기 (광고 없음, 첫 번째 액션) */}
         <button type="button" className="btn btn--primary" disabled={busy} onClick={onShare}>
-          이 처방, 친구한테 보내주기 💌
+          이 쪽지, 친구한테 보내주기 💌
         </button>
 
         <button
@@ -189,7 +189,7 @@ export function ResultScreen({
             🔔
           </span>
           <span className="subscribe-card__body">
-            <span className="subscribe-card__title">내일 처방도 받아볼래요?</span>
+            <span className="subscribe-card__title">내일 쪽지도 받아볼래요?</span>
             <span className="subscribe-card__desc">매일 아침, 쪽지 요정이 배달해드려요</span>
           </span>
           <span className="subscribe-card__cta">받을래요</span>

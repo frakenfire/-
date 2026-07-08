@@ -175,8 +175,9 @@ export default function App() {
       title: result.title,
       score: result.luck.total,
       grade: gradeText,
-      doItem: result.dos[0],
-      dontItem: result.dont,
+      headline: result.dayPlan.headline,
+      doItem: result.dayPlan.steps[0].text,
+      dontItem: result.dayPlan.holdOff,
       shareLine: result.shareLine,
     });
     if (r === 'shared') flash('공유 창을 열었어요 💌');
@@ -197,7 +198,7 @@ export default function App() {
     const ok = await saveResultCard({
       title: result.title,
       subtitle: result.subtitle,
-      pinpoint: result.pinpoint,
+      headline: result.dayPlan.headline,
       shareLine: result.shareLine,
       total: result.luck.total,
       grade: result.luck.grade,

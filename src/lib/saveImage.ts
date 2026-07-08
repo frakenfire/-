@@ -8,7 +8,7 @@ import type { Rarity } from './rarity';
 type SaveInput = {
   title: string;
   subtitle: string;
-  pinpoint: string;
+  headline: string; // 기분에 맞춘 하루 설계 한 줄 (카드 주인공)
   shareLine: string;
   total: number;
   grade: string;
@@ -213,18 +213,18 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
     const boxW = W - (m + 28) * 2;
     const boxY = 630;
     ctx.font = 'bold 30px sans-serif';
-    const lines = wrapText(ctx, input.pinpoint, boxW - 64);
+    const lines = wrapText(ctx, input.headline, boxW - 64);
     const boxH = 96 + lines.length * 44;
     ctx.fillStyle = '#333d4b';
     roundRect(ctx, boxX, boxY, boxW, boxH, 26);
     ctx.fill();
     // 배지
     ctx.fillStyle = '#ffffff';
-    roundRect(ctx, boxX + 28, boxY + 26, 168, 40, 20);
+    roundRect(ctx, boxX + 28, boxY + 26, 150, 40, 20);
     ctx.fill();
     ctx.fillStyle = '#333d4b';
     ctx.font = 'bold 22px sans-serif';
-    ctx.fillText('콕 집은 한마디', boxX + 28 + 84, boxY + 53);
+    ctx.fillText('오늘의 한 줄', boxX + 28 + 75, boxY + 53);
     // 문구
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 30px sans-serif';

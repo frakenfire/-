@@ -25,7 +25,10 @@ export function DetailResultScreen({
   const { luck } = result;
   return (
     <AppLayout onBack={onBack} title="상세 운세">
-      <span className="eyebrow">{result.subtitle}</span>
+      <div className="card-head">
+        <p className="card-head__title">항목별 운세와 행운 세트</p>
+        <p className="card-head__desc">{result.subtitle} · 오늘을 더 자세히 들여다봐요</p>
+      </div>
 
       <div className="card fade-in">
         <p className="section-title">항목별 운세</p>

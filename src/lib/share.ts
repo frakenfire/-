@@ -6,20 +6,22 @@ export type ShareBriefing = {
   title: string;
   score: number;
   grade: string;
-  doItem: string;
-  dontItem: string;
+  headline: string; // 기분에 맞춘 하루 설계 한 줄 (와닿는 훅)
+  doItem: string; // 오늘 이렇게 보내요 (구체 행동)
+  dontItem: string; // 오늘은 접어둬요
   shareLine: string;
 };
 
 export function buildShareText(b: ShareBriefing): string {
   return [
-    `[내일쪽지] 오늘의 ${b.title} · 총운 ${b.score}점 (${b.grade})`,
-    `✅ 하면 좋아요: ${b.doItem}`,
-    `🚫 피하세요: ${b.dontItem}`,
+    `💌 내일쪽지 · 오늘의 ${b.title} (총운 ${b.score}점)`,
     ``,
-    `"${b.shareLine}"`,
+    `"${b.headline}"`,
     ``,
-    `너한테 필요할 것 같아서 보내. 네 쪽지도 뽑아봐 👀`,
+    `✅ 이렇게 보내요 — ${b.doItem}`,
+    `🌙 오늘은 접어둬요 — ${b.dontItem}`,
+    ``,
+    `너 생각나서 보내는 오늘의 쪽지. 네 것도 뽑아봐 👀`,
   ].join('\n');
 }
 
