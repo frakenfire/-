@@ -22,6 +22,7 @@ export type LuckSet = {
   item: string;
   tag: string;
   food: LuckyFood; // 오늘의 행운 음식 (하루 설계 훅)
+  luckyWeek: number; // 이번 달 행운의 주 (1~4, month 리포트용)
 };
 
 // 토스 팔레트에 맞춘 차분한 색 — 형광 핑크·보라·주황 같은 튀는 색은 톤다운.
@@ -96,8 +97,9 @@ export function computeLuck(seed: number): LuckSet {
   const numbers6 = [...set].sort((a, b) => a - b);
 
   const food = pick(LUCKY_FOODS, r);
+  const luckyWeek = 1 + Math.floor(r() * 4); // 1~4주차
 
-  return { total, grade: grade(total), categories, color, number, numbers6, direction, time, item, tag, food };
+  return { total, grade: grade(total), categories, color, number, numbers6, direction, time, item, tag, food, luckyWeek };
 }
 
 export function scoreColor(score: number): string {

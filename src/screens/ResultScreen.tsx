@@ -43,7 +43,7 @@ export function ResultScreen({
     : { title: '오늘의 풀이', desc: '시간대별로 하루를 미리 그려봤어요', m: '🌅 오전', a: '☀️ 오후', e: '🌙 저녁' };
 
   return (
-    <AppLayout onBack={onBack} title="오늘의 쪽지">
+    <AppLayout onBack={onBack} title={isMonth ? '이번 달 쪽지' : '오늘의 쪽지'}>
       {/* 브리핑 카드 */}
       <div
         className={`briefing briefing--${rarity.tier} fade-in`}
@@ -95,29 +95,33 @@ export function ResultScreen({
           </div>
         </div>
 
-        {/* 오늘의 행운 보고서 — 하루를 설계하게 돕는 훅 (타이밍·색·음식) */}
+        {/* 행운 보고서 — day: 타이밍·색·음식 / month: 행운의 주·이달의 색·키워드 */}
         <div className="report">
-          <p className="report__head">🍀 오늘의 행운 보고서</p>
+          <p className="report__head">🍀 {isMonth ? '이번 달 행운 보고서' : '오늘의 행운 보고서'}</p>
           <div className="report__grid">
             <div className="report__cell">
-              <span className="report__k">타이밍</span>
-              <span className="report__v">{luck.time}</span>
+              <span className="report__k">{isMonth ? '행운의 주' : '타이밍'}</span>
+              <span className="report__v">{isMonth ? `${luck.luckyWeek ?? 1}주차` : luck.time}</span>
             </div>
             <div className="report__cell">
-              <span className="report__k">행운 색</span>
+              <span className="report__k">{isMonth ? '이달의 색' : '행운 색'}</span>
               <span className="report__v">
                 <i className="report__dot" style={{ background: luck.color.hex }} aria-hidden />
                 {luck.color.name}
               </span>
             </div>
             <div className="report__cell">
-              <span className="report__k">행운 음식</span>
+              <span className="report__k">{isMonth ? '이달의 키워드' : '행운 음식'}</span>
               <span className="report__v">
-                {luck.food.emoji} {luck.food.name}
+                {isMonth ? luck.tag : `${luck.food.emoji} ${luck.food.name}`}
               </span>
             </div>
           </div>
-          <p className="report__why">{luck.food.why}</p>
+          <p className="report__why">
+            {isMonth
+              ? `이번 달은 '${luck.tag}'을 키워드로 삼으면 술술 풀려요.`
+              : luck.food.why}
+          </p>
         </div>
       </div>
 

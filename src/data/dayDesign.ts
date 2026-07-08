@@ -29,8 +29,8 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
   tomorrow: {
     up: [
       {
-        headline: '내일도 이 좋은 기운, 그대로 이어가요.',
-        vibe: '잘 풀리는 흐름을 내일까지 데려가는 하루예요.',
+        headline: '오늘의 이 좋은 기운, 끝까지 이어가요.',
+        vibe: '잘 풀리는 흐름을 하루 끝까지 데려가는 날이에요.',
         steps: [
           { when: '아침', text: '기대되는 일 하나 정해두고 시작해요. 방향이 있으면 기운이 안 새요.' },
           { when: '낮', text: '잘된다고 몰아치지 말고 반 박자 천천히 가요.' },
@@ -51,7 +51,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
     ],
     flat: [
       {
-        headline: '내일은 작은 변화 하나가 하루의 스위치가 돼요.',
+        headline: '오늘은 작은 변화 하나가 하루의 스위치가 돼요.',
         vibe: '특별할 것 없어 보여도 손대는 만큼 달라지는 날이에요.',
         steps: [
           { when: '아침', text: '늘 가던 길 말고 다른 길로 나가봐요.' },
@@ -73,7 +73,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
     ],
     down: [
       {
-        headline: '내일은 잘 해내기보다, 잘 버티는 게 이기는 거예요.',
+        headline: '오늘은 잘 해내기보다, 잘 버티는 게 이기는 거예요.',
         vibe: '무리 없이 회복에 무게를 두면 좋은 날이에요.',
         steps: [
           { when: '아침', text: '목표를 반으로 접어도 괜찮아요. 회복이 먼저예요.' },
@@ -98,21 +98,23 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
     up: [
       {
         headline: '이번 달, 지금의 좋은 흐름을 끝까지 밀고 가요.',
-        vibe: '가진 기운을 흘리지 않고 차곡차곡 쌓는 달이에요.',
+        vibe: '기운을 흘리지 않고 주마다 차곡차곡 쌓는 달이에요.',
         steps: [
-          { when: '초반', text: '이번 달 이루고 싶은 것 하나를 정해두세요.' },
-          { when: '중순', text: '잘 풀려도 중간 점검 한 번은 하고 가요.' },
-          { when: '월말', text: '해낸 걸 칭찬하고 다음 달을 살짝 그려봐요.' },
+          { when: '1주차', text: '이루고 싶은 것 하나를 정하고 가볍게 첫 발을 떼요.' },
+          { when: '2주차', text: '탄력 붙은 김에 제일 중요한 일을 밀어붙여요.' },
+          { when: '3주차', text: '중간 점검 한 번으로 방향을 다시 맞춰요.' },
+          { when: '4주차', text: '해낸 걸 칭찬하고 다음 달을 살짝 그려봐요.' },
         ],
         holdOff: '잘나갈 때 무리하게 일을 벌이는 것',
       },
       {
         headline: '이번 달은 좋은 기운을 나눌수록 더 커져요.',
-        vibe: '혼자 누리기보다 함께 나눌 때 운이 배가되는 달이에요.',
+        vibe: '함께 나눌 때 운이 배가되는 달이에요.',
         steps: [
-          { when: '초반', text: '고마운 사람에게 먼저 연락해봐요.' },
-          { when: '중순', text: '작은 성과를 주변과 나눠요.' },
-          { when: '월말', text: '받은 도움에 한 번씩 답해두면 인연이 쌓여요.' },
+          { when: '1주차', text: '고마운 사람에게 먼저 연락해봐요.' },
+          { when: '2주차', text: '작은 성과가 생기면 주변과 나눠요.' },
+          { when: '3주차', text: '도움을 주고받으며 관계를 한 뼘 넓혀요.' },
+          { when: '4주차', text: '받은 호의에 한 번씩 답하며 달을 마무리해요.' },
         ],
         holdOff: '기분에 취해 감당 못 할 약속을 잡는 것',
       },
@@ -120,11 +122,12 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
     flat: [
       {
         headline: '이번 달은 새로 벌이기보다, 있는 걸 단단히 하는 달이에요.',
-        vibe: '다지는 만큼 후반에 여유가 생기는 흐름이에요.',
+        vibe: '주마다 하나씩 다지면 후반에 여유가 생겨요.',
         steps: [
-          { when: '초반', text: '작은 목표 하나만 정해 꾸준히 지켜봐요.' },
-          { when: '중순', text: '흐트러진 루틴을 다시 잡는 게 이번 달 핵심이에요.' },
-          { when: '월말', text: '한 달을 세 줄로 정리하면 다음 달이 가벼워져요.' },
+          { when: '1주차', text: '이번 달 작은 목표 하나만 정해요.' },
+          { when: '2주차', text: '흐트러진 루틴을 다시 잡아요.' },
+          { when: '3주차', text: '벌여둔 것 중 하나에만 집중해요.' },
+          { when: '4주차', text: '한 달을 세 줄로 정리하면 다음 달이 가벼워져요.' },
         ],
         holdOff: '이것저것 벌여만 놓고 마무리를 미루는 것',
       },
@@ -132,9 +135,10 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         headline: '이번 달의 운은 넓히기보다 다지기예요.',
         vibe: '기본을 챙길수록 든든해지는 달이에요.',
         steps: [
-          { when: '초반', text: '미뤄둔 것 하나부터 정리해봐요.' },
-          { when: '중순', text: '비교 대신 내 속도에 집중해요.' },
-          { when: '월말', text: '안 쓰는 것 하나를 비우면 새 자리가 생겨요.' },
+          { when: '1주차', text: '미뤄둔 것 하나부터 정리해요.' },
+          { when: '2주차', text: '비교 대신 내 속도에 집중해요.' },
+          { when: '3주차', text: '중간에 이달 지출을 한 번 점검해요.' },
+          { when: '4주차', text: '안 쓰는 것 하나를 비워 새 자리를 만들어요.' },
         ],
         holdOff: '남과 비교하며 조급해지는 것',
       },
@@ -142,11 +146,12 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
     down: [
       {
         headline: '이번 달은 몰아치기보다, 회복의 리듬을 되찾는 달이에요.',
-        vibe: '무리한 확장보다 나를 돌보는 데 무게를 두면 좋은 달이에요.',
+        vibe: '나를 돌보는 데 무게를 두면 좋은 달이에요.',
         steps: [
-          { when: '초반', text: '컨디션부터 챙겨요. 잠과 끼니가 절반이에요.' },
-          { when: '중순', text: '버거운 일정은 덜어내도 괜찮아요. 중반만 넘기면 수월해져요.' },
-          { when: '월말', text: '무사히 지나온 한 달을 스스로 다독여요.' },
+          { when: '1주차', text: '컨디션부터 챙겨요. 잠과 끼니가 절반이에요.' },
+          { when: '2주차', text: '버거운 일정은 덜어내도 괜찮아요.' },
+          { when: '3주차', text: '중반만 넘기면 한결 수월해져요. 조금만 더요.' },
+          { when: '4주차', text: '무사히 지나온 한 달을 스스로 다독여요.' },
         ],
         holdOff: '지친 몸으로 큰 결정을 서두르는 것',
       },
@@ -154,9 +159,10 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         headline: '힘든 달일수록, 딱 하나만 지켜도 충분해요.',
         vibe: '작은 루틴 하나가 한 달을 지켜주는 흐름이에요.',
         steps: [
-          { when: '초반', text: '지킬 수 있는 작은 습관 하나만 정해요.' },
-          { when: '중순', text: '무리한 약속은 줄이고 나에게 시간을 줘요.' },
-          { when: '월말', text: '버틴 나를 칭찬하고 다음 달을 가볍게 봐요.' },
+          { when: '1주차', text: '지킬 수 있는 작은 습관 하나만 정해요.' },
+          { when: '2주차', text: '무리한 약속은 줄이고 나에게 시간을 줘요.' },
+          { when: '3주차', text: '힘들면 쉬어가도 돼요. 페이스만 지켜요.' },
+          { when: '4주차', text: '버틴 나를 칭찬하고 다음 달을 가볍게 봐요.' },
         ],
         holdOff: '다 잘하려다 스스로를 몰아세우는 것',
       },
