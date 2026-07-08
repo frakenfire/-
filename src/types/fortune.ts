@@ -49,11 +49,12 @@ export type FortuneResult = {
 
 export type DailyReading = {
   overall: string; // 전체 풀이 (등급 해설 + 오늘의 결)
-  morning: string;
-  afternoon: string;
-  evening: string;
+  morning: string; // day: 오전 / month: 초반
+  afternoon: string; // day: 오후 / month: 중순
+  evening: string; // day: 저녁 / month: 월말
   people: string; // 사람과의 사이
   mind: string; // 마음 관리
+  scale: 'day' | 'month'; // 시간 척도 (라벨 결정)
 };
 
 // 편지 구조 — 렌더링 위계를 위해 역할별로 분리

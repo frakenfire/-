@@ -36,6 +36,12 @@ export function ResultScreen({
   const { luck, rarity, dayPlan } = result;
   const [letterOpen, setLetterOpen] = useState(false);
 
+  // 풀이 라벨 — month 타입은 초반/중순/월말, 나머지는 오전/오후/저녁.
+  const isMonth = result.reading.scale === 'month';
+  const rl = isMonth
+    ? { title: '이번 달 풀이', desc: '초반부터 월말까지 이번 달을 그려봤어요', m: '🌱 이번 달 초반', a: '📈 중순', e: '🏁 월말' }
+    : { title: '오늘의 풀이', desc: '시간대별로 하루를 미리 그려봤어요', m: '🌅 오전', a: '☀️ 오후', e: '🌙 저녁' };
+
   return (
     <AppLayout onBack={onBack} title="오늘의 쪽지">
       {/* 브리핑 카드 */}
@@ -74,7 +80,7 @@ export function ResultScreen({
 
         {/* 기분에 맞춘 하루 설계 — 결과의 주인공 */}
         <div className="plan">
-          <p className="plan__title">오늘, 이렇게 보내요</p>
+          <p className="plan__title">{isMonth ? '이번 달, 이렇게 보내요' : '오늘, 이렇게 보내요'}</p>
           <ul className="plan__steps">
             {dayPlan.steps.map((s) => (
               <li className="plan__step" key={s.when}>
@@ -84,7 +90,7 @@ export function ResultScreen({
             ))}
           </ul>
           <div className="plan__hold">
-            <span className="plan__hold-k">오늘은 접어둬요</span>
+            <span className="plan__hold-k">{isMonth ? '이번 달은 접어둬요' : '오늘은 접어둬요'}</span>
             <span className="plan__hold-v">{dayPlan.holdOff}</span>
           </div>
         </div>
@@ -118,8 +124,8 @@ export function ResultScreen({
       {/* 하루 풀이 — 매일 볼 만한 해석 */}
       <div className="card fade-in">
         <div className="card-head">
-          <p className="card-head__title">오늘의 풀이</p>
-          <p className="card-head__desc">시간대별로 하루를 미리 그려봤어요</p>
+          <p className="card-head__title">{rl.title}</p>
+          <p className="card-head__desc">{rl.desc}</p>
         </div>
         <div className="section">
           <p className="section__label">🔎 전체 풀이</p>
@@ -127,15 +133,15 @@ export function ResultScreen({
           <p className="section__text">{result.reading.overall}</p>
         </div>
         <div className="section">
-          <p className="section__label">🌅 오전</p>
+          <p className="section__label">{rl.m}</p>
           <p className="section__text">{result.reading.morning}</p>
         </div>
         <div className="section">
-          <p className="section__label">☀️ 오후</p>
+          <p className="section__label">{rl.a}</p>
           <p className="section__text">{result.reading.afternoon}</p>
         </div>
         <div className="section">
-          <p className="section__label">🌙 저녁</p>
+          <p className="section__label">{rl.e}</p>
           <p className="section__text">{result.reading.evening}</p>
         </div>
         <div className="section">
