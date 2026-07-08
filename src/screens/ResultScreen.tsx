@@ -176,8 +176,10 @@ export function ResultScreen({
       ) : null}
 
       <div className="btn-stack" style={{ marginTop: 'var(--space-3)' }}>
-        <button type="button" className="btn btn--ghost" disabled={busy} onClick={onDetail}>
-          항목별 운세랑 행운 세트도 볼래요 <AdBadge label="광고" />
+        <button type="button" className="btn btn--unlock" disabled={busy} onClick={onDetail}>
+          <span className="btn-unlock__main">🔓 오늘의 심층 리포트 열기</span>
+          <span className="btn-unlock__sub">운세 원픽 · 오늘의 궁합 · 행운 미션 · 부적</span>
+          <AdBadge label="광고" />
         </button>
 
         <button type="button" className="btn btn--ghost" disabled={busy} onClick={onSave}>

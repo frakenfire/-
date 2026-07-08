@@ -1547,6 +1547,259 @@ button {
   word-break: keep-all;
 }
 
+/* ═══ 심층 리포트 (상세화면) ═══ */
+.report-hero {
+  background: linear-gradient(135deg, #eef5ff, #f7fbff);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6) var(--space-5);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-card);
+}
+.report-hero__eyebrow {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--brand);
+  letter-spacing: 0.02em;
+}
+.report-hero__title {
+  margin: 8px 0 6px;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.45;
+  color: var(--gray-900);
+  letter-spacing: -0.02em;
+  word-break: keep-all;
+}
+.report-hero__title b {
+  color: var(--brand-strong);
+}
+.report-hero__sub {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-700);
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+/* 항목별 운세 순위 */
+.cat-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.cat-item {
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--gray-50);
+}
+.cat-item--top {
+  background: var(--brand-soft);
+}
+.cat-item__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.cat-item__name {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.cat-item__pick {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--brand-strong);
+  background: var(--white);
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+.cat-item__tag {
+  margin-left: auto;
+  font-size: 12px;
+  font-weight: 700;
+}
+.cat-item__score {
+  font-size: 16px;
+  font-weight: 800;
+  min-width: 26px;
+  text-align: right;
+}
+.cat-item__bar {
+  display: block;
+  height: 8px;
+  border-radius: 999px;
+  background: var(--gray-200);
+  overflow: hidden;
+}
+.cat-item__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+.cat-item__interp {
+  margin: 8px 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-700);
+  line-height: 1.55;
+  word-break: keep-all;
+}
+
+/* 행운 세트 — 미션 + 세트 + 숫자 활용 */
+.lucky {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.lucky__mission {
+  background: var(--brand-soft);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+.lucky__mission-k {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--brand-strong);
+}
+.lucky__mission-v {
+  margin: 6px 0 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--gray-900);
+  line-height: 1.6;
+  word-break: keep-all;
+}
+.lucky__num {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--gray-50);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+}
+.lucky__num-badge {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+.lucky__num-text {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+/* 오늘의 궁합 */
+.match {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+.match__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  padding: var(--space-4) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--gray-50);
+}
+.match__cell--good {
+  background: var(--brand-soft);
+}
+.match__badge {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--brand-strong);
+}
+.match__badge--bad {
+  color: var(--gray-600);
+}
+.match__emoji {
+  font-size: 40px;
+  line-height: 1.1;
+  margin: 2px 0;
+}
+.match__label {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.match__hint {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--gray-600);
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+/* 오늘의 부적 — 캡처하고 싶은 다크 카드 */
+.charm {
+  text-align: center;
+  background: var(--gray-900);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6) var(--space-5);
+  margin-bottom: var(--space-4);
+}
+.charm__label {
+  font-size: 12px;
+  font-weight: 800;
+  color: #9db4ff;
+}
+.charm__text {
+  margin: 10px 0 8px;
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  word-break: keep-all;
+}
+.charm__sub {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--gray-400);
+}
+
+/* 심층 리포트 잠금 해제 버튼 — 눌러서 보고 싶게 */
+.btn--unlock {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 14px 16px;
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+  border: 1px solid #cfe2fb;
+}
+.btn-unlock__main {
+  font-size: 15px;
+  font-weight: 800;
+}
+.btn-unlock__sub {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--brand);
+  opacity: 0.9;
+}
+.btn--unlock .ad-notice {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+}
+
 /* 등급별 브리핑 테두리 */
 .briefing--rare {
   border-color: #cfe0f7;

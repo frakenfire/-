@@ -187,8 +187,8 @@ export default function App() {
 
   async function handleCopyLine() {
     if (!result) return;
-    const ok = await copyText(result.shareLine);
-    flash(ok ? '한 문장 복사 완료! ✨' : '앗, 복사를 못 했어요');
+    const ok = await copyText(result.detail.charm);
+    flash(ok ? '부적 문장 복사 완료! 🔖' : '앗, 복사를 못 했어요');
   }
 
   async function handleSave() {

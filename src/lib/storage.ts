@@ -85,8 +85,11 @@ export function loadTodayReading(dateKey: string): TodayReading | null {
     if (!r.result.reading?.overall) {
       return null;
     }
-    // 하루 설계(dayPlan) 없는 구버전 스냅샷은 새 결과 화면과 호환되지 않음
+    // 하루 설계(dayPlan)·심층 리포트(detail) 없는 구버전 스냅샷은 새 화면과 호환되지 않음
     if (!r.result.dayPlan?.headline || !Array.isArray(r.result.dayPlan.steps)) {
+      return null;
+    }
+    if (!r.result.detail?.topPick || !Array.isArray(r.result.detail.ranked)) {
       return null;
     }
     return r;

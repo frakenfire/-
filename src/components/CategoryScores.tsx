@@ -1,24 +1,32 @@
-import type { CategoryScore } from '../lib/luck';
+import type { RankedCat } from '../lib/detail';
 import { scoreColor } from '../lib/luck';
 
-// 카테고리별 점수 바 (애정/재물/직장/건강). '오늘의 운세' 앱 공통 요소.
-export function CategoryScores({ categories }: { categories: CategoryScore[] }) {
+// 항목별 운세 — 그냥 숫자 나열이 아니라 '순위 + 해석'으로.
+// 1위는 오늘의 원픽(밀어야 할 운), 꼴찌는 살살 갈 운으로 의미를 준다.
+export function CategoryScores({ ranked }: { ranked: RankedCat[] }) {
   return (
-    <div className="cat-scores">
-      {categories.map((c) => (
-        <div className="cat-row" key={c.key}>
-          <span className="cat-row__label">
-            <span aria-hidden>{c.emoji}</span> {c.label}
-          </span>
-          <span className="cat-row__bar">
+    <div className="cat-list">
+      {ranked.map((c, i) => (
+        <div className={`cat-item${i === 0 ? ' cat-item--top' : ''}`} key={c.key}>
+          <div className="cat-item__head">
+            <span className="cat-item__name">
+              <span aria-hidden>{c.emoji}</span> {c.label}
+            </span>
+            {i === 0 ? <span className="cat-item__pick">👑 오늘의 원픽</span> : null}
+            <span className="cat-item__tag" style={{ color: scoreColor(c.score) }}>
+              {c.bandTag}
+            </span>
+            <span className="cat-item__score num" style={{ color: scoreColor(c.score) }}>
+              {c.score}
+            </span>
+          </div>
+          <span className="cat-item__bar">
             <span
-              className="cat-row__fill"
+              className="cat-item__fill"
               style={{ width: `${c.score}%`, background: scoreColor(c.score) }}
             />
           </span>
-          <span className="cat-row__score" style={{ color: scoreColor(c.score) }}>
-            {c.score}
-          </span>
+          <p className="cat-item__interp">{c.interp}</p>
         </div>
       ))}
     </div>

@@ -1,0 +1,66 @@
+import type { CategoryScore, LuckSet } from './luck';
+import { ZODIACS, type Zodiac } from '../data/zodiac';
+import {
+  BAND_TAG,
+  CATEGORY_INTERP,
+  CHARMS,
+  MISSION_TEMPLATES,
+  NUMBER_HINTS,
+  band,
+  type Band,
+} from '../data/detailContent';
+
+// 심층 리포트 — 광고를 눌러서라도 보고 싶은 보상 페이지의 콘텐츠를 seed 로 계산.
+
+export type RankedCat = CategoryScore & { band: Band; bandTag: string; interp: string };
+
+export type DetailReport = {
+  ranked: RankedCat[]; // 점수 높은 순 정렬
+  topPick: RankedCat; // 오늘의 원픽 (가장 좋은 운)
+  watchOut: RankedCat; // 가장 조심할 운
+  match: { good: Zodiac; caution: Zodiac }; // 오늘의 궁합
+  mission: string; // 행운 미션 (행운 세트를 한 행동으로)
+  numberUse: string; // 행운 숫자 활용법
+  charm: string; // 오늘의 부적 문장
+};
+
+function pick<T>(arr: T[], n: number): T {
+  return arr[Math.abs(Math.trunc(n)) % arr.length];
+}
+
+export function computeDetail(seed: number, luck: LuckSet): DetailReport {
+  const ranked: RankedCat[] = luck.categories
+    .map((c: CategoryScore) => {
+      const b = band(c.score);
+      return { ...c, band: b, bandTag: BAND_TAG[b], interp: CATEGORY_INTERP[c.key]?.[b] ?? '' };
+    })
+    .sort((a, b) => b.score - a.score);
+
+  const topPick = ranked[0];
+  const watchOut = ranked[ranked.length - 1];
+
+  // 오늘의 궁합 — 잘 맞는 띠 / 조심할 띠 (서로 다르게).
+  const goodIdx = Math.abs(Math.trunc(seed / 5)) % ZODIACS.length;
+  let cautionIdx = Math.abs(Math.trunc(seed / 37) + 6) % ZODIACS.length;
+  if (cautionIdx === goodIdx) cautionIdx = (cautionIdx + 1) % ZODIACS.length;
+
+  const mission = pick(MISSION_TEMPLATES, seed / 13)
+    .replace('{time}', luck.time)
+    .replace('{color}', luck.color.name)
+    .replace('{dir}', luck.direction)
+    .replace('{item}', luck.item)
+    .replace('{food}', luck.food.name);
+
+  const numberUse = pick(NUMBER_HINTS, seed / 19).replace('{n}', String(luck.number));
+  const charm = pick(CHARMS, seed / 23);
+
+  return {
+    ranked,
+    topPick,
+    watchOut,
+    match: { good: ZODIACS[goodIdx], caution: ZODIACS[cautionIdx] },
+    mission,
+    numberUse,
+    charm,
+  };
+}

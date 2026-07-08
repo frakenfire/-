@@ -45,6 +45,8 @@ export type FortuneResult = {
   reading: DailyReading;
   /** 기분에 맞춘 하루 설계 — 결과의 새 주인공 (/goal) */
   dayPlan: import('../data/dayDesign').MoodPlan;
+  /** 심층 리포트 — 광고 해제 시 보는 보상 페이지 (순위·미션·궁합·부적) */
+  detail: import('../lib/detail').DetailReport;
 };
 
 export type DailyReading = {
