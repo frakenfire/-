@@ -10,11 +10,15 @@ export type ShareBriefing = {
   doItem: string; // 오늘 이렇게 보내요 (구체 행동)
   dontItem: string; // 오늘은 접어둬요
   shareLine: string;
+  brag?: string; // "상위 8%" 자랑 문구
 };
 
 export function buildShareText(b: ShareBriefing): string {
+  const head = b.brag
+    ? `💌 내일쪽지 · 오늘의 ${b.title} · 총운 ${b.score}점 (${b.brag}) 🏆`
+    : `💌 내일쪽지 · 오늘의 ${b.title} (총운 ${b.score}점)`;
   return [
-    `💌 내일쪽지 · 오늘의 ${b.title} (총운 ${b.score}점)`,
+    head,
     ``,
     `"${b.headline}"`,
     ``,
@@ -47,6 +51,22 @@ export async function copyText(text: string): Promise<boolean> {
   } catch {
     return false;
   }
+}
+
+// 임의 텍스트 공유(궁합 등). 성공(공유 또는 복사) 시 true.
+export async function shareText(text: string): Promise<boolean> {
+  const nav = navigator as Navigator & {
+    share?: (data: { text?: string; title?: string }) => Promise<void>;
+  };
+  if (typeof nav.share === 'function') {
+    try {
+      await nav.share({ title: '내일쪽지 뽑기', text });
+      return true;
+    } catch {
+      /* 취소/미지원 → 복사 폴백 */
+    }
+  }
+  return copyText(text);
 }
 
 export async function shareOrCopy(b: ShareBriefing): Promise<'shared' | 'copied' | 'failed'> {

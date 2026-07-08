@@ -29,28 +29,24 @@ function greeting(): string {
 
 type Props = {
   streak: number;
-  subscribed: boolean;
-  delivered: boolean;
   yesterdayRecord: StoredResult | null;
   todayReading: TodayReading | null;
   zodiac: Zodiac | null;
   onZodiac: (id: ZodiacId) => void;
   onReopen: () => void;
-  onSubscribe: () => void;
+  onCompat: () => void;
   onSelect: (t: FortuneType) => void;
 };
 
-// PRD §5.1 + 리텐션 — 도착 배너 · 오늘 편지 다시 읽기 · 스트릭 · 어제의 쪽지 · 구독.
+// PRD §5.1 + 리텐션 — 오늘의 한 줄 · 친구 궁합 · 다시 읽기 · 스트릭 · 어제의 쪽지.
 export function HomeScreen({
   streak,
-  subscribed,
-  delivered,
   yesterdayRecord,
   todayReading,
   zodiac,
   onZodiac,
   onReopen,
-  onSubscribe,
+  onCompat,
   onSelect,
 }: Props) {
   const yNote = yesterdayRecord ? findNote(yesterdayRecord.noteId) : null;
@@ -122,19 +118,15 @@ export function HomeScreen({
         <span className="daily-line__hint">더 자세한 건 쪽지가 알려줄 거예요</span>
       </div>
 
-      {/* 오늘의 쪽지 도착 배너 (구독자, 하루 1회) */}
-      {delivered ? (
-        <button type="button" className="arrive-banner" onClick={() => onSelect('tomorrow')}>
-          <span className="arrive-banner__icon" aria-hidden>
-            📬
-          </span>
-          <span className="arrive-banner__body">
-            <span className="arrive-banner__title">오늘의 쪽지가 도착했어요!</span>
-            <span className="arrive-banner__desc">따끈한 새 쪽지, 바로 열어볼까요?</span>
-          </span>
-          <span className="arrive-banner__cta">열기 ›</span>
-        </button>
-      ) : null}
+      {/* 친구 궁합 — 로그인 없이 되는 바이럴 훅 */}
+      <button type="button" className="compat-banner" onClick={onCompat}>
+        <span className="compat-banner__icon" aria-hidden>💗</span>
+        <span className="compat-banner__body">
+          <span className="compat-banner__title">오늘 우리 궁합, 몇 점일까?</span>
+          <span className="compat-banner__desc">친구·연인 띠만 고르면 바로 나와요</span>
+        </span>
+        <span className="compat-banner__cta">보러가기 ›</span>
+      </button>
 
       {/* 오늘 받은 편지 다시 읽기 */}
       {todayReading ? (
@@ -174,21 +166,6 @@ export function HomeScreen({
         </div>
       ) : null}
 
-      {/* 매일 받기 구독 */}
-      {!subscribed ? (
-        <button type="button" className="subscribe-card" onClick={onSubscribe}>
-          <span className="subscribe-card__icon" aria-hidden>
-            🔔
-          </span>
-          <span className="subscribe-card__body">
-            <span className="subscribe-card__title">매일 아침 새 쪽지 받기</span>
-            <span className="subscribe-card__desc">하루 한 장, 쪽지 요정이 배달해드려요</span>
-          </span>
-          <span className="subscribe-card__cta">받을래요</span>
-        </button>
-      ) : (
-        <p className="subscribe-done">💌 매일 아침 쪽지가 도착해요</p>
-      )}
     </AppLayout>
   );
 }

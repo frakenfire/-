@@ -30,3 +30,9 @@ export async function showRewardAdForRetry(): Promise<boolean> {
   await wait(MOCK_DELAY_MS);
   return true;
 }
+
+/** 친구 궁합 결과 열기 — 리워드 광고 */
+export async function showRewardAdForCompat(): Promise<boolean> {
+  await wait(MOCK_DELAY_MS);
+  return true;
+}

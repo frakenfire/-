@@ -102,6 +102,13 @@ export function computeLuck(seed: number): LuckSet {
   return { total, grade: grade(total), categories, color, number, numbers6, direction, time, item, tag, food, luckyWeek };
 }
 
+// 총운 → "오늘 상위 N%" 자랑 배지 (좋은 점수일수록 상위, 공유 유발).
+export function luckPercentile(total: number): { pct: number; label: string } {
+  const pct = Math.max(1, Math.min(60, Math.round((100 - total) * 1.15)));
+  const label = pct <= 5 ? '역대급 행운' : pct <= 15 ? '상위권' : pct <= 30 ? '괜찮은 편' : '평범한 하루';
+  return { pct, label };
+}
+
 export function scoreColor(score: number): string {
   if (score >= 85) return 'var(--score-high)';
   if (score >= 73) return 'var(--score-mid)';

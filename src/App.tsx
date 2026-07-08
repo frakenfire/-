@@ -4,13 +4,15 @@ import { NOTES } from './data/notes';
 import { FORTUNE_LABEL } from './data/fortuneTypes';
 import { hashSeed, pickBySeed, todayKey } from './lib/dateSeed';
 import { generateFortune } from './lib/generateFortune';
+import { luckPercentile } from './lib/luck';
 import {
   showInterstitialBeforeResult,
+  showRewardAdForCompat,
   showRewardAdForDetail,
   showRewardAdForRetry,
   showRewardAdForSaveImage,
 } from './lib/ads';
-import { shareOrCopy, copyText } from './lib/share';
+import { shareOrCopy, shareText, copyText } from './lib/share';
 import { saveResultCard } from './lib/saveImage';
 import {
   incrementDailyDrawCount,
@@ -25,12 +27,6 @@ import { findNote } from './data/notes';
 import { findZodiac } from './data/zodiac';
 import type { Zodiac, ZodiacId } from './data/zodiac';
 import { loadMyZodiac, saveMyZodiac } from './lib/storage';
-import {
-  hasNewDelivery,
-  isSubscribed,
-  markDelivered,
-  subscribeDaily,
-} from './lib/subscribe';
 
 import { HomeScreen } from './screens/HomeScreen';
 import { MoodScreen } from './screens/MoodScreen';
@@ -38,8 +34,9 @@ import { NotePickScreen } from './screens/NotePickScreen';
 import { RevealScreen } from './screens/RevealScreen';
 import { ResultScreen } from './screens/ResultScreen';
 import { DetailResultScreen } from './screens/DetailResultScreen';
+import { CompatScreen } from './screens/CompatScreen';
 
-type ScreenName = 'home' | 'mood' | 'pick' | 'reveal' | 'result' | 'detail';
+type ScreenName = 'home' | 'mood' | 'pick' | 'reveal' | 'result' | 'detail' | 'compat';
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -66,9 +63,6 @@ export default function App() {
     [dateKey, yesterdayKey],
   );
 
-  // 주기 수신: 구독 상태 + 오늘의 쪽지 도착 여부 + 어제의 쪽지 기록
-  const [subscribed, setSubscribed] = useState(() => isSubscribed());
-  const [delivered, setDelivered] = useState(() => hasNewDelivery(todayKey()));
   const yesterdayRecord = useMemo(() => {
     const r = loadResult();
     return r && r.dateKey === yesterdayKey ? r : null;
@@ -106,8 +100,6 @@ export default function App() {
 
   function handleType(t: FortuneType) {
     markVisit(dateKey);
-    markDelivered(dateKey);
-    setDelivered(false);
     setFortuneType(t);
     setScreen('mood');
   }
@@ -117,14 +109,11 @@ export default function App() {
     setScreen('pick');
   }
 
-  async function handleSubscribe() {
-    const ok = await subscribeDaily();
-    if (ok) {
-      setSubscribed(true);
-      flash('내일 아침, 새 쪽지로 찾아올게요 💌');
-    } else {
-      flash('앗, 알림 설정을 못 했어요');
-    }
+  function handleSaveMyZodiac(id: ZodiacId) {
+    const z = findZodiac(id);
+    if (!z) return;
+    saveMyZodiac(id);
+    setZodiac(z);
   }
 
   async function handlePick(picked: Note) {
@@ -171,6 +160,7 @@ export default function App() {
     const gradeText = result.rarity.special
       ? `${result.rarity.emoji}${result.rarity.label}`
       : result.luck.grade;
+    const brag = luckPercentile(result.luck.total);
     const r = await shareOrCopy({
       title: result.title,
       score: result.luck.total,
@@ -179,6 +169,7 @@ export default function App() {
       doItem: result.dayPlan.steps[0].text,
       dontItem: result.dayPlan.holdOff,
       shareLine: result.shareLine,
+      brag: `상위 ${brag.pct}%`,
     });
     if (r === 'shared') flash('공유 창을 열었어요 💌');
     else if (r === 'copied') flash('공유 문구 복사 완료! 💌');
@@ -224,14 +215,12 @@ export default function App() {
       {screen === 'home' && (
         <HomeScreen
           streak={streak}
-          subscribed={subscribed}
-          delivered={delivered}
           yesterdayRecord={yesterdayRecord}
           todayReading={todayReading}
           zodiac={zodiac}
           onZodiac={handleZodiac}
           onReopen={handleReopen}
-          onSubscribe={handleSubscribe}
+          onCompat={() => setScreen('compat')}
           onSelect={handleType}
         />
       )}
@@ -264,12 +253,11 @@ export default function App() {
           result={result}
           note={note}
           busy={busy}
-          subscribed={subscribed}
-          onSubscribe={handleSubscribe}
           onDetail={handleDetail}
           onSave={handleSave}
           onShare={handleShare}
           onRetry={handleRetry}
+          onCompat={() => setScreen('compat')}
           onBack={() => setScreen('home')}
         />
       )}
@@ -282,6 +270,18 @@ export default function App() {
           onCopyLine={handleCopyLine}
           onSave={handleSave}
           onBack={() => setScreen('result')}
+        />
+      )}
+
+      {screen === 'compat' && (
+        <CompatScreen
+          dateKey={dateKey}
+          initialMy={zodiac?.id ?? null}
+          onSaveMy={handleSaveMyZodiac}
+          onBack={() => setScreen(result ? 'result' : 'home')}
+          onAdUnlock={showRewardAdForCompat}
+          onShare={shareText}
+          onToast={flash}
         />
       )}
 

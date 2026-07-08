@@ -3,38 +3,37 @@ import { AppLayout } from '../components/AppLayout';
 import { LetterCard } from '../components/LetterCard';
 import { Disclaimer } from '../components/Disclaimer';
 import { AdBadge, AdBanner } from '../components/AdNotice';
+import { luckPercentile } from '../lib/luck';
 import type { FortuneResult, Note } from '../types/fortune';
 
 type Props = {
   result: FortuneResult;
   note: Note;
   busy: boolean;
-  subscribed: boolean;
-  onSubscribe: () => void;
   onDetail: () => void;
   onSave: () => void;
   onShare: () => void;
   onRetry: () => void;
+  onCompat: () => void;
   onBack: () => void;
 };
 
-// 결과 = 오늘의 행동 처방 브리핑.
-// ✅하면 좋은 것 / 🚫피할 것이 주인공, 요정의 편지는 원하는 사람만 펼쳐 읽는다.
-// 공유는 "친구에게 도움 주기"로 첫 번째 액션.
+// 결과 = 기분에 맞춘 하루 설계.
+// 공유는 "친구에게 도움 주기"로 첫 번째 액션. 상위 % 배지로 자랑 공유를 유도한다.
 export function ResultScreen({
   result,
   note,
   busy,
-  subscribed,
-  onSubscribe,
   onDetail,
   onSave,
   onShare,
   onRetry,
+  onCompat,
   onBack,
 }: Props) {
   const { luck, rarity, dayPlan } = result;
   const [letterOpen, setLetterOpen] = useState(false);
+  const brag = luckPercentile(luck.total);
 
   // 풀이 라벨 — month 타입은 초반/중순/월말, 나머지는 오전/오후/저녁.
   const isMonth = result.reading.scale === 'month';
@@ -73,6 +72,11 @@ export function ResultScreen({
           <span className={`rarity-badge rarity-badge--${rarity.tier}`}>
             {rarity.emoji} {rarity.label}
           </span>
+        </div>
+
+        <div className="brag" aria-label={`오늘 상위 ${brag.pct}퍼센트`}>
+          <span className="brag__pct">🏆 오늘 총운 상위 {brag.pct}%</span>
+          <span className="brag__label">· {brag.label}</span>
         </div>
 
         <p className="briefing__headline">{dayPlan.headline}</p>
@@ -195,20 +199,14 @@ export function ResultScreen({
         </button>
       </div>
 
-      {!subscribed ? (
-        <button type="button" className="subscribe-card" onClick={onSubscribe}>
-          <span className="subscribe-card__icon" aria-hidden>
-            🔔
-          </span>
-          <span className="subscribe-card__body">
-            <span className="subscribe-card__title">내일 쪽지도 받아볼래요?</span>
-            <span className="subscribe-card__desc">매일 아침, 쪽지 요정이 배달해드려요</span>
-          </span>
-          <span className="subscribe-card__cta">받을래요</span>
-        </button>
-      ) : (
-        <p className="tomorrow-nudge">내일 아침, 새 쪽지로 찾아올게요 💌</p>
-      )}
+      <button type="button" className="compat-banner" onClick={onCompat}>
+        <span className="compat-banner__icon" aria-hidden>💗</span>
+        <span className="compat-banner__body">
+          <span className="compat-banner__title">이 사람이랑 오늘 궁합은?</span>
+          <span className="compat-banner__desc">친구·연인 띠 고르면 바로 나와요</span>
+        </span>
+        <span className="compat-banner__cta">보러가기 ›</span>
+      </button>
 
       <AdBanner />
       <Disclaimer />
