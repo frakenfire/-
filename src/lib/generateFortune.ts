@@ -5,6 +5,7 @@ import { composeLetter } from './letter';
 import { computeRarity, RARITY_LINE } from './rarity';
 import { FORTUNE_LABEL } from '../data/fortuneTypes';
 import { NOTE_LEAD, TEMPLATES } from '../data/resultTemplates';
+import { DAY_DESIGN } from '../data/dayDesign';
 import {
   AFTERNOON_READINGS,
   EVENING_READINGS,
@@ -54,6 +55,10 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const rarity = computeRarity(seed);
   const letter = composeLetter({ mood, variant, seed });
 
+  // 기분에 맞춘 하루 설계 — 지친/불안/외로운 날은 회복 중심, 좋은 날은 과속을 잡아준다.
+  const plans = DAY_DESIGN[mood];
+  const dayPlan = plans[Math.abs(Math.trunc(seed / 13)) % plans.length];
+
   // 에픽 이상이면 요정의 특별 한마디를 편지에 담는다.
   const rarityLine = RARITY_LINE[rarity.tier];
   if (rarityLine) letter.special = rarityLine;
@@ -96,5 +101,6 @@ ${variant.flow}`,
     dont,
     luckyHint,
     reading,
+    dayPlan,
   };
 }

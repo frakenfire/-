@@ -33,7 +33,7 @@ export function ResultScreen({
   onRetry,
   onBack,
 }: Props) {
-  const { luck, rarity } = result;
+  const { luck, rarity, dayPlan } = result;
   const [letterOpen, setLetterOpen] = useState(false);
 
   return (
@@ -69,24 +69,24 @@ export function ResultScreen({
           </span>
         </div>
 
-        <p className="briefing__highlight">
-          <mark>{result.pinpoint}</mark>
-        </p>
+        <p className="briefing__headline">{dayPlan.headline}</p>
+        <p className="briefing__vibe">{dayPlan.vibe}</p>
 
-        <div className="verdict verdict--do">
-          <span className="verdict__label">✅ 오늘 하면 좋아요</span>
-          <ul className="verdict__list">
-            {result.dos.map((d) => (
-              <li key={d}>{d}</li>
+        {/* 기분에 맞춘 하루 설계 — 결과의 주인공 */}
+        <div className="plan">
+          <p className="plan__title">오늘, 이렇게 보내요</p>
+          <ul className="plan__steps">
+            {dayPlan.steps.map((s) => (
+              <li className="plan__step" key={s.when}>
+                <span className="plan__when">{s.when}</span>
+                <span className="plan__text">{s.text}</span>
+              </li>
             ))}
           </ul>
-        </div>
-
-        <div className="verdict verdict--dont">
-          <span className="verdict__label">🚫 오늘은 피하세요</span>
-          <ul className="verdict__list">
-            <li>{result.dont}</li>
-          </ul>
+          <div className="plan__hold">
+            <span className="plan__hold-k">오늘은 접어둬요</span>
+            <span className="plan__hold-v">{dayPlan.holdOff}</span>
+          </div>
         </div>
 
         {/* 오늘의 행운 보고서 — 하루를 설계하게 돕는 훅 (타이밍·색·음식) */}
@@ -123,6 +123,7 @@ export function ResultScreen({
         </div>
         <div className="section">
           <p className="section__label">🔎 전체 풀이</p>
+          <p className="section__lead">{result.pinpoint}</p>
           <p className="section__text">{result.reading.overall}</p>
         </div>
         <div className="section">

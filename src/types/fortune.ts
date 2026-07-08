@@ -43,6 +43,8 @@ export type FortuneResult = {
   luckyHint: string; // 🍀 행운 타이밍·색 (행동 제외 부분)
   /** 하루 풀이 — 매일 볼 만한 분량의 해석 */
   reading: DailyReading;
+  /** 기분에 맞춘 하루 설계 — 결과의 새 주인공 (/goal) */
+  dayPlan: import('../data/dayDesign').MoodPlan;
 };
 
 export type DailyReading = {
