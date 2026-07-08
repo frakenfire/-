@@ -89,14 +89,38 @@ export function ResultScreen({
           </ul>
         </div>
 
-        <p className="briefing__lucky">
-          🍀 행운 포인트 <b>{result.luckyHint}</b>
-        </p>
+        {/* 오늘의 행운 보고서 — 하루를 설계하게 돕는 훅 (타이밍·색·음식) */}
+        <div className="report">
+          <p className="report__head">🍀 오늘의 행운 보고서</p>
+          <div className="report__grid">
+            <div className="report__cell">
+              <span className="report__k">타이밍</span>
+              <span className="report__v">{luck.time}</span>
+            </div>
+            <div className="report__cell">
+              <span className="report__k">행운 색</span>
+              <span className="report__v">
+                <i className="report__dot" style={{ background: luck.color.hex }} aria-hidden />
+                {luck.color.name}
+              </span>
+            </div>
+            <div className="report__cell">
+              <span className="report__k">행운 음식</span>
+              <span className="report__v">
+                {luck.food.emoji} {luck.food.name}
+              </span>
+            </div>
+          </div>
+          <p className="report__why">{luck.food.why}</p>
+        </div>
       </div>
 
       {/* 하루 풀이 — 매일 볼 만한 해석 */}
       <div className="card fade-in">
-        <p className="section-title">오늘의 풀이</p>
+        <div className="card-head">
+          <p className="card-head__title">오늘의 풀이</p>
+          <p className="card-head__desc">시간대별로 하루를 미리 그려봤어요</p>
+        </div>
         <div className="section">
           <p className="section__label">🔎 전체 풀이</p>
           <p className="section__text">{result.reading.overall}</p>

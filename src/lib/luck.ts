@@ -1,4 +1,5 @@
 import { seededRandom } from './dateSeed';
+import { LUCKY_FOODS, type LuckyFood } from '../data/luckyFood';
 
 // 입소문 요소: 총운 점수 + 카테고리별 점수 + 행운 세트.
 // 인기 '오늘의 운세' 앱(포스텔러/펭귄도사/운세도사)의 공통 히트 요소를 반영.
@@ -20,19 +21,22 @@ export type LuckSet = {
   time: string;
   item: string;
   tag: string;
+  food: LuckyFood; // 오늘의 행운 음식 (하루 설계 훅)
 };
 
+// 토스 팔레트에 맞춘 차분한 색 — 형광 핑크·보라·주황 같은 튀는 색은 톤다운.
+// (행운 색은 UI 테마가 아니라 작은 점으로만 렌더돼 콘텐츠로만 쓰인다)
 const COLORS: LuckColor[] = [
-  { name: '초록색', hex: '#12b886' },
   { name: '파란색', hex: '#3182f6' },
-  { name: '노란색', hex: '#f7c948' },
-  { name: '분홍색', hex: '#f472b6' },
-  { name: '하늘색', hex: '#38bdf8' },
-  { name: '보라색', hex: '#a78bfa' },
-  { name: '주황색', hex: '#fb923c' },
-  { name: '민트색', hex: '#2dd4bf' },
-  { name: '남색', hex: '#4f46e5' },
-  { name: '베이지색', hex: '#d6bfa3' },
+  { name: '초록색', hex: '#20b573' },
+  { name: '하늘색', hex: '#5ab0ef' },
+  { name: '남색', hex: '#3f5bbf' },
+  { name: '민트색', hex: '#2bb9a6' },
+  { name: '노란색', hex: '#f5c344' },
+  { name: '살구색', hex: '#f0a986' },
+  { name: '베이지색', hex: '#cdb89a' },
+  { name: '연회색', hex: '#c2c8cf' },
+  { name: '분홍색', hex: '#efa2ba' },
 ];
 
 const DIRECTIONS = ['동쪽', '서쪽', '남쪽', '북쪽', '동남쪽', '남서쪽', '북동쪽'];
@@ -91,7 +95,9 @@ export function computeLuck(seed: number): LuckSet {
   while (set.size < 6) set.add(1 + Math.floor(r() * 45));
   const numbers6 = [...set].sort((a, b) => a - b);
 
-  return { total, grade: grade(total), categories, color, number, numbers6, direction, time, item, tag };
+  const food = pick(LUCKY_FOODS, r);
+
+  return { total, grade: grade(total), categories, color, number, numbers6, direction, time, item, tag, food };
 }
 
 export function scoreColor(score: number): string {
