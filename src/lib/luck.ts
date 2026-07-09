@@ -114,3 +114,11 @@ export function scoreColor(score: number): string {
   if (score >= 73) return 'var(--score-mid)';
   return 'var(--score-low)';
 }
+
+// 작은 텍스트(숫자·라벨)용 — scoreColor보다 어두워 흰 배경에서 WCAG AA(4.5:1)를 충족한다.
+// 바/점처럼 큰 장식 요소는 scoreColor를 그대로 쓴다.
+export function scoreTextColor(score: number): string {
+  if (score >= 85) return 'var(--score-high-text)';
+  if (score >= 73) return 'var(--score-mid-text)';
+  return 'var(--score-low-text)';
+}

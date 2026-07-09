@@ -24,10 +24,15 @@
   --toss-blue: #3182f6;
   --orange: #ff6b00; /* 포인트(행운)용, 제한 사용 */
 
-  /* Semantic score colors */
+  /* Semantic score colors — 배경 채움/점/바 등 장식 요소용 (텍스트엔 아래 -text 토큰 사용) */
   --score-high: #12b886;
   --score-mid: #3182f6;
   --score-low: #f59f00;
+
+  /* 작은 텍스트에서 WCAG AA(4.5:1, 흰 배경) 충족하는 어두운 변형 */
+  --score-high-text: #0b7856;
+  --score-mid-text: #1b64da;
+  --score-low-text: #9c5d00;
 
   /* Aliases (기존 클래스 호환) */
   --color-white: var(--white);
