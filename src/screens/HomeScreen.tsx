@@ -5,7 +5,7 @@ import { FORTUNE_TYPES, FORTUNE_LABEL } from '../data/fortuneTypes';
 import { findNote } from '../data/notes';
 import { HOME } from '../data/copy';
 import { useState } from 'react';
-import { dailyLine } from '../lib/dailyLine';
+import { todayVibe } from '../lib/dayVibe';
 import { todayKey } from '../lib/dateSeed';
 import { ZODIACS, zodiacLine } from '../data/zodiac';
 import type { Zodiac, ZodiacId } from '../data/zodiac';
@@ -51,6 +51,7 @@ export function HomeScreen({
 }: Props) {
   const yNote = yesterdayRecord ? findNote(yesterdayRecord.noteId) : null;
   const [zodiacOpen, setZodiacOpen] = useState(false);
+  const vibe = todayVibe(todayKey());
 
   return (
     <AppLayout>
@@ -80,10 +81,11 @@ export function HomeScreen({
         </p>
       </div>
 
-      {/* 오늘의 한 줄 — 0탭 즉시 보상 + 띠별 한 줄 */}
+      {/* 오늘의 기운 — 하루를 관통하는 키워드 (홈→결과로 이어짐) */}
       <div className="daily-line">
-        <span className="daily-line__label">✨ 오늘의 한 줄</span>
-        <p className="daily-line__text">“{dailyLine(todayKey())}”</p>
+        <span className="daily-line__label">✨ 오늘의 기운</span>
+        <p className="daily-line__vibe">{vibe.emoji} {vibe.word}</p>
+        <p className="daily-line__text">{vibe.line}</p>
         {zodiac ? (
           <p className="daily-line__zodiac">
             <b>
@@ -115,7 +117,7 @@ export function HomeScreen({
             ))}
           </div>
         ) : null}
-        <span className="daily-line__hint">더 자세한 건 쪽지가 알려줄 거예요</span>
+        <span className="daily-line__hint">쪽지를 뽑으면, 이 기운을 어떻게 쓸지 알려줄게요</span>
       </div>
 
       {/* 친구 궁합 — 로그인 없이 되는 바이럴 훅 */}

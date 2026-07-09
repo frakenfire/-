@@ -1820,6 +1820,19 @@ button {
   color: #c98a2e;
 }
 
+/* 오늘의 기운 — 홈과 결과를 잇는 키워드 */
+.chip--vibe {
+  background: #fff4d6;
+  color: #b26b00;
+}
+.daily-line__vibe {
+  margin: 4px 0 6px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--gray-900);
+}
+
 /* ═══ 친구 궁합 배너 (홈·결과) ═══ */
 .compat-banner {
   width: 100%;

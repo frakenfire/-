@@ -4,6 +4,8 @@ import { LetterCard } from '../components/LetterCard';
 import { Disclaimer } from '../components/Disclaimer';
 import { AdBadge, AdBanner } from '../components/AdNotice';
 import { luckPercentile } from '../lib/luck';
+import { todayVibe } from '../lib/dayVibe';
+import { todayKey } from '../lib/dateSeed';
 import type { FortuneResult, Note } from '../types/fortune';
 
 type Props = {
@@ -34,6 +36,7 @@ export function ResultScreen({
   const { luck, rarity, dayPlan } = result;
   const [letterOpen, setLetterOpen] = useState(false);
   const brag = luckPercentile(luck.total);
+  const vibe = todayVibe(todayKey()); // 홈과 같은 '오늘의 기운' — 홈→결과 연결
 
   // 풀이 라벨 — month 타입은 초반/중순/월말, 나머지는 오전/오후/저녁.
   const isMonth = result.reading.scale === 'month';
@@ -72,6 +75,7 @@ export function ResultScreen({
           <span className={`rarity-badge rarity-badge--${rarity.tier}`}>
             {rarity.emoji} {rarity.label}
           </span>
+          <span className="chip chip--vibe">{vibe.emoji} 오늘의 기운 · {vibe.word}</span>
         </div>
 
         <div className="brag" aria-label={`오늘 상위 ${brag.pct}퍼센트`}>
