@@ -22,8 +22,8 @@ export function buildShareText(b: ShareBriefing): string {
     ``,
     `"${b.headline}"`,
     ``,
-    `✅ 이렇게 보내요 — ${b.doItem}`,
-    `🌙 오늘은 접어둬요 — ${b.dontItem}`,
+    `✅ 이렇게 보내요: ${b.doItem}`,
+    `🌙 오늘은 접어둬요: ${b.dontItem}`,
     ``,
     `너 생각나서 보내는 오늘의 쪽지. 네 것도 뽑아봐 👀`,
   ].join('\n');
