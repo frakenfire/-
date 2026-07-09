@@ -115,8 +115,10 @@ export function CompatScreen({ dateKey, initialMy, onSaveMy, onBack, onAdUnlock,
               공유하고 결과 열기 💌
             </button>
             <button type="button" className="btn btn--unlock" disabled={busy} onClick={unlockByAd}>
-              <span className="btn-unlock__main">🔓 광고 보고 결과 열기</span>
-              <AdBadge label="광고" />
+              <span className="btn-unlock__top">
+                <span className="btn-unlock__main">🔓 광고 보고 결과 열기</span>
+                <AdBadge label="광고" />
+              </span>
             </button>
           </div>
         </div>
