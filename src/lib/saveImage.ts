@@ -240,7 +240,7 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
     const dataUrl = canvas.toDataURL('image/png');
     const a = document.createElement('a');
     a.href = dataUrl;
-    a.download = 'tomorrow-note.png';
+    a.download = 'today-note.png';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);

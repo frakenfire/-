@@ -1,31 +1,30 @@
-# 내일쪽지 뽑기 (tomorrow-note)
+# 오늘쪽지 뽑기 (tomorrow-note)
 
 토스 **앱인토스(Apps in Toss)** 웹뷰용 **무비용·광고형 가벼운 운세 쪽지 미니앱** MVP.
-보고 싶은 운세(내일의 나 · 이번 달의 나 · 연애운 · 돈운 · 일운 · 조심할 것 · 행운 포인트)를 고르고
-접힌 쪽지 한 장을 뽑으면 결과를 받고 저장·공유할 수 있어요.
-**실제 생성형 AI / 서버 / DB 없이** 선택값·쪽지 데이터·날짜 seed 조합으로 동작합니다.
+보고 싶은 운세(오늘의 나 · 이번 달의 나 · 연애운 · 금전운 · 직장운 · 조심할 것 · 행운 포인트)를 고르고
+접힌 쪽지 한 장을 뽑으면 **기분에 맞춘 오늘(이번 달) 설계 + 행운 보고서 + 하루 풀이**를 받고 저장·공유할 수 있어요.
+**실제 생성형 AI / 서버 / DB / 로그인 없이** 선택값·쪽지 데이터·날짜 seed 조합으로 동작합니다.
 
-> `PRD: 내일쪽지 뽑기`(§0~§15)의 MVP 구현체입니다.
+## 핵심 원칙
 
-## 핵심 원칙 (PRD 준수)
-
-- **AI API 호출 없음** — 결과는 `fortuneType + note + dateSeed` 조합 (`src/lib/generateFortune.ts`)
+- **AI API 호출 없음** — 결과는 `fortuneType + note + dateSeed + mood` 조합 (`src/lib/generateFortune.ts`)
 - **서버/DB/로그인 없음** — 상태는 React state, 기록은 `localStorage`(선택형 값만)
-- **개인정보/자유입력 저장 없음** (`src/lib/storage.ts`)
-- **가볍고 희망적인 톤, 해요체** — 의료/금융/법률 조언 및 단정·불안 표현 금지 (PRD §10.2)
-- **광고는 mock** — `Promise<boolean>` mock (`src/lib/ads.ts`)
-- **디자인** — 배경 크림 `#fff8ed`, Primary `#114e48`(SIGNATURE GREEN),
-  행운 포인트/스티커에만 `#ff4b00` 제한 사용, 375px 기준·360~430px 대응
+- **개인정보/자유입력 저장 없음** (`src/lib/storage.ts`) — 띠도 생년월일 없이 선택형 값만
+- **가볍고 희망적인 톤, 해요체** — 의료/금융/법률 조언 및 단정·불안 표현 금지
+- **광고는 mock** — `Promise<boolean>` mock (`src/lib/ads.ts`), 실배포 시 앱인토스 광고 SDK로 교체
+- **디자인** — 화이트 캔버스 + 토스 그레이 램프(`#191f28`~`#f9fafb`) + 토스 블루 `#3182f6`(브랜드/CTA),
+  세만틱 컬러(초록/블루/앰버)로 점수 표현, 20~24px 라운드, 단일 레이어 소프트 섀도우
 - **쪽지/별/스티커 느낌의 가벼운 뽑기 UI** — 무거운 명상/타로/무속 느낌 배제
 
-## 화면 흐름 (PRD §4)
+## 화면 흐름
 
 ```
-Home → FortuneType(운세 선택) → NotePick(쪽지 3장 중 1장) → Result(무료 3줄) → Detail(상세) → 저장/공유/다시 뽑기
+Home → Mood(기분 선택) → NotePick(쪽지 3장 중 1장) → Reveal(로딩) → Result(하루 설계) → Detail(심층 리포트)
+                                                                                └→ Compat(친구 궁합)
 ```
 
-무료 결과 3줄은 광고 없이 제공하고, 상세 운세·저장·다시 뽑기만 보상형 광고 지점입니다.
-홈 진입 직후에는 광고·바텀시트를 띄우지 않습니다(다크패턴 방지).
+결과 화면이 메인 콘텐츠(기분 맞춤 하루 설계 + 행운 보고서 + 하루 풀이)이고,
+심층 리포트·결과 카드 저장·다른 쪽지 뽑기·친구 궁합이 보상형 광고 지점입니다.
 
 ## 실행
 
@@ -36,89 +35,70 @@ npm run build      # 타입체크 + 프로덕션 빌드 → dist/
 npm run preview
 ```
 
-## 폴더 구조 (PRD §13)
+## 폴더 구조
 
 ```
 src/
   App.tsx                 # 화면 상태 머신 + 광고/토스트 오케스트레이션
   main.tsx
   styles/                 # tokens.css · globals.css
-  components/             # AppLayout · BottomAction · FortuneTypeButton
-                          # NoteCard · ResultNote · Disclaimer · AdNotice
-  screens/                # Home · FortuneType · NotePick · Result · DetailResult
-  data/                   # fortuneTypes · notes(12) · resultTemplates · copy
-  lib/                    # ads(mock) · dateSeed · generateFortune · storage · share · saveImage
+  components/             # AppLayout · Mascot · LetterCard · CategoryScores · LuckySet 등
+  screens/                # Home · Mood · NotePick · Reveal · Result · DetailResult · Compat
+  data/                   # fortuneTypes · notes(12) · resultTemplates · dayDesign · readings
+                          # detailContent · luckyFood · zodiac · letterFragments · copy
+  lib/                    # generateFortune · luck · detail · compat · dayVibe · letter · rarity
+                          # ads(mock) · dateSeed · storage · share · saveImage
   types/                  # fortune.ts
 ```
 
-## 쪽지 요정의 편지 (핵심 차별점)
+## 핵심 콘텐츠 구조
 
-운세 앱이 아니라 **"나를 아는 요정이 매일 손편지를 써주는"** 경험이 정체성.
+### 1. 기분 맞춤 하루 설계 (결과의 주인공)
+`src/data/dayDesign.ts` — **운세 종류 × 상태(up/flat/down)** 매트릭스로 42개 설계.
+- 운세 종류가 주제와 시간 척도를 결정: **이번 달만 초반/중순/월말(→ 주차별)**, 나머지는 아침/낮/저녁
+- 상태(기분 5종 → 3그룹)가 톤을 결정: 기분 좋음=과속 방지·나눔, 보통=작은 실행, 지침/불안/외로움=회복·안정
+- 각 설계는 헤드라인(공감 문장) + 시간대별 3단계 + "오늘은 접어둬요"로 구성
 
-- **기분 입력**(`MoodScreen`): 뽑기 전 지금 기분 한 번 선택(좋아요/그냥그래요/지쳤어요/불안해요/외로워요)
-- **편지 조합**(`lib/letter.ts` + `data/letterFragments.ts`): 인사(시간대 4×5) × 공감(기분 5×6)
-  × 이음말(8) × 조언 서두(6) × 맺음(기분 5×5) + 운세 본문(42 variant) 을 엮어
-  **사실상 매번 다른 다문단 편지** 생성. 직전 조각 회피(localStorage)로 반복 체감 최소화
-- 결과의 **감성 중심**은 편지 카드(크림 편지지 + 요정 + 서명), 총운 점수는 그 아래 재미 요소
-- seed = dateKey+fortuneType+note+mood → 같은 조합은 재현, 다른 조합은 폭발적으로 분기
+### 2. 오늘의 기운 (홈↔결과 연결)
+`src/lib/dayVibe.ts` — 날짜만으로 정해지는 하루 키워드(정리/연결/회복 등). 홈의 "오늘의 기운"과
+결과 화면 칩에 동일하게 노출돼 화면 간 단절 없이 이어짐. (이번 달 결과에서는 오늘/이번달 모순 방지를 위해 숨김)
 
-## 폰트 · 완성도
+### 3. 오늘의 행운 보고서
+`src/lib/luck.ts` — 타이밍·행운 색·행운 음식(하루) / 행운의 주·이달의 색·이달의 키워드(이번 달).
+색은 토스 팔레트에 맞춰 톤다운, 형광색 배제.
 
-- **Pretendard(제품용 한글 UI 폰트) self-host**: `pretendard` 패키지의 **다이나믹 서브셋**
-  (`pretendardvariable-dynamic-subset.css`)을 import → `unicode-range`로 화면에 실제 쓰이는
-  글자만 런타임에 로드(홈 기준 woff2 7개 ≈ 300KB), CSP 안전. 시스템 폰트 폴백으로 깨지지 않음.
-- **숫자 강조**: 점수·수치에 tabular numeral(`font-num`) 적용(토스식 수치 강조).
-- **홈 개편**: 진입 즉시 7개 운세를 카드로 노출(탭 최소화·breadth 노출) + 받는 가치(총운/항목별/행운세트) 카피 + 날짜 pill.
-- **쪽지 뽑기**: 살짝 기울인 배치 + 순차 등장 애니메이션으로 뽑는 재미.
-- `word-break: keep-all`로 한글 줄바꿈 어색함 방지.
+### 4. 심층 리포트 (광고 보상 페이지)
+`src/lib/detail.ts` — 항목별 운세를 순위+해석으로(원픽/살살 갈 운), 행운 세트를 "오늘의 행운 미션"
+하나로 묶고, 오늘 잘 맞는 띠, 캡처하고 싶은 "오늘의 부적" 문장까지.
 
-## 토스 스타일 · 입소문 요소 (인기 운세앱 리서치 반영)
+### 5. 친구 궁합 (로그인 없는 바이럴 훅)
+`src/lib/compat.ts` + `CompatScreen.tsx` — 내 띠 × 상대 띠로 결정적 궁합 점수/코멘트.
+"공유하고 열기"(바이럴)와 "광고 보고 열기"(수익) 두 갈래로 잠금 해제, 결과는 친구에게 자랑 공유.
 
-포스텔러(누적 860만, MZ 83%)·펭귄도사·운세도사 등 잘 되는 '오늘의 운세' 앱의
-공통 히트 요소와 토스 TDS의 조형 언어를 반영했습니다.
+### 6. 쪽지 요정의 편지 (선택적 감성 레이어)
+`src/lib/letter.ts` + `data/letterFragments.ts` — 인사×공감×이음말×맺음을 조합한 손편지.
+결과 화면에서 원하는 사람만 펼쳐 읽는 보조 콘텐츠(주 콘텐츠는 하루 설계).
 
-- **토스 스타일 디자인**: 화이트 캔버스 + 토스 그레이 램프(`#191f28`~`#f9fafb`) + 차콜 헤딩,
-  큰 볼드 숫자, 넉넉한 여백, 20~24px 라운드, 단일 레이어 소프트 섀도우. Primary는 브랜드 `#114e48` 유지.
-- **매일 쪽지 받기(주기 수신)**(`lib/subscribe.ts`) — 구독하면 다음날 홈에 "📬 오늘의 쪽지가 도착했어요!"
-  배너가 떠서 바로 뽑기로 연결. 알림 등록은 mock(앱인토스 푸시 연동 지점 분리, ads.ts 패턴)
-- **어제의 쪽지 돌아보기** — 어제 기록이 있으면 홈 하단에 리캡 카드
-- **7일 스트릭 왕관**(👑 N일째!) — 장기 연속 방문 보상 배지
-- **몽글 로딩 연출**(`RevealScreen`) — "쪽지들을 살살 뒤섞고 있어요…" 운세별 단계 멘트 + 마스코트 바운스. 기대감을 만들고 결과 몰입도를 높임
-- **연속 출석 스트릭** — "🔥 N일째 쪽지" 배지(localStorage), 첫날은 "🌱 오늘의 첫 쪽지". 매일 재방문 장치
-- **점수 카운트업** — 총운이 0→N으로 차오르고 등급이 팝. 고득점(88+)엔 색종이 축하
-- **시간대별 인사** + 결과 하단 "내일 또 봐요 👋" 재방문 넛지
-- **콕 집은 한마디**(`pinpoint`) — 구체적·2인칭·타이밍으로 "맞는다" 느낌을 주는 훅. 결과 최상단 노출
-- **쪽지 요정 마스코트**(`Mascot`) — 손으로 그린 인라인 SVG(무의존·CSP 안전·벡터). 홈 히어로 브랜딩
-- **총운 점수 링 게이지** (`ScoreRing`) — 점수대별 색상(초록/파랑/앰버) + 등급(대길·길·순조…)
-- **항목별 운세 바** (`CategoryScores`) — 애정·재물·직장·건강 4종 점수 시각화
-- **행운 세트** (`LuckySet`) — 색·숫자·방향·시간·아이템. 매 뽑기마다 조합이 달라짐
-- **무료→상세 확장(expand-on-demand)**: 무료는 총운+3줄, 상세(광고)에서 항목별·행운세트 공개
-- **공유 최적화**: 점수를 앞세운 공유 텍스트 + 세로 결과 카드(PNG)
+### 7. 총운 상위 % 자랑 배지
+`src/lib/luck.ts`의 `luckPercentile` — 점수가 좋을수록 "오늘 총운 상위 N%"로 자랑 공유 유도.
 
-### 결과 다양성(입소문 엔진)
+## 결과 다양성
 
-결과는 `fortuneType(7) × note(12) × 텍스트 variant(3) × 행운세트 조합`으로 생성됩니다.
-행운 세트만으로도 색(10) × 숫자(45) × 방향(7) × 시간(6) × 아이템(10) × 총운(35) × 항목점수… →
-**사실상 매 뽑기가 고유한 결과**가 되어 공유·재방문을 유도합니다.
-같은 (운세·쪽지·날짜) 조합은 항상 같은 결과라 공유 링크/스샷이 안정적으로 재현됩니다.
-(`src/lib/luck.ts` — seed 기반 결정적 계산)
+결과는 `fortuneType(7) × note(12) × mood(5) × dateSeed` 조합으로 생성됩니다.
+행운 세트(색 10 × 숫자 45 × 방향 7 × 시간 6 × 음식 18 × 총운 35) + 하루 설계(42) + 풀이(각 12개 풀)까지
+곱해지면 **사실상 매 뽑기가 고유한 결과**가 됩니다.
+같은 (운세·쪽지·기분·날짜) 조합은 항상 같은 결과라 공유 링크/스샷이 안정적으로 재현됩니다.
 
 ## 콘텐츠 확장
 
-- **쪽지 추가**: `src/data/notes.ts`에 항목 추가 + `resultTemplates.ts`의 `NOTE_LEAD`에 오프닝 한 줄
-- **운세 결과 다양화**: `src/data/resultTemplates.ts`의 각 `FortuneType` 배열에 variant 추가 (날짜 seed로 자동 순환)
-- **이미지(§9)**: 현재는 이모지 기반. 앱 아이콘/쪽지 3장/결과 카드 배경 이미지를
-  `src/assets/`에 추가하고 컴포넌트에서 교체하면 됩니다(초기 버전은 이미지 없이 쪽지 UI부터).
+- **쪽지 추가**: `src/data/notes.ts` + `resultTemplates.ts`의 `NOTE_LEAD`에 오프닝 한 줄
+- **운세 결과 다양화**: `src/data/resultTemplates.ts`의 각 `FortuneType` 배열에 variant 추가
+- **하루 설계 확장**: `src/data/dayDesign.ts`의 `PLANS[type][state]` 배열에 항목 추가
+- **이미지**: 현재는 이모지 기반. 앱 아이콘/쪽지 배경 이미지를 `src/assets/`에 추가 후 컴포넌트 교체
 
-## 앱인토스 배포로 넘어갈 때 (PRD §14 / §15)
+## 앱인토스 배포로 넘어갈 때
 
-프레임워크 독립적 **React + TypeScript + Vite** MVP입니다.
-
-1. `npx create-ait-app tomorrow-note` (template: `react-ts`, TDS: Y, examples: 인앱 광고)
-2. `src/` 이식, TDS 컴포넌트로 기본 레이아웃 교체
-3. `src/lib/ads.ts`의 mock 을 실제 앱인토스 광고 SDK 호출로 교체
-4. `@apps-in-toss/web-framework` 설정(`brand.primaryColor: '#114e48'`)로 `vite.config.ts` 대체
-5. 테스트 1회 이상 완료 후 콘솔 검토 요청
+프레임워크 독립적 **React + TypeScript + Vite** MVP입니다. `release/LAUNCH.md` 참고.
 
 ## 라이선스
 
