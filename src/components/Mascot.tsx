@@ -26,7 +26,7 @@ export function Mascot({ size = 120, mood = 'happy', score }: Props) {
       viewBox="0 0 200 200"
       fill="none"
       role="img"
-      aria-label="내일쪽지 마스코트"
+      aria-label="오늘쪽지 마스코트"
     >
       <circle cx="100" cy="100" r="92" fill="var(--brand-soft)" />
       <ellipse cx="100" cy="168" rx="52" ry="9" fill="#333d4b" opacity="0.08" />

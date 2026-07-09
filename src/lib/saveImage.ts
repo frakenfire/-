@@ -235,7 +235,7 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
     // 워터마크
     ctx.fillStyle = '#8b95a1';
     ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('내일쪽지 뽑기 · 오늘 내 쪽지 뽑기', cx, H - 92);
+    ctx.fillText('오늘쪽지 뽑기 · 오늘 하루, 쪽지 한 장', cx, H - 92);
 
     const dataUrl = canvas.toDataURL('image/png');
     const a = document.createElement('a');

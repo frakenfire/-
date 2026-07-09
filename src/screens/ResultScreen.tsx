@@ -75,7 +75,9 @@ export function ResultScreen({
           <span className={`rarity-badge rarity-badge--${rarity.tier}`}>
             {rarity.emoji} {rarity.label}
           </span>
-          <span className="chip chip--vibe">{vibe.emoji} 오늘의 기운 · {vibe.word}</span>
+          {!isMonth && (
+            <span className="chip chip--vibe">{vibe.emoji} 오늘의 기운 · {vibe.word}</span>
+          )}
         </div>
 
         <div className="brag" aria-label={`오늘 상위 ${brag.pct}퍼센트`}>
@@ -193,7 +195,7 @@ export function ResultScreen({
             <span className="btn-unlock__main">🔓 오늘의 심층 리포트 열기</span>
             <AdBadge label="광고" />
           </span>
-          <span className="btn-unlock__sub">운세 원픽 · 오늘의 궁합 · 행운 미션 · 부적</span>
+          <span className="btn-unlock__sub">운세 원픽 · 잘 맞는 띠 · 행운 미션 · 부적</span>
         </button>
 
         <button type="button" className="btn btn--ghost" disabled={busy} onClick={onSave}>

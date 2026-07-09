@@ -48,9 +48,9 @@ export function DetailResultScreen({
         <LuckySetGrid luck={luck} mission={detail.mission} numberUse={detail.numberUse} />
       </div>
 
-      {/* 오늘의 궁합 — 쓸 이유(사회적 훅) + 공유 욕구 */}
+      {/* 오늘 잘 맞는 띠 — 상세 리포트의 자동 궁합(친구 궁합과 구분) */}
       <div className="card fade-in">
-        <p className="section-title">오늘의 궁합</p>
+        <p className="section-title">오늘 잘 맞는 띠</p>
         <div className="match">
           <div className="match__cell match__cell--good">
             <span className="match__badge">잘 맞아요</span>

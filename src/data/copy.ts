@@ -1,10 +1,10 @@
 // PRD §2 / §5 / §10 — 화면 공통 카피. 문체: 해요체, 가볍고 희망적으로.
 
-export const APP_NAME = '내일쪽지 뽑기';
+export const APP_NAME = '오늘쪽지 뽑기';
 
 export const HOME = {
   title: APP_NAME,
-  lead: '오늘도 수고했어요.\n내일은 어떤 하루일까요?\n쪽지 한 장 톡 뽑아볼까요?',
+  lead: '오늘 하루, 어떻게 흘러갈까요?\n쪽지 한 장 톡 뽑아볼까요?',
   cta: '쪽지 뽑으러 가기',
 };
 

@@ -15,8 +15,8 @@ export type ShareBriefing = {
 
 export function buildShareText(b: ShareBriefing): string {
   const head = b.brag
-    ? `💌 내일쪽지 · 오늘의 ${b.title} · 총운 ${b.score}점 (${b.brag}) 🏆`
-    : `💌 내일쪽지 · 오늘의 ${b.title} (총운 ${b.score}점)`;
+    ? `💌 오늘쪽지 · 오늘의 ${b.title} · 총운 ${b.score}점 (${b.brag}) 🏆`
+    : `💌 오늘쪽지 · 오늘의 ${b.title} (총운 ${b.score}점)`;
   return [
     head,
     ``,
@@ -60,7 +60,7 @@ export async function shareText(text: string): Promise<boolean> {
   };
   if (typeof nav.share === 'function') {
     try {
-      await nav.share({ title: '내일쪽지 뽑기', text });
+      await nav.share({ title: '오늘쪽지 뽑기', text });
       return true;
     } catch {
       /* 취소/미지원 → 복사 폴백 */
@@ -76,7 +76,7 @@ export async function shareOrCopy(b: ShareBriefing): Promise<'shared' | 'copied'
   };
   if (typeof nav.share === 'function') {
     try {
-      await nav.share({ title: '내일쪽지 뽑기', text });
+      await nav.share({ title: '오늘쪽지 뽑기', text });
       return 'shared';
     } catch {
       /* 취소/미지원 → 복사 폴백 */

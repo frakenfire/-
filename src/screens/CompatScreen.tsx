@@ -53,7 +53,7 @@ export function CompatScreen({ dateKey, initialMy, onSaveMy, onBack, onAdUnlock,
   async function unlockByShare() {
     if (busy || !myZ || !friendZ) return;
     setBusy(true);
-    const invite = `${myZ.emoji}${myZ.label} × ${friendZ.emoji}${friendZ.label}\n오늘 우리 궁합 얼마나 맞을까? 나 방금 봤어 👀\n[내일쪽지] 친구 궁합에서 너도 확인해봐 💌`;
+    const invite = `${myZ.emoji}${myZ.label} × ${friendZ.emoji}${friendZ.label}\n오늘 우리 궁합 얼마나 맞을까? 나 방금 봤어 👀\n[오늘쪽지] 친구 궁합에서 너도 확인해봐 💌`;
     const ok = await onShare(invite);
     setBusy(false);
     if (ok) {
@@ -66,7 +66,7 @@ export function CompatScreen({ dateKey, initialMy, onSaveMy, onBack, onAdUnlock,
 
   async function brag() {
     if (!myZ || !friendZ || !result) return;
-    const text = `[내일쪽지] 오늘 우리 궁합 ${result.score}점 💗\n${myZ.emoji}${myZ.label} × ${friendZ.emoji}${friendZ.label}\n"${result.headline}"\n너도 궁합 봐봐 👀`;
+    const text = `[오늘쪽지] 오늘 우리 궁합 ${result.score}점 💗\n${myZ.emoji}${myZ.label} × ${friendZ.emoji}${friendZ.label}\n"${result.headline}"\n너도 궁합 봐봐 👀`;
     const ok = await onShare(text);
     onToast(ok ? '궁합 자랑 완료! 💌' : '앗, 공유를 못 했어요');
   }
