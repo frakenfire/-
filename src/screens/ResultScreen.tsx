@@ -201,7 +201,12 @@ export function ResultScreen({
         </button>
       </div>
 
-      <button type="button" className="compat-banner" onClick={onCompat}>
+      <button
+        type="button"
+        className="compat-banner"
+        style={{ marginTop: 'var(--space-4)' }}
+        onClick={onCompat}
+      >
         <span className="compat-banner__icon" aria-hidden>💗</span>
         <span className="compat-banner__body">
           <span className="compat-banner__title">이 사람이랑 오늘 궁합은?</span>
