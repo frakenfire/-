@@ -39,7 +39,11 @@ export function RevealScreen({ fortuneType, special }: Props) {
 
   useEffect(() => {
     const t = window.setInterval(() => {
-      setIdx((i) => Math.min(i + 1, steps.length - 1));
+      setIdx((i) => {
+        const next = Math.min(i + 1, steps.length - 1);
+        if (next === steps.length - 1) window.clearInterval(t);
+        return next;
+      });
     }, 620);
     return () => window.clearInterval(t);
   }, [steps.length]);
