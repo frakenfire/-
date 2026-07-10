@@ -85,6 +85,12 @@ button {
   overflow-y: auto;
 }
 
+/* 콘텐츠가 짧은 화면(고르기 등)이 위로 쏠려 아래에 큰 빈 공간이
+   남지 않도록 수직 중앙 정렬 (AppLayout center prop) */
+.app__body--center {
+  justify-content: center;
+}
+
 .app__bottom {
   position: sticky;
   bottom: 0;

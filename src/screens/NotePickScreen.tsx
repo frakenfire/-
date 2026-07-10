@@ -22,7 +22,7 @@ export function NotePickScreen({
   onBack,
 }: Props) {
   return (
-    <AppLayout onBack={busy ? undefined : onBack} step={1} totalSteps={2}>
+    <AppLayout onBack={busy ? undefined : onBack} step={1} totalSteps={2} center>
       {fortuneLabel ? <span className="eyebrow">{fortuneLabel}</span> : null}
       <h2 className="h2" style={{ whiteSpace: 'pre-line' }}>
         {NOTE_PICK.title}

@@ -74,7 +74,7 @@ export function CompatScreen({ dateKey, initialMy, onSaveMy, onBack, onAdUnlock,
   // 띠 고르는 중
   if (picking) {
     return (
-      <AppLayout onBack={picking === 'friend' && !friend ? () => setPicking(null) : onBack} title="친구 궁합">
+      <AppLayout onBack={picking === 'friend' && !friend ? () => setPicking(null) : onBack} title="친구 궁합" center>
         <h2 className="h2">{picking === 'my' ? '내 띠는 뭐예요?' : '상대는 무슨 띠예요?'}</h2>
         <p className="lead">띠만 고르면 돼요. 생년월일은 필요 없어요.</p>
         <div className="zodiac-grid zodiac-grid--full">
@@ -89,7 +89,7 @@ export function CompatScreen({ dateKey, initialMy, onSaveMy, onBack, onAdUnlock,
   }
 
   return (
-    <AppLayout onBack={onBack} title="친구 궁합">
+    <AppLayout onBack={onBack} title="친구 궁합" center={!unlocked}>
       <div className="compat-pair">
         <button type="button" className="compat-pick" onClick={() => setPicking('my')}>
           <span className="compat-pick__k">나</span>
