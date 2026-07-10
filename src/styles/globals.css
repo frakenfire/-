@@ -24,8 +24,6 @@ body {
   word-break: keep-all; /* 한글 단어 단위 줄바꿈 — 어색한 끊김 방지 */
 }
 
-.score-ring__value,
-.cat-row__score,
 .lucky-cell__v {
   font-family: var(--font-num);
   font-feature-settings: var(--fnum);
@@ -364,65 +362,6 @@ button {
   background: var(--color-soft-pink);
 }
 
-/* ── 결과 쪽지 (열린) ── */
-.result-note {
-  background: var(--color-white);
-  border-radius: var(--radius-lg);
-  padding: var(--space-6) var(--space-5);
-  box-shadow: var(--shadow-card);
-  margin-bottom: var(--space-4);
-  position: relative;
-  overflow: hidden;
-}
-
-.result-note::after {
-  content: '';
-  position: absolute;
-  inset: 6px;
-  border: 1.5px dashed var(--color-border);
-  border-radius: 18px;
-  pointer-events: none;
-}
-
-.result-note__head {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin-bottom: var(--space-4);
-}
-
-.result-note__seal {
-  width: 52px;
-  height: 52px;
-  border-radius: 16px;
-  background: var(--color-soft-green);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  flex-shrink: 0;
-}
-
-.result-note__title {
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--color-dark-gray);
-}
-
-.result-note__subtitle {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--color-signature-green);
-}
-
-.result-note__summary {
-  font-size: 16px;
-  line-height: 1.72;
-  color: var(--color-dark-gray);
-  white-space: pre-line;
-  margin: 0;
-}
-
 /* ── 상세 섹션 ── */
 .section {
   padding: var(--space-4) 0;
@@ -459,30 +398,6 @@ button {
   background: var(--color-soft-yellow);
   padding: 6px 12px;
   border-radius: 999px;
-}
-
-/* 오늘의 한 문장 */
-.share-line {
-  background: var(--color-soft-green);
-  border-radius: var(--radius-md);
-  padding: var(--space-5);
-  text-align: center;
-  margin-bottom: var(--space-4);
-}
-
-.share-line__label {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--color-signature-green);
-  margin: 0 0 var(--space-2);
-}
-
-.share-line__text {
-  font-size: 19px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--color-dark-gray);
-  margin: 0;
 }
 
 /* ── 고지 / 광고 ── */
@@ -658,25 +573,6 @@ button {
   }
 }
 
-.note-illust {
-  width: 148px;
-  height: 148px;
-  border-radius: 28px;
-  background: var(--color-soft-green);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 76px;
-  box-shadow: var(--shadow-note);
-  margin-bottom: var(--space-5);
-  transform: rotate(-3deg);
-}
-
-.result-mascot {
-  margin-bottom: var(--space-2);
-  animation: bob 2.6s ease-in-out infinite;
-}
-
 /* ── 몽글 로딩(리빌) 연출 ── */
 .reveal-mascot {
   animation: reveal-bounce 1.1s ease-in-out infinite;
@@ -750,55 +646,6 @@ button {
 .streak-pill--crown {
   color: #8a6d00;
   background: #fff2b8;
-}
-
-/* ── 오늘의 쪽지 도착 배너 ── */
-.arrive-banner {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  background: var(--brand);
-  color: #fff;
-  text-align: left;
-  margin-bottom: var(--space-4);
-  box-shadow: var(--shadow-cta);
-  animation: fade-in 0.25s ease;
-}
-
-.arrive-banner:active {
-  transform: scale(0.99);
-}
-
-.arrive-banner__icon {
-  font-size: 28px;
-  animation: bob 1.8s ease-in-out infinite;
-}
-
-.arrive-banner__body {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.arrive-banner__title {
-  font-size: 15px;
-  font-weight: 800;
-}
-
-.arrive-banner__desc {
-  font-size: 12px;
-  opacity: 0.85;
-}
-
-.arrive-banner__cta {
-  font-size: 13px;
-  font-weight: 800;
-  flex-shrink: 0;
 }
 
 /* ── 오늘의 한 줄 (0탭 즉시 보상) ── */
@@ -898,26 +745,6 @@ button {
   border-color: var(--brand);
 }
 
-/* 행운 번호 볼 */
-.lucky-cell__v--balls {
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.lucky-ball {
-  width: 30px;
-  height: 30px;
-  border-radius: 999px;
-  background: var(--brand-soft);
-  color: var(--brand);
-  font-size: 13px;
-  font-weight: 800;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-variant-numeric: tabular-nums;
-}
-
 /* ── 오늘 받은 편지 다시 읽기 ── */
 .reopen-card {
   width: 100%;
@@ -1001,65 +828,6 @@ button {
   color: var(--gray-800);
 }
 
-/* ── 매일 받기 구독 카드 ── */
-.subscribe-card {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  background: var(--color-soft-yellow);
-  text-align: left;
-  margin-top: var(--space-4);
-  transition: transform 0.06s ease;
-}
-
-.subscribe-card:active {
-  transform: scale(0.99);
-}
-
-.subscribe-card__icon {
-  font-size: 26px;
-}
-
-.subscribe-card__body {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.subscribe-card__title {
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--gray-900);
-}
-
-.subscribe-card__desc {
-  font-size: 12px;
-  color: var(--gray-600);
-}
-
-.subscribe-card__cta {
-  font-size: 13px;
-  font-weight: 800;
-  color: #fff;
-  background: var(--brand);
-  padding: 8px 14px;
-  border-radius: 999px;
-  flex-shrink: 0;
-}
-
-.subscribe-done {
-  text-align: center;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--gray-500);
-  margin: var(--space-4) 0 0;
-}
-
 /* ── 고득점 축하 (색종이) ── */
 .confetti {
   position: absolute;
@@ -1089,11 +857,6 @@ button {
   }
 }
 
-/* 등급 팝 */
-.score-ring__grade--pop {
-  animation: grade-pop 0.35s ease;
-}
-
 @keyframes grade-pop {
   0% {
     transform: scale(0.6);
@@ -1106,15 +869,6 @@ button {
   }
 }
 
-/* 재방문 넛지 */
-.tomorrow-nudge {
-  text-align: center;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--gray-500);
-  margin: var(--space-4) 0 0;
-}
-
 @keyframes bob {
   0%,
   100% {
@@ -1123,61 +877,6 @@ button {
   50% {
     transform: translateY(-5px);
   }
-}
-
-/* ── 총운 점수 링 ── */
-.score-ring {
-  position: relative;
-  width: 168px;
-  height: 168px;
-  margin: var(--space-2) auto var(--space-4);
-}
-
-.score-ring__center {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-}
-
-.score-ring__caption {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--gray-600);
-}
-
-.score-ring__value {
-  font-size: 46px;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
-
-.score-ring__unit {
-  font-size: 18px;
-  font-weight: 800;
-  margin-left: 2px;
-}
-
-.score-ring__grade {
-  font-size: 14px;
-  font-weight: 800;
-}
-
-/* ── 카테고리 점수 바 ── */
-.cat-scores {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.cat-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
 }
 
 .cat-row__label {
@@ -1225,10 +924,6 @@ button {
   display: flex;
   flex-direction: column;
   gap: 4px;
-}
-
-.lucky-cell--wide {
-  grid-column: 1 / -1;
 }
 
 .lucky-cell__k {
@@ -1290,94 +985,6 @@ button {
 
 .chip--score b {
   font-weight: 800;
-}
-
-.briefing__highlight {
-  margin: 0 0 var(--space-5);
-  font-size: 20px;
-  font-weight: 800;
-  line-height: 1.55;
-  letter-spacing: -0.02em;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
-
-.briefing__highlight mark {
-  background: linear-gradient(transparent 62%, var(--brand-soft) 62%);
-  color: inherit;
-  padding: 0 2px;
-}
-
-/* 처방 박스: DO(그린) / DON'T(레드) — 세만틱 컬러 */
-.verdict {
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-  margin-bottom: var(--space-3);
-}
-
-.verdict--do {
-  background: var(--brand-soft);
-}
-
-.verdict--dont {
-  background: #fdeeee;
-}
-
-.verdict__label {
-  display: block;
-  font-size: 13px;
-  font-weight: 800;
-  margin-bottom: 6px;
-}
-
-.verdict--do .verdict__label {
-  color: var(--brand-strong);
-}
-
-.verdict--dont .verdict__label {
-  color: #e03131;
-}
-
-.verdict__list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.verdict__list li {
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.7;
-  color: var(--gray-900);
-  word-break: keep-all;
-  padding-left: 12px;
-  position: relative;
-}
-
-.verdict__list li::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0.72em;
-  width: 4px;
-  height: 4px;
-  border-radius: 999px;
-  background: currentColor;
-  opacity: 0.4;
-}
-
-.briefing__lucky {
-  margin: var(--space-2) 0 0;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--gray-600);
-}
-
-.briefing__lucky b {
-  color: var(--orange);
 }
 
 /* 오늘의 행운 보고서 — 타이밍·색·음식 (하루 설계 훅) */
@@ -2312,39 +1919,6 @@ button {
   box-shadow: var(--shadow-card);
 }
 
-.pinpoint__badge {
-  display: inline-block;
-  font-size: 12px;
-  font-weight: 800;
-  color: var(--brand);
-  background: #fff;
-  padding: 4px 10px;
-  border-radius: 999px;
-  margin-bottom: var(--space-3);
-}
-
-.pinpoint__text {
-  margin: 0;
-  font-size: 17px;
-  line-height: 1.6;
-  font-weight: 700;
-  color: #fff;
-  word-break: keep-all;
-}
-
-/* ── 태그 칩 ── */
-.tag-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--brand);
-  background: var(--brand-soft);
-  padding: 6px 12px;
-  border-radius: 999px;
-}
-
 /* ── 결과 카드 (토스식 화이트 카드) ── */
 .card {
   background: var(--white);
@@ -2353,27 +1927,6 @@ button {
   box-shadow: var(--shadow-card);
   border: 1px solid var(--gray-100);
   margin-bottom: var(--space-4);
-}
-
-.card__center {
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.card__title {
-  font-size: 20px;
-  font-weight: 800;
-  color: var(--gray-900);
-  margin: 0;
-}
-
-.card__subtitle {
-  font-size: 13px;
-  font-weight: 800;
-  color: var(--brand);
-  margin: 0 0 var(--space-2);
 }
 
 .section-title {
