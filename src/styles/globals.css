@@ -875,6 +875,23 @@ button {
   background: rgba(255, 255, 255, 0.3);
 }
 
+/* 흰 배경 위(친구 궁합 화면 등)에서 쓸 때 — 위 .zodiac-chip은 파란 히어로 카드 전용이라
+   흰 배경에서는 흰 글자가 안 보이는 문제가 있었음. 라이트 배경용 대비 색으로 재정의. */
+.zodiac-grid--full .zodiac-chip {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-800);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+}
+
+.zodiac-grid--full .zodiac-chip:active {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+}
+
 /* 행운 번호 볼 */
 .lucky-cell__v--balls {
   gap: 6px;
