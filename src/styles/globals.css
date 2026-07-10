@@ -1509,6 +1509,29 @@ button {
 }
 
 /* ═══ 친구 궁합 화면 ═══ */
+/* 띠/별자리 모드 전환 탭 */
+.seg-tabs {
+  display: flex;
+  gap: 6px;
+  background: var(--gray-100);
+  padding: 4px;
+  border-radius: 12px;
+  margin-bottom: var(--space-4);
+}
+.seg-tab {
+  flex: 1;
+  min-height: 44px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+.seg-tab--on {
+  background: var(--white);
+  color: var(--gray-900);
+  box-shadow: var(--shadow-card);
+}
+
 .zodiac-grid--full {
   margin-top: var(--space-4);
 }

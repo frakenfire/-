@@ -9,6 +9,8 @@ import { todayVibe } from '../lib/dayVibe';
 import { todayKey } from '../lib/dateSeed';
 import { ZODIACS, zodiacLine } from '../data/zodiac';
 import type { Zodiac, ZodiacId } from '../data/zodiac';
+import { STAR_SIGNS, starLine } from '../data/starSign';
+import type { StarSign, StarSignId } from '../data/starSign';
 import type { StoredResult, TodayReading } from '../lib/storage';
 import type { FortuneType } from '../types/fortune';
 
@@ -33,6 +35,8 @@ type Props = {
   todayReading: TodayReading | null;
   zodiac: Zodiac | null;
   onZodiac: (id: ZodiacId) => void;
+  starSign: StarSign | null;
+  onStarSign: (id: StarSignId) => void;
   onReopen: () => void;
   onCompat: () => void;
   onSelect: (t: FortuneType) => void;
@@ -45,12 +49,15 @@ export function HomeScreen({
   todayReading,
   zodiac,
   onZodiac,
+  starSign,
+  onStarSign,
   onReopen,
   onCompat,
   onSelect,
 }: Props) {
   const yNote = yesterdayRecord ? findNote(yesterdayRecord.noteId) : null;
   const [zodiacOpen, setZodiacOpen] = useState(false);
+  const [starOpen, setStarOpen] = useState(false);
   const vibe = todayVibe(todayKey());
 
   return (
@@ -117,6 +124,39 @@ export function HomeScreen({
             ))}
           </div>
         ) : null}
+
+        {starSign ? (
+          <p className="daily-line__zodiac">
+            <b>
+              {starSign.emoji} {starSign.label}의 오늘
+            </b>
+            <br />
+            {starLine(todayKey(), starSign.id)}
+          </p>
+        ) : (
+          <button
+            type="button"
+            className="daily-line__zpick"
+            onClick={() => setStarOpen((v) => !v)}
+          >
+            ⭐ 내 별자리 고르면 별자리 한 줄도 나와요 {starOpen ? '▴' : '▾'}
+          </button>
+        )}
+        {!starSign && starOpen ? (
+          <div className="zodiac-grid">
+            {STAR_SIGNS.map((s) => (
+              <button
+                key={s.id}
+                type="button"
+                className="zodiac-chip"
+                onClick={() => onStarSign(s.id)}
+              >
+                {s.emoji} {s.label}
+              </button>
+            ))}
+          </div>
+        ) : null}
+
         <span className="daily-line__hint">쪽지를 뽑으면, 이 기운을 어떻게 쓸지 알려줄게요</span>
       </div>
 
@@ -125,7 +165,7 @@ export function HomeScreen({
         <span className="compat-banner__icon" aria-hidden>💗</span>
         <span className="compat-banner__body">
           <span className="compat-banner__title">오늘 우리 궁합, 몇 점일까?</span>
-          <span className="compat-banner__desc">친구·연인 띠만 고르면 바로 나와요</span>
+          <span className="compat-banner__desc">띠 또는 별자리만 고르면 바로 나와요</span>
         </span>
         <span className="compat-banner__cta">보러가기 ›</span>
       </button>

@@ -26,7 +26,9 @@ import {
 import { findNote } from './data/notes';
 import { findZodiac } from './data/zodiac';
 import type { Zodiac, ZodiacId } from './data/zodiac';
-import { loadMyZodiac, saveMyZodiac } from './lib/storage';
+import { findStarSign } from './data/starSign';
+import type { StarSign, StarSignId } from './data/starSign';
+import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign } from './lib/storage';
 
 import { HomeScreen } from './screens/HomeScreen';
 import { MoodScreen } from './screens/MoodScreen';
@@ -85,12 +87,26 @@ export default function App() {
     return id ? (findZodiac(id) ?? null) : null;
   });
 
+  // 내 별자리 (별자리별 한 줄용, 선택형 값 — 생년월일 아님)
+  const [starSign, setStarSign] = useState<StarSign | null>(() => {
+    const id = loadMyStarSign();
+    return id ? (findStarSign(id) ?? null) : null;
+  });
+
   function handleZodiac(id: ZodiacId) {
     const z = findZodiac(id);
     if (!z) return;
     saveMyZodiac(id);
     setZodiac(z);
     flash(`${z.emoji} ${z.label}의 한 줄이 매일 홈에 떠요`);
+  }
+
+  function handleStarSign(id: StarSignId) {
+    const s = findStarSign(id);
+    if (!s) return;
+    saveMyStarSign(id);
+    setStarSign(s);
+    flash(`${s.emoji} ${s.label}의 한 줄이 매일 홈에 떠요`);
   }
 
   function flash(msg: string) {
@@ -114,6 +130,13 @@ export default function App() {
     if (!z) return;
     saveMyZodiac(id);
     setZodiac(z);
+  }
+
+  function handleSaveMyStarSign(id: StarSignId) {
+    const s = findStarSign(id);
+    if (!s) return;
+    saveMyStarSign(id);
+    setStarSign(s);
   }
 
   async function handlePick(picked: Note) {
@@ -219,6 +242,8 @@ export default function App() {
           todayReading={todayReading}
           zodiac={zodiac}
           onZodiac={handleZodiac}
+          starSign={starSign}
+          onStarSign={handleStarSign}
           onReopen={handleReopen}
           onCompat={() => setScreen('compat')}
           onSelect={handleType}
@@ -276,8 +301,10 @@ export default function App() {
       {screen === 'compat' && (
         <CompatScreen
           dateKey={dateKey}
-          initialMy={zodiac?.id ?? null}
-          onSaveMy={handleSaveMyZodiac}
+          initialMyZodiac={zodiac?.id ?? null}
+          initialMyStar={starSign?.id ?? null}
+          onSaveMyZodiac={handleSaveMyZodiac}
+          onSaveMyStar={handleSaveMyStarSign}
           onBack={() => setScreen(result ? 'result' : 'home')}
           onAdUnlock={showRewardAdForCompat}
           onShare={shareText}

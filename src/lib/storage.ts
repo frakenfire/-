@@ -65,6 +65,17 @@ export function loadMyZodiac(): string | null {
   return safeGet(ZODIAC_KEY);
 }
 
+// 내 별자리 (12개 중 선택 — 선택형 값, 생년월일 아님)
+const STAR_KEY = 'tomorrowNoteStarSign';
+
+export function saveMyStarSign(id: string): void {
+  safeSet(STAR_KEY, id);
+}
+
+export function loadMyStarSign(): string | null {
+  return safeGet(STAR_KEY);
+}
+
 export function saveTodayReading(reading: TodayReading): void {
   safeSet(KEYS.todayReading, JSON.stringify(reading));
 }

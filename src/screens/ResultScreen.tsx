@@ -216,7 +216,7 @@ export function ResultScreen({
         <span className="compat-banner__icon" aria-hidden>💗</span>
         <span className="compat-banner__body">
           <span className="compat-banner__title">이 사람이랑 오늘 궁합은?</span>
-          <span className="compat-banner__desc">친구·연인 띠 고르면 바로 나와요</span>
+          <span className="compat-banner__desc">띠 또는 별자리만 고르면 바로 나와요</span>
         </span>
         <span className="compat-banner__cta">보러가기 ›</span>
       </button>
