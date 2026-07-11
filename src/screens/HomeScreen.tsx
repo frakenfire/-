@@ -7,6 +7,7 @@ import { HOME } from '../data/copy';
 import { useState } from 'react';
 import { todayVibe } from '../lib/dayVibe';
 import { todayKey } from '../lib/dateSeed';
+import { luckyZodiacsToday } from '../lib/luckyToday';
 import { ZODIACS, zodiacLine } from '../data/zodiac';
 import type { Zodiac, ZodiacId } from '../data/zodiac';
 import { STAR_SIGNS, starLine } from '../data/starSign';
@@ -89,6 +90,27 @@ export function HomeScreen({
           오늘 뭘 하면 좋고, 뭘 피해야 할지.
           <br />
           쪽지 한 장이면 돼요.
+        </p>
+      </div>
+
+      {/* 인트로 티저 — "오늘 운 좋은 띠"로 궁금증 유발(내 띠 있나 보러 들어오게) */}
+      <div className="lucky-today">
+        <p className="lucky-today__title">🍀 오늘 운이 트인 띠</p>
+        <div className="lucky-today__chips">
+          {luckyZodiacsToday(todayKey()).map((z) => {
+            const mine = zodiac?.id === z.id;
+            return (
+              <span key={z.id} className={mine ? 'lt-chip lt-chip--me' : 'lt-chip'}>
+                {z.emoji} {z.label}
+                {mine ? ' (나!)' : ''}
+              </span>
+            );
+          })}
+        </div>
+        <p className="lucky-today__cta">
+          {zodiac && luckyZodiacsToday(todayKey()).some((z) => z.id === zodiac.id)
+            ? '내 띠가 있네요! 오늘 뭐가 좋은지 쪽지로 확인해봐요'
+            : '내 띠는 오늘 어떨까? 쪽지 한 장 뽑아봐요'}
         </p>
       </div>
 

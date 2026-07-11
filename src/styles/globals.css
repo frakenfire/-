@@ -297,13 +297,13 @@ button {
   display: flex;
   gap: var(--space-3);
   justify-content: center;
-  margin-top: var(--space-6);
+  margin-top: var(--space-8);
 }
 
 .note {
   flex: 1;
-  max-width: 108px;
-  aspect-ratio: 3 / 4;
+  max-width: 116px;
+  aspect-ratio: 5 / 7;
   border-radius: 18px;
   display: flex;
   flex-direction: column;
@@ -382,17 +382,22 @@ button {
   color: var(--color-text-secondary);
 }
 
+/* 쪽지 4색 — 서로 또렷이 구분되는 파스텔 (허옇게 뭉개지지 않게) */
 .note--green {
-  background: var(--color-soft-green);
+  background: #e6f7ee;
+  border-color: #bfe6d2;
 }
 .note--cream {
-  background: var(--color-cream);
+  background: #fff3da;
+  border-color: #f4e0b0;
 }
 .note--yellow {
-  background: var(--color-soft-yellow);
+  background: #fff0c2;
+  border-color: #f3dd93;
 }
 .note--pink {
-  background: var(--color-soft-pink);
+  background: #ffe4ee;
+  border-color: #f6c4d6;
 }
 
 /* ── 상세 섹션 ── */
@@ -573,8 +578,13 @@ button {
   text-align: center;
   font-size: 13px;
   font-weight: 600;
-  color: var(--gray-500);
+  color: var(--gray-600);
   margin-top: var(--space-5);
+}
+/* 쪽지 선택 힌트를 화면 바닥에 고정 — 카드는 상단, 힌트는 하단 구조 */
+.note-hint--foot {
+  margin-top: auto;
+  padding-top: var(--space-6);
 }
 
 /* 쪽지 등장 애니메이션 */
@@ -2393,4 +2403,54 @@ button {
   font-weight: 700;
   color: #eaf2ff;
   word-break: keep-all;
+}
+
+/* 쪽지 선택 화면 마스코트 — 카드와 하단 힌트 사이 빈 공간을 채운다 */
+.note-mascot {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  opacity: 0.95;
+}
+
+/* 인트로 티저 — 오늘 운 좋은 띠 (궁금증 유발) */
+.lucky-today {
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, #fff7e0, #fffdf5);
+  border: 1px solid #f3e4b8;
+}
+.lucky-today__title {
+  margin: 0 0 var(--space-3);
+  font-size: 14px;
+  font-weight: 800;
+  color: #8a6a00;
+}
+.lucky-today__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.lt-chip {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gray-800);
+  background: var(--white);
+  border: 1px solid #f0dfa8;
+  border-radius: 999px;
+  padding: 8px 14px;
+}
+.lt-chip--me {
+  color: var(--white);
+  background: var(--brand);
+  border-color: var(--brand);
+}
+.lucky-today__cta {
+  margin: var(--space-3) 0 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #8a6a00;
 }

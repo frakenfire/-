@@ -1,5 +1,6 @@
 import { AppLayout } from '../components/AppLayout';
 import { NoteCard } from '../components/NoteCard';
+import { Mascot } from '../components/Mascot';
 import { NOTE_PICK } from '../data/copy';
 import type { Note } from '../types/fortune';
 
@@ -29,30 +30,32 @@ export function NotePickScreen({
       </h2>
       <p className="lead">{NOTE_PICK.lead}</p>
 
-      <div className="fill-rest">
-        <div className="note-row">
-          {notes.map((note, i) => (
-            <NoteCard
-              key={note.id}
-              note={note}
-              faceDown
-              index={i}
-              state={
-                openingId
-                  ? openingId === note.id
-                    ? 'opening'
-                    : 'dim'
-                  : 'idle'
-              }
-              onClick={() => !busy && onPick(note)}
-            />
-          ))}
-        </div>
-
-        <p className="note-hint">
-          {busy ? '쪽지 펼치는 중이에요…' : '딱 끌리는 쪽지 하나만 콕 🙂'}
-        </p>
+      <div className="note-row">
+        {notes.map((note, i) => (
+          <NoteCard
+            key={note.id}
+            note={note}
+            faceDown
+            index={i}
+            state={
+              openingId
+                ? openingId === note.id
+                  ? 'opening'
+                  : 'dim'
+                : 'idle'
+            }
+            onClick={() => !busy && onPick(note)}
+          />
+        ))}
       </div>
+
+      <div className="note-mascot" aria-hidden>
+        <Mascot size={96} mood="happy" />
+      </div>
+
+      <p className="note-hint note-hint--foot">
+        {busy ? '쪽지 펼치는 중이에요…' : '딱 끌리는 쪽지 하나만 콕 🙂'}
+      </p>
     </AppLayout>
   );
 }
