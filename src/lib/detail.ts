@@ -1,5 +1,6 @@
 import type { CategoryScore, LuckSet } from './luck';
 import { ZODIACS, type Zodiac } from '../data/zodiac';
+import { pickFresh } from './pickFresh';
 import {
   BAND_TAG,
   CATEGORY_INTERP,
@@ -24,10 +25,6 @@ export type DetailReport = {
   charm: string; // 오늘의 부적 문장
 };
 
-function pick<T>(arr: T[], n: number): T {
-  return arr[Math.abs(Math.trunc(n)) % arr.length];
-}
-
 export function computeDetail(seed: number, luck: LuckSet): DetailReport {
   const ranked: RankedCat[] = luck.categories
     .map((c: CategoryScore) => {
@@ -44,15 +41,18 @@ export function computeDetail(seed: number, luck: LuckSet): DetailReport {
   let cautionIdx = Math.abs(Math.trunc(seed / 37) + 6) % ZODIACS.length;
   if (cautionIdx === goodIdx) cautionIdx = (cautionIdx + 1) % ZODIACS.length;
 
-  const mission = pick(MISSION_TEMPLATES, seed / 13)
+  const mission = pickFresh(MISSION_TEMPLATES, seed / 13, 'detail:mission')
     .replace('{time}', luck.time)
     .replace('{color}', luck.color.name)
     .replace('{dir}', luck.direction)
     .replace('{item}', luck.item)
     .replace('{food}', luck.food.name);
 
-  const numberUse = pick(NUMBER_HINTS, seed / 19).replace('{n}', String(luck.number));
-  const charm = pick(CHARMS, seed / 23);
+  const numberUse = pickFresh(NUMBER_HINTS, seed / 19, 'detail:numberUse').replace(
+    '{n}',
+    String(luck.number),
+  );
+  const charm = pickFresh(CHARMS, seed / 23, 'detail:charm');
 
   return {
     ranked,

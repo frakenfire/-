@@ -7,6 +7,7 @@ import { computeRarity, RARITY_LINE } from './rarity';
 import { FORTUNE_LABEL } from '../data/fortuneTypes';
 import { NOTE_LEAD, TEMPLATES } from '../data/resultTemplates';
 import { PLANS, moodGroup } from '../data/dayDesign';
+import { pickFreshIndex } from './pickFresh';
 import {
   AFTERNOON_READINGS,
   EVENING_READINGS,
@@ -29,32 +30,12 @@ export type FortuneInput = {
   dateKey?: string;
 };
 
-// 같은 운세를 연달아 볼 때 직전과 같은 텍스트가 나오지 않게 한다.
-// (반복을 두 번 체감하는 순간 "맞는다"는 몰입이 깨지기 때문)
-// storageKey를 분리해서 같은 함수로 여러 콘텐츠 축(결과 템플릿·하루 설계)에
-// 각각 독립된 "직전 회피" 이력을 유지한다.
-function pickVariantIndex(seed: number, len: number, storageKey: string): number {
-  let idx = seed % len;
-  try {
-    const key = `tomorrowNoteLastVariant:${storageKey}`;
-    const last = window.localStorage.getItem(key);
-    if (len > 1 && last !== null && Number.parseInt(last, 10) === idx) {
-      idx = (idx + 1 + (seed % (len - 1))) % len;
-      if (idx === Number.parseInt(last, 10)) idx = (idx + 1) % len;
-    }
-    window.localStorage.setItem(key, String(idx));
-  } catch {
-    /* localStorage 불가 환경에서는 seed 값 그대로 사용 */
-  }
-  return idx;
-}
-
 export function generateFortune(input: FortuneInput): FortuneResult {
   const { fortuneType, note, mood, dateKey = '' } = input;
   const seed = hashSeed(`${dateKey}|${fortuneType}|${note.id}|${mood}`);
 
   const variants = TEMPLATES[fortuneType];
-  const variant = variants[pickVariantIndex(seed, variants.length, `tpl:${fortuneType}`)];
+  const variant = variants[pickFreshIndex(seed, variants.length, `tpl:${fortuneType}`)];
 
   const lead = NOTE_LEAD[note.id] ?? '오늘의 쪽지가 도착했어요.';
   const luck = computeLuck(seed);
@@ -67,7 +48,7 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const state = moodGroup(mood);
   const cell = PLANS[fortuneType][state];
   const planSeed = Math.abs(Math.trunc(seed / 13));
-  const dayPlan = cell[pickVariantIndex(planSeed, cell.length, `plan:${fortuneType}:${state}`)];
+  const dayPlan = cell[pickFreshIndex(planSeed, cell.length, `plan:${fortuneType}:${state}`)];
 
   // 에픽 이상이면 요정의 특별 한마디를 편지에 담는다.
   const rarityLine = RARITY_LINE[rarity.tier];
@@ -81,19 +62,20 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const dont = variant.caution;
 
   // 하루 풀이: 등급 해설 + 시간대·사람·마음 해석을 seed 로 조합.
-  // 서로 다른 소수로 나눠 섹션 간 조합이 매일 갈라지게 한다.
-  const pickReading = (arr: string[], div: number) =>
-    arr[Math.abs(Math.trunc(seed / div)) % arr.length];
+  // 서로 다른 소수로 나눠 섹션 간 조합이 매일 갈라지게 하고, 섹션마다
+  // 직전과 다른 문장이 나오도록 독립된 회피 이력을 둔다.
   const isMonth = fortuneType === 'month';
+  const pickReading = (arr: string[], div: number, key: string) =>
+    arr[pickFreshIndex(Math.abs(Math.trunc(seed / div)), arr.length, key)];
   const reading = {
     overall: `${GRADE_READING[luck.grade] ?? GRADE_READING['평']}
 ${variant.flow}`,
     // month 타입은 초반/중순/월말 풀로, 나머지는 오전/오후/저녁 풀로.
-    morning: pickReading(isMonth ? MONTH_EARLY_READINGS : MORNING_READINGS, 3),
-    afternoon: pickReading(isMonth ? MONTH_MID_READINGS : AFTERNOON_READINGS, 11),
-    evening: pickReading(isMonth ? MONTH_LATE_READINGS : EVENING_READINGS, 17),
-    people: pickReading(PEOPLE_READINGS, 23),
-    mind: pickReading(MIND_READINGS, 31),
+    morning: pickReading(isMonth ? MONTH_EARLY_READINGS : MORNING_READINGS, 3, `read:morning:${isMonth}`),
+    afternoon: pickReading(isMonth ? MONTH_MID_READINGS : AFTERNOON_READINGS, 11, `read:afternoon:${isMonth}`),
+    evening: pickReading(isMonth ? MONTH_LATE_READINGS : EVENING_READINGS, 17, `read:evening:${isMonth}`),
+    people: pickReading(PEOPLE_READINGS, 23, 'read:people'),
+    mind: pickReading(MIND_READINGS, 31, 'read:mind'),
     scale: (isMonth ? 'month' : 'day') as 'day' | 'month',
   };
 
