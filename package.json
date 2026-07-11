@@ -1,9 +1,13 @@
 {
-  "name": "tomorrow-note",
+  "name": "today-note",
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "내일쪽지 뽑기 — 토스 앱인토스용 무비용 가벼운 운세 쪽지 미니앱 MVP",
+  "description": "오늘쪽지 뽑기 — 토스 앱인토스용 서버리스 운세 쪽지 미니앱",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "vite",
     "build": "ait build",

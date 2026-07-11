@@ -18,7 +18,7 @@ import {
   updateStreak,
 } from './lib/storage';
 import { clearAllData } from './lib/storage';
-import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent } from './lib/toss';
+import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError } from './lib/toss';
 import { findNote } from './data/notes';
 import { findZodiac } from './data/zodiac';
 import type { Zodiac, ZodiacId } from './data/zodiac';
@@ -68,10 +68,12 @@ export default function App() {
     return r && r.dateKey === yesterdayKey ? r : null;
   }, [yesterdayKey]);
 
+  // 쪽지 후보 3장은 날짜뿐 아니라 운세 종류·기분까지 반영해, 같은 날
+  // 연애운/금전운/직장운에서 똑같은 세 장이 나오지 않게 한다.
   const shownNotes = useMemo(() => {
-    const seed = hashSeed(`${dateKey}#${drawNonce}`);
+    const seed = hashSeed(`${dateKey}#${fortuneType ?? ''}#${mood ?? ''}#${drawNonce}`);
     return pickBySeed(NOTES, 3, seed);
-  }, [dateKey, drawNonce]);
+  }, [dateKey, fortuneType, mood, drawNonce]);
 
   // 결과는 뽑는 순간 한 번만 생성 (편지 조합의 직전 회피 로직이 재계산에 영향받지 않도록)
   const [result, setResult] = useState<FortuneResult | null>(null);
@@ -145,6 +147,11 @@ export default function App() {
     // 마운트 시 1회 구독 (goBack 은 ref 로 최신 상태를 읽음)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // 퍼널 계측 — 화면 진입 로깅 (토스 Analytics, 미지원 시 no-op)
+  useEffect(() => {
+    logEvent('screen_view', { screen });
+  }, [screen]);
 
   function handleReset() {
     const ok = clearAllData();
@@ -223,8 +230,10 @@ export default function App() {
       const snapshot = { dateKey, fortuneType, noteId: picked.id, result: generated };
       saveTodayReading(snapshot);
       setTodayReading(snapshot);
+      logEvent('result_viewed', { fortuneType });
       setScreen('result');
-    } catch {
+    } catch (e) {
+      reportError('handlePick', e);
       flash('앗, 쪽지를 여는 중 문제가 생겼어요. 다시 시도해 주세요');
       setScreen('pick');
     } finally {
@@ -242,12 +251,14 @@ export default function App() {
     setBusy(true);
     try {
       const result = await showRewardAd(placement);
+      logEvent('reward_ad', { placement, status: result.status });
       if (isRewarded(result) || isUnsupportedFreePass(result)) {
         await onUnlock();
       } else {
         flash(adResultMessage(result) || '앗, 잠시 후 다시 시도해요');
       }
-    } catch {
+    } catch (e) {
+      reportError(`rewardGate:${placement}`, e);
       flash('앗, 문제가 생겼어요. 다시 시도해 주세요');
     } finally {
       setBusy(false);
@@ -285,6 +296,7 @@ export default function App() {
       shareLine: result.shareLine,
       brag: `상위 ${brag.pct}%`,
     });
+    logEvent('share', { outcome: r });
     if (r === 'shared') flash('친구에게 공유했어요 💌');
     else if (r === 'copied') flash('공유 문구 복사 완료! 💌');
     else if (r === 'cancelled') return; // 취소 — 아무 안내 없이 조용히

@@ -172,13 +172,22 @@ export function loadSavedPeople(): SavedPerson[] {
   }
 }
 
-export function addSavedPerson(person: Omit<SavedPerson, 'id'>): { list: SavedPerson[]; saved: boolean } {
+export function addSavedPerson(
+  person: Omit<SavedPerson, 'id'>,
+): { list: SavedPerson[]; saved: boolean; duplicate: boolean } {
+  const existing = loadSavedPeople();
+  // 같은 띠/별자리라도 관계(가족·베프 등)가 다르면 다른 사람으로 저장 가능.
+  // 완전히 동일한(모드+값+관계) 항목만 중복으로 막는다.
+  const duplicate = existing.some(
+    (p) => p.mode === person.mode && p.value === person.value && p.relation === person.relation,
+  );
+  if (duplicate) return { list: existing, saved: true, duplicate: true };
   const updated = [
     { ...person, id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}` },
-    ...loadSavedPeople(),
+    ...existing,
   ].slice(0, MAX_SAVED_PEOPLE);
   const saved = safeSet(SAVED_PEOPLE_KEY, JSON.stringify(updated));
-  return { list: updated, saved };
+  return { list: updated, saved, duplicate: false };
 }
 
 export function removeSavedPerson(id: string): SavedPerson[] {

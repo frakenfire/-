@@ -1,4 +1,5 @@
-import { Component, type ReactNode } from 'react';
+import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { reportError } from '../lib/toss';
 
 // 최후의 안전망 — 어떤 에러에도 흰 화면 대신 복구 화면을 보여준다.
 type Props = { children: ReactNode };
@@ -9,6 +10,11 @@ export class ErrorBoundary extends Component<Props, State> {
 
   static getDerivedStateFromError(): State {
     return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    // 운영 오류 관측 — 원인 파악용 최소 컨텍스트를 남긴다(전송 실패해도 무시).
+    reportError('ErrorBoundary', `${error.message} @ ${info.componentStack?.slice(0, 200) ?? ''}`);
   }
 
   render() {

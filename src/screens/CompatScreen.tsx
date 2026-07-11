@@ -72,9 +72,6 @@ export function CompatScreen({
   const options = mode === 'zodiac' ? ZODIACS : STAR_SIGNS;
   const modeLabel = mode === 'zodiac' ? '띠' : '별자리';
 
-  const alreadySaved = friend
-    ? savedPeople.some((p) => p.mode === mode && p.value === friend)
-    : false;
 
   // 내 사람들 랭킹 — 오늘 나랑 저장된 사람들 중 누가 가장 잘 맞는지 한눈에.
   const savedRanked = savedPeople
@@ -101,13 +98,11 @@ export function CompatScreen({
 
   function saveCurrentFriend(relation: RelationKey) {
     if (!friend) return;
-    const { list, saved } = addSavedPerson({ mode, value: friend, relation });
+    const { list, saved, duplicate } = addSavedPerson({ mode, value: friend, relation });
     setSavedPeople(list);
-    onToast(
-      saved
-        ? '내 사람으로 저장했어요 ⭐ 다음엔 바로 확인할 수 있어요'
-        : '앗, 저장 공간이 부족해 저장을 못 했어요',
-    );
+    if (duplicate) onToast('이미 저장돼 있어요');
+    else if (saved) onToast('내 사람으로 저장했어요 ⭐ 다음엔 바로 확인할 수 있어요');
+    else onToast('앗, 저장 공간이 부족해 저장을 못 했어요');
   }
 
   function forgetPerson(id: string) {
@@ -353,24 +348,22 @@ export function CompatScreen({
             </button>
           </div>
 
-          {!alreadySaved ? (
-            <div className="save-person">
-              <p className="save-person__title">이 사람, 내 사람으로 저장할까요?</p>
-              <p className="save-person__desc">관계만 골라두면 다음부터 한 번에 바로 확인해요</p>
-              <div className="save-person__chips">
-                {RELATIONS.map((r) => (
-                  <button
-                    type="button"
-                    className="save-person__chip"
-                    key={r.key}
-                    onClick={() => saveCurrentFriend(r.key)}
-                  >
-                    {r.emoji} {r.label}
-                  </button>
-                ))}
-              </div>
+          <div className="save-person">
+            <p className="save-person__title">이 사람, 내 사람으로 저장할까요?</p>
+            <p className="save-person__desc">관계만 골라두면 다음부터 한 번에 바로 확인해요</p>
+            <div className="save-person__chips">
+              {RELATIONS.map((r) => (
+                <button
+                  type="button"
+                  className="save-person__chip"
+                  key={r.key}
+                  onClick={() => saveCurrentFriend(r.key)}
+                >
+                  {r.emoji} {r.label}
+                </button>
+              ))}
             </div>
-          ) : null}
+          </div>
         </>
       ) : null}
       </div>

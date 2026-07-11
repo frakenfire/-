@@ -4,6 +4,7 @@
 import {
   saveBase64Data as tossSaveBase64Data,
   getServerTime as tossGetServerTime,
+  eventLog as tossEventLog,
   SafeAreaInsets,
 } from '@apps-in-toss/web-framework';
 
@@ -101,4 +102,27 @@ export function subscribeSafeArea(): () => void {
     /* no-op */
   }
   return () => {};
+}
+
+/**
+ * 퍼널 이벤트 로깅 — 토스 Analytics(eventLog). 미지원/실패 시 조용히 no-op.
+ * 절대 throw 하지 않으며, 앱 흐름을 막지 않는다(fire-and-forget).
+ */
+export function logEvent(name: string, params: Record<string, unknown> = {}): void {
+  try {
+    const fn = tossEventLog as unknown as ((p: unknown) => Promise<void>) & {
+      isSupported?: () => boolean;
+    };
+    if (typeof fn !== 'function') return;
+    if (typeof fn.isSupported === 'function' && !fn.isSupported()) return;
+    void fn({ log_name: name, log_type: 'user_event', params }).catch(() => {});
+  } catch {
+    /* no-op */
+  }
+}
+
+/** 운영 오류 관측 — 최소 컨텍스트를 이벤트로 남긴다(전송 실패해도 무시). */
+export function reportError(where: string, error: unknown): void {
+  const message = error instanceof Error ? error.message : String(error);
+  logEvent('app_error', { where, message: message.slice(0, 300) });
 }

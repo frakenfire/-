@@ -239,8 +239,11 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
     ctx.fillText('오늘쪽지 뽑기 · 오늘 하루, 쪽지 한 장', cx, H - 92);
 
     const dataUrl = canvas.toDataURL('image/png');
+    // 저장할 때마다 파일명이 겹치지 않게 날짜+시각을 붙인다.
+    const now = new Date();
+    const stamp = `${now.getFullYear()}${`${now.getMonth() + 1}`.padStart(2, '0')}${`${now.getDate()}`.padStart(2, '0')}-${`${now.getHours()}`.padStart(2, '0')}${`${now.getMinutes()}`.padStart(2, '0')}`;
     // 토스 웹뷰: 공식 saveBase64Data / 그 외: 브라우저 다운로드 (adapter 내부 분기)
-    return await saveImageData(dataUrl, 'today-note.png');
+    return await saveImageData(dataUrl, `today-note-${stamp}.png`);
   } catch {
     return false;
   }
