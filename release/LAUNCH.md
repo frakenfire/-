@@ -10,26 +10,30 @@
 1. https://developers-apps-in-toss.toss.im 접속 → 토스 계정으로 가입
 2. 개발자 콘솔에서 **새 앱 만들기** → 앱 이름 `오늘쪽지 뽑기`
 
-## 2단계. 앱인토스 프로젝트 생성 (10분)
+## 2단계. 앱인토스 프레임워크 (이미 통합 완료 ✅)
 
-내 PC(Windows PowerShell)에서:
+이 저장소에는 **`@apps-in-toss/web-framework` 와 `granite.config.ts` 가 이미
+연동돼 있고, `npm run build`(= `ait build`) 로 `.ait` 번들 생성까지 검증**돼
+있습니다. 별도로 `create-ait-app` 로 새 프로젝트를 만들어 이식할 필요가 없어요.
 
 ```bash
-npx create-ait-app tomorrow-note
-# 선택: package manager=npm / template=react-ts / TDS=Y / examples=인앱 광고
 cd tomorrow-note
+npm install            # @apps-in-toss/web-framework 포함 설치
+npm run build          # = ait build → today-note.ait 생성 (검증됨)
 ```
 
-## 3단계. 이 저장소 코드 이식 (20분)
+> 설정 파일: `granite.config.ts` (기존 Vite 빌드를 `web.commands` 로 그대로 감쌈)
 
-1. 생성된 프로젝트의 `src/` 를 **이 저장소의 `src/` 로 통째로 교체**
-2. `package.json` dependencies 에 `"pretendard": "^1.3.9"` 추가 후 `npm install`
-3. 앱 설정 파일(`apps-in-toss.config` 계열)에서:
-   - `appName: 'tomorrow-note'`
-   - `displayName: '오늘쪽지 뽑기'`
-   - `primaryColor: '#3182f6'`
-   - `icon`: 이 폴더의 `app-icon-600.png` 업로드
-4. `npm run dev` 로 로컬 확인 → `npm run build` 통과 확인
+## 3단계. 콘솔 연동값 채우기 (10분)
+
+콘솔에서 앱을 등록하면 발급되는 값으로 `granite.config.ts` 두 곳을 교체:
+
+1. `appName`: 콘솔에서 발급받은 앱 ID (현재 임시값 `'today-note'`)
+2. `brand.icon`: 콘솔에 `release/app-icon-600.png` 업로드 후 받은
+   `https://static.toss.im/appsintoss/...` URL (현재 placeholder)
+
+> `displayName: '오늘쪽지 뽑기'`, `primaryColor: '#3182f6'` 는 이미 설정돼 있어요.
+> `appName`·`displayName` 은 **콘솔 등록값과 반드시 일치**해야 배포가 됩니다.
 
 ## 4단계. 광고 SDK 연결 (30분) — 수익의 핵심
 
@@ -55,16 +59,32 @@ cd tomorrow-note
 - **연속 출석 스트릭**(👑) — `localStorage` 기반, 로그인 불필요
 - **친구 궁합** — 공유 유입 루프 (앱인토스 푸시가 나중에 지원되면 5단계로 승격 검토)
 
-## 6단계. 테스트 & 검수 제출 (30분 + 대기)
+## 6단계. 빌드 → 업로드 → 테스트 → 검수 (30분 + 대기)
 
-1. `npm run build` → 산출물(.ait)을 콘솔 **앱 출시** 메뉴에 업로드
-2. 실기기 테스트 **1회 이상** (검수 요청의 필수 조건):
-   - 홈 → 운세 선택 → 기분 → 쪽지 → 결과(하루 설계) → 심층 리포트까지 전체 흐름
-   - 광고가 각 지점에서 뜨는지 / 닫아도 앱이 정상인지
-   - 360px대 작은 폰에서 잘림 없는지
-3. **검토 요청** 제출 → 영업일 최대 3일 대기
-4. 반려 시 사유 보고 수정 → 재제출 (이 저장소 검수 대비 항목:
-   진입 즉시 광고 없음 ✓ / 무료 결과 광고 없이 제공 ✓ / 의료·단정 표현 없음 ✓ / 해요체 ✓)
+```bash
+# (1) 콘솔 시크릿 토큰 등록 (최초 1회)
+npx ait token add            # 콘솔 > 설정에서 발급받은 API 키 입력
+
+# (2) 번들 빌드
+npm run build                # = ait build → today-note.ait 생성
+
+# (3) 배포(업로드)
+npm run deploy               # = ait deploy (또는 콘솔에 .ait 수동 업로드)
+```
+
+1. 업로드 후 콘솔에서 **'테스트하기'** → QR 코드로 실기기(토스앱) 테스트 **1회 이상**:
+   - 홈 → 운세 선택 → 기분 → 쪽지 → 결과(하루 설계) → 심층 리포트 전체 흐름
+   - 친구 궁합(띠/별자리) + 내 사람들 저장·랭킹
+   - 광고가 각 지점에서 뜨는지 / 닫아도 앱이 정상인지 / 360px대 잘림 없는지
+2. **'검토 요청하기'** 클릭 → **4단계 검수**(평균 2~3일):
+   - **운영 검수** — 앱 정보 확인
+   - **기능 검수** — 정상 작동 여부
+   - **디자인 검수** — 토스 UI 가이드 준수
+   - **보안 검수** — 개인정보·보안 (이 앱: 서버·로그인·자유입력 저장 없음 ✓,
+     선택형 값만 localStorage 저장 ✓, 외부 호출 없음 ✓, CSP 설정 ✓)
+3. 승인되면 콘솔 **'출시하기'** → 즉시 전체 사용자 공개 (되돌리기 어려우니 충분히 테스트)
+4. 검수 대비 콘텐츠 항목: 진입 즉시 광고 없음 ✓ / 무료 결과 광고 없이 제공 ✓ /
+   의료·단정 표현 없음 ✓ / 해요체 ✓
 
 ## 7단계. 출시 후 — 월 30만원 플레이북
 
@@ -97,3 +117,20 @@ cd tomorrow-note
 - [ ] 시작 화면 진입 직후 광고·바텀시트 없음
 - [ ] 무료 결과(하루 설계)는 광고 없이 제공
 - [ ] 하단 고지문 노출 확인
+
+---
+
+## 기술 참고
+
+- **의존성 취약점**: `npm audit` 에 뜨는 취약점 대부분은 앱인토스
+  프레임워크(`@apps-in-toss/web-framework`)가 끌어오는 react-native 계열
+  빌드 도구 전이 의존성입니다. **우리 코드/배포 번들이 아니라 플랫폼 SDK
+  쪽**이며, 웹뷰에 실제로 실려 나가는 산출물에는 영향이 없습니다. 프레임워크
+  버전을 올리면 함께 갱신되므로 임의로 강제 수정하지 마세요.
+  (우리 코드 직접 의존성은 `npm audit --omit=dev` 기준 취약점 0건)
+- **CSP**: `index.html` 에 방어적 CSP(`script-src 'self'` 등)를 넣어뒀습니다.
+  토스 웹뷰 브릿지는 `window.ReactNativeWebView` postMessage 방식이라 이
+  CSP 와 충돌하지 않지만, 만약 토스 샌드박스 테스트에서 CSP 위반이 뜨면
+  `script-src`·`connect-src` 에 `https://*.toss.im` 을 추가하세요.
+- **빌드 산출물**: `today-note.ait`, `.ait/`, `dist/` 는 재생성 가능하므로
+  `.gitignore` 처리돼 있습니다. 배포 때마다 `npm run build` 로 새로 만듭니다.

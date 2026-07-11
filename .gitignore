@@ -8,3 +8,8 @@ dist-ssr
 !.env.example
 node_modules/.tmp
 *.tsbuildinfo
+
+# 앱인토스 빌드 산출물 (콘솔 업로드용, 재생성 가능)
+*.ait
+.ait
+.granite
