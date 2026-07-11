@@ -6,6 +6,7 @@ import { ZODIACS, findZodiac, type ZodiacId } from '../data/zodiac';
 import { STAR_SIGNS, findStarSign, type StarSignId } from '../data/starSign';
 import { computeCompat, type CompatResult } from '../lib/compat';
 import { computeStarCompat } from '../lib/starCompat';
+import { saveCompatCard } from '../lib/compatCard';
 import { scoreColor, scoreTextColor } from '../lib/luck';
 import {
   RELATIONS,
@@ -172,6 +173,20 @@ export function CompatScreen({
     onToast(ok ? '궁합 자랑 완료! 💌' : '앗, 공유를 못 했어요');
   }
 
+  // 스토리에 올리는 바이럴 카드 — 광고 없이(확산 우선) 바로 이미지 저장.
+  async function saveCard() {
+    if (busy || !myLabel || !friendLabel || !result) return;
+    setBusy(true);
+    try {
+      const ok = await saveCompatCard({ modeLabel, me: myLabel, friend: friendLabel, result });
+      onToast(ok ? '궁합 카드 저장 완료! 📸 스토리에 올려봐요' : '앗, 저장을 못 했어요');
+    } catch {
+      onToast('앗, 저장 중 문제가 생겼어요');
+    } finally {
+      setBusy(false);
+    }
+  }
+
   // 띠/별자리 고르는 중
   if (picking) {
     return (
@@ -334,9 +349,12 @@ export function CompatScreen({
             <button type="button" className="btn btn--primary" onClick={brag}>
               이 궁합 친구한테 자랑하기 💌
             </button>
+            <button type="button" className="btn btn--secondary" disabled={busy} onClick={saveCard}>
+              궁합 카드 이미지로 저장하기 📸
+            </button>
             <button
               type="button"
-              className="btn btn--secondary"
+              className="btn btn--ghost"
               onClick={() => {
                 if (mode === 'zodiac') setFriendZodiac(null);
                 else setFriendStar(null);
