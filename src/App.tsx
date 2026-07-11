@@ -18,6 +18,8 @@ import {
   peekStreak,
   pushHistory,
   getRecordForDate,
+  bumpRarity,
+  getRarityCounts,
 } from './lib/storage';
 import { clearAllData } from './lib/storage';
 import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError } from './lib/toss';
@@ -81,6 +83,7 @@ export default function App() {
   // 스트릭은 '앱을 연 순간'이 아니라 '쪽지를 뽑은 날' 기준으로 오른다(handlePick).
   // 홈에는 부작용 없이 현재 값만 보여준다.
   const [streak, setStreak] = useState(() => peekStreak());
+  const [rarityCounts, setRarityCounts] = useState(() => getRarityCounts(dateKey));
 
   const yesterdayRecord = useMemo(() => getRecordForDate(yesterdayKey), [yesterdayKey]);
 
@@ -185,6 +188,8 @@ export default function App() {
       setStarSign(null);
       setTodayReading(null);
       setResult(null);
+      setStreak(0);
+      setRarityCounts({ legendary: 0, epic: 0, rare: 0, common: 0 });
       flash('내 데이터를 모두 지웠어요');
       setScreen('home');
     } else {
@@ -254,6 +259,8 @@ export default function App() {
       const record = { dateKey, fortuneType, noteId: picked.id };
       saveResult(record);
       pushHistory(record); // 날짜별 최근 7건 보관(어제의 쪽지 유지)
+      bumpRarity(dateKey, generated.rarity.tier); // 이번 달 등급 수집 카운트
+      setRarityCounts(getRarityCounts(dateKey));
       setStreak(updateStreak(dateKey, yesterdayKey)); // 실제 뽑은 날에만 스트릭 갱신
       const snapshot = { ...record, result: generated };
       saveTodayReading(snapshot);
@@ -375,6 +382,7 @@ export default function App() {
       {screen === 'home' && (
         <HomeScreen
           streak={streak}
+          rarityCounts={rarityCounts}
           yesterdayRecord={yesterdayRecord}
           todayReading={todayReading}
           zodiac={zodiac}

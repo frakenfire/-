@@ -88,6 +88,37 @@ export function getRecordForDate(dateKey: string): StoredResult | null {
   return loadHistory().find((r) => r.dateKey === dateKey) ?? null;
 }
 
+// ── 이번 달 등급 수집 (레어 뽑기 도파민·자랑·재방문 유도) ──
+// 월별로 등급 카운트를 누적한다(히스토리 7건 제한과 무관하게 O(1)).
+export type RarityCounts = { legendary: number; epic: number; rare: number; common: number };
+const RARITY_KEY = 'tomorrowNoteRarity';
+
+function loadRarityMap(): Record<string, RarityCounts> {
+  const raw = safeGet(RARITY_KEY);
+  if (!raw) return {};
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? (parsed as Record<string, RarityCounts>) : {};
+  } catch {
+    return {};
+  }
+}
+
+/** dateKey('YYYY-MM-DD')에서 월('YYYY-MM')을 뽑아 해당 등급 카운트를 올린다. */
+export function bumpRarity(dateKey: string, tier: keyof RarityCounts): void {
+  const month = dateKey.slice(0, 7);
+  const map = loadRarityMap();
+  const cur = map[month] ?? { legendary: 0, epic: 0, rare: 0, common: 0 };
+  cur[tier] = (cur[tier] ?? 0) + 1;
+  map[month] = cur;
+  safeSet(RARITY_KEY, JSON.stringify(map));
+}
+
+export function getRarityCounts(dateKey: string): RarityCounts {
+  const month = dateKey.slice(0, 7);
+  return loadRarityMap()[month] ?? { legendary: 0, epic: 0, rare: 0, common: 0 };
+}
+
 // 내 띠 (12개 중 선택 — 선택형 값)
 const ZODIAC_KEY = 'tomorrowNoteZodiac';
 
@@ -281,6 +312,7 @@ const ALL_KEYS = [
   KEYS.dailyDrawDate,
   KEYS.lastVisitDate,
   HISTORY_KEY,
+  RARITY_KEY,
   ZODIAC_KEY,
   STAR_KEY,
   SAVED_PEOPLE_KEY,

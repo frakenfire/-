@@ -11,7 +11,7 @@ import { ZODIACS, zodiacLine } from '../data/zodiac';
 import type { Zodiac, ZodiacId } from '../data/zodiac';
 import { STAR_SIGNS, starLine } from '../data/starSign';
 import type { StarSign, StarSignId } from '../data/starSign';
-import type { StoredResult, TodayReading } from '../lib/storage';
+import type { StoredResult, TodayReading, RarityCounts } from '../lib/storage';
 import type { FortuneType } from '../types/fortune';
 
 function todayLabel(): string {
@@ -31,6 +31,7 @@ function greeting(): string {
 
 type Props = {
   streak: number;
+  rarityCounts: RarityCounts;
   yesterdayRecord: StoredResult | null;
   todayReading: TodayReading | null;
   zodiac: Zodiac | null;
@@ -46,6 +47,7 @@ type Props = {
 // PRD §5.1 + 리텐션 — 오늘의 한 줄 · 친구 궁합 · 다시 읽기 · 스트릭 · 어제의 쪽지.
 export function HomeScreen({
   streak,
+  rarityCounts,
   yesterdayRecord,
   todayReading,
   zodiac,
@@ -186,6 +188,23 @@ export function HomeScreen({
           </span>
           <span className="reopen-card__cta">다시 읽기 ›</span>
         </button>
+      ) : null}
+
+      {rarityCounts.legendary + rarityCounts.epic + rarityCounts.rare > 0 ? (
+        <div className="collection">
+          <span className="collection__title">✨ 이번 달 뽑은 쪽지</span>
+          <div className="collection__items">
+            {rarityCounts.legendary > 0 ? (
+              <span className="collection__item collection__item--leg">👑 전설 {rarityCounts.legendary}</span>
+            ) : null}
+            {rarityCounts.epic > 0 ? (
+              <span className="collection__item collection__item--epic">💜 에픽 {rarityCounts.epic}</span>
+            ) : null}
+            {rarityCounts.rare > 0 ? (
+              <span className="collection__item">✨ 레어 {rarityCounts.rare}</span>
+            ) : null}
+          </div>
+        </div>
       ) : null}
 
       <p className="menu-heading">오늘은 뭐가 제일 궁금해요?</p>
