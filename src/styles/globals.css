@@ -1677,6 +1677,14 @@ button {
   font-size: 16px;
   font-weight: 800;
   color: var(--gray-900);
+  margin: 0 0 var(--space-2);
+}
+.compat-lock__teaser {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gray-500);
+  line-height: 1.6;
+  word-break: keep-all;
   margin: 0 0 var(--space-4);
 }
 .compat-result {
@@ -1684,13 +1692,16 @@ button {
   border-radius: var(--radius-xl);
   padding: var(--space-6) var(--space-5);
   margin-bottom: var(--space-4);
+  background: var(--gray-50);
+}
+.compat-result--twin {
+  background: var(--color-soft-pink);
+}
+.compat-result--harmony {
   background: var(--brand-soft);
 }
-.compat-result--best {
-  background: linear-gradient(135deg, #ffe0ec, #ffeef4);
-}
-.compat-result--good {
-  background: linear-gradient(135deg, #ffeede, #fff6ec);
+.compat-result--spark {
+  background: var(--color-soft-yellow);
 }
 .compat-result__badge {
   font-size: 13px;
@@ -1711,12 +1722,77 @@ button {
   color: var(--gray-700);
   margin-left: 2px;
 }
+.compat-result__archetype {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--brand-strong);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 4px 12px;
+  border-radius: 999px;
+  margin: 0 0 var(--space-3);
+}
 .compat-result__head {
   font-size: 17px;
   font-weight: 800;
   color: var(--gray-900);
   margin: 0 0 var(--space-4);
   word-break: keep-all;
+}
+.compat-cats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.compat-cat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: var(--white);
+  border-radius: 12px;
+  padding: var(--space-3) 6px;
+  min-width: 0;
+}
+.compat-cat__emoji {
+  font-size: 15px;
+  line-height: 1;
+}
+.compat-cat__label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+.compat-cat__score {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.compat-cat__bar {
+  display: block;
+  width: 100%;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--gray-100);
+  overflow: hidden;
+}
+.compat-cat__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+.compat-result__reason {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin: 0 0 var(--space-3);
+  line-height: 1.55;
+  word-break: keep-all;
+  text-align: left;
 }
 .compat-result__lines {
   display: flex;

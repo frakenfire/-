@@ -5,6 +5,7 @@ import { ZODIACS, findZodiac, type ZodiacId } from '../data/zodiac';
 import { STAR_SIGNS, findStarSign, type StarSignId } from '../data/starSign';
 import { computeCompat, type CompatResult } from '../lib/compat';
 import { computeStarCompat } from '../lib/starCompat';
+import { scoreColor } from '../lib/luck';
 
 type Mode = 'zodiac' | 'star';
 
@@ -109,7 +110,7 @@ export function CompatScreen({
 
   async function brag() {
     if (!myLabel || !friendLabel || !result) return;
-    const text = `[오늘쪽지] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 💗\n${myLabel.emoji}${myLabel.label} × ${friendLabel.emoji}${friendLabel.label}\n"${result.headline}"\n너도 궁합 봐봐 👀`;
+    const text = `[오늘쪽지] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 · ${result.archetype} 💗\n${myLabel.emoji}${myLabel.label} × ${friendLabel.emoji}${friendLabel.label}\n"${result.headline}"\n너도 궁합 봐봐 👀`;
     const ok = await onShare(text);
     onToast(ok ? '궁합 자랑 완료! 💌' : '앗, 공유를 못 했어요');
   }
@@ -178,6 +179,9 @@ export function CompatScreen({
         <div className="compat-lock">
           <div className="compat-lock__score">?</div>
           <p className="compat-lock__title">오늘 우리 궁합, 몇 점일까요?</p>
+          <p className="compat-lock__teaser">
+            케미 · 대화 · 갈등 관리 점수부터 오늘의 커플 유형, 잘 맞는 점과 팁까지 한 번에 나와요
+          </p>
           <div className="btn-stack">
             <button type="button" className="btn btn--primary" disabled={busy} onClick={unlockByShare}>
               공유하고 결과 열기 💌
@@ -192,10 +196,30 @@ export function CompatScreen({
         </div>
       ) : result ? (
         <>
-          <div className={`compat-result compat-result--${result.band} fade-in`}>
+          <div className={`compat-result compat-result--${result.vibe} fade-in`}>
             <span className="compat-result__badge">{BAND_EMOJI[result.band]} 오늘의 {modeLabel} 궁합</span>
             <div className="compat-result__score num">{result.score}<small>점</small></div>
+            <p className="compat-result__archetype">{result.archetype}</p>
             <p className="compat-result__head">{result.headline}</p>
+
+            <div className="compat-cats">
+              {result.categories.map((c) => (
+                <div className="compat-cat" key={c.key}>
+                  <span className="compat-cat__emoji" aria-hidden>{c.emoji}</span>
+                  <span className="compat-cat__label">{c.label}</span>
+                  <span className="compat-cat__score num">{c.score}</span>
+                  <span className="compat-cat__bar">
+                    <span
+                      className="compat-cat__fill"
+                      style={{ width: `${c.score}%`, background: scoreColor(c.score) }}
+                    />
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <p className="compat-result__reason">🔮 {result.reason}</p>
+
             <div className="compat-result__lines">
               <div className="compat-line">
                 <span className="compat-line__k">잘 맞는 점</span>
