@@ -126,6 +126,61 @@ export function markVisit(dateKey: string): void {
   safeSet(KEYS.lastVisitDate, dateKey);
 }
 
+// ── 내 사람들 (저장된 궁합 상대) ──
+// 웹서치 기준: 국내 1위 운세 앱(점신, 1900만 사용자)의 핵심 차별화 기능인
+// '인맥보고서'(여러 사람을 저장해두고 오늘 누구와 잘 맞는지 한눈에 보기)를
+// 벤치마킹. 단, PRD §14(개인정보/자유입력 저장 금지)에 따라 이름 대신
+// 관계(가족/베프/썸 등) 선택형 값으로만 사람을 구분한다.
+export const RELATIONS = [
+  { key: 'bestie', emoji: '👯', label: '베프' },
+  { key: 'crush', emoji: '💘', label: '썸' },
+  { key: 'partner', emoji: '💑', label: '연인' },
+  { key: 'family', emoji: '👪', label: '가족' },
+  { key: 'coworker', emoji: '💼', label: '동료' },
+  { key: 'oneside', emoji: '🌸', label: '짝사랑' },
+] as const;
+export type RelationKey = (typeof RELATIONS)[number]['key'];
+
+export function relationMeta(key: RelationKey) {
+  return RELATIONS.find((r) => r.key === key) ?? RELATIONS[0];
+}
+
+export type SavedPerson = {
+  id: string;
+  mode: 'zodiac' | 'star';
+  value: string; // ZodiacId | StarSignId
+  relation: RelationKey;
+};
+
+const SAVED_PEOPLE_KEY = 'tomorrowNoteSavedPeople';
+const MAX_SAVED_PEOPLE = 10;
+
+export function loadSavedPeople(): SavedPerson[] {
+  const raw = safeGet(SAVED_PEOPLE_KEY);
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as SavedPerson[]) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function addSavedPerson(person: Omit<SavedPerson, 'id'>): SavedPerson[] {
+  const updated = [
+    { ...person, id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}` },
+    ...loadSavedPeople(),
+  ].slice(0, MAX_SAVED_PEOPLE);
+  safeSet(SAVED_PEOPLE_KEY, JSON.stringify(updated));
+  return updated;
+}
+
+export function removeSavedPerson(id: string): SavedPerson[] {
+  const updated = loadSavedPeople().filter((p) => p.id !== id);
+  safeSet(SAVED_PEOPLE_KEY, JSON.stringify(updated));
+  return updated;
+}
+
 // ── 연속 출석 스트릭 (매일 보고 싶게 만드는 장치) ──
 const STREAK_KEYS = {
   date: 'tomorrowNoteStreakDate',

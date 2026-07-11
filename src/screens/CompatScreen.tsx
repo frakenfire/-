@@ -5,7 +5,16 @@ import { ZODIACS, findZodiac, type ZodiacId } from '../data/zodiac';
 import { STAR_SIGNS, findStarSign, type StarSignId } from '../data/starSign';
 import { computeCompat, type CompatResult } from '../lib/compat';
 import { computeStarCompat } from '../lib/starCompat';
-import { scoreColor } from '../lib/luck';
+import { scoreColor, scoreTextColor } from '../lib/luck';
+import {
+  RELATIONS,
+  addSavedPerson,
+  loadSavedPeople,
+  relationMeta,
+  removeSavedPerson,
+  type RelationKey,
+  type SavedPerson,
+} from '../lib/storage';
 
 type Mode = 'zodiac' | 'star';
 
@@ -46,6 +55,7 @@ export function CompatScreen({
   const [picking, setPicking] = useState<'my' | 'friend' | null>(initialMyZodiac ? null : 'my');
   const [unlocked, setUnlocked] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [savedPeople, setSavedPeople] = useState<SavedPerson[]>(() => loadSavedPeople());
 
   const my = mode === 'zodiac' ? myZodiac : myStar;
   const friend = mode === 'zodiac' ? friendZodiac : friendStar;
@@ -60,6 +70,43 @@ export function CompatScreen({
 
   const options = mode === 'zodiac' ? ZODIACS : STAR_SIGNS;
   const modeLabel = mode === 'zodiac' ? '띠' : '별자리';
+
+  const alreadySaved = friend
+    ? savedPeople.some((p) => p.mode === mode && p.value === friend)
+    : false;
+
+  // 내 사람들 랭킹 — 오늘 나랑 저장된 사람들 중 누가 가장 잘 맞는지 한눈에.
+  const savedRanked = savedPeople
+    .map((p) => {
+      const label = p.mode === 'zodiac' ? findZodiac(p.value) : findStarSign(p.value);
+      const canScore = p.mode === 'zodiac' ? !!myZodiac : !!myStar;
+      const score = canScore
+        ? p.mode === 'zodiac'
+          ? computeCompat(dateKey, myZodiac!, p.value as ZodiacId).score
+          : computeStarCompat(dateKey, myStar!, p.value as StarSignId).score
+        : null;
+      return { person: p, label, score };
+    })
+    .filter((r) => r.label)
+    .sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
+
+  function pickSaved(p: SavedPerson) {
+    setMode(p.mode);
+    if (p.mode === 'zodiac') setFriendZodiac(p.value as ZodiacId);
+    else setFriendStar(p.value as StarSignId);
+    setUnlocked(false);
+    setPicking(null);
+  }
+
+  function saveCurrentFriend(relation: RelationKey) {
+    if (!friend) return;
+    setSavedPeople(addSavedPerson({ mode, value: friend, relation }));
+    onToast('내 사람으로 저장했어요 ⭐ 다음엔 바로 확인할 수 있어요');
+  }
+
+  function forgetPerson(id: string) {
+    setSavedPeople(removeSavedPerson(id));
+  }
 
   function switchMode(next: Mode) {
     setMode(next);
@@ -141,7 +188,7 @@ export function CompatScreen({
   }
 
   return (
-    <AppLayout onBack={onBack} title="친구 궁합" center={!unlocked}>
+    <AppLayout onBack={onBack} title="친구 궁합" center={!unlocked && savedPeople.length === 0}>
       <div className="seg-tabs">
         <button
           type="button"
@@ -172,6 +219,38 @@ export function CompatScreen({
           <span className="compat-pick__label">{friendLabel ? friendLabel.label : `${modeLabel} 고르기`}</span>
         </button>
       </div>
+
+      {savedRanked.length > 0 ? (
+        <div className="saved-people">
+          <p className="saved-people__title">💌 내 사람들 · 오늘의 랭킹</p>
+          {savedRanked.map(({ person, label, score }) => {
+            const rel = relationMeta(person.relation);
+            return (
+              <div className="saved-row" key={person.id}>
+                <button type="button" className="saved-row__main" onClick={() => pickSaved(person)}>
+                  <span className="saved-row__relation">{rel.emoji} {rel.label}</span>
+                  <span className="saved-row__who">{label!.emoji} {label!.label}</span>
+                  {score !== null ? (
+                    <span className="saved-row__score num" style={{ color: scoreTextColor(score) }}>
+                      {score}점
+                    </span>
+                  ) : (
+                    <span className="saved-row__hint">내 {person.mode === 'zodiac' ? '띠' : '별자리'} 선택 필요</span>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  className="saved-row__del"
+                  aria-label="내 사람 목록에서 지우기"
+                  onClick={() => forgetPerson(person.id)}
+                >
+                  ✕
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
 
       {!ready ? (
         <p className="compat-hint">두 {modeLabel}를 고르면 오늘의 궁합이 나와요</p>
@@ -252,6 +331,25 @@ export function CompatScreen({
               다른 사람이랑도 해볼래요
             </button>
           </div>
+
+          {!alreadySaved ? (
+            <div className="save-person">
+              <p className="save-person__title">이 사람, 내 사람으로 저장할까요?</p>
+              <p className="save-person__desc">관계만 골라두면 다음부터 한 번에 바로 확인해요</p>
+              <div className="save-person__chips">
+                {RELATIONS.map((r) => (
+                  <button
+                    type="button"
+                    className="save-person__chip"
+                    key={r.key}
+                    onClick={() => saveCurrentFriend(r.key)}
+                  >
+                    {r.emoji} {r.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </>
       ) : null}
     </AppLayout>
