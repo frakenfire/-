@@ -9,9 +9,6 @@ type Props = {
   /** 0~1 진행률. 지정 시 상단 진행바 표시 */
   step?: number;
   totalSteps?: number;
-  /** 콘텐츠가 짧은 화면(선택지 하나 고르기 등)용 — 화면 아래에 큰 빈 공간이
-   * 남지 않도록 body를 수직 중앙 정렬한다. */
-  center?: boolean;
 };
 
 // PRD §6 — 상단 Navigation + body + 하단 고정 CTA. 375px 기준.
@@ -22,7 +19,6 @@ export function AppLayout({
   title,
   step,
   totalSteps,
-  center,
 }: Props) {
   return (
     <div className="app">
@@ -42,7 +38,7 @@ export function AppLayout({
         <span className="app__nav-title">{title ?? APP_NAME}</span>
       </nav>
 
-      <div className={center ? 'app__body app__body--center' : 'app__body'}>
+      <div className="app__body">
         {typeof step === 'number' && totalSteps ? (
           <div className="progress" aria-hidden>
             {Array.from({ length: totalSteps }).map((_, i) => (

@@ -83,10 +83,38 @@ button {
   overflow-y: auto;
 }
 
-/* 콘텐츠가 짧은 화면(고르기 등)이 위로 쏠려 아래에 큰 빈 공간이
-   남지 않도록 수직 중앙 정렬 (AppLayout center prop) */
-.app__body--center {
+/* 헤더는 상단에 고정하고, 선택 콘텐츠(그리드·카드)만 남은 공간을
+   꽉 채워 세로 중앙에 오게 한다. center(전체 중앙정렬)와 달리 제목이
+   화면 중앙에 붕 뜨는 빈 공간을 없앤다. */
+.fill-rest {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+  gap: var(--space-4);
+  min-height: 0;
+  padding: var(--space-4) 0;
+}
+
+/* 선택 그리드는 헤더 바로 아래 자연스럽게 두고(위로 쏠림 없음),
+   하단엔 안내 푸터를 margin-top:auto 로 바닥에 고정해 화면 위아래
+   구조를 잡는다. mood 화면과 같은, 빈 느낌이 안 드는 패턴. */
+.pick-foot {
+  margin-top: auto;
+  padding-top: var(--space-5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+.pick-foot__lock {
+  font-size: 14px;
+}
+.picker-grid .zodiac-chip {
+  min-height: 52px;
 }
 
 .app__bottom {

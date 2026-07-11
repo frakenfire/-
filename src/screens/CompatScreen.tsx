@@ -168,7 +168,6 @@ export function CompatScreen({
       <AppLayout
         onBack={picking === 'friend' && !friend ? () => setPicking(null) : onBack}
         title="친구 궁합"
-        center
       >
         <h2 className="h2">
           {picking === 'my' ? `내 ${modeLabel}는 뭐예요?` : `상대는 무슨 ${modeLabel}예요?`}
@@ -176,19 +175,23 @@ export function CompatScreen({
         <p className="lead">
           {modeLabel}만 고르면 돼요. 생년월일은 필요 없어요.
         </p>
-        <div className="zodiac-grid zodiac-grid--full">
+        <div className="zodiac-grid zodiac-grid--full picker-grid">
           {options.map((z) => (
             <button key={z.id} type="button" className="zodiac-chip" onClick={() => choose(z.id)}>
               {z.emoji} {z.label}
             </button>
           ))}
         </div>
+        <p className="pick-foot">
+          <span className="pick-foot__lock" aria-hidden>🔒</span>
+          이름·생년월일 없이 {modeLabel}만으로 봐요
+        </p>
       </AppLayout>
     );
   }
 
   return (
-    <AppLayout onBack={onBack} title="친구 궁합" center={!unlocked && savedPeople.length === 0}>
+    <AppLayout onBack={onBack} title="친구 궁합">
       <div className="seg-tabs">
         <button
           type="button"
@@ -206,6 +209,9 @@ export function CompatScreen({
         </button>
       </div>
 
+      {/* 아직 아무것도 안 고른 상태면 선택 영역을 남은 공간 중앙에 채워
+          제목·버튼이 상단에 쏠려 아래가 비는 걸 막는다. */}
+      <div className={!ready && savedRanked.length === 0 ? 'fill-rest' : undefined}>
       <div className="compat-pair">
         <button type="button" className="compat-pick" onClick={() => setPicking('my')}>
           <span className="compat-pick__k">나</span>
@@ -352,6 +358,7 @@ export function CompatScreen({
           ) : null}
         </>
       ) : null}
+      </div>
     </AppLayout>
   );
 }

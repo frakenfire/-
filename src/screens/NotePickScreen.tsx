@@ -22,35 +22,37 @@ export function NotePickScreen({
   onBack,
 }: Props) {
   return (
-    <AppLayout onBack={busy ? undefined : onBack} step={1} totalSteps={2} center>
+    <AppLayout onBack={busy ? undefined : onBack} step={1} totalSteps={2}>
       {fortuneLabel ? <span className="eyebrow">{fortuneLabel}</span> : null}
       <h2 className="h2" style={{ whiteSpace: 'pre-line' }}>
         {NOTE_PICK.title}
       </h2>
       <p className="lead">{NOTE_PICK.lead}</p>
 
-      <div className="note-row">
-        {notes.map((note, i) => (
-          <NoteCard
-            key={note.id}
-            note={note}
-            faceDown
-            index={i}
-            state={
-              openingId
-                ? openingId === note.id
-                  ? 'opening'
-                  : 'dim'
-                : 'idle'
-            }
-            onClick={() => !busy && onPick(note)}
-          />
-        ))}
-      </div>
+      <div className="fill-rest">
+        <div className="note-row">
+          {notes.map((note, i) => (
+            <NoteCard
+              key={note.id}
+              note={note}
+              faceDown
+              index={i}
+              state={
+                openingId
+                  ? openingId === note.id
+                    ? 'opening'
+                    : 'dim'
+                  : 'idle'
+              }
+              onClick={() => !busy && onPick(note)}
+            />
+          ))}
+        </div>
 
-      <p className="note-hint">
-        {busy ? '쪽지 펼치는 중이에요…' : '딱 끌리는 쪽지 하나만 콕 🙂'}
-      </p>
+        <p className="note-hint">
+          {busy ? '쪽지 펼치는 중이에요…' : '딱 끌리는 쪽지 하나만 콕 🙂'}
+        </p>
+      </div>
     </AppLayout>
   );
 }
