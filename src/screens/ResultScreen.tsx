@@ -85,6 +85,7 @@ export function ResultScreen({
           <span className="brag__label">· {brag.label}</span>
         </div>
 
+        {result.persona ? <p className="briefing__persona">💌 {result.persona}</p> : null}
         <p className="briefing__headline">{dayPlan.headline}</p>
         <p className="briefing__vibe">{dayPlan.vibe}</p>
 

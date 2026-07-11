@@ -25,6 +25,8 @@ export type NoteColor = 'softGreen' | 'cream' | 'softYellow' | 'softPink';
 export type FortuneResult = {
   title: string;
   subtitle: string;
+  /** 띠×별자리 조합 개인화 한 줄 ("직진하는 🐯범띠 × 화려한 ♌사자자리인 당신에게") */
+  persona?: string;
   pinpoint: string;
   summaryLines: string[];
   detailFlow: string;

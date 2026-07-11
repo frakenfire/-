@@ -1,4 +1,9 @@
 import type { FortuneResult, FortuneType, Mood, Note } from '../types/fortune';
+import type { ZodiacId } from '../data/zodiac';
+import type { StarSignId } from '../data/starSign';
+import { findZodiac } from '../data/zodiac';
+import { findStarSign } from '../data/starSign';
+import { ZODIAC_TRAIT, STAR_TRAIT } from '../data/traits';
 import { hashSeed } from './dateSeed';
 import { computeLuck } from './luck';
 import { computeDetail } from './detail';
@@ -28,11 +33,27 @@ export type FortuneInput = {
   note: Note;
   mood: Mood;
   dateKey?: string;
+  zodiac?: ZodiacId | null; // 내 띠 (있으면 결과를 개인화)
+  star?: StarSignId | null; // 내 별자리 (있으면 결과를 개인화)
 };
 
+// 띠 × 별자리 → "직진하는 범띠 × 화려한 사자자리인 당신" 한 줄.
+// 둘 중 하나만 있어도 그 부분만 만든다. 없으면 undefined.
+function buildPersona(zodiac?: ZodiacId | null, star?: StarSignId | null): string | undefined {
+  const z = zodiac ? findZodiac(zodiac) : undefined;
+  const s = star ? findStarSign(star) : undefined;
+  const parts: string[] = [];
+  if (z) parts.push(`${ZODIAC_TRAIT[zodiac as ZodiacId]} ${z.emoji}${z.label}`);
+  if (s) parts.push(`${STAR_TRAIT[star as StarSignId]} ${s.emoji}${s.label}`);
+  if (parts.length === 0) return undefined;
+  return `${parts.join(' × ')}인 당신에게`;
+}
+
 export function generateFortune(input: FortuneInput): FortuneResult {
-  const { fortuneType, note, mood, dateKey = '' } = input;
-  const seed = hashSeed(`${dateKey}|${fortuneType}|${note.id}|${mood}`);
+  const { fortuneType, note, mood, dateKey = '', zodiac = null, star = null } = input;
+  // 기분 + 띠 + 별자리까지 seed 에 넣어, 세 조합으로 결과가 갈라지게 한다.
+  const seed = hashSeed(`${dateKey}|${fortuneType}|${note.id}|${mood}|${zodiac ?? ''}|${star ?? ''}`);
+  const persona = buildPersona(zodiac, star);
 
   const variants = TEMPLATES[fortuneType];
   const variant = variants[pickFreshIndex(seed, variants.length, `tpl:${fortuneType}`)];
@@ -82,6 +103,7 @@ ${variant.flow}`,
   return {
     title: FORTUNE_LABEL[fortuneType],
     subtitle: `${note.name} 쪽지`,
+    persona,
     pinpoint: variant.pinpoint,
     summaryLines: [lead, variant.summary[0], variant.summary[1]],
     detailFlow: variant.flow,

@@ -248,7 +248,14 @@ export default function App() {
     setNote(picked);
     setBusy(true);
     try {
-      const generated = generateFortune({ fortuneType, note: picked, mood, dateKey });
+      const generated = generateFortune({
+        fortuneType,
+        note: picked,
+        mood,
+        dateKey,
+        zodiac: zodiac?.id ?? null,
+        star: starSign?.id ?? null,
+      });
       setResult(generated);
       // 쪽지 오픈 모션(0.5s)을 보여준 뒤 몽글 로딩 연출로 전환.
       // 무료 첫 결과에는 광고를 넣지 않는다(정책: 무료 결과는 광고 없이 제공).
@@ -399,6 +406,10 @@ export default function App() {
       {screen === 'mood' && (
         <MoodScreen
           fortuneLabel={fortuneType ? FORTUNE_LABEL[fortuneType] : ''}
+          zodiac={zodiac}
+          star={starSign}
+          onPickZodiac={handleSaveMyZodiac}
+          onPickStar={handleSaveMyStarSign}
           onSelect={handleMood}
           onBack={() => setScreen('home')}
         />

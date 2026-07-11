@@ -2331,3 +2331,66 @@ button {
   background: #f7f0ff;
   border-color: #c9a8ef;
 }
+
+/* 오늘의 나 — 기분 + 띠 + 별자리 조합 입력 */
+.me-picks {
+  display: flex;
+  gap: var(--space-2);
+  margin: var(--space-2) 0 var(--space-3);
+}
+.me-pick {
+  flex: 1;
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 3px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  text-align: left;
+}
+.me-pick--on {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+.me-pick__k {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+.me-pick__v {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.me-pick__chev {
+  color: var(--gray-400);
+  font-weight: 700;
+}
+.me-grid {
+  margin: 0 0 var(--space-3);
+}
+.mood-heading {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin: var(--space-4) 0 var(--space-3);
+}
+.mood-foot {
+  text-align: center;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gray-600);
+  margin: var(--space-4) 0 0;
+}
+/* 결과 히어로의 개인화 한 줄 (파란 카드 위) */
+.briefing__persona {
+  margin: 0 0 var(--space-2);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #eaf2ff;
+  word-break: keep-all;
+}
