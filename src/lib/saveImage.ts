@@ -10,10 +10,8 @@ type SaveInput = {
   title: string;
   subtitle: string;
   headline: string; // 기분에 맞춘 하루 설계 한 줄 (카드 주인공)
-  shareLine: string;
   total: number;
   grade: string;
-  tag: string;
   rarity: Rarity;
 };
 
@@ -134,8 +132,17 @@ function drawMascot(ctx: CanvasRenderingContext2D, cx: number, cy: number, s: nu
   ctx.restore();
 }
 
+// 카드 폰트 — 앱 UI와 동일한 Pretendard. 로드 안 된 환경에선 sans-serif 폴백.
+const CARD_FONT = "'Pretendard Variable', Pretendard, sans-serif";
+
 export async function saveResultCard(input: SaveInput): Promise<boolean> {
   try {
+    // 폰트가 준비된 뒤 그려야 기기별 한글 렌더링·줄바꿈이 일관된다.
+    try {
+      await (document as Document & { fonts?: { ready?: Promise<unknown> } }).fonts?.ready;
+    } catch {
+      /* 폰트 API 없으면 그대로 진행 */
+    }
     const W = 720;
     const H = 1080;
     const canvas = document.createElement('canvas');
@@ -167,7 +174,7 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
     // 등급 뱃지 (에픽 이상)
     if (input.rarity.special) {
       const label = `${input.rarity.emoji} ${input.rarity.label} · ${input.rarity.pct}`;
-      ctx.font = 'bold 24px sans-serif';
+      ctx.font = 'bold 24px ' + CARD_FONT;
       const w = ctx.measureText(label).width + 44;
       ctx.fillStyle = tier.accent;
       roundRect(ctx, cx - w / 2, 74, w, 46, 23);
@@ -181,10 +188,10 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
 
     // 제목
     ctx.fillStyle = '#333d4b';
-    ctx.font = 'bold 26px sans-serif';
+    ctx.font = 'bold 26px ' + CARD_FONT;
     ctx.fillText(input.subtitle, cx, 292);
     ctx.fillStyle = '#191f28';
-    ctx.font = 'bold 38px sans-serif';
+    ctx.font = 'bold 38px ' + CARD_FONT;
     ctx.fillText(input.title, cx, 336);
 
     // 점수 링
@@ -201,19 +208,19 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
     ctx.arc(cx, ringY, r, -Math.PI / 2, -Math.PI / 2 + (input.total / 100) * Math.PI * 2);
     ctx.stroke();
     ctx.fillStyle = '#6b7684';
-    ctx.font = 'bold 20px sans-serif';
+    ctx.font = 'bold 20px ' + CARD_FONT;
     ctx.fillText('오늘의 총운', cx, ringY - 20);
     ctx.fillStyle = accent;
-    ctx.font = 'bold 68px sans-serif';
+    ctx.font = 'bold 68px ' + CARD_FONT;
     ctx.fillText(String(input.total), cx, ringY + 30);
-    ctx.font = 'bold 24px sans-serif';
+    ctx.font = 'bold 24px ' + CARD_FONT;
     ctx.fillText(input.grade, cx, ringY + 62);
 
     // 콕 집은 한마디 (브랜드 박스)
     const boxX = m + 28;
     const boxW = W - (m + 28) * 2;
     const boxY = 630;
-    ctx.font = 'bold 30px sans-serif';
+    ctx.font = 'bold 30px ' + CARD_FONT;
     const lines = wrapText(ctx, input.headline, boxW - 64);
     const boxH = 96 + lines.length * 44;
     ctx.fillStyle = '#333d4b';
@@ -224,18 +231,18 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
     roundRect(ctx, boxX + 28, boxY + 26, 150, 40, 20);
     ctx.fill();
     ctx.fillStyle = '#333d4b';
-    ctx.font = 'bold 22px sans-serif';
+    ctx.font = 'bold 22px ' + CARD_FONT;
     ctx.fillText('오늘의 한 줄', boxX + 28 + 75, boxY + 53);
     // 문구
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 30px sans-serif';
+    ctx.font = 'bold 30px ' + CARD_FONT;
     ctx.textAlign = 'left';
     lines.forEach((ln, i) => ctx.fillText(ln, boxX + 30, boxY + 108 + i * 44));
     ctx.textAlign = 'center';
 
     // 워터마크
     ctx.fillStyle = '#8b95a1';
-    ctx.font = 'bold 24px sans-serif';
+    ctx.font = 'bold 24px ' + CARD_FONT;
     ctx.fillText('오늘쪽지 뽑기 · 오늘 하루, 쪽지 한 장', cx, H - 92);
 
     const dataUrl = canvas.toDataURL('image/png');

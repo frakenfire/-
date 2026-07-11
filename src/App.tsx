@@ -10,12 +10,14 @@ import { shareBriefing, shareForUnlock, copyText } from './lib/share';
 import { saveResultCard } from './lib/saveImage';
 import {
   incrementDailyDrawCount,
-  loadResult,
   loadTodayReading,
   markVisit,
   saveResult,
   saveTodayReading,
   updateStreak,
+  peekStreak,
+  pushHistory,
+  getRecordForDate,
 } from './lib/storage';
 import { clearAllData } from './lib/storage';
 import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError } from './lib/toss';
@@ -41,14 +43,32 @@ function wait(ms: number): Promise<void> {
 }
 
 export default function App() {
-  const [screen, setScreen] = useState<ScreenName>('home');
+  // 공유·딥링크로 재현 가능한 화면(궁합)은 URL 해시와 연결한다.
+  // (결과·심층은 뽑기 시점 상태에 의존해 재현 대상이 아니므로 홈으로 시작)
+  const [screen, setScreen] = useState<ScreenName>(() =>
+    typeof window !== 'undefined' && window.location.hash === '#/compat' ? 'compat' : 'home',
+  );
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
   const [fortuneType, setFortuneType] = useState<FortuneType | null>(null);
   const [mood, setMood] = useState<Mood | null>(null);
   const [note, setNote] = useState<Note | null>(null);
-  const [drawNonce, setDrawNonce] = useState(0);
+  // 재뽑기 nonce 는 세션에 유지해, 새로고침해도 같은 후보 3장이 반복되지 않게 한다.
+  const [drawNonce, setDrawNonce] = useState(() => {
+    try {
+      return Number(window.sessionStorage.getItem('tn_nonce')) || 0;
+    } catch {
+      return 0;
+    }
+  });
+  useEffect(() => {
+    try {
+      window.sessionStorage.setItem('tn_nonce', String(drawNonce));
+    } catch {
+      /* no-op */
+    }
+  }, [drawNonce]);
 
   // 자정을 넘겨도(앱을 계속 켜둬도) 날짜가 갱신되도록 state 로 관리하고,
   // 앱이 포그라운드로 돌아올 때마다 신뢰 가능한 '오늘'을 다시 확인한다.
@@ -58,15 +78,11 @@ export default function App() {
     d.setDate(d.getDate() - 1);
     return todayKey(d);
   }, [dateKey]);
-  const streak = useMemo(
-    () => updateStreak(dateKey, yesterdayKey),
-    [dateKey, yesterdayKey],
-  );
+  // 스트릭은 '앱을 연 순간'이 아니라 '쪽지를 뽑은 날' 기준으로 오른다(handlePick).
+  // 홈에는 부작용 없이 현재 값만 보여준다.
+  const [streak, setStreak] = useState(() => peekStreak());
 
-  const yesterdayRecord = useMemo(() => {
-    const r = loadResult();
-    return r && r.dateKey === yesterdayKey ? r : null;
-  }, [yesterdayKey]);
+  const yesterdayRecord = useMemo(() => getRecordForDate(yesterdayKey), [yesterdayKey]);
 
   // 쪽지 후보 3장은 날짜뿐 아니라 운세 종류·기분까지 반영해, 같은 날
   // 연애운/금전운/직장운에서 똑같은 세 장이 나오지 않게 한다.
@@ -151,6 +167,15 @@ export default function App() {
   // 퍼널 계측 — 화면 진입 로깅 (토스 Analytics, 미지원 시 no-op)
   useEffect(() => {
     logEvent('screen_view', { screen });
+    // 궁합 화면만 해시로 반영(새로고침 유지 + 딥링크 재현). replaceState 라 히스토리 오염 없음.
+    const target = screen === 'compat' ? '#/compat' : '#/';
+    if (typeof window !== 'undefined' && window.location.hash !== target) {
+      try {
+        window.history.replaceState(null, '', target);
+      } catch {
+        /* no-op */
+      }
+    }
   }, [screen]);
 
   function handleReset() {
@@ -226,8 +251,11 @@ export default function App() {
       setScreen('reveal');
       await wait(2600); // 로딩 멘트 4단계(620ms×4) 연출 시간
       incrementDailyDrawCount(dateKey);
-      saveResult({ dateKey, fortuneType, noteId: picked.id });
-      const snapshot = { dateKey, fortuneType, noteId: picked.id, result: generated };
+      const record = { dateKey, fortuneType, noteId: picked.id };
+      saveResult(record);
+      pushHistory(record); // 날짜별 최근 7건 보관(어제의 쪽지 유지)
+      setStreak(updateStreak(dateKey, yesterdayKey)); // 실제 뽑은 날에만 스트릭 갱신
+      const snapshot = { ...record, result: generated };
       saveTodayReading(snapshot);
       setTodayReading(snapshot);
       logEvent('result_viewed', { fortuneType });
@@ -282,18 +310,13 @@ export default function App() {
 
   async function handleShare() {
     if (!result) return;
-    const gradeText = result.rarity.special
-      ? `${result.rarity.emoji}${result.rarity.label}`
-      : result.luck.grade;
     const brag = luckPercentile(result.luck.total);
     const r = await shareBriefing({
       title: result.title,
       score: result.luck.total,
-      grade: gradeText,
       headline: result.dayPlan.headline,
       doItem: result.dayPlan.steps[0].text,
       dontItem: result.dayPlan.holdOff,
-      shareLine: result.shareLine,
       brag: `상위 ${brag.pct}%`,
     });
     logEvent('share', { outcome: r });
@@ -317,10 +340,8 @@ export default function App() {
         title: snapshot.title,
         subtitle: snapshot.subtitle,
         headline: snapshot.dayPlan.headline,
-        shareLine: snapshot.shareLine,
         total: snapshot.luck.total,
         grade: snapshot.luck.grade,
-        tag: snapshot.luck.tag,
         rarity: snapshot.rarity,
       });
       flash(ok ? '결과 카드 저장 완료! 📸' : '앗, 저장을 못 했어요');

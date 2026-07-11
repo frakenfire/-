@@ -57,6 +57,37 @@ export function loadResult(): StoredResult | null {
   }
 }
 
+// ── 뽑기 기록 히스토리 (최근 7일) ──
+// lastResult 하나만 저장하면 오늘 새로 뽑을 때 어제 기록이 사라진다.
+// 날짜별로 최근 7건을 보관해 '어제의 쪽지' 등이 안정적으로 남게 한다.
+const HISTORY_KEY = 'tomorrowNoteHistory';
+
+export function loadHistory(): StoredResult[] {
+  const raw = safeGet(HISTORY_KEY);
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed)
+      ? parsed.filter(
+          (r): r is StoredResult =>
+            !!r && typeof r.dateKey === 'string' && typeof r.noteId === 'string',
+        )
+      : [];
+  } catch {
+    return [];
+  }
+}
+
+export function pushHistory(record: StoredResult): void {
+  const list = loadHistory().filter((r) => r.dateKey !== record.dateKey);
+  list.unshift(record);
+  safeSet(HISTORY_KEY, JSON.stringify(list.slice(0, 7)));
+}
+
+export function getRecordForDate(dateKey: string): StoredResult | null {
+  return loadHistory().find((r) => r.dateKey === dateKey) ?? null;
+}
+
 // 내 띠 (12개 중 선택 — 선택형 값)
 const ZODIAC_KEY = 'tomorrowNoteZodiac';
 
@@ -161,12 +192,27 @@ export type SavedPerson = {
 const SAVED_PEOPLE_KEY = 'tomorrowNoteSavedPeople';
 const MAX_SAVED_PEOPLE = 10;
 
+const RELATION_KEYS = new Set(RELATIONS.map((r) => r.key));
+
+// 손상·구버전 데이터 방어 — 스키마를 실제로 검증한다(타입 단언만 하지 않음).
+function isValidSavedPerson(x: unknown): x is SavedPerson {
+  if (!x || typeof x !== 'object') return false;
+  const p = x as Record<string, unknown>;
+  return (
+    typeof p.id === 'string' &&
+    (p.mode === 'zodiac' || p.mode === 'star') &&
+    typeof p.value === 'string' &&
+    typeof p.relation === 'string' &&
+    RELATION_KEYS.has(p.relation as RelationKey)
+  );
+}
+
 export function loadSavedPeople(): SavedPerson[] {
   const raw = safeGet(SAVED_PEOPLE_KEY);
   if (!raw) return [];
   try {
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? (parsed as SavedPerson[]) : [];
+    return Array.isArray(parsed) ? parsed.filter(isValidSavedPerson) : [];
   } catch {
     return [];
   }
@@ -202,7 +248,13 @@ const STREAK_KEYS = {
   count: 'tomorrowNoteStreakCount',
 } as const;
 
-/** 오늘 방문 기준으로 스트릭을 갱신하고 현재 연속 일수를 반환한다. */
+/** 현재 저장된 스트릭 값을 부작용 없이 읽는다(홈 표시용). */
+export function peekStreak(): number {
+  const raw = Number.parseInt(safeGet(STREAK_KEYS.count) ?? '0', 10);
+  return Number.isFinite(raw) && raw > 0 ? raw : 0;
+}
+
+/** 쪽지를 실제로 뽑은 날 기준으로 스트릭을 갱신하고 연속 일수를 반환한다. */
 export function updateStreak(todayKey: string, yesterdayKey: string): number {
   const last = safeGet(STREAK_KEYS.date);
   const raw = Number.parseInt(safeGet(STREAK_KEYS.count) ?? '0', 10);
@@ -228,6 +280,7 @@ const ALL_KEYS = [
   KEYS.dailyDrawCount,
   KEYS.dailyDrawDate,
   KEYS.lastVisitDate,
+  HISTORY_KEY,
   ZODIAC_KEY,
   STAR_KEY,
   SAVED_PEOPLE_KEY,

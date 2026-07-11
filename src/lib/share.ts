@@ -7,11 +7,9 @@ import { share as tossShare, getTossShareLink } from '@apps-in-toss/web-framewor
 export type ShareBriefing = {
   title: string;
   score: number;
-  grade: string;
   headline: string; // 기분에 맞춘 하루 설계 한 줄 (와닿는 훅)
   doItem: string; // 오늘 이렇게 보내요 (구체 행동)
   dontItem: string; // 오늘은 접어둬요
-  shareLine: string;
   brag?: string; // "상위 8%" 자랑 문구
 };
 
