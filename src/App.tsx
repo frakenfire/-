@@ -5,14 +5,8 @@ import { FORTUNE_LABEL } from './data/fortuneTypes';
 import { hashSeed, pickBySeed, todayKey } from './lib/dateSeed';
 import { generateFortune } from './lib/generateFortune';
 import { luckPercentile } from './lib/luck';
-import {
-  showInterstitialBeforeResult,
-  showRewardAdForCompat,
-  showRewardAdForDetail,
-  showRewardAdForRetry,
-  showRewardAdForSaveImage,
-} from './lib/ads';
-import { shareOrCopy, shareText, copyText } from './lib/share';
+import { showRewardAd, isRewarded, isUnsupportedFreePass, adResultMessage } from './lib/ads';
+import { shareBriefing, shareForUnlock, copyText } from './lib/share';
 import { saveResultCard } from './lib/saveImage';
 import {
   incrementDailyDrawCount,
@@ -143,20 +137,48 @@ export default function App() {
     if (busy || !fortuneType || !mood) return;
     setNote(picked);
     setBusy(true);
-    const generated = generateFortune({ fortuneType, note: picked, mood, dateKey });
-    setResult(generated);
-    // 쪽지 오픈 모션(0.5s)을 보여준 뒤 몽글 로딩 연출로 전환
-    await wait(550);
-    setScreen('reveal');
-    // 광고 mock + 로딩 멘트 4단계(620ms×4)가 끝날 시간을 함께 보장
-    await Promise.all([showInterstitialBeforeResult(), wait(2600)]);
-    incrementDailyDrawCount(dateKey);
-    saveResult({ dateKey, fortuneType, noteId: picked.id });
-    const snapshot = { dateKey, fortuneType, noteId: picked.id, result: generated };
-    saveTodayReading(snapshot);
-    setTodayReading(snapshot);
-    setBusy(false);
-    setScreen('result');
+    try {
+      const generated = generateFortune({ fortuneType, note: picked, mood, dateKey });
+      setResult(generated);
+      // 쪽지 오픈 모션(0.5s)을 보여준 뒤 몽글 로딩 연출로 전환.
+      // 무료 첫 결과에는 광고를 넣지 않는다(정책: 무료 결과는 광고 없이 제공).
+      await wait(550);
+      setScreen('reveal');
+      await wait(2600); // 로딩 멘트 4단계(620ms×4) 연출 시간
+      incrementDailyDrawCount(dateKey);
+      saveResult({ dateKey, fortuneType, noteId: picked.id });
+      const snapshot = { dateKey, fortuneType, noteId: picked.id, result: generated };
+      saveTodayReading(snapshot);
+      setTodayReading(snapshot);
+      setScreen('result');
+    } catch {
+      flash('앗, 쪽지를 여는 중 문제가 생겼어요. 다시 시도해 주세요');
+      setScreen('pick');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // 보상형 광고 게이트 — 'rewarded'(광고 완주) 또는 'unsupported'(광고 미지원
+  // 구버전 토스에 대한 명시적 무료 정책)일 때만 기능을 연다. dismissed/failed 는 막는다.
+  async function runRewardGate(
+    placement: 'detail' | 'saveImage' | 'retry',
+    onUnlock: () => void | Promise<void>,
+  ) {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const result = await showRewardAd(placement);
+      if (isRewarded(result) || isUnsupportedFreePass(result)) {
+        await onUnlock();
+      } else {
+        flash(adResultMessage(result) || '앗, 잠시 후 다시 시도해요');
+      }
+    } catch {
+      flash('앗, 문제가 생겼어요. 다시 시도해 주세요');
+    } finally {
+      setBusy(false);
+    }
   }
 
   // 오늘 받은 편지 다시 읽기 (스냅샷 그대로 복원)
@@ -171,11 +193,7 @@ export default function App() {
   }
 
   async function handleDetail() {
-    if (busy) return;
-    setBusy(true);
-    await showRewardAdForDetail();
-    setBusy(false);
-    setScreen('detail');
+    await runRewardGate('detail', () => setScreen('detail'));
   }
 
   async function handleShare() {
@@ -184,7 +202,7 @@ export default function App() {
       ? `${result.rarity.emoji}${result.rarity.label}`
       : result.luck.grade;
     const brag = luckPercentile(result.luck.total);
-    const r = await shareOrCopy({
+    const r = await shareBriefing({
       title: result.title,
       score: result.luck.total,
       grade: gradeText,
@@ -194,8 +212,9 @@ export default function App() {
       shareLine: result.shareLine,
       brag: `상위 ${brag.pct}%`,
     });
-    if (r === 'shared') flash('공유 창을 열었어요 💌');
+    if (r === 'shared') flash('친구에게 공유했어요 💌');
     else if (r === 'copied') flash('공유 문구 복사 완료! 💌');
+    else if (r === 'cancelled') return; // 취소 — 아무 안내 없이 조용히
     else flash('앗, 공유를 못 했어요');
   }
 
@@ -207,30 +226,34 @@ export default function App() {
 
   async function handleSave() {
     if (busy || !result || !note) return;
-    setBusy(true);
-    await showRewardAdForSaveImage();
-    const ok = await saveResultCard({
-      title: result.title,
-      subtitle: result.subtitle,
-      headline: result.dayPlan.headline,
-      shareLine: result.shareLine,
-      total: result.luck.total,
-      grade: result.luck.grade,
-      tag: result.luck.tag,
-      rarity: result.rarity,
+    const snapshot = result;
+    await runRewardGate('saveImage', async () => {
+      const ok = await saveResultCard({
+        title: snapshot.title,
+        subtitle: snapshot.subtitle,
+        headline: snapshot.dayPlan.headline,
+        shareLine: snapshot.shareLine,
+        total: snapshot.luck.total,
+        grade: snapshot.luck.grade,
+        tag: snapshot.luck.tag,
+        rarity: snapshot.rarity,
+      });
+      flash(ok ? '결과 카드 저장 완료! 📸' : '앗, 저장을 못 했어요');
     });
-    setBusy(false);
-    flash(ok ? '결과 카드 저장 완료! 📸' : '앗, 저장을 못 했어요');
   }
 
   async function handleRetry() {
-    if (busy) return;
-    setBusy(true);
-    await showRewardAdForRetry();
-    setBusy(false);
-    setNote(null);
-    setDrawNonce((n) => n + 1);
-    setScreen('pick');
+    await runRewardGate('retry', () => {
+      setNote(null);
+      setDrawNonce((n) => n + 1);
+      setScreen('pick');
+    });
+  }
+
+  // 친구 궁합 보상 광고 게이트 — rewarded/unsupported 만 잠금 해제.
+  async function handleCompatAdUnlock(): Promise<boolean> {
+    const result = await showRewardAd('compat');
+    return isRewarded(result) || isUnsupportedFreePass(result);
   }
 
   return (
@@ -306,8 +329,8 @@ export default function App() {
           onSaveMyZodiac={handleSaveMyZodiac}
           onSaveMyStar={handleSaveMyStarSign}
           onBack={() => setScreen(result ? 'result' : 'home')}
-          onAdUnlock={showRewardAdForCompat}
-          onShare={shareText}
+          onAdUnlock={handleCompatAdUnlock}
+          onShare={shareForUnlock}
           onToast={flash}
         />
       )}

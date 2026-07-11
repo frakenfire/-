@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import { AdBadge } from '../components/AdNotice';
+import { Disclaimer } from '../components/Disclaimer';
 import { ZODIACS, findZodiac, type ZodiacId } from '../data/zodiac';
 import { STAR_SIGNS, findStarSign, type StarSignId } from '../data/starSign';
 import { computeCompat, type CompatResult } from '../lib/compat';
@@ -135,23 +136,32 @@ export function CompatScreen({
   async function unlockByAd() {
     if (busy) return;
     setBusy(true);
-    const ok = await onAdUnlock();
-    setBusy(false);
-    if (ok) setUnlocked(true);
-    else onToast('앗, 광고를 못 봤어요');
+    try {
+      const ok = await onAdUnlock();
+      if (ok) setUnlocked(true);
+      else onToast('광고를 끝까지 봐야 열려요');
+    } catch {
+      onToast('앗, 광고를 불러오지 못했어요');
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function unlockByShare() {
     if (busy || !myLabel || !friendLabel) return;
     setBusy(true);
-    const invite = `${myLabel.emoji}${myLabel.label} × ${friendLabel.emoji}${friendLabel.label}\n오늘 우리 ${modeLabel} 궁합 얼마나 맞을까? 나 방금 봤어 👀\n[오늘쪽지] 친구 궁합에서 너도 확인해봐 💌`;
-    const ok = await onShare(invite);
-    setBusy(false);
-    if (ok) {
-      setUnlocked(true);
-      onToast('공유 완료! 결과를 열었어요 💌');
-    } else {
+    try {
+      const invite = `${myLabel.emoji}${myLabel.label} × ${friendLabel.emoji}${friendLabel.label}\n오늘 우리 ${modeLabel} 궁합 얼마나 맞을까? 나 방금 봤어 👀\n[오늘쪽지] 친구 궁합에서 너도 확인해봐 💌`;
+      const ok = await onShare(invite);
+      if (ok) {
+        setUnlocked(true);
+        onToast('공유했어요! 결과를 열었어요 💌');
+      }
+      // 취소/실패 시엔 잠금 유지 (보상 위장 금지) — 별도 안내 없이 조용히.
+    } catch {
       onToast('앗, 공유를 못 했어요');
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -359,6 +369,7 @@ export function CompatScreen({
         </>
       ) : null}
       </div>
+      {ready ? <Disclaimer /> : null}
     </AppLayout>
   );
 }

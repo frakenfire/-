@@ -102,9 +102,13 @@ export function computeLuck(seed: number): LuckSet {
   return { total, grade: grade(total), categories, color, number, numbers6, direction, time, item, tag, food, luckyWeek };
 }
 
-// 총운 → "오늘 상위 N%" 자랑 배지 (좋은 점수일수록 상위, 공유 유발).
+// 총운 → "상위 N%" 자랑 배지.
+// 총운은 65~99 균등분포(computeLuck: 65 + floor(r()*35), 35개 값)이므로,
+// 이 점수 이상이 나올 확률 = (100 - total) / 35 로 계산해 코드 분포와 일치시킨다.
+// (실사용자 집계가 아니라 '가능한 점수 분포상 상위 비율'이라는 뜻의 재미 지표)
 export function luckPercentile(total: number): { pct: number; label: string } {
-  const pct = Math.max(1, Math.min(60, Math.round((100 - total) * 1.15)));
+  const clamped = Math.max(65, Math.min(99, total));
+  const pct = Math.max(1, Math.min(99, Math.round(((100 - clamped) / 35) * 100)));
   const label = pct <= 5 ? '역대급 행운' : pct <= 15 ? '상위권' : pct <= 30 ? '괜찮은 편' : '평범한 하루';
   return { pct, label };
 }
