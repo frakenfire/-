@@ -332,10 +332,12 @@ export default function App() {
     flash(ok ? '부적 문장 복사 완료! 🔖' : '앗, 복사를 못 했어요');
   }
 
+  // 결과 카드 저장 = 바이럴 공유 자산이라 광고 게이팅 없이 무료로(확산 우선).
   async function handleSave() {
     if (busy || !result || !note) return;
     const snapshot = result;
-    await runRewardGate('saveImage', async () => {
+    setBusy(true);
+    try {
       const ok = await saveResultCard({
         title: snapshot.title,
         subtitle: snapshot.subtitle,
@@ -344,8 +346,14 @@ export default function App() {
         grade: snapshot.luck.grade,
         rarity: snapshot.rarity,
       });
-      flash(ok ? '결과 카드 저장 완료! 📸' : '앗, 저장을 못 했어요');
-    });
+      logEvent('save_card', { ok });
+      flash(ok ? '결과 카드 저장 완료! 📸 스토리에 올려봐요' : '앗, 저장을 못 했어요');
+    } catch (e) {
+      reportError('handleSave', e);
+      flash('앗, 저장 중 문제가 생겼어요');
+    } finally {
+      setBusy(false);
+    }
   }
 
   async function handleRetry() {

@@ -80,7 +80,7 @@ export function DetailResultScreen({
           부적 문장만 복사할래요
         </button>
         <button type="button" className="btn btn--ghost" disabled={busy} onClick={onSave}>
-          결과 카드로 저장하기
+          결과 카드 저장하기 📸
         </button>
       </div>
 

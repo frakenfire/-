@@ -198,8 +198,8 @@ export function ResultScreen({
           <span className="btn-unlock__sub">운세 원픽 · 잘 맞는 띠 · 행운 미션 · 부적</span>
         </button>
 
-        <button type="button" className="btn btn--ghost" disabled={busy} onClick={onSave}>
-          결과 카드로 저장하기 <AdBadge label="광고" />
+        <button type="button" className="btn btn--secondary" disabled={busy} onClick={onSave}>
+          결과 카드 저장하기 📸 스토리에 올리기
         </button>
 
         <button type="button" className="btn btn--ghost" disabled={busy} onClick={onRetry}>
