@@ -31,10 +31,12 @@ export type FortuneInput = {
 
 // 같은 운세를 연달아 볼 때 직전과 같은 텍스트가 나오지 않게 한다.
 // (반복을 두 번 체감하는 순간 "맞는다"는 몰입이 깨지기 때문)
-function pickVariantIndex(seed: number, len: number, fortuneType: string): number {
+// storageKey를 분리해서 같은 함수로 여러 콘텐츠 축(결과 템플릿·하루 설계)에
+// 각각 독립된 "직전 회피" 이력을 유지한다.
+function pickVariantIndex(seed: number, len: number, storageKey: string): number {
   let idx = seed % len;
   try {
-    const key = `tomorrowNoteLastVariant:${fortuneType}`;
+    const key = `tomorrowNoteLastVariant:${storageKey}`;
     const last = window.localStorage.getItem(key);
     if (len > 1 && last !== null && Number.parseInt(last, 10) === idx) {
       idx = (idx + 1 + (seed % (len - 1))) % len;
@@ -52,7 +54,7 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const seed = hashSeed(`${dateKey}|${fortuneType}|${note.id}|${mood}`);
 
   const variants = TEMPLATES[fortuneType];
-  const variant = variants[pickVariantIndex(seed, variants.length, fortuneType)];
+  const variant = variants[pickVariantIndex(seed, variants.length, `tpl:${fortuneType}`)];
 
   const lead = NOTE_LEAD[note.id] ?? '오늘의 쪽지가 도착했어요.';
   const luck = computeLuck(seed);
@@ -61,8 +63,11 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const letter = composeLetter({ mood, variant, seed });
 
   // 운세 종류(주제·시간척도) × 상태(회복/그라운딩/실행)로 오늘의 설계를 고른다.
-  const cell = PLANS[fortuneType][moodGroup(mood)];
-  const dayPlan = cell[Math.abs(Math.trunc(seed / 13)) % cell.length];
+  // 결과의 주인공이라 직전과 같은 설계가 연달아 나오지 않게 별도로 회피한다.
+  const state = moodGroup(mood);
+  const cell = PLANS[fortuneType][state];
+  const planSeed = Math.abs(Math.trunc(seed / 13));
+  const dayPlan = cell[pickVariantIndex(planSeed, cell.length, `plan:${fortuneType}:${state}`)];
 
   // 에픽 이상이면 요정의 특별 한마디를 편지에 담는다.
   const rarityLine = RARITY_LINE[rarity.tier];
