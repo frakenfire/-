@@ -24,7 +24,7 @@ export function DetailResultScreen({
   onBack,
 }: Props) {
   const { luck, detail } = result;
-  const { topPick, watchOut, match } = detail;
+  const { topPick, match } = detail;
 
   return (
     <AppLayout onBack={onBack} title="심층 리포트">
@@ -33,36 +33,34 @@ export function DetailResultScreen({
         <h2 className="report-hero__title">
           오늘 밀어야 할 운은 <b>{topPick.emoji} {topPick.label}</b>
         </h2>
-        <p className="report-hero__sub">
-          {topPick.label} {topPick.score}점으로 가장 좋아요. {watchOut.emoji} {watchOut.label}만 살살 가면 완벽한 하루예요.
-        </p>
+        <p className="report-hero__summary">{detail.summary}</p>
       </div>
 
       <div className="card fade-in">
-        <p className="section-title">항목별 운세 순위</p>
+        <p className="section-title"><span className="section-title__no">01</span>항목별 운세 순위</p>
         <CategoryScores ranked={detail.ranked} />
       </div>
 
       <div className="card fade-in">
-        <p className="section-title">행운 세트</p>
+        <p className="section-title"><span className="section-title__no">02</span>행운 세트</p>
         <LuckySetGrid luck={luck} mission={detail.mission} numberUse={detail.numberUse} />
       </div>
 
       {/* 오늘 잘 맞는 띠 — 상세 리포트의 자동 궁합(친구 궁합과 구분) */}
       <div className="card fade-in">
-        <p className="section-title">오늘 잘 맞는 띠</p>
+        <p className="section-title"><span className="section-title__no">03</span>오늘 잘 맞는 띠</p>
         <div className="match">
           <div className="match__cell match__cell--good">
             <span className="match__badge">잘 맞아요</span>
             <span className="match__emoji" aria-hidden>{match.good.emoji}</span>
             <span className="match__label">{match.good.label}</span>
-            <span className="match__hint">오늘 이 띠와 함께라면 술술 풀려요</span>
+            <span className="match__hint">{match.goodReason}</span>
           </div>
           <div className="match__cell match__cell--bad">
             <span className="match__badge match__badge--bad">살짝 조심</span>
             <span className="match__emoji" aria-hidden>{match.caution.emoji}</span>
             <span className="match__label">{match.caution.label}</span>
-            <span className="match__hint">부딪히면 한 발 양보가 이득이에요</span>
+            <span className="match__hint">{match.cautionReason}</span>
           </div>
         </div>
       </div>

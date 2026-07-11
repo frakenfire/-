@@ -1206,78 +1206,175 @@ button {
 .report-hero__title b {
   color: var(--brand-strong);
 }
-.report-hero__sub {
+.report-hero__summary {
   margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-left: 3px solid var(--brand);
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 0 12px 12px 0;
   font-size: 14px;
   font-weight: 600;
-  color: var(--gray-700);
-  line-height: 1.6;
+  color: var(--gray-800);
+  line-height: 1.65;
   word-break: keep-all;
+  position: relative;
 }
 
-/* 항목별 운세 순위 */
-.cat-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.cat-item {
-  padding: var(--space-3);
-  border-radius: var(--radius-md);
-  background: var(--gray-50);
-}
-.cat-item--top {
-  background: var(--brand-soft);
-}
-.cat-item__head {
+/* 섹션 제목 앞 번호 — 리포트 목차 느낌 */
+.section-title {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 8px;
 }
-.cat-item__name {
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--gray-900);
-}
-.cat-item__pick {
+.section-title__no {
   font-size: 11px;
   font-weight: 800;
   color: var(--brand-strong);
-  background: var(--white);
-  padding: 2px 8px;
-  border-radius: 999px;
+  background: var(--brand-soft);
+  padding: 2px 7px;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
 }
-.cat-item__tag {
-  margin-left: auto;
-  font-size: 12px;
-  font-weight: 700;
+
+/* 항목별 운세 순위 — 1위는 인사이트 카드로 압도, 2~4위는 상대 비교 리스트 */
+.cat-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
 }
-.cat-item__score {
-  font-size: 16px;
-  font-weight: 800;
-  min-width: 26px;
-  text-align: right;
-}
-.cat-item__bar {
-  display: block;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--gray-200);
+
+.cat-top {
+  position: relative;
+  padding: var(--space-5) var(--space-4) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(155deg, var(--brand-soft), #f6faff);
+  border: 1px solid #d9e9fc;
   overflow: hidden;
 }
-.cat-item__fill {
+.cat-top::before {
+  content: '';
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(49, 130, 246, 0.14), transparent 70%);
+}
+.cat-top__head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: var(--space-2);
+}
+.cat-top__crown {
+  font-size: 16px;
+}
+.cat-top__label {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  color: var(--brand-strong);
+  text-transform: uppercase;
+}
+.cat-top__row {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: var(--space-3);
+}
+.cat-top__emoji {
+  font-size: 26px;
+  line-height: 1;
+}
+.cat-top__name {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--gray-900);
+  letter-spacing: -0.02em;
+}
+.cat-top__score {
+  margin-left: auto;
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.cat-top__bar {
+  display: block;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.7);
+  overflow: hidden;
+  margin-bottom: var(--space-3);
+}
+.cat-top__fill {
   display: block;
   height: 100%;
   border-radius: 999px;
 }
-.cat-item__interp {
-  margin: 8px 0 0;
-  font-size: 13px;
+.cat-top__interp {
+  margin: 0;
+  font-size: 14px;
   font-weight: 600;
-  color: var(--gray-700);
-  line-height: 1.55;
+  color: var(--gray-800);
+  line-height: 1.6;
   word-break: keep-all;
+  position: relative;
+}
+
+.cat-rank {
+  display: flex;
+  flex-direction: column;
+}
+.cat-rank__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 2px;
+  border-top: 1px solid var(--gray-100);
+}
+.cat-rank__row:first-child {
+  border-top: none;
+}
+.cat-rank__no {
+  flex: none;
+  width: 30px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+.cat-rank__emoji {
+  flex: none;
+  font-size: 15px;
+}
+.cat-rank__name {
+  flex: none;
+  width: 46px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-700);
+}
+.cat-rank__bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--gray-100);
+  overflow: hidden;
+  min-width: 0;
+}
+.cat-rank__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  opacity: 0.85;
+}
+.cat-rank__score {
+  flex: none;
+  width: 28px;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: right;
 }
 
 /* 행운 세트 — 미션 + 세트 + 숫자 활용 */
