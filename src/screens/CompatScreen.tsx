@@ -101,8 +101,13 @@ export function CompatScreen({
 
   function saveCurrentFriend(relation: RelationKey) {
     if (!friend) return;
-    setSavedPeople(addSavedPerson({ mode, value: friend, relation }));
-    onToast('내 사람으로 저장했어요 ⭐ 다음엔 바로 확인할 수 있어요');
+    const { list, saved } = addSavedPerson({ mode, value: friend, relation });
+    setSavedPeople(list);
+    onToast(
+      saved
+        ? '내 사람으로 저장했어요 ⭐ 다음엔 바로 확인할 수 있어요'
+        : '앗, 저장 공간이 부족해 저장을 못 했어요',
+    );
   }
 
   function forgetPerson(id: string) {

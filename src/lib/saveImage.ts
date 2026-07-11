@@ -1,5 +1,6 @@
 import { scoreColor } from './luck';
 import { moodFromScore } from '../components/Mascot';
+import { saveImageData } from './toss';
 import type { Rarity } from './rarity';
 
 // PRD §7.2 + 리서치 — 세로 공유 카드. 마스코트 + 총운 점수 + 콕 집은 한마디.
@@ -238,13 +239,8 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
     ctx.fillText('오늘쪽지 뽑기 · 오늘 하루, 쪽지 한 장', cx, H - 92);
 
     const dataUrl = canvas.toDataURL('image/png');
-    const a = document.createElement('a');
-    a.href = dataUrl;
-    a.download = 'today-note.png';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    return true;
+    // 토스 웹뷰: 공식 saveBase64Data / 그 외: 브라우저 다운로드 (adapter 내부 분기)
+    return await saveImageData(dataUrl, 'today-note.png');
   } catch {
     return false;
   }

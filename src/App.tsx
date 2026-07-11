@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FortuneResult, FortuneType, Mood, Note } from './types/fortune';
 import { NOTES } from './data/notes';
 import { FORTUNE_LABEL } from './data/fortuneTypes';
@@ -17,6 +17,8 @@ import {
   saveTodayReading,
   updateStreak,
 } from './lib/storage';
+import { clearAllData } from './lib/storage';
+import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent } from './lib/toss';
 import { findNote } from './data/notes';
 import { findZodiac } from './data/zodiac';
 import type { Zodiac, ZodiacId } from './data/zodiac';
@@ -48,12 +50,14 @@ export default function App() {
   const [note, setNote] = useState<Note | null>(null);
   const [drawNonce, setDrawNonce] = useState(0);
 
-  const dateKey = useMemo(() => todayKey(), []);
+  // 자정을 넘겨도(앱을 계속 켜둬도) 날짜가 갱신되도록 state 로 관리하고,
+  // 앱이 포그라운드로 돌아올 때마다 신뢰 가능한 '오늘'을 다시 확인한다.
+  const [dateKey, setDateKey] = useState(() => todayKey());
   const yesterdayKey = useMemo(() => {
-    const y = new Date();
-    y.setDate(y.getDate() - 1);
-    return todayKey(y);
-  }, []);
+    const d = new Date(`${dateKey}T12:00:00`);
+    d.setDate(d.getDate() - 1);
+    return todayKey(d);
+  }, [dateKey]);
   const streak = useMemo(
     () => updateStreak(dateKey, yesterdayKey),
     [dateKey, yesterdayKey],
@@ -87,20 +91,89 @@ export default function App() {
     return id ? (findStarSign(id) ?? null) : null;
   });
 
+  // 시스템 뒤로가기(토스 백 이벤트) 핸들러가 현재 화면을 알 수 있도록 ref 로 추적.
+  const screenRef = useRef(screen);
+  screenRef.current = screen;
+  const hasResultRef = useRef(false);
+  hasResultRef.current = !!result;
+  const busyRef = useRef(busy);
+  busyRef.current = busy;
+
+  function goBack() {
+    if (busyRef.current) return;
+    switch (screenRef.current) {
+      case 'mood':
+        setScreen('home');
+        break;
+      case 'pick':
+        setScreen('mood');
+        break;
+      case 'result':
+        setScreen('home');
+        break;
+      case 'detail':
+        setScreen('result');
+        break;
+      case 'compat':
+        setScreen(hasResultRef.current ? 'result' : 'home');
+        break;
+      default:
+        break; // home/reveal — 토스가 앱 종료를 처리
+    }
+  }
+
+  useEffect(() => {
+    let alive = true;
+    // 자정 경과·시간 조작 대응: 신뢰 가능한 '오늘'로 날짜 키를 동기화.
+    const syncDate = async () => {
+      const trusted = await getTrustedDateKey(() => todayKey());
+      if (alive) setDateKey((cur) => (cur === trusted ? cur : trusted));
+    };
+    void syncDate();
+    const onVis = () => {
+      if (document.visibilityState === 'visible') void syncDate();
+    };
+    document.addEventListener('visibilitychange', onVis);
+    const unsubSafe = subscribeSafeArea();
+    const unsubBack = subscribeBackEvent(goBack);
+    return () => {
+      alive = false;
+      document.removeEventListener('visibilitychange', onVis);
+      unsubSafe();
+      unsubBack();
+    };
+    // 마운트 시 1회 구독 (goBack 은 ref 로 최신 상태를 읽음)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function handleReset() {
+    const ok = clearAllData();
+    if (ok) {
+      setZodiac(null);
+      setStarSign(null);
+      setTodayReading(null);
+      setResult(null);
+      flash('내 데이터를 모두 지웠어요');
+      setScreen('home');
+    } else {
+      flash('앗, 데이터를 지우지 못했어요');
+    }
+  }
+
   function handleZodiac(id: ZodiacId) {
     const z = findZodiac(id);
     if (!z) return;
-    saveMyZodiac(id);
+    const saved = saveMyZodiac(id);
     setZodiac(z);
-    flash(`${z.emoji} ${z.label}의 한 줄이 매일 홈에 떠요`);
+    flash(saved ? `${z.emoji} ${z.label}의 한 줄이 매일 홈에 떠요` : '앗, 저장을 못 했어요');
   }
 
   function handleStarSign(id: StarSignId) {
     const s = findStarSign(id);
     if (!s) return;
-    saveMyStarSign(id);
+    const saved = saveMyStarSign(id);
     setStarSign(s);
-    flash(`${s.emoji} ${s.label}의 한 줄이 매일 홈에 떠요`);
+    flash(saved ? `${s.emoji} ${s.label}의 한 줄이 매일 홈에 떠요` : '앗, 저장을 못 했어요');
   }
 
   function flash(msg: string) {
@@ -270,6 +343,7 @@ export default function App() {
           onReopen={handleReopen}
           onCompat={() => setScreen('compat')}
           onSelect={handleType}
+          onReset={handleReset}
         />
       )}
 

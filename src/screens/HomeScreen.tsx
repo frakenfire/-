@@ -40,6 +40,7 @@ type Props = {
   onReopen: () => void;
   onCompat: () => void;
   onSelect: (t: FortuneType) => void;
+  onReset: () => void;
 };
 
 // PRD §5.1 + 리텐션 — 오늘의 한 줄 · 친구 궁합 · 다시 읽기 · 스트릭 · 어제의 쪽지.
@@ -54,6 +55,7 @@ export function HomeScreen({
   onReopen,
   onCompat,
   onSelect,
+  onReset,
 }: Props) {
   const yNote = yesterdayRecord ? findNote(yesterdayRecord.noteId) : null;
   const [zodiacOpen, setZodiacOpen] = useState(false);
@@ -208,6 +210,15 @@ export function HomeScreen({
         </div>
       ) : null}
 
+      <button
+        type="button"
+        className="reset-link"
+        onClick={() => {
+          if (window.confirm('내 띠·별자리·저장한 사람·출석 기록을 모두 지울까요?')) onReset();
+        }}
+      >
+        내 데이터 전체 삭제
+      </button>
     </AppLayout>
   );
 }

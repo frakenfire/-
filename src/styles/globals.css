@@ -53,7 +53,12 @@ button {
   align-items: center;
   gap: var(--space-2);
   height: 52px;
-  padding: 0 var(--space-4);
+  /* 상단 Safe Area(노치·토스 상단 UI) 반영 — --sat 는 토스 브릿지가 갱신,
+     없으면 env(safe-area-inset-top) 폴백 */
+  padding-top: var(--sat, env(safe-area-inset-top, 0px));
+  box-sizing: content-box;
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
   flex-shrink: 0;
 }
 
@@ -2253,4 +2258,36 @@ button {
     width: 152px;
     height: 152px;
   }
+}
+
+/* 접근성 — 모션 최소화 설정 사용자에겐 무한/과한 애니메이션을 끈다. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .confetti,
+  .shimmer,
+  .rarity-badge--legendary {
+    animation: none !important;
+  }
+}
+
+/* 내 데이터 삭제 링크 — 홈 하단, 눈에 안 띄지만 접근 가능 */
+.reset-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  margin: var(--space-6) auto var(--space-2);
+  padding: 0 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-600);
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }

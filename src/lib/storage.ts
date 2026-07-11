@@ -6,6 +6,7 @@ const KEYS = {
   lastResult: 'tomorrowNoteLastResult',
   todayReading: 'tomorrowNoteTodayReading',
   dailyDrawCount: 'tomorrowNoteDrawCount',
+  dailyDrawDate: 'tomorrowNoteDrawDate', // 뽑기 카운트 전용 날짜(방문 기록과 분리)
   lastVisitDate: 'tomorrowNoteLastVisit',
 } as const;
 
@@ -32,11 +33,13 @@ function safeGet(key: string): string | null {
   }
 }
 
-function safeSet(key: string, value: string): void {
+// 저장 성공 여부를 돌려준다(용량 부족·사생활 보호 모드 등에서 실패 감지).
+function safeSet(key: string, value: string): boolean {
   try {
     window.localStorage.setItem(key, value);
+    return true;
   } catch {
-    /* noop */
+    return false;
   }
 }
 
@@ -57,8 +60,8 @@ export function loadResult(): StoredResult | null {
 // 내 띠 (12개 중 선택 — 선택형 값)
 const ZODIAC_KEY = 'tomorrowNoteZodiac';
 
-export function saveMyZodiac(id: string): void {
-  safeSet(ZODIAC_KEY, id);
+export function saveMyZodiac(id: string): boolean {
+  return safeSet(ZODIAC_KEY, id);
 }
 
 export function loadMyZodiac(): string | null {
@@ -68,8 +71,8 @@ export function loadMyZodiac(): string | null {
 // 내 별자리 (12개 중 선택 — 선택형 값, 생년월일 아님)
 const STAR_KEY = 'tomorrowNoteStarSign';
 
-export function saveMyStarSign(id: string): void {
-  safeSet(STAR_KEY, id);
+export function saveMyStarSign(id: string): boolean {
+  return safeSet(STAR_KEY, id);
 }
 
 export function loadMyStarSign(): string | null {
@@ -109,16 +112,19 @@ export function loadTodayReading(dateKey: string): TodayReading | null {
   }
 }
 
+// 뽑기 카운트는 방문 기록(markVisit)과 분리된 자체 날짜 키를 쓴다.
+// (예전엔 lastVisitDate 를 공유해, 운세 선택 시 markVisit 이 먼저 날짜를
+//  갱신하면 날이 바뀌어도 카운트가 초기화되지 않는 버그가 있었다.)
 export function getDailyDrawCount(dateKey: string): number {
-  if (safeGet(KEYS.lastVisitDate) !== dateKey) return 0;
+  if (safeGet(KEYS.dailyDrawDate) !== dateKey) return 0;
   const n = Number.parseInt(safeGet(KEYS.dailyDrawCount) ?? '0', 10);
   return Number.isFinite(n) ? n : 0;
 }
 
 export function incrementDailyDrawCount(dateKey: string): number {
   const next = getDailyDrawCount(dateKey) + 1;
+  safeSet(KEYS.dailyDrawDate, dateKey);
   safeSet(KEYS.dailyDrawCount, String(next));
-  safeSet(KEYS.lastVisitDate, dateKey);
   return next;
 }
 
@@ -166,13 +172,13 @@ export function loadSavedPeople(): SavedPerson[] {
   }
 }
 
-export function addSavedPerson(person: Omit<SavedPerson, 'id'>): SavedPerson[] {
+export function addSavedPerson(person: Omit<SavedPerson, 'id'>): { list: SavedPerson[]; saved: boolean } {
   const updated = [
     { ...person, id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}` },
     ...loadSavedPeople(),
   ].slice(0, MAX_SAVED_PEOPLE);
-  safeSet(SAVED_PEOPLE_KEY, JSON.stringify(updated));
-  return updated;
+  const saved = safeSet(SAVED_PEOPLE_KEY, JSON.stringify(updated));
+  return { list: updated, saved };
 }
 
 export function removeSavedPerson(id: string): SavedPerson[] {
@@ -204,4 +210,28 @@ export function updateStreak(todayKey: string, yesterdayKey: string): number {
   safeSet(STREAK_KEYS.date, todayKey);
   safeSet(STREAK_KEYS.count, String(next));
   return next;
+}
+
+// ── 내 데이터 전체 삭제 (사용자가 기기 로컬 데이터 생명주기를 통제) ──
+const ALL_KEYS = [
+  KEYS.lastResult,
+  KEYS.todayReading,
+  KEYS.dailyDrawCount,
+  KEYS.dailyDrawDate,
+  KEYS.lastVisitDate,
+  ZODIAC_KEY,
+  STAR_KEY,
+  SAVED_PEOPLE_KEY,
+  STREAK_KEYS.date,
+  STREAK_KEYS.count,
+];
+
+/** 이 앱이 저장한 모든 로컬 데이터를 지운다. 성공 여부 반환. */
+export function clearAllData(): boolean {
+  try {
+    for (const k of ALL_KEYS) window.localStorage.removeItem(k);
+    return true;
+  } catch {
+    return false;
+  }
 }
