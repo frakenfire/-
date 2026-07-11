@@ -387,19 +387,6 @@ button {
   white-space: pre-line;
 }
 
-/* 행운 포인트 — SIGNATURE ORANGE 스티커 강조 */
-.lucky {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--color-signature-orange);
-  background: var(--color-soft-yellow);
-  padding: 6px 12px;
-  border-radius: 999px;
-}
-
 /* ── 고지 / 광고 ── */
 .disclaimer {
   font-size: 12px;
@@ -1225,6 +1212,10 @@ button {
   display: flex;
   align-items: center;
   gap: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--gray-900);
+  margin: var(--space-2) 0 var(--space-3);
 }
 .section-title__no {
   font-size: 11px;
@@ -1244,22 +1235,9 @@ button {
 }
 
 .cat-top {
-  position: relative;
-  padding: var(--space-5) var(--space-4) var(--space-4);
-  border-radius: var(--radius-lg);
-  background: linear-gradient(155deg, var(--brand-soft), #f6faff);
-  border: 1px solid #d9e9fc;
-  overflow: hidden;
-}
-.cat-top::before {
-  content: '';
-  position: absolute;
-  top: -30px;
-  right: -30px;
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(49, 130, 246, 0.14), transparent 70%);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--gray-50);
 }
 .cat-top__head {
   display: flex;
@@ -1304,7 +1282,7 @@ button {
   display: block;
   height: 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.7);
+  background: var(--white);
   overflow: hidden;
   margin-bottom: var(--space-3);
 }
@@ -2047,13 +2025,6 @@ button {
   box-shadow: var(--shadow-card);
   border: 1px solid var(--gray-100);
   margin-bottom: var(--space-4);
-}
-
-.section-title {
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--gray-900);
-  margin: var(--space-2) 0 var(--space-3);
 }
 
 @media (max-width: 360px) {
