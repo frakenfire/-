@@ -2534,19 +2534,37 @@ a:focus-visible {
 }
 .today-hook__line {
   margin: 0;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 800;
-  line-height: 1.42;
+  line-height: 1.36;
   letter-spacing: -0.015em;
   color: #fff;
   word-break: keep-all;
   text-wrap: balance;
 }
+.today-hook__line b {
+  font-weight: 800;
+  color: #ffe9a8;
+}
+.today-hook__hint {
+  margin: var(--space-2) 0 0;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #dbeafe;
+  word-break: keep-all;
+}
+.today-hook__preview-k {
+  margin: var(--space-5) 0 var(--space-2);
+  font-size: 12px;
+  font-weight: 700;
+  color: #cfe2ff;
+}
 .today-hook__reveal {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  margin: var(--space-5) 0 var(--space-4);
+  margin: 0 0 var(--space-4);
 }
 .th-cell {
   display: flex;

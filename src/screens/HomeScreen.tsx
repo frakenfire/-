@@ -85,14 +85,20 @@ export function HomeScreen({
           점신식 즉시성(오늘 기운 바로 노출) + 포스텔러식 개인화 공감 한 줄 +
           잠긴 결과(?점·?)로 궁금증/FOMO 유발 → 뽑아야 전부 열림 */}
       <button type="button" className="today-hook" onClick={() => onSelect('tomorrow')}>
-        <span className="today-hook__kw">✨ 오늘의 기운 · {vibe.emoji} {vibe.word}</span>
-        <p className="today-hook__persona">
-          {zodiac
-            ? `${ZODIAC_TRAIT[zodiac.id]} ${zodiac.emoji}${zodiac.label}인 당신,`
-            : '오늘 나에게 온 쪽지엔,'}
+        <span className="today-hook__kw">✨ 오늘 뜨는 기운 · {vibe.emoji} {vibe.word}</span>
+        {zodiac ? (
+          <p className="today-hook__persona">
+            {ZODIAC_TRAIT[zodiac.id]} {zodiac.emoji}
+            {zodiac.label}인 당신,
+          </p>
+        ) : null}
+        <p className="today-hook__line">
+          지금은 <b>‘{vibe.word}’</b> 기운이 좋아요
         </p>
-        <p className="today-hook__line">{vibe.line}</p>
+        <p className="today-hook__hint">{vibe.line}</p>
 
+        {/* '이런 걸 볼 수 있다' — 뽑으면 열리는 것 미리보기(잠긴 ?)로 궁금증 */}
+        <p className="today-hook__preview-k">쪽지를 뽑으면 이런 걸 볼 수 있어요</p>
         <div className="today-hook__reveal" aria-hidden>
           <div className="th-cell">
             <span className="th-cell__k">오늘 총운</span>
@@ -109,7 +115,7 @@ export function HomeScreen({
         </div>
 
         <span className="today-hook__cta">
-          쪽지 뽑고 오늘 전부 확인하기
+          쪽지 뽑기 시작하기
           <i className="today-hook__cta-arrow" aria-hidden>›</i>
         </span>
       </button>
