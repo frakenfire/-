@@ -4,6 +4,7 @@ import { LetterCard } from '../components/LetterCard';
 import { Disclaimer } from '../components/Disclaimer';
 import { AdBadge, AdBanner } from '../components/AdNotice';
 import { luckPercentile } from '../lib/luck';
+import { ELEMENT_EMOJI, ELEMENT_KO } from '../lib/saju';
 import { todayVibe } from '../lib/dayVibe';
 import { todayKey } from '../lib/dateSeed';
 import type { FortuneResult, Note } from '../types/fortune';
@@ -135,6 +136,36 @@ export function ResultScreen({
           </p>
         </div>
       </div>
+
+      {/* 오늘의 사주 한 컷 — 일진×내 띠 관계로 오늘 기운을 사주식으로 (띠 설정 시) */}
+      {result.saju ? (
+        <div className="saju-card fade-in">
+          <div className="saju-card__head">
+            <span className="saju-card__title">🔮 오늘의 사주 한 컷</span>
+            <span className="saju-card__iljin">
+              {result.saju.iljin.kor}({result.saju.iljin.hanja})일
+            </span>
+          </div>
+          <div className="saju-card__grid">
+            <div className="saju-card__cell">
+              <span className="saju-card__k">일진 × 내 띠</span>
+              <span className="saju-card__v saju-card__v--rel">{result.saju.relationKo}</span>
+            </div>
+            <div className="saju-card__cell">
+              <span className="saju-card__k">오늘 기운</span>
+              <span className="saju-card__v">{result.saju.toneWord}</span>
+            </div>
+            <div className="saju-card__cell">
+              <span className="saju-card__k">내 오행</span>
+              <span className="saju-card__v">
+                {ELEMENT_EMOJI[result.saju.myElement]} {ELEMENT_KO[result.saju.myElement]}
+              </span>
+            </div>
+          </div>
+          <p className="saju-card__line">{result.saju.headline}</p>
+          <p className="saju-card__tip">💡 {result.saju.tip}</p>
+        </div>
+      ) : null}
 
       {/* 하루 풀이 — 매일 볼 만한 해석 */}
       <div className="card fade-in">

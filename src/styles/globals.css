@@ -2554,6 +2554,77 @@ a:focus-visible {
   color: #dbeafe;
   word-break: keep-all;
 }
+/* 결과 화면 '오늘의 사주 한 컷' 카드 — 흰 배경, 차분한 사주 요약 */
+.saju-card {
+  padding: var(--space-4) var(--space-5);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(160deg, #f3f7ff, #fbfcff);
+  border: 1px solid #e0eaff;
+  box-shadow: var(--shadow-card);
+  margin-bottom: var(--space-4);
+}
+.saju-card__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: var(--space-3);
+}
+.saju-card__title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.saju-card__iljin {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--brand-strong);
+}
+.saju-card__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-bottom: var(--space-3);
+}
+.saju-card__cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 4px;
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+}
+.saju-card__k {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+.saju-card__v {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.saju-card__v--rel {
+  color: var(--brand-strong);
+}
+.saju-card__line {
+  margin: 0 0 6px;
+  font-size: 13.5px;
+  font-weight: 600;
+  line-height: 1.55;
+  color: var(--gray-800);
+  word-break: keep-all;
+}
+.saju-card__tip {
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--brand-strong);
+  word-break: keep-all;
+}
+
 /* 사주 근거 칩 — 일진×내 띠 관계를 가볍게(한자 없이) 보여줌 */
 .today-hook__saju {
   display: flex;

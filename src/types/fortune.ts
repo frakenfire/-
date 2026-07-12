@@ -27,6 +27,8 @@ export type FortuneResult = {
   subtitle: string;
   /** 띠×별자리 조합 개인화 한 줄 ("직진하는 🐯범띠 × 화려한 ♌사자자리인 당신에게") */
   persona?: string;
+  /** 오늘 일진×내 띠 사주 (띠 설정 시에만). 결과 화면 '오늘의 사주 한 컷'용 */
+  saju?: import('../lib/saju').SajuToday | null;
   pinpoint: string;
   summaryLines: string[];
   detailFlow: string;

@@ -75,10 +75,17 @@ function grade(total: number): string {
   return '평';
 }
 
-export function computeLuck(seed: number): LuckSet {
+// 사주 톤 → 총운 보정치. 오늘 일진과 내 띠의 관계가 좋을수록 총운이 높게 나오도록
+// 살짝 기울인다(로직 일관성). 난수 소비량은 그대로라 나머지 행운 세트는 불변.
+export function sajuBiasFromTone(tone: 'great' | 'good' | 'steady' | 'caution'): number {
+  return { great: 6, good: 3, steady: 0, caution: -5 }[tone];
+}
+
+export function computeLuck(seed: number, sajuBias = 0): LuckSet {
   const r = seededRandom(seed);
 
-  const total = 65 + Math.floor(r() * 35); // 65~99
+  const base = 65 + Math.floor(r() * 35); // 65~99
+  const total = Math.max(65, Math.min(99, base + sajuBias)); // 사주 보정 후 재클램프
   const categories: CategoryScore[] = CATEGORY_META.map((c) => ({
     ...c,
     score: 60 + Math.floor(r() * 40), // 60~99
@@ -103,8 +110,8 @@ export function computeLuck(seed: number): LuckSet {
 }
 
 // 총운 → "상위 N%" 자랑 배지.
-// 총운은 65~99 균등분포(computeLuck: 65 + floor(r()*35), 35개 값)이므로,
-// 이 점수 이상이 나올 확률 = (100 - total) / 35 로 계산해 코드 분포와 일치시킨다.
+// 총운의 기본은 65~99 균등분포(65 + floor(r()*35))이고 사주 톤으로 약간 보정된다.
+// 이 점수 이상이 나올 확률 = (100 - total) / 35 로 계산 (가능한 65~99 범위 기준).
 // (실사용자 집계가 아니라 '가능한 점수 분포상 상위 비율'이라는 뜻의 재미 지표)
 export function luckPercentile(total: number): { pct: number; label: string } {
   const clamped = Math.max(65, Math.min(99, total));

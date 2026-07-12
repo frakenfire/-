@@ -5,7 +5,8 @@ import { findZodiac } from '../data/zodiac';
 import { findStarSign } from '../data/starSign';
 import { ZODIAC_TRAIT, STAR_TRAIT } from '../data/traits';
 import { hashSeed } from './dateSeed';
-import { computeLuck } from './luck';
+import { computeLuck, sajuBiasFromTone } from './luck';
+import { sajuToday } from './saju';
 import { computeDetail } from './detail';
 import { composeLetter } from './letter';
 import { computeRarity, RARITY_LINE } from './rarity';
@@ -59,7 +60,9 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const variant = variants[pickFreshIndex(seed, variants.length, `tpl:${fortuneType}`)];
 
   const lead = NOTE_LEAD[note.id] ?? '오늘의 쪽지가 도착했어요.';
-  const luck = computeLuck(seed);
+  // 오늘 일진×내 띠 사주 — 띠가 있으면 총운을 살짝 보정(로직 일관성)하고 결과에 담는다.
+  const saju = zodiac && dateKey ? sajuToday(dateKey, zodiac) : null;
+  const luck = computeLuck(seed, saju ? sajuBiasFromTone(saju.tone) : 0);
   const detail = computeDetail(seed, luck);
   const rarity = computeRarity(seed);
   const letter = composeLetter({ mood, variant, seed });
@@ -104,6 +107,7 @@ ${variant.flow}`,
     title: FORTUNE_LABEL[fortuneType],
     subtitle: `${note.name} 쪽지`,
     persona,
+    saju,
     pinpoint: variant.pinpoint,
     summaryLines: [lead, variant.summary[0], variant.summary[1]],
     detailFlow: variant.flow,
