@@ -9,6 +9,7 @@ import { todayVibe } from '../lib/dayVibe';
 import { todayKey } from '../lib/dateSeed';
 import { luckyZodiacsToday } from '../lib/luckyToday';
 import { ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac';
+import { ZODIAC_TRAIT } from '../data/traits';
 import type { StoredResult, TodayReading, RarityCounts } from '../lib/storage';
 import type { FortuneType } from '../types/fortune';
 
@@ -80,17 +81,34 @@ export function HomeScreen({
         <p className="home-hero__sub">{greeting()}</p>
       </div>
 
-      {/* ★ 클릭해서 시작 — 물음표 미스터리 히어로 (메인 focal) */}
-      <button type="button" className="draw-hero" onClick={() => onSelect('tomorrow')}>
-        <span className="draw-hero__vibe">✨ 오늘의 기운 · {vibe.emoji} {vibe.word}</span>
-        <div className="draw-hero__marks" aria-hidden>
-          <span className="draw-hero__q">?</span>
-          <span className="draw-hero__q">?</span>
-          <span className="draw-hero__q">?</span>
+      {/* ★ 메인 focal — '오늘의 나' 훅 카드
+          점신식 즉시성(오늘 기운 바로 노출) + 포스텔러식 개인화 공감 한 줄 +
+          잠긴 결과(?점·?)로 궁금증/FOMO 유발 → 뽑아야 전부 열림 */}
+      <button type="button" className="today-hook" onClick={() => onSelect('tomorrow')}>
+        <span className="today-hook__kw">✨ 오늘의 기운 · {vibe.emoji} {vibe.word}</span>
+        <p className="today-hook__persona">
+          {zodiac
+            ? `${ZODIAC_TRAIT[zodiac.id]} ${zodiac.emoji}${zodiac.label}인 당신,`
+            : '오늘 나에게 온 쪽지엔,'}
+        </p>
+        <p className="today-hook__line">{vibe.line}</p>
+
+        <div className="today-hook__reveal" aria-hidden>
+          <div className="th-cell">
+            <span className="th-cell__k">오늘 총운</span>
+            <span className="th-cell__v">?<i>점</i></span>
+          </div>
+          <div className="th-cell">
+            <span className="th-cell__k">행운의 색</span>
+            <span className="th-cell__v th-cell__v--q">?</span>
+          </div>
+          <div className="th-cell">
+            <span className="th-cell__k">행운 음식</span>
+            <span className="th-cell__v th-cell__v--q">?</span>
+          </div>
         </div>
-        <p className="draw-hero__title">오늘 나에게 온 쪽지, 뭐라고 적혀 있을까?</p>
-        <p className="draw-hero__sub">기분·띠·별자리 고르고 한 장 뽑으면, 오늘 뭐가 좋은지 알려줄게요</p>
-        <span className="draw-hero__cta">쪽지 뽑기 ›</span>
+
+        <span className="today-hook__cta">쪽지 뽑고 오늘 전부 확인하기 ›</span>
       </button>
 
       {/* 오늘 운 좋은 띠 — 궁금증 훅(내 띠 있나?) + 여기서 바로 내 띠 설정 */}
