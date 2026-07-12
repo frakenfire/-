@@ -2554,6 +2554,27 @@ a:focus-visible {
   color: #dbeafe;
   word-break: keep-all;
 }
+/* 사주 근거 칩 — 일진×내 띠 관계를 가볍게(한자 없이) 보여줌 */
+.today-hook__saju {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: var(--space-3);
+}
+.saju-chip {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #eaf2ff;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  padding: 5px 11px;
+}
+.saju-chip--rel {
+  color: #1b64da;
+  background: #ffe9a8;
+  border-color: #ffe9a8;
+}
 .today-hook__preview-k {
   margin: var(--space-5) 0 var(--space-2);
   font-size: 12px;

@@ -7,6 +7,7 @@ import { HOME } from '../data/copy';
 import { useState } from 'react';
 import { todayVibe } from '../lib/dayVibe';
 import { todayKey } from '../lib/dateSeed';
+import { sajuToday, iljinOf } from '../lib/saju';
 import { luckyZodiacsToday } from '../lib/luckyToday';
 import { ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac';
 import { ZODIAC_TRAIT } from '../data/traits';
@@ -58,6 +59,8 @@ export function HomeScreen({
   const vibe = todayVibe(todayKey());
   const lucky = luckyZodiacsToday(todayKey());
   const myLucky = !!(zodiac && lucky.some((z) => z.id === zodiac.id));
+  const iljin = iljinOf(todayKey());
+  const saju = zodiac ? sajuToday(todayKey(), zodiac.id) : null;
 
   return (
     <AppLayout>
@@ -82,20 +85,40 @@ export function HomeScreen({
       </div>
 
       {/* ★ 메인 focal — '오늘의 나' 훅 카드
-          점신식 즉시성(오늘 기운 바로 노출) + 포스텔러식 개인화 공감 한 줄 +
+          사주 일진(日辰) 기반: 오늘 일진과 내 띠의 전통 관계(삼합·육합·상충 등)로
+          '오늘 기운'을 결정적으로 계산해 개인화. 띠 미설정 시 일진+오늘 기운만 노출.
           잠긴 결과(?점·?)로 궁금증/FOMO 유발 → 뽑아야 전부 열림 */}
       <button type="button" className="today-hook" onClick={() => onSelect('tomorrow')}>
-        <span className="today-hook__kw">✨ 오늘 뜨는 기운 · {vibe.emoji} {vibe.word}</span>
-        {zodiac ? (
-          <p className="today-hook__persona">
-            {ZODIAC_TRAIT[zodiac.id]} {zodiac.emoji}
-            {zodiac.label}인 당신,
-          </p>
-        ) : null}
-        <p className="today-hook__line">
-          지금은 <b>‘{vibe.word}’</b> 기운이 좋아요
-        </p>
-        <p className="today-hook__hint">{vibe.line}</p>
+        <span className="today-hook__kw">
+          🔮 오늘의 일진 · {iljin.kor}({iljin.hanja})일
+        </span>
+        {zodiac && saju ? (
+          <>
+            <p className="today-hook__persona">
+              {ZODIAC_TRAIT[zodiac.id]} {zodiac.emoji}
+              {zodiac.label}인 당신,
+            </p>
+            <p className="today-hook__line">{saju.title}</p>
+            <div className="today-hook__saju" aria-hidden>
+              <span className="saju-chip">
+                {zodiac.emoji}
+                {zodiac.label} × {iljin.kor}일
+              </span>
+              <span className="saju-chip saju-chip--rel">{saju.relationKo}</span>
+              <span className="saju-chip">기운 {saju.toneWord}</span>
+            </div>
+            <p className="today-hook__hint">{saju.headline}</p>
+          </>
+        ) : (
+          <>
+            <p className="today-hook__line">
+              지금은 <b>‘{vibe.word}’</b> 기운이 좋아요
+            </p>
+            <p className="today-hook__hint">
+              {vibe.line} 내 띠를 고르면 오늘 일진과 얼마나 맞는지 봐요.
+            </p>
+          </>
+        )}
 
         {/* '이런 걸 볼 수 있다' — 뽑으면 열리는 것 미리보기(잠긴 ?)로 궁금증 */}
         <p className="today-hook__preview-k">쪽지를 뽑으면 이런 걸 볼 수 있어요</p>
