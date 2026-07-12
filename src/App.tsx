@@ -205,14 +205,6 @@ export default function App() {
     flash(saved ? `${z.emoji} ${z.label}의 한 줄이 매일 홈에 떠요` : '앗, 저장을 못 했어요');
   }
 
-  function handleStarSign(id: StarSignId) {
-    const s = findStarSign(id);
-    if (!s) return;
-    const saved = saveMyStarSign(id);
-    setStarSign(s);
-    flash(saved ? `${s.emoji} ${s.label}의 한 줄이 매일 홈에 떠요` : '앗, 저장을 못 했어요');
-  }
-
   function flash(msg: string) {
     setToast(msg);
     window.setTimeout(() => setToast((cur) => (cur === msg ? null : cur)), 1800);
@@ -394,8 +386,6 @@ export default function App() {
           todayReading={todayReading}
           zodiac={zodiac}
           onZodiac={handleZodiac}
-          starSign={starSign}
-          onStarSign={handleStarSign}
           onReopen={handleReopen}
           onCompat={() => setScreen('compat')}
           onSelect={handleType}

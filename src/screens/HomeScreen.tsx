@@ -8,10 +8,7 @@ import { useState } from 'react';
 import { todayVibe } from '../lib/dayVibe';
 import { todayKey } from '../lib/dateSeed';
 import { luckyZodiacsToday } from '../lib/luckyToday';
-import { ZODIACS, zodiacLine } from '../data/zodiac';
-import type { Zodiac, ZodiacId } from '../data/zodiac';
-import { STAR_SIGNS, starLine } from '../data/starSign';
-import type { StarSign, StarSignId } from '../data/starSign';
+import { ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac';
 import type { StoredResult, TodayReading, RarityCounts } from '../lib/storage';
 import type { FortuneType } from '../types/fortune';
 
@@ -21,7 +18,6 @@ function todayLabel(): string {
   return `${d.getMonth() + 1}월 ${d.getDate()}일 (${week})`;
 }
 
-// 시간대별 인사 — 매번 조금 다른 첫인상 (매일 보고 싶게)
 function greeting(): string {
   const h = new Date().getHours();
   if (h >= 5 && h < 11) return '좋은 아침이에요 ☀️';
@@ -37,15 +33,13 @@ type Props = {
   todayReading: TodayReading | null;
   zodiac: Zodiac | null;
   onZodiac: (id: ZodiacId) => void;
-  starSign: StarSign | null;
-  onStarSign: (id: StarSignId) => void;
   onReopen: () => void;
   onCompat: () => void;
   onSelect: (t: FortuneType) => void;
   onReset: () => void;
 };
 
-// PRD §5.1 + 리텐션 — 오늘의 한 줄 · 친구 궁합 · 다시 읽기 · 스트릭 · 어제의 쪽지.
+// 홈 — '클릭해서 시작'하는 호기심 히어로(물음표)를 중심으로 정리.
 export function HomeScreen({
   streak,
   rarityCounts,
@@ -53,17 +47,16 @@ export function HomeScreen({
   todayReading,
   zodiac,
   onZodiac,
-  starSign,
-  onStarSign,
   onReopen,
   onCompat,
   onSelect,
   onReset,
 }: Props) {
   const yNote = yesterdayRecord ? findNote(yesterdayRecord.noteId) : null;
-  const [zodiacOpen, setZodiacOpen] = useState(false);
-  const [starOpen, setStarOpen] = useState(false);
+  const [pick, setPick] = useState<'zodiac' | 'star' | null>(null);
   const vibe = todayVibe(todayKey());
+  const lucky = luckyZodiacsToday(todayKey());
+  const myLucky = !!(zodiac && lucky.some((z) => z.id === zodiac.id));
 
   return (
     <AppLayout>
@@ -82,111 +75,60 @@ export function HomeScreen({
             </div>
             <h1 className="h1">{HOME.title}</h1>
           </div>
-          <Mascot size={84} score={streak >= 3 ? 90 : 80} />
+          <Mascot size={78} score={streak >= 3 ? 90 : 80} />
         </div>
-        <p className="home-hero__sub">
-          {greeting()}
-          <br />
-          오늘 뭘 하면 좋고, 뭘 피해야 할지.
-          <br />
-          쪽지 한 장이면 돼요.
-        </p>
+        <p className="home-hero__sub">{greeting()}</p>
       </div>
 
-      {/* 인트로 티저 — "오늘 운 좋은 띠"로 궁금증 유발(내 띠 있나 보러 들어오게) */}
+      {/* ★ 클릭해서 시작 — 물음표 미스터리 히어로 (메인 focal) */}
+      <button type="button" className="draw-hero" onClick={() => onSelect('tomorrow')}>
+        <span className="draw-hero__vibe">✨ 오늘의 기운 · {vibe.emoji} {vibe.word}</span>
+        <div className="draw-hero__marks" aria-hidden>
+          <span className="draw-hero__q">?</span>
+          <span className="draw-hero__q">?</span>
+          <span className="draw-hero__q">?</span>
+        </div>
+        <p className="draw-hero__title">오늘 나에게 온 쪽지, 뭐라고 적혀 있을까?</p>
+        <p className="draw-hero__sub">기분·띠·별자리 고르고 한 장 뽑으면, 오늘 뭐가 좋은지 알려줄게요</p>
+        <span className="draw-hero__cta">쪽지 뽑기 ›</span>
+      </button>
+
+      {/* 오늘 운 좋은 띠 — 궁금증 훅(내 띠 있나?) + 여기서 바로 내 띠 설정 */}
       <div className="lucky-today">
         <p className="lucky-today__title">🍀 오늘 운이 트인 띠</p>
         <div className="lucky-today__chips">
-          {luckyZodiacsToday(todayKey()).map((z) => {
-            const mine = zodiac?.id === z.id;
-            return (
-              <span key={z.id} className={mine ? 'lt-chip lt-chip--me' : 'lt-chip'}>
-                {z.emoji} {z.label}
-                {mine ? ' (나!)' : ''}
-              </span>
-            );
-          })}
+          {lucky.map((z) => (
+            <span key={z.id} className={zodiac?.id === z.id ? 'lt-chip lt-chip--me' : 'lt-chip'}>
+              {z.emoji} {z.label}
+              {zodiac?.id === z.id ? ' (나!)' : ''}
+            </span>
+          ))}
         </div>
-        <p className="lucky-today__cta">
-          {zodiac && luckyZodiacsToday(todayKey()).some((z) => z.id === zodiac.id)
-            ? '내 띠가 있네요! 오늘 뭐가 좋은지 쪽지로 확인해봐요'
-            : '내 띠는 오늘 어떨까? 쪽지 한 장 뽑아봐요'}
-        </p>
-      </div>
-
-      {/* 오늘의 기운 — 하루를 관통하는 키워드 (홈→결과로 이어짐) */}
-      <div className="daily-line">
-        <span className="daily-line__label">✨ 오늘의 기운</span>
-        <p className="daily-line__vibe">{vibe.emoji} {vibe.word}</p>
-        <p className="daily-line__text">{vibe.line}</p>
         {zodiac ? (
-          <p className="daily-line__zodiac">
-            <b>
-              {zodiac.emoji} {zodiac.label}의 오늘
-            </b>
-            <br />
-            {zodiacLine(todayKey(), zodiac.id)}
+          <p className="lucky-today__cta">
+            {myLucky ? '내 띠가 있네요! 오늘 뭐가 좋은지 쪽지로 확인해봐요' : '내 띠는 오늘 어떨까? 쪽지 한 장 뽑아봐요'}
           </p>
         ) : (
           <button
             type="button"
-            className="daily-line__zpick"
-            onClick={() => setZodiacOpen((v) => !v)}
+            className="lucky-today__set"
+            onClick={() => setPick((v) => (v === 'zodiac' ? null : 'zodiac'))}
           >
-            🐾 내 띠 고르면 띠별 한 줄도 나와요 {zodiacOpen ? '▴' : '▾'}
+            내 띠 고르면 오늘 운 좋은지 바로 알려줘요 {pick === 'zodiac' ? '▴' : '▾'}
           </button>
         )}
-        {!zodiac && zodiacOpen ? (
-          <div className="zodiac-grid">
+        {!zodiac && pick === 'zodiac' ? (
+          <div className="zodiac-grid zodiac-grid--full me-grid">
             {ZODIACS.map((z) => (
-              <button
-                key={z.id}
-                type="button"
-                className="zodiac-chip"
-                onClick={() => onZodiac(z.id)}
-              >
+              <button key={z.id} type="button" className="zodiac-chip" onClick={() => onZodiac(z.id)}>
                 {z.emoji} {z.label}
               </button>
             ))}
           </div>
         ) : null}
-
-        {starSign ? (
-          <p className="daily-line__zodiac">
-            <b>
-              {starSign.emoji} {starSign.label}의 오늘
-            </b>
-            <br />
-            {starLine(todayKey(), starSign.id)}
-          </p>
-        ) : (
-          <button
-            type="button"
-            className="daily-line__zpick"
-            onClick={() => setStarOpen((v) => !v)}
-          >
-            ⭐ 내 별자리 고르면 별자리 한 줄도 나와요 {starOpen ? '▴' : '▾'}
-          </button>
-        )}
-        {!starSign && starOpen ? (
-          <div className="zodiac-grid">
-            {STAR_SIGNS.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                className="zodiac-chip"
-                onClick={() => onStarSign(s.id)}
-              >
-                {s.emoji} {s.label}
-              </button>
-            ))}
-          </div>
-        ) : null}
-
-        <span className="daily-line__hint">쪽지를 뽑으면, 이 기운을 어떻게 쓸지 알려줄게요</span>
       </div>
 
-      {/* 친구 궁합 — 로그인 없이 되는 바이럴 훅 */}
+      {/* 친구 궁합 — 바이럴 훅 */}
       <button type="button" className="compat-banner" onClick={onCompat}>
         <span className="compat-banner__icon" aria-hidden>💗</span>
         <span className="compat-banner__body">
@@ -229,14 +171,14 @@ export function HomeScreen({
         </div>
       ) : null}
 
-      <p className="menu-heading">오늘은 뭐가 제일 궁금해요?</p>
+      {/* 특정 주제로 보고 싶다면 (보조) */}
+      <p className="menu-heading">특정 주제로 볼래요?</p>
       <div className="menu-list">
-        {FORTUNE_TYPES.map((meta) => (
+        {FORTUNE_TYPES.filter((m) => m.key !== 'tomorrow').map((meta) => (
           <FortuneTypeButton key={meta.key} meta={meta} onClick={() => onSelect(meta.key)} />
         ))}
       </div>
 
-      {/* 어제의 쪽지 돌아보기 */}
       {yesterdayRecord && yNote ? (
         <div className="recap-card">
           <span className="recap-card__icon" aria-hidden>
