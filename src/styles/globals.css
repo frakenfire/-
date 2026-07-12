@@ -36,6 +36,18 @@ button {
   background: none;
 }
 
+/* 키보드 포커스 링 — 접근성 필수(마우스/터치엔 안 뜨고 키보드 탐색 시에만) */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 3px;
+}
+
 /* ── AppLayout ── 375px 기준, 360~430px 대응 */
 .app {
   position: relative;
@@ -242,11 +254,11 @@ button {
   text-align: left;
   transition:
     border-color 0.12s ease,
-    transform 0.06s ease;
+    transform 0.2s var(--ease-spring);
 }
 
 .menu-row:active {
-  transform: scale(0.99);
+  transform: scale(0.975);
 }
 
 .menu-row--selected {
@@ -1597,6 +1609,16 @@ button {
   cursor: pointer;
   text-align: left;
   margin-bottom: var(--space-4);
+  transition: transform 0.2s var(--ease-spring);
+}
+.compat-banner:active {
+  transform: scale(0.985);
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-row:active,
+  .compat-banner:active {
+    transform: none;
+  }
 }
 .compat-banner__icon {
   font-size: 26px;
@@ -2486,10 +2508,14 @@ button {
   background:
     radial-gradient(130% 80% at 100% 0%, #4a93ff 0%, transparent 55%),
     linear-gradient(160deg, #3182f6 0%, #1b64da 100%);
-  box-shadow: var(--shadow-cta);
+  /* 상단 안쪽 하이라이트(빛 반사) + 은은한 컬러 섀도우 → 기계 가공된 카드 질감 */
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 8px 22px rgba(27, 100, 218, 0.28);
+  transition: transform 0.24s var(--ease-spring);
 }
 .today-hook:active {
-  transform: scale(0.985);
+  transform: scale(0.975);
 }
 .today-hook__kw {
   display: inline-block;
@@ -2511,8 +2537,10 @@ button {
   font-size: 18px;
   font-weight: 800;
   line-height: 1.42;
+  letter-spacing: -0.015em;
   color: #fff;
   word-break: keep-all;
+  text-wrap: balance;
 }
 .today-hook__reveal {
   display: grid;
@@ -2553,18 +2581,39 @@ button {
   color: rgba(255, 255, 255, 0.86);
 }
 .today-hook__cta {
-  display: block;
-  text-align: center;
-  padding: 13px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 18px;
   font-size: 15px;
   font-weight: 800;
   color: var(--brand-strong);
   background: #fff;
   border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 4px 12px rgba(27, 100, 218, 0.16);
+}
+/* button-in-button — 화살표를 자체 원형 칩에 담아 프리미엄 디테일 (taste) */
+.today-hook__cta-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  font-size: 15px;
+  font-style: normal;
+  line-height: 1;
+  color: #fff;
+  background: var(--brand);
+  border-radius: 999px;
+  transition: transform 0.24s var(--ease-spring);
+}
+.today-hook:active .today-hook__cta-arrow {
+  transform: translateX(2px);
 }
 @media (prefers-reduced-motion: reduce) {
-  .today-hook:active {
+  .today-hook:active,
+  .today-hook:active .today-hook__cta-arrow {
     transform: none;
   }
 }

@@ -108,7 +108,10 @@ export function HomeScreen({
           </div>
         </div>
 
-        <span className="today-hook__cta">쪽지 뽑고 오늘 전부 확인하기 ›</span>
+        <span className="today-hook__cta">
+          쪽지 뽑고 오늘 전부 확인하기
+          <i className="today-hook__cta-arrow" aria-hidden>›</i>
+        </span>
       </button>
 
       {/* 오늘 운 좋은 띠 — 궁금증 훅(내 띠 있나?) + 여기서 바로 내 띠 설정 */}
