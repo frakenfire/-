@@ -351,6 +351,9 @@ export default function App() {
         total: snapshot.luck.total,
         grade: snapshot.luck.grade,
         rarity: snapshot.rarity,
+        saju: snapshot.saju
+          ? { iljin: snapshot.saju.iljin.kor, rel: snapshot.saju.relationKo, tone: snapshot.saju.toneWord }
+          : null,
       });
       logEvent('save_card', { ok });
       flash(ok ? '결과 카드 저장 완료! 📸 스토리에 올려봐요' : '앗, 저장을 못 했어요');

@@ -13,6 +13,7 @@ type SaveInput = {
   total: number;
   grade: string;
   rarity: Rarity;
+  saju?: { iljin: string; rel: string; tone: string } | null; // 일진·관계·기운 (띠 설정 시)
 };
 
 // 등급별 카드 트리트먼트
@@ -239,6 +240,19 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
     ctx.textAlign = 'left';
     lines.forEach((ln, i) => ctx.fillText(ln, boxX + 30, boxY + 108 + i * 44));
     ctx.textAlign = 'center';
+
+    // 오늘의 사주 한 줄 (띠 설정 시) — 일진·관계·기운을 작은 칩으로
+    if (input.saju) {
+      const sy = boxY + boxH + 62;
+      const label = `일진 ${input.saju.iljin}일 · ${input.saju.rel} · 기운 ${input.saju.tone}`;
+      ctx.font = 'bold 22px ' + CARD_FONT;
+      const tw = Math.min(boxW, ctx.measureText(label).width + 44);
+      ctx.fillStyle = '#eef3ff';
+      roundRect(ctx, cx - tw / 2, sy - 32, tw, 48, 24);
+      ctx.fill();
+      ctx.fillStyle = '#1b64da';
+      ctx.fillText(label, cx, sy);
+    }
 
     // 워터마크
     ctx.fillStyle = '#8b95a1';

@@ -134,11 +134,22 @@ export async function saveCompatCard(input: CompatCardInput): Promise<boolean> {
     ctx.fillStyle = style.accent;
     ctx.fillText(result.archetype, cx, badgeY + 58);
 
+    // 오행 상성 (띠 궁합만) — 목/화/토/금/수 + 상생·상극·비화
+    if (result.elements) {
+      ctx.fillStyle = '#4e5968';
+      ctx.font = `bold 36px ${CARD_FONT}`;
+      ctx.fillText(
+        `${result.elements.aKo} × ${result.elements.bKo} · ${result.elements.flowKo}`,
+        cx,
+        badgeY + 150,
+      );
+    }
+
     // 헤드라인
     ctx.fillStyle = '#191f28';
     ctx.font = `bold 52px ${CARD_FONT}`;
     const hlLines = wrapText(ctx, result.headline, W - m * 2 - 120);
-    let hy = badgeY + 190;
+    let hy = badgeY + (result.elements ? 240 : 190);
     hlLines.forEach((ln) => {
       ctx.fillText(ln, cx, hy);
       hy += 68;
