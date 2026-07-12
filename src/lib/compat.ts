@@ -1,5 +1,16 @@
 import { hashSeed, seededRandom } from './dateSeed';
 import type { ZodiacId } from '../data/zodiac';
+import {
+  zodiacRelation,
+  pairElementFlow,
+  elementOfZodiac,
+  PAIR_FLOW_KO,
+  ELEMENT_KO,
+  ELEMENT_EMOJI,
+  type BranchRelation,
+  type PairElementFlow,
+  type Element,
+} from './saju';
 
 // 오늘의 친구 궁합 — 로그인 없이 되는 바이럴 훅.
 // 내 띠 + 상대 띠 + 날짜로 결정적 점수/코멘트. 순서 무관(정렬)로 같은 쌍은 같은 결과.
@@ -23,53 +34,31 @@ export type CompatResult = {
   good: string; // 잘 맞는 점
   caution: string; // 오늘 조심할 점
   tip: string; // 오늘의 팁
+  // 두 사람의 오행 상성(상생/상극/비화) — 띠 궁합에만 존재(별자리 궁합은 없음)
+  elements?: {
+    a: Element;
+    b: Element;
+    flow: PairElementFlow;
+    flowKo: string;
+    aKo: string;
+    bKo: string;
+    aEmoji: string;
+    bEmoji: string;
+  };
 };
 
-// 12지지 순서 그대로(자축인묘진사오미신유술해 = 쥐소범토끼용뱀말양원숭이닭개돼지).
+// 지지 관계 태그 — 사주 엔진(saju.zodiacRelation)을 단일 출처로 사용해 매핑만 한다.
+// (예전엔 삼합·육합·상충·원진 표를 여기에 중복 정의했으나 saju.ts 로 일원화)
 type Tag = 'trine' | 'union' | 'clash' | 'harm' | 'same' | 'neutral';
 
-const TRINE_GROUPS: ZodiacId[][] = [
-  ['monkey', 'rat', 'dragon'], // 신자진(申子辰) 삼합
-  ['snake', 'rooster', 'ox'], // 사유축(巳酉丑) 삼합
-  ['pig', 'rabbit', 'sheep'], // 해묘미(亥卯未) 삼합
-  ['tiger', 'horse', 'dog'], // 인오술(寅午戌) 삼합
-];
-const UNION_PAIRS: [ZodiacId, ZodiacId][] = [
-  ['rat', 'ox'],
-  ['tiger', 'pig'],
-  ['rabbit', 'dog'],
-  ['dragon', 'rooster'],
-  ['snake', 'monkey'],
-  ['horse', 'sheep'],
-]; // 육합
-const CLASH_PAIRS: [ZodiacId, ZodiacId][] = [
-  ['rat', 'horse'],
-  ['ox', 'sheep'],
-  ['tiger', 'monkey'],
-  ['rabbit', 'rooster'],
-  ['dragon', 'dog'],
-  ['snake', 'pig'],
-]; // 상충(정반대 띠)
-const HARM_PAIRS: [ZodiacId, ZodiacId][] = [
-  ['rat', 'sheep'],
-  ['ox', 'horse'],
-  ['tiger', 'rooster'],
-  ['rabbit', 'monkey'],
-  ['dragon', 'pig'],
-  ['snake', 'dog'],
-]; // 원진
-
-function hasPair(pairs: [ZodiacId, ZodiacId][], a: ZodiacId, b: ZodiacId): boolean {
-  return pairs.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
+function tagOf(a: ZodiacId, b: ZodiacId): Tag {
+  const rel: BranchRelation = zodiacRelation(a, b);
+  return rel === 'self' ? 'same' : rel === 'none' ? 'neutral' : rel;
 }
 
-function tagOf(a: ZodiacId, b: ZodiacId): Tag {
-  if (a === b) return 'same';
-  if (TRINE_GROUPS.some((g) => g.includes(a) && g.includes(b))) return 'trine';
-  if (hasPair(UNION_PAIRS, a, b)) return 'union';
-  if (hasPair(CLASH_PAIRS, a, b)) return 'clash';
-  if (hasPair(HARM_PAIRS, a, b)) return 'harm';
-  return 'neutral';
+// 오행 상성 → 궁합 점수 미세 보정(상생 +3 / 비화 +1 / 상극 -3). 로직 일관성.
+function elementBias(flow: PairElementFlow): number {
+  return { generate: 3, same: 1, control: -3 }[flow];
 }
 
 export function vibeOf(tag: Tag): CompatVibe {
@@ -220,9 +209,12 @@ export function computeCompat(dateKey: string, a: ZodiacId, b: ZodiacId): Compat
   const vibe = vibeOf(tag);
   const [lo, hi] = SCORE_RANGE[vibe];
 
+  // 오행 상성으로 카테고리 점수를 살짝 보정(같은 쌍은 여전히 결정적).
+  const flow = pairElementFlow(a, b);
+  const bias = elementBias(flow);
   const categories: CompatCategory[] = CATEGORY_META.map((c) => ({
     ...c,
-    score: Math.round(lo + r() * (hi - lo)),
+    score: Math.max(55, Math.min(99, Math.round(lo + r() * (hi - lo)) + bias)),
   }));
   const score = Math.round(categories.reduce((s, c) => s + c.score, 0) / categories.length);
   const band: CompatBand = score >= 85 ? 'best' : score >= 70 ? 'good' : 'ok';
@@ -239,5 +231,15 @@ export function computeCompat(dateKey: string, a: ZodiacId, b: ZodiacId): Compat
     good: pickR(GOOD, r),
     caution: pickR(CAUTION, r),
     tip: pickR(TIP, r),
+    elements: {
+      a: elementOfZodiac(a),
+      b: elementOfZodiac(b),
+      flow,
+      flowKo: PAIR_FLOW_KO[flow],
+      aKo: ELEMENT_KO[elementOfZodiac(a)],
+      bKo: ELEMENT_KO[elementOfZodiac(b)],
+      aEmoji: ELEMENT_EMOJI[elementOfZodiac(a)],
+      bEmoji: ELEMENT_EMOJI[elementOfZodiac(b)],
+    },
   };
 }

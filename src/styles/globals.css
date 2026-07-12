@@ -1859,6 +1859,45 @@ a:focus-visible {
   word-break: keep-all;
   text-align: left;
 }
+/* 오행 상성 줄 — 두 사람의 오행(목화토금수)과 상생/상극/비화 */
+.compat-ohaeng {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 0 var(--space-3);
+}
+.compat-ohaeng__pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--gray-800);
+}
+.compat-ohaeng__pair i {
+  font-style: normal;
+  color: var(--gray-400);
+  margin: 0 2px;
+}
+.compat-ohaeng__flow {
+  font-size: 12.5px;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 4px 12px;
+}
+.compat-ohaeng__flow--generate {
+  color: #0b7856;
+  background: #d5f2e4;
+}
+.compat-ohaeng__flow--same {
+  color: #1b64da;
+  background: #e8f3ff;
+}
+.compat-ohaeng__flow--control {
+  color: #9c5d00;
+  background: #ffefd0;
+}
 .compat-result__lines {
   display: flex;
   flex-direction: column;

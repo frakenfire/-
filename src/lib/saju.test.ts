@@ -1,6 +1,12 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { iljinOf, sajuToday } from './saju.ts';
+import {
+  iljinOf,
+  sajuToday,
+  zodiacRelation,
+  pairElementFlow,
+  elementOfZodiac,
+} from './saju.ts';
 
 // 일진 정확도 — 표준 만세력과 일치하는 앵커로 검증
 test('일진(60갑자) 계산이 표준 만세력과 일치한다', () => {
@@ -37,4 +43,22 @@ test('상충(정반대 띠)은 조심 톤 쪽으로 기운다', () => {
   // 비화(같은 돼지)는 상충보다 확실히 높은 톤
   const pig = sajuToday('2026-07-12', 'pig');
   assert.equal(pig.relation, 'self');
+});
+
+// ── 궁합 일원화: 지지 관계·오행이 사주 엔진 단일 출처를 따른다 ──
+test('zodiacRelation 이 전통 지지 관계와 일치한다', () => {
+  assert.equal(zodiacRelation('tiger', 'horse'), 'trine'); // 인오술 삼합
+  assert.equal(zodiacRelation('rat', 'ox'), 'union'); // 자축 육합
+  assert.equal(zodiacRelation('rat', 'horse'), 'clash'); // 자오 상충
+  assert.equal(zodiacRelation('rat', 'sheep'), 'harm'); // 원진
+  assert.equal(zodiacRelation('tiger', 'tiger'), 'self'); // 비화
+});
+
+test('띠 오행과 오행 상성(상생/상극/비화)이 명리와 맞는다', () => {
+  assert.equal(elementOfZodiac('tiger'), 'wood'); // 寅=목
+  assert.equal(elementOfZodiac('snake'), 'fire'); // 巳=화
+  assert.equal(elementOfZodiac('rat'), 'water'); // 子=수
+  assert.equal(pairElementFlow('tiger', 'tiger'), 'same'); // 목-목 비화
+  assert.equal(pairElementFlow('tiger', 'snake'), 'generate'); // 목생화 상생
+  assert.equal(pairElementFlow('tiger', 'ox'), 'control'); // 목극토 상극(丑=토)
 });

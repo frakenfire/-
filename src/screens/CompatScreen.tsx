@@ -330,6 +330,19 @@ export function CompatScreen({
 
             <p className="compat-result__reason">🔮 {result.reason}</p>
 
+            {result.elements ? (
+              <div className="compat-ohaeng">
+                <span className="compat-ohaeng__pair">
+                  {result.elements.aEmoji} {result.elements.aKo}
+                  <i>×</i>
+                  {result.elements.bEmoji} {result.elements.bKo}
+                </span>
+                <span className={`compat-ohaeng__flow compat-ohaeng__flow--${result.elements.flow}`}>
+                  {result.elements.flowKo}
+                </span>
+              </div>
+            ) : null}
+
             <div className="compat-result__lines">
               <div className="compat-line">
                 <span className="compat-line__k">잘 맞는 점</span>

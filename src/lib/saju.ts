@@ -125,6 +125,16 @@ function branchRelation(a: number, b: number): BranchRelation {
   return 'none';
 }
 
+// 두 띠의 지지 관계 — 궁합 등에서 재사용하는 단일 출처(single source of truth).
+export function zodiacRelation(a: ZodiacId, b: ZodiacId): BranchRelation {
+  return branchRelation(BRANCH_OF_ANIMAL[a], BRANCH_OF_ANIMAL[b]);
+}
+
+// 띠의 오행
+export function elementOfZodiac(id: ZodiacId): Element {
+  return BRANCHES[BRANCH_OF_ANIMAL[id]].el;
+}
+
 // ── 오행 생극(生剋) ──
 // 상생: 목→화→토→금→수→목 / 상극: 목→토→수→화→금→목
 const GEN_NEXT: Record<Element, Element> = {
@@ -156,6 +166,21 @@ function elementFlow(dayEl: Element, myEl: Element): ElementFlow {
   if (CTRL_NEXT[dayEl] === myEl) return 'day_controls_me';
   if (CTRL_NEXT[myEl] === dayEl) return 'i_control_day';
   return 'same';
+}
+
+// 두 오행의 상성(궁합용, 대칭) — 상생 / 상극 / 비화. 5행은 서로 항상 이 셋 중 하나.
+export type PairElementFlow = 'generate' | 'control' | 'same';
+export const PAIR_FLOW_KO: Record<PairElementFlow, string> = {
+  generate: '상생',
+  control: '상극',
+  same: '비화',
+};
+export function pairElementFlow(a: ZodiacId, b: ZodiacId): PairElementFlow {
+  const ea = elementOfZodiac(a);
+  const eb = elementOfZodiac(b);
+  if (ea === eb) return 'same';
+  if (GEN_NEXT[ea] === eb || GEN_NEXT[eb] === ea) return 'generate';
+  return 'control';
 }
 
 export type SajuTone = 'great' | 'good' | 'steady' | 'caution';
