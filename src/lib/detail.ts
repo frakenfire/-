@@ -1,5 +1,6 @@
 import type { CategoryScore, LuckSet } from './luck';
-import { ZODIACS, type Zodiac } from '../data/zodiac';
+import { ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac';
+import { zodiacRelation } from './saju';
 import { pickFresh } from './pickFresh';
 import {
   BAND_TAG,
@@ -29,7 +30,7 @@ export type DetailReport = {
   charm: string; // 오늘의 부적 문장
 };
 
-export function computeDetail(seed: number, luck: LuckSet): DetailReport {
+export function computeDetail(seed: number, luck: LuckSet, zodiac?: ZodiacId | null): DetailReport {
   const ranked: RankedCat[] = luck.categories
     .map((c: CategoryScore) => {
       const b = band(c.score);
@@ -47,10 +48,32 @@ export function computeDetail(seed: number, luck: LuckSet): DetailReport {
     .replace('{watch}', watchOut.label)
     .replace('{gap}', String(gap));
 
-  // 오늘의 궁합 — 잘 맞는 띠 / 조심할 띠 (서로 다르게), 근거 한 줄씩.
-  const goodIdx = Math.abs(Math.trunc(seed / 5)) % ZODIACS.length;
-  let cautionIdx = Math.abs(Math.trunc(seed / 37) + 6) % ZODIACS.length;
-  if (cautionIdx === goodIdx) cautionIdx = (cautionIdx + 1) % ZODIACS.length;
+  // 오늘의 궁합 — 잘 맞는 띠 / 조심할 띠.
+  // 내 띠를 알면 사주 지지 관계(삼합·육합 = 잘 맞음 / 상충·원진 = 조심)로 골라
+  // 궁합 화면과 결과가 어긋나지 않게 한다. 모르면 seed 기반으로 대체.
+  let goodIdx: number;
+  let cautionIdx: number;
+  if (zodiac) {
+    const good = ZODIACS.filter((z) => {
+      const rel = zodiacRelation(zodiac, z.id as ZodiacId);
+      return rel === 'trine' || rel === 'union';
+    });
+    const caution = ZODIACS.filter((z) => {
+      const rel = zodiacRelation(zodiac, z.id as ZodiacId);
+      return rel === 'clash' || rel === 'harm';
+    });
+    goodIdx = ZODIACS.indexOf(
+      good.length ? good[Math.abs(Math.trunc(seed / 5)) % good.length] : ZODIACS[0],
+    );
+    cautionIdx = ZODIACS.indexOf(
+      caution.length ? caution[Math.abs(Math.trunc(seed / 37)) % caution.length] : ZODIACS[1],
+    );
+    if (cautionIdx === goodIdx) cautionIdx = (cautionIdx + 1) % ZODIACS.length;
+  } else {
+    goodIdx = Math.abs(Math.trunc(seed / 5)) % ZODIACS.length;
+    cautionIdx = Math.abs(Math.trunc(seed / 37) + 6) % ZODIACS.length;
+    if (cautionIdx === goodIdx) cautionIdx = (cautionIdx + 1) % ZODIACS.length;
+  }
   const goodReason = pickFresh(MATCH_GOOD_REASONS, seed / 41, 'detail:matchGood');
   const cautionReason = pickFresh(MATCH_CAUTION_REASONS, seed / 43, 'detail:matchCaution');
 

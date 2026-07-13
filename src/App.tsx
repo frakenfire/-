@@ -202,7 +202,7 @@ export default function App() {
     if (!z) return;
     const saved = saveMyZodiac(id);
     setZodiac(z);
-    flash(saved ? `${z.emoji} ${z.label}의 한 줄이 매일 홈에 떠요` : '앗, 저장을 못 했어요');
+    flash(saved ? `${z.emoji} ${z.label} 저장! 오늘 일진이랑 얼마나 맞는지 홈에서 봐요` : '앗, 저장을 못 했어요');
   }
 
   function flash(msg: string) {

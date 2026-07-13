@@ -63,7 +63,7 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   // 오늘 일진×내 띠 사주 — 띠가 있으면 총운을 살짝 보정(로직 일관성)하고 결과에 담는다.
   const saju = zodiac && dateKey ? sajuToday(dateKey, zodiac) : null;
   const luck = computeLuck(seed, saju ? sajuBiasFromTone(saju.tone) : 0);
-  const detail = computeDetail(seed, luck);
+  const detail = computeDetail(seed, luck, zodiac);
   const rarity = computeRarity(seed);
   const letter = composeLetter({ mood, variant, seed });
 
