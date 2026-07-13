@@ -14,6 +14,12 @@ export const NOTES: Note[] = [
   { id: 'smallWin', name: '작은 성공', keyword: '성취', icon: '🎯', color: 'softGreen' },
   { id: 'light', name: '홀가분함', keyword: '여유', icon: '🎈', color: 'cream' },
   { id: 'sticker', name: '행운 스티커', keyword: '행운', icon: '⭐', color: 'softYellow' },
+  { id: 'spark', name: '반짝 아이디어', keyword: '영감', icon: '💡', color: 'softYellow' },
+  { id: 'rest', name: '푹 쉬어가기', keyword: '휴식', icon: '🌿', color: 'softGreen' },
+  { id: 'courage', name: '용기 한 스푼', keyword: '용기', icon: '🔥', color: 'softPink' },
+  { id: 'reunion', name: '반가운 재회', keyword: '재회', icon: '🍀', color: 'softPink' },
+  { id: 'focus', name: '집중의 시간', keyword: '몰입', icon: '🎧', color: 'cream' },
+  { id: 'gift', name: '뜻밖의 선물', keyword: '보상', icon: '🎁', color: 'softYellow' },
 ];
 
 export const NOTE_COLOR_CLASS: Record<NoteColor, string> = {

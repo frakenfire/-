@@ -17,6 +17,12 @@ export const NOTE_LEAD: Record<string, string> = {
   smallWin: '작은 성공 하나가 하루를 살리는 법이죠.',
   light: '마음을 조금 가볍게 두면 운이 붙어요.',
   sticker: '오늘은 행운 스티커 한 장 붙은 날이에요.',
+  spark: '문득 떠오른 생각 하나가 길을 여는 날이에요.',
+  rest: '오늘은 채우기보다 비우는 게 이득인 날이에요.',
+  courage: '망설이던 일에 한 걸음 내딛기 좋은 날이에요.',
+  reunion: '잊고 지내던 인연에서 반가운 소식이 와요.',
+  focus: '딱 하나에 몰입하면 성과가 붙는 날이에요.',
+  gift: '작은 보상 하나가 기분 좋게 굴러들어오는 날이에요.',
 };
 
 export type Variant = {
