@@ -37,18 +37,18 @@ export function DetailResultScreen({
       </div>
 
       <div className="card fade-in">
-        <p className="section-title"><span className="section-title__no">01</span>항목별 운세 순위</p>
+        <p className="section-title">📊 항목별 운세 순위</p>
         <CategoryScores ranked={detail.ranked} />
       </div>
 
       <div className="card fade-in">
-        <p className="section-title"><span className="section-title__no">02</span>행운 세트</p>
+        <p className="section-title">🍀 행운 세트</p>
         <LuckySetGrid luck={luck} mission={detail.mission} numberUse={detail.numberUse} />
       </div>
 
       {/* 오늘 잘 맞는 띠 — 상세 리포트의 자동 궁합(친구 궁합과 구분) */}
       <div className="card fade-in">
-        <p className="section-title"><span className="section-title__no">03</span>오늘 잘 맞는 띠</p>
+        <p className="section-title">🤝 오늘 잘 맞는 띠</p>
         <div className="match">
           <div className="match__cell match__cell--good">
             <span className="match__badge">잘 맞아요</span>

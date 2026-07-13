@@ -1222,7 +1222,7 @@ a:focus-visible {
   word-break: keep-all;
 }
 
-/* ═══ 심층 리포트 (상세화면) ═══ */
+/* ── 심층 리포트 (상세화면) ── */
 .report-hero {
   background: linear-gradient(135deg, #eef5ff, #f7fbff);
   border-radius: var(--radius-xl);
@@ -1262,7 +1262,6 @@ a:focus-visible {
   position: relative;
 }
 
-/* 섹션 제목 앞 번호 — 리포트 목차 느낌 */
 .section-title {
   display: flex;
   align-items: center;
@@ -1271,15 +1270,6 @@ a:focus-visible {
   font-weight: 800;
   color: var(--gray-900);
   margin: var(--space-2) 0 var(--space-3);
-}
-.section-title__no {
-  font-size: 11px;
-  font-weight: 800;
-  color: var(--brand-strong);
-  background: var(--brand-soft);
-  padding: 2px 7px;
-  border-radius: 6px;
-  letter-spacing: 0.02em;
 }
 
 /* 항목별 운세 순위 — 1위는 인사이트 카드로 압도, 2~4위는 상대 비교 리스트 */
@@ -1562,7 +1552,7 @@ a:focus-visible {
   opacity: 0.9;
 }
 
-/* ═══ 상위 % 자랑 배지 ═══ */
+/* ── 상위 % 자랑 배지 ── */
 .brag {
   display: inline-flex;
   align-items: baseline;
@@ -1596,7 +1586,7 @@ a:focus-visible {
   color: var(--gray-900);
 }
 
-/* ═══ 친구 궁합 배너 (홈·결과) ═══ */
+/* ── 친구 궁합 배너 (홈·결과) ── */
 .compat-banner {
   width: 100%;
   display: flex;
@@ -1648,7 +1638,7 @@ a:focus-visible {
   color: #b02458;
 }
 
-/* ═══ 친구 궁합 화면 ═══ */
+/* ── 친구 궁합 화면 ── */
 /* 띠/별자리 모드 전환 탭 */
 .seg-tabs {
   display: flex;
