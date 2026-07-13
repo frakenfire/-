@@ -63,6 +63,9 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   // 오늘 일진×내 띠 사주 — 띠가 있으면 총운을 살짝 보정(로직 일관성)하고 결과에 담는다.
   const saju = zodiac && dateKey ? sajuToday(dateKey, zodiac) : null;
   const luck = computeLuck(seed, saju ? sajuBiasFromTone(saju.tone) : 0);
+  // 행운 색을 사주 개운 컬러로 연결 — 띠를 알면 색이 랜덤이 아니라
+  // '내 오행을 생해주는 오행(인성)'의 오방색에서 나온다. 매일의 색에 근거가 생긴다.
+  if (saju) luck.color = saju.luckyColor;
   const detail = computeDetail(seed, luck, zodiac);
   const rarity = computeRarity(seed);
   const letter = composeLetter({ mood, variant, seed });

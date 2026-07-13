@@ -54,6 +54,19 @@ test('zodiacRelation 이 전통 지지 관계와 일치한다', () => {
   assert.equal(zodiacRelation('tiger', 'tiger'), 'self'); // 비화
 });
 
+test('개운 오행·컬러가 명리(나를 생해주는 오행)와 맞는다', () => {
+  // 개띠(戌=토): 토를 생하는 건 화(火生土) → 화 계열 컬러(분홍/살구)
+  const dog = sajuToday('2026-07-13', 'dog');
+  assert.equal(dog.boostElement, 'fire');
+  assert.ok(['분홍색', '살구색'].includes(dog.luckyColor.name));
+  // 범띠(寅=목): 목을 생하는 건 수(水生木) → 수 계열 컬러(파랑/남색)
+  const tiger = sajuToday('2026-07-13', 'tiger');
+  assert.equal(tiger.boostElement, 'water');
+  assert.ok(['파란색', '남색'].includes(tiger.luckyColor.name));
+  // 같은 날 같은 띠는 항상 같은 컬러(결정적)
+  assert.deepEqual(dog.luckyColor, sajuToday('2026-07-13', 'dog').luckyColor);
+});
+
 test('띠 오행과 오행 상성(상생/상극/비화)이 명리와 맞는다', () => {
   assert.equal(elementOfZodiac('tiger'), 'wood'); // 寅=목
   assert.equal(elementOfZodiac('snake'), 'fire'); // 巳=화

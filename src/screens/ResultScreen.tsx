@@ -76,7 +76,9 @@ export function ResultScreen({
           <span className={`rarity-badge rarity-badge--${rarity.tier}`}>
             {rarity.emoji} {rarity.label}
           </span>
-          {!isMonth && (
+          {/* 기운 칩 — 띠가 있으면 아래 일진 스트립이 사주 기운을 보여주므로,
+              날짜 기운(dayVibe)은 띠 미설정 사용자에게만 (기운 표기 이원화 방지) */}
+          {!isMonth && !result.saju && (
             <span className="chip chip--vibe">{vibe.emoji} 오늘의 기운 · {vibe.word}</span>
           )}
         </div>
@@ -137,33 +139,32 @@ export function ResultScreen({
         </div>
       </div>
 
-      {/* 오늘의 사주 한 컷 — 일진×내 띠 관계로 오늘 기운을 사주식으로 (띠 설정 시) */}
+      {/* 오늘의 사주 — 일진 도장(스탬프) 스트립. 행운 보고서 그리드와 다른 시각 언어로,
+          일진×내 띠 관계·기운·개운 컬러(행운 색의 근거)를 한 줄 흐름으로 보여준다 */}
       {result.saju ? (
-        <div className="saju-card fade-in">
-          <div className="saju-card__head">
-            <span className="saju-card__title">🔮 오늘의 사주 한 컷</span>
-            <span className="saju-card__iljin">
-              {result.saju.iljin.kor}({result.saju.iljin.hanja})일
-            </span>
-          </div>
-          <div className="saju-card__grid">
-            <div className="saju-card__cell">
-              <span className="saju-card__k">일진 × 내 띠</span>
-              <span className="saju-card__v saju-card__v--rel">{result.saju.relationKo}</span>
-            </div>
-            <div className="saju-card__cell">
-              <span className="saju-card__k">오늘 기운</span>
-              <span className="saju-card__v">{result.saju.toneWord}</span>
-            </div>
-            <div className="saju-card__cell">
-              <span className="saju-card__k">내 오행</span>
-              <span className="saju-card__v">
-                {ELEMENT_EMOJI[result.saju.myElement]} {ELEMENT_KO[result.saju.myElement]}
+        <div className="iljin fade-in">
+          <div className="iljin__row">
+            <span className="iljin__seal" aria-hidden>{result.saju.iljin.hanja}</span>
+            <div className="iljin__flow">
+              <span className="iljin__date">오늘의 일진 · {result.saju.iljin.kor}일</span>
+              <span className="iljin__rel">
+                내 띠와 <b>{result.saju.relationKo}</b> · {ELEMENT_EMOJI[result.saju.myElement]}
+                {ELEMENT_KO[result.saju.myElement]} 기운
               </span>
             </div>
+            <span className={`iljin__tone iljin__tone--${result.saju.tone}`}>
+              {result.saju.toneWord}
+            </span>
           </div>
-          <p className="saju-card__line">{result.saju.headline}</p>
-          <p className="saju-card__tip">💡 {result.saju.tip}</p>
+          <p className="iljin__line">{result.saju.headline}</p>
+          <div className="iljin__boost">
+            <span className="iljin__boost-color">
+              <i className="report__dot" style={{ background: result.saju.luckyColor.hex }} aria-hidden />
+              개운 컬러 <b>{result.saju.luckyColor.name}</b>
+              <small>({ELEMENT_KO[result.saju.boostElement]} 보충)</small>
+            </span>
+            <span className="iljin__boost-tip">💡 {result.saju.tip}</span>
+          </div>
         </div>
       ) : null}
 

@@ -100,11 +100,9 @@ export function HomeScreen({
             </p>
             <p className="today-hook__line">{saju.title}</p>
             <div className="today-hook__saju" aria-hidden>
-              <span className="saju-chip">
-                {zodiac.emoji}
-                {zodiac.label} × {iljin.kor}일
+              <span className="saju-chip saju-chip--rel">
+                내 띠와 {saju.relationKo}
               </span>
-              <span className="saju-chip saju-chip--rel">{saju.relationKo}</span>
               <span className="saju-chip">기운 {saju.toneWord}</span>
             </div>
             <p className="today-hook__hint">{saju.headline}</p>

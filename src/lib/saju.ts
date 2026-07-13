@@ -44,6 +44,31 @@ export const ELEMENT_EMOJI: Record<Element, string> = {
   water: '💧',
 };
 
+// 오행별 개운(開運) 컬러 — 전통 오방색을 토스 팔레트로 톤다운한 색들.
+// 목=청록 계열, 화=적·분홍 계열, 토=황·베이지 계열, 금=백·회 계열, 수=흑·청 계열.
+export const ELEMENT_COLORS: Record<Element, { name: string; hex: string }[]> = {
+  wood: [
+    { name: '초록색', hex: '#20b573' },
+    { name: '민트색', hex: '#2bb9a6' },
+  ],
+  fire: [
+    { name: '분홍색', hex: '#efa2ba' },
+    { name: '살구색', hex: '#f0a986' },
+  ],
+  earth: [
+    { name: '노란색', hex: '#f5c344' },
+    { name: '베이지색', hex: '#cdb89a' },
+  ],
+  metal: [
+    { name: '흰색', hex: '#eceff2' },
+    { name: '연회색', hex: '#c2c8cf' },
+  ],
+  water: [
+    { name: '파란색', hex: '#3182f6' },
+    { name: '남색', hex: '#3f5bbf' },
+  ],
+};
+
 // 천간 10 — 한자 / 한글 / 오행 / 음양
 const STEMS: { hanja: string; kor: string; el: Element }[] = [
   { hanja: '甲', kor: '갑', el: 'wood' },
@@ -150,6 +175,16 @@ const CTRL_NEXT: Record<Element, Element> = {
   water: 'fire',
   fire: 'metal',
   metal: 'wood',
+};
+
+// 나를 생(生)해주는 오행 — 명리의 인성(印星). 기운을 보충해주는 '개운 오행'으로 쓴다.
+// (수생목, 목생화, 화생토, 토생금, 금생수의 역방향)
+const GEN_PREV: Record<Element, Element> = {
+  wood: 'water',
+  fire: 'wood',
+  earth: 'fire',
+  metal: 'earth',
+  water: 'metal',
 };
 
 export type ElementFlow =
@@ -324,6 +359,10 @@ export type SajuToday = {
   toneWord: string;
   title: string;
   myElement: Element;
+  /** 개운 오행 — 내 오행을 생해주는 오행(인성). 오늘 기운을 보충하는 방향 */
+  boostElement: Element;
+  /** 개운 컬러 — 개운 오행의 오방색에서 seed로 선택. 행운 색의 사주 근거가 된다 */
+  luckyColor: { name: string; hex: string };
   headline: string;
   tip: string;
 };
@@ -357,6 +396,8 @@ export function sajuToday(dateKey: string, zodiacId: ZodiacId): SajuToday {
   const title = pickOne(TONE_TITLE[tone], seed >>> 5);
   const headline = pickOne(HEADLINE[tone], seed);
   const tip = pickOne(TIP[tone], seed >>> 3);
+  const boostElement = GEN_PREV[myEl];
+  const luckyColor = pickOne(ELEMENT_COLORS[boostElement], seed >>> 7);
 
   return {
     iljin: iljinOf(dateKey),
@@ -367,6 +408,8 @@ export function sajuToday(dateKey: string, zodiacId: ZodiacId): SajuToday {
     toneWord: TONE_WORD[tone],
     title,
     myElement: myEl,
+    boostElement,
+    luckyColor,
     headline,
     tip,
   };

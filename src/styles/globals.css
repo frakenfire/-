@@ -2457,12 +2457,12 @@ a:focus-visible {
   color: var(--gray-600);
   margin: var(--space-4) 0 0;
 }
-/* 결과 히어로의 개인화 한 줄 (파란 카드 위) */
+/* 결과 브리핑의 개인화 한 줄 — 흰 카드 위 (예전 파란 카드용 연한색은 안 보였음) */
 .briefing__persona {
   margin: 0 0 var(--space-2);
   font-size: 13.5px;
   font-weight: 700;
-  color: #eaf2ff;
+  color: var(--brand-strong);
   word-break: keep-all;
 }
 
@@ -2593,8 +2593,9 @@ a:focus-visible {
   color: #dbeafe;
   word-break: keep-all;
 }
-/* 결과 화면 '오늘의 사주 한 컷' 카드 — 흰 배경, 차분한 사주 요약 */
-.saju-card {
+/* 결과 화면 '오늘의 일진' 스탬프 스트립 — 행운 보고서(3칸 그리드)와 겹치지 않는
+   가로 흐름 레이아웃: 한자 도장 + 관계 설명 + 기운 배지 → 근거 한 줄 → 개운 포인트 */
+.iljin {
   padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-lg);
   background: linear-gradient(160deg, #f3f7ff, #fbfcff);
@@ -2602,62 +2603,103 @@ a:focus-visible {
   box-shadow: var(--shadow-card);
   margin-bottom: var(--space-4);
 }
-.saju-card__head {
+.iljin__row {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: var(--space-3);
+  align-items: center;
+  gap: var(--space-3);
 }
-.saju-card__title {
-  font-size: 14px;
+.iljin__seal {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  font-size: 21px;
   font-weight: 800;
-  color: var(--gray-900);
+  letter-spacing: 1px;
+  color: #a33a2e;
+  background: #fdf3f1;
+  border: 2px solid #d8968d;
+  border-radius: 10px;
 }
-.saju-card__iljin {
-  font-size: 12.5px;
-  font-weight: 800;
-  color: var(--brand-strong);
-}
-.saju-card__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: var(--space-3);
-}
-.saju-card__cell {
+.iljin__flow {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  padding: 10px 4px;
-  background: var(--white);
-  border: 1px solid var(--gray-200);
-  border-radius: 12px;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
 }
-.saju-card__k {
-  font-size: 11px;
+.iljin__date {
+  font-size: 12px;
   font-weight: 700;
   color: var(--gray-600);
 }
-.saju-card__v {
+.iljin__rel {
   font-size: 14px;
-  font-weight: 800;
-  color: var(--gray-900);
+  font-weight: 700;
+  color: var(--gray-800);
+  word-break: keep-all;
 }
-.saju-card__v--rel {
+.iljin__rel b {
   color: var(--brand-strong);
 }
-.saju-card__line {
-  margin: 0 0 6px;
+.iljin__tone {
+  flex: none;
+  font-size: 13px;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 6px 13px;
+}
+.iljin__tone--great {
+  color: #0b7856;
+  background: #d5f2e4;
+}
+.iljin__tone--good {
+  color: #1b64da;
+  background: #e8f3ff;
+}
+.iljin__tone--steady {
+  color: #4e5968;
+  background: var(--gray-100);
+}
+.iljin__tone--caution {
+  color: #9c5d00;
+  background: #ffefd0;
+}
+.iljin__line {
+  margin: var(--space-3) 0 0;
   font-size: 13.5px;
   font-weight: 600;
   line-height: 1.55;
   color: var(--gray-800);
   word-break: keep-all;
 }
-.saju-card__tip {
-  margin: 0;
+.iljin__boost {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px dashed #d5e3fa;
+}
+.iljin__boost-color {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+.iljin__boost-color b {
+  color: var(--brand-strong);
+}
+.iljin__boost-color small {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--gray-600);
+}
+.iljin__boost-tip {
   font-size: 12.5px;
   font-weight: 700;
   color: var(--brand-strong);
