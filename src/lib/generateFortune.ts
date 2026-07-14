@@ -12,6 +12,7 @@ import { composeLetter } from './letter';
 import { computeRarity, RARITY_LINE } from './rarity';
 import { FORTUNE_LABEL } from '../data/fortuneTypes';
 import { NOTE_LEAD, TEMPLATES } from '../data/resultTemplates';
+import { MOOD_PINPOINT, MOOD_MIND } from '../data/moodEcho';
 import { PLANS, moodGroup } from '../data/dayDesign';
 import { pickFreshIndex } from './pickFresh';
 import {
@@ -102,16 +103,20 @@ ${variant.flow}`,
     afternoon: pickReading(isMonth ? MONTH_MID_READINGS : AFTERNOON_READINGS, 11, `read:afternoon:${isMonth}`),
     evening: pickReading(isMonth ? MONTH_LATE_READINGS : EVENING_READINGS, 17, `read:evening:${isMonth}`),
     people: pickReading(PEOPLE_READINGS, 23, 'read:people'),
-    mind: pickReading(MIND_READINGS, 31, 'read:mind'),
+    // 마음 관리 — 방금 고른 기분 전용 풀(무드 에코). 기분마다 회피 이력을 분리.
+    mind: pickReading(MOOD_MIND[mood] ?? MIND_READINGS, 31, `read:mind:${mood}`),
     scale: (isMonth ? 'month' : 'day') as 'day' | 'month',
   };
+
+  // 콕 집은 한마디 — '어떻게 알았지'의 핵심. 방금 고른 기분을 되읽는 전용 풀에서.
+  const pinpoint = pickReading(MOOD_PINPOINT[mood] ?? [variant.pinpoint], 7, `pin:${mood}`);
 
   return {
     title: FORTUNE_LABEL[fortuneType],
     subtitle: `${note.name} 쪽지`,
     persona,
     saju,
-    pinpoint: variant.pinpoint,
+    pinpoint,
     summaryLines: [lead, variant.summary[0], variant.summary[1]],
     detailFlow: variant.flow,
     goodPoint: variant.good,
