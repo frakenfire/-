@@ -7,9 +7,9 @@ import { HOME } from '../data/copy';
 import { useState } from 'react';
 import { todayVibe } from '../lib/dayVibe';
 import { todayKey } from '../lib/dateSeed';
-import { sajuToday, iljinOf } from '../lib/saju';
-import { luckyZodiacsToday } from '../lib/luckyToday';
-import { ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac';
+import { sajuToday, iljinOf, dailyZodiacRanking } from '../lib/saju';
+import { shareMessage } from '../lib/share';
+import { findZodiac, ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac';
 import { ZODIAC_TRAIT } from '../data/traits';
 import type { StoredResult, TodayReading, RarityCounts } from '../lib/storage';
 import type { FortuneType } from '../types/fortune';
@@ -56,11 +56,31 @@ export function HomeScreen({
 }: Props) {
   const yNote = yesterdayRecord ? findNote(yesterdayRecord.noteId) : null;
   const [pick, setPick] = useState<'zodiac' | 'star' | null>(null);
+  const [rankOpen, setRankOpen] = useState(false);
+  const [shared, setShared] = useState(false);
   const vibe = todayVibe(todayKey());
-  const lucky = luckyZodiacsToday(todayKey());
-  const myLucky = !!(zodiac && lucky.some((z) => z.id === zodiac.id));
   const iljin = iljinOf(todayKey());
   const saju = zodiac ? sajuToday(todayKey(), zodiac.id) : null;
+  const ranking = dailyZodiacRanking(todayKey());
+  const myRank = zodiac ? ranking.find((r) => r.animal === zodiac.id) ?? null : null;
+
+  async function shareRanking() {
+    const top3 = ranking.slice(0, 3);
+    const last = ranking[ranking.length - 1];
+    const medal = ['🥇', '🥈', '🥉'];
+    const z = (id: ZodiacId) => findZodiac(id);
+    const lines = [
+      `[오늘쪽지] ${todayLabel()} 오늘의 띠 서열 🏆`,
+      top3.map((r, i) => `${medal[i]} ${z(r.animal)?.emoji}${z(r.animal)?.label}`).join('  '),
+      `… 꼴찌 ${z(last.animal)?.emoji}${z(last.animal)?.label} 😇`,
+      myRank ? `내 띠는 ${myRank.rank}위! 너는 몇 위? 👀` : '네 띠는 몇 위인지 확인해봐 👀',
+    ];
+    const outcome = await shareMessage(lines.join('\n'));
+    if (outcome === 'copied') {
+      setShared(true);
+      window.setTimeout(() => setShared(false), 1800);
+    }
+  }
 
   return (
     <AppLayout>
@@ -141,20 +161,38 @@ export function HomeScreen({
         </span>
       </button>
 
-      {/* 오늘 운 좋은 띠 — 궁금증 훅(내 띠 있나?) + 여기서 바로 내 띠 설정 */}
-      <div className="lucky-today">
-        <p className="lucky-today__title">🍀 오늘 운이 트인 띠</p>
-        <div className="lucky-today__chips">
-          {lucky.map((z) => (
-            <span key={z.id} className={zodiac?.id === z.id ? 'lt-chip lt-chip--me' : 'lt-chip'}>
-              {z.emoji} {z.label}
-              {zodiac?.id === z.id ? ' (나!)' : ''}
-            </span>
-          ))}
+      {/* 오늘의 12띠 서열 — 사주(일진) 기반 매일 갈리는 랭킹. 단톡방 도발 공유의 핵 */}
+      <div className="rank-card">
+        <div className="rank-card__head">
+          <p className="rank-card__title">🏆 오늘의 띠 서열</p>
+          <button type="button" className="rank-card__share" onClick={shareRanking}>
+            {shared ? '복사됨!' : '단톡방에 던지기 💬'}
+          </button>
         </div>
-        {zodiac ? (
-          <p className="lucky-today__cta">
-            {myLucky ? '내 띠가 있네요! 오늘 뭐가 좋은지 쪽지로 확인해봐요' : '내 띠는 오늘 어떨까? 쪽지 한 장 뽑아봐요'}
+
+        <div className="rank-podium">
+          {ranking.slice(0, 3).map((r, i) => {
+            const z = findZodiac(r.animal);
+            const me = zodiac?.id === r.animal;
+            return (
+              <div key={r.animal} className={`podium podium--${i + 1}${me ? ' podium--me' : ''}`}>
+                <span className="podium__medal" aria-hidden>{['🥇', '🥈', '🥉'][i]}</span>
+                <span className="podium__emoji" aria-hidden>{z?.emoji}</span>
+                <span className="podium__name">{z?.label}{me ? ' (나!)' : ''}</span>
+              </div>
+            );
+          })}
+        </div>
+
+        {myRank ? (
+          <p className={`rank-card__me${myRank.rank <= 3 ? ' rank-card__me--top' : ''}`}>
+            {myRank.rank === 1
+              ? '오늘 내 띠가 1위! 자랑각이에요 👑'
+              : myRank.rank <= 3
+                ? `내 띠는 오늘 ${myRank.rank}위! 기분 좋게 시작해요`
+                : myRank.rank >= 11
+                  ? `내 띠는 오늘 ${myRank.rank}위… 쪽지로 반전 만들어봐요`
+                  : `내 띠는 오늘 ${myRank.rank}위 (${myRank.relationKo})`}
           </p>
         ) : (
           <button
@@ -162,7 +200,7 @@ export function HomeScreen({
             className="lucky-today__set"
             onClick={() => setPick((v) => (v === 'zodiac' ? null : 'zodiac'))}
           >
-            내 띠 고르면 오늘 운 좋은지 바로 알려줘요 {pick === 'zodiac' ? '▴' : '▾'}
+            내 띠 고르면 오늘 몇 위인지 바로 나와요 {pick === 'zodiac' ? '▴' : '▾'}
           </button>
         )}
         {!zodiac && pick === 'zodiac' ? (
@@ -173,6 +211,28 @@ export function HomeScreen({
               </button>
             ))}
           </div>
+        ) : null}
+
+        <button type="button" className="rank-card__more" onClick={() => setRankOpen((v) => !v)}>
+          {rankOpen ? '접기 ▴' : '4위부터 꼴찌까지 보기 ▾'}
+        </button>
+        {rankOpen ? (
+          <ol className="rank-list">
+            {ranking.slice(3).map((r) => {
+              const z = findZodiac(r.animal);
+              const me = zodiac?.id === r.animal;
+              return (
+                <li key={r.animal} className={me ? 'rank-row rank-row--me' : 'rank-row'}>
+                  <span className="rank-row__no num">{r.rank}</span>
+                  <span className="rank-row__name">
+                    {z?.emoji} {z?.label}
+                    {me ? ' (나)' : ''}
+                  </span>
+                  <span className={`rank-row__tone rank-row__tone--${r.tone}`}>{r.toneWord}</span>
+                </li>
+              );
+            })}
+          </ol>
         ) : null}
       </div>
 

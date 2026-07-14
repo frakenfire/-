@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AppLayout } from '../components/AppLayout';
 import { LetterCard } from '../components/LetterCard';
 import { Disclaimer } from '../components/Disclaimer';
@@ -39,6 +39,27 @@ export function ResultScreen({
   const brag = luckPercentile(luck.total);
   const vibe = todayVibe(todayKey()); // 홈과 같은 '오늘의 기운' — 홈→결과 연결
 
+  // 총운 카운트업 리빌 — 0→N 으로 차오르며 점수가 '뽑힌' 느낌을 준다.
+  // prefers-reduced-motion 이면 즉시 최종값.
+  const [shownTotal, setShownTotal] = useState(0);
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      setShownTotal(luck.total);
+      return;
+    }
+    let raf = 0;
+    const t0 = performance.now();
+    const dur = 900;
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - t0) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setShownTotal(Math.round(eased * luck.total));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [luck.total]);
+
   // 풀이 라벨 — month 타입은 초반/중순/월말, 나머지는 오전/오후/저녁.
   const isMonth = result.reading.scale === 'month';
   const rl = isMonth
@@ -71,7 +92,7 @@ export function ResultScreen({
             {note.icon} {result.title}
           </span>
           <span className="chip chip--score">
-            총운 <b>{luck.total}점</b> · {luck.grade}
+            총운 <b className="num">{shownTotal}점</b> · {luck.grade}
           </span>
           <span className={`rarity-badge rarity-badge--${rarity.tier}`}>
             {rarity.emoji} {rarity.label}

@@ -6,6 +6,7 @@ import {
   zodiacRelation,
   pairElementFlow,
   elementOfZodiac,
+  dailyZodiacRanking,
 } from './saju.ts';
 
 // 일진 정확도 — 표준 만세력과 일치하는 앵커로 검증
@@ -74,4 +75,19 @@ test('띠 오행과 오행 상성(상생/상극/비화)이 명리와 맞는다',
   assert.equal(pairElementFlow('tiger', 'tiger'), 'same'); // 목-목 비화
   assert.equal(pairElementFlow('tiger', 'snake'), 'generate'); // 목생화 상생
   assert.equal(pairElementFlow('tiger', 'ox'), 'control'); // 목극토 상극(丑=토)
+});
+
+test('오늘의 12띠 서열이 결정적이고 사주 논리와 일치한다', () => {
+  const r = dailyZodiacRanking('2026-07-12'); // 丁亥일
+  assert.equal(r.length, 12);
+  assert.deepEqual(r, dailyZodiacRanking('2026-07-12')); // 결정적
+  assert.equal(new Set(r.map((x) => x.animal)).size, 12); // 전 띠 1회씩
+  assert.deepEqual(r.map((x) => x.rank), Array.from({ length: 12 }, (_, i) => i + 1));
+  // 亥일: 삼합인 토끼는 상충인 뱀보다 반드시 위
+  const rankOf = (a: string) => r.find((x) => x.animal === a)!.rank;
+  assert.ok(rankOf('rabbit') < rankOf('snake'));
+  assert.equal(r.find((x) => x.animal === 'snake')!.relation, 'clash');
+  // 날이 다르면 서열도 달라진다
+  const r2 = dailyZodiacRanking('2026-07-13');
+  assert.notDeepEqual(r.map((x) => x.animal), r2.map((x) => x.animal));
 });

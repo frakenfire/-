@@ -29,6 +29,13 @@ body {
   font-feature-settings: var(--fnum);
 }
 
+/* 숫자 강조 공통 — 고정폭 숫자(tnum)로 카운트업/순위 떨림 방지 */
+.num {
+  font-family: var(--font-num);
+  font-feature-settings: var(--fnum);
+  font-variant-numeric: tabular-nums;
+}
+
 button {
   font-family: inherit;
   cursor: pointer;
@@ -1006,6 +1013,30 @@ a:focus-visible {
   flex-wrap: wrap;
   align-items: center;
   margin-bottom: var(--space-4);
+}
+
+/* 등급 스탬프 리빌 — 점수 카운트업이 끝날 즈음 등급 배지가 도장처럼 찍힌다 */
+@keyframes stamp-in {
+  0% {
+    transform: scale(1.7);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(0.94);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.briefing .rarity-badge {
+  animation: stamp-in 0.45s var(--ease-spring) 0.6s backwards;
+}
+@media (prefers-reduced-motion: reduce) {
+  .briefing .rarity-badge {
+    animation: none;
+  }
 }
 
 .chip {
@@ -2521,6 +2552,167 @@ a:focus-visible {
 }
 .lucky-today__set:active {
   background: var(--white);
+}
+
+/* ── 오늘의 띠 서열 ── 리더보드. 매일 갈리는 12띠 랭킹(사주 일진 기반) */
+.rank-card {
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(150deg, #fff8e6, #fffdf6);
+  border: 1px solid #f1e2b6;
+}
+.rank-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: var(--space-3);
+}
+.rank-card__title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: #7a5900;
+}
+.rank-card__share {
+  min-height: 34px;
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--white);
+  background: var(--gray-800);
+  border-radius: 999px;
+  padding: 7px 13px;
+  transition: transform 0.2s var(--ease-spring);
+}
+.rank-card__share:active {
+  transform: scale(0.95);
+}
+.rank-podium {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  align-items: end;
+}
+.podium {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 4px 8px;
+  background: var(--white);
+  border: 1px solid #eee2bd;
+  border-radius: 14px;
+}
+.podium--1 {
+  order: 2;
+  padding-top: 16px;
+  border-color: #e7c15a;
+  box-shadow: 0 4px 12px rgba(197, 152, 32, 0.16);
+}
+.podium--2 {
+  order: 1;
+}
+.podium--3 {
+  order: 3;
+}
+.podium--me {
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+.podium__medal {
+  font-size: 15px;
+}
+.podium__emoji {
+  font-size: 26px;
+  line-height: 1.2;
+}
+.podium--1 .podium__emoji {
+  font-size: 32px;
+}
+.podium__name {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--gray-800);
+}
+.rank-card__me {
+  margin: var(--space-3) 0 0;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--gray-800);
+  background: rgba(255, 255, 255, 0.75);
+  border-radius: 10px;
+  padding: 9px 12px;
+}
+.rank-card__me--top {
+  color: #7a5900;
+  background: #fff2c8;
+}
+.rank-card__more {
+  display: block;
+  width: 100%;
+  min-height: 40px;
+  margin-top: var(--space-3);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #8a6a00;
+  text-align: center;
+}
+.rank-list {
+  list-style: none;
+  margin: var(--space-2) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.rank-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  background: var(--white);
+  border-radius: 10px;
+}
+.rank-row--me {
+  outline: 2px solid var(--brand);
+  outline-offset: -1px;
+}
+.rank-row__no {
+  flex: none;
+  width: 20px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--gray-500);
+}
+.rank-row__name {
+  flex: 1;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+.rank-row__tone {
+  font-size: 11.5px;
+  font-weight: 800;
+  border-radius: 999px;
+  padding: 3px 9px;
+}
+.rank-row__tone--great {
+  color: #0b7856;
+  background: #d5f2e4;
+}
+.rank-row__tone--good {
+  color: #1b64da;
+  background: #e8f3ff;
+}
+.rank-row__tone--steady {
+  color: #4e5968;
+  background: var(--gray-100);
+}
+.rank-row__tone--caution {
+  color: #9c5d00;
+  background: #ffefd0;
 }
 
 /* ── 메인 focal ── '오늘의 나' 훅 카드

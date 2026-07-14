@@ -367,6 +367,50 @@ export type SajuToday = {
   tip: string;
 };
 
+// ── 오늘의 12띠 서열 ──
+// 그날의 일진(지지 관계 + 오행 생극)으로 12띠 전체 점수를 매겨 순위를 낸다.
+// 동점은 날짜·띠 seed 로 결정적 타이브레이크 → 하루 동안 고정, 매일 갈림.
+// 단톡방에 던지는 '오늘 띠 서열표'의 데이터 소스.
+
+export type ZodiacRank = {
+  animal: ZodiacId;
+  rank: number; // 1~12
+  relation: BranchRelation;
+  relationKo: string;
+  tone: SajuTone;
+  toneWord: string;
+};
+
+export function dailyZodiacRanking(dateKey: string): ZodiacRank[] {
+  const idx = ganzhiIndexFromDateKey(dateKey);
+  const stem = STEMS[idx % 10];
+  const dayBranchIdx = idx % 12;
+
+  const scored = BRANCHES.map((b, i) => {
+    const rel = branchRelation(dayBranchIdx, i);
+    const flow = elementFlow(stem.el, b.el);
+    const score = toneScore(rel, flow);
+    return {
+      animal: b.animal,
+      relation: rel,
+      tone: toneOf(score),
+      score,
+      tiebreak: hashSeed(`rank|${dateKey}|${b.animal}`),
+    };
+  });
+
+  scored.sort((a, b) => b.score - a.score || a.tiebreak - b.tiebreak);
+
+  return scored.map((s, i) => ({
+    animal: s.animal,
+    rank: i + 1,
+    relation: s.relation,
+    relationKo: REL_KO[s.relation],
+    tone: s.tone,
+    toneWord: TONE_WORD[s.tone],
+  }));
+}
+
 // 오늘의 일진만 (띠 없이도 표시 가능)
 export function iljinOf(dateKey: string): {
   hanja: string;
