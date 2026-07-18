@@ -4,15 +4,17 @@ import { LetterCard } from '../components/LetterCard';
 import { Disclaimer } from '../components/Disclaimer';
 import { AdBadge, AdBanner } from '../components/AdNotice';
 import { luckPercentile } from '../lib/luck';
-import { ELEMENT_EMOJI, ELEMENT_KO } from '../lib/saju';
+import { ELEMENT_EMOJI, ELEMENT_KO, sajuToday } from '../lib/saju';
 import { todayVibe } from '../lib/dayVibe';
 import { todayKey } from '../lib/dateSeed';
+import type { ZodiacId } from '../data/zodiac';
 import type { FortuneResult, Note } from '../types/fortune';
 
 type Props = {
   result: FortuneResult;
   note: Note;
   busy: boolean;
+  zodiacId?: ZodiacId | null;
   onDetail: () => void;
   onSave: () => void;
   onShare: () => void;
@@ -27,6 +29,7 @@ export function ResultScreen({
   result,
   note,
   busy,
+  zodiacId,
   onDetail,
   onSave,
   onShare,
@@ -62,6 +65,14 @@ export function ResultScreen({
 
   // 풀이 라벨 — month 타입은 초반/중순/월말, 나머지는 오전/오후/저녁.
   const isMonth = result.reading.scale === 'month';
+
+  // 내일 예고 — 내일 일진×내 띠를 미리 보여줘 '내일 다시 올 이유'를 만든다.
+  // (day 결과 + 띠 설정 시에만. 사주 엔진이라 결정적)
+  const tomorrowSaju =
+    !isMonth && zodiacId ? sajuToday(todayKey(new Date(Date.now() + 86400000)), zodiacId) : null;
+  const TONE_RANK = { caution: 0, steady: 1, good: 2, great: 3 } as const;
+  const tomorrowBetter =
+    tomorrowSaju && result.saju ? TONE_RANK[tomorrowSaju.tone] > TONE_RANK[result.saju.tone] : false;
   const rl = isMonth
     ? { title: '이번 달 풀이', desc: '초반부터 월말까지 이번 달을 그려봤어요', m: '🌱 이번 달 초반', a: '📈 중순', e: '🏁 월말' }
     : { title: '오늘의 풀이', desc: '시간대별로 하루를 미리 그려봤어요', m: '🌅 오전', a: '☀️ 오후', e: '🌙 저녁' };
@@ -274,6 +285,21 @@ export function ResultScreen({
         </span>
         <span className="compat-banner__cta">보러가기 ›</span>
       </button>
+
+      {/* 내일 예고 — 리텐션 훅: 내일 일진과 내 띠 관계를 티저로 */}
+      {tomorrowSaju ? (
+        <div className="tmr-tease">
+          <span className="tmr-tease__moon" aria-hidden>🌙</span>
+          <span className="tmr-tease__body">
+            <span className="tmr-tease__k">내일 예고 · {tomorrowSaju.iljin.kor}일</span>
+            <span className="tmr-tease__v">
+              {tomorrowBetter
+                ? `내일은 오늘보다 기운이 좋아요 (${tomorrowSaju.relationKo}). 내일 쪽지 잊지 마요!`
+                : `내일은 내 띠와 ${tomorrowSaju.relationKo}, 기운 ${tomorrowSaju.toneWord}. 내일 쪽지로 확인해요`}
+            </span>
+          </span>
+        </div>
+      ) : null}
 
       <AdBanner />
       <Disclaimer />

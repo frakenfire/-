@@ -2775,6 +2775,39 @@ a:focus-visible {
   color: #dbeafe;
   word-break: keep-all;
 }
+/* 내일 예고 — 결과 하단 리텐션 훅 (달 카드) */
+.tmr-tease {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: linear-gradient(150deg, #1f2733, #333d4b);
+}
+.tmr-tease__moon {
+  flex: none;
+  font-size: 22px;
+}
+.tmr-tease__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.tmr-tease__k {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #aab4c0;
+}
+.tmr-tease__v {
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+  color: #f4f7fb;
+  word-break: keep-all;
+}
+
 /* 결과 화면 '오늘의 일진' 스탬프 스트립 — 행운 보고서(3칸 그리드)와 겹치지 않는
    가로 흐름 레이아웃: 한자 도장 + 관계 설명 + 기운 배지 → 근거 한 줄 → 개운 포인트 */
 .iljin {
