@@ -11,6 +11,7 @@ export type ShareBriefing = {
   doItem: string; // 오늘 이렇게 보내요 (구체 행동)
   dontItem: string; // 오늘은 접어둬요
   brag?: string; // "상위 8%" 자랑 문구
+  pinpoint?: string; // 콕 집은 한마디 — '어떻게 알았지' 후킹 라인
 };
 
 // 'shared' 실제 공유됨 / 'copied' 공유 미지원이라 문구 복사 / 'cancelled' 사용자가 취소 / 'failed' 실패
@@ -18,17 +19,20 @@ export type ShareOutcome = 'shared' | 'copied' | 'cancelled' | 'failed';
 
 export function buildShareText(b: ShareBriefing): string {
   const head = b.brag
-    ? `💌 오늘쪽지 · 오늘의 ${b.title} · 총운 ${b.score}점 (${b.brag}) 🏆`
-    : `💌 오늘쪽지 · 오늘의 ${b.title} (총운 ${b.score}점)`;
+    ? `💌 오늘쪽지 · ${b.title} · 총운 ${b.score}점 (${b.brag}) 🏆`
+    : `💌 오늘쪽지 · ${b.title} (총운 ${b.score}점)`;
+  // 콕집기(콜드리딩)를 첫 인용으로 — 받는 사람이 '어떻게 알았지'를 먼저 느끼게.
+  const hook = b.pinpoint
+    ? [`"${b.pinpoint}"`, `↑ 이거 완전 내 얘기라 소름. 진짜 잘 맞아`, ``]
+    : [`"${b.headline}"`, ``];
   return [
     head,
     ``,
-    `"${b.headline}"`,
-    ``,
+    ...hook,
     `✅ 이렇게 보내요: ${b.doItem}`,
     `🌙 오늘은 접어둬요: ${b.dontItem}`,
     ``,
-    `너 생각나서 보내는 오늘의 쪽지. 네 것도 뽑아봐 👀`,
+    `너한테는 뭐라고 하는지 봐봐 👀`,
   ].join('\n');
 }
 

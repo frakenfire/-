@@ -168,7 +168,10 @@ export function CompatScreen({
 
   async function brag() {
     if (!myLabel || !friendLabel || !result) return;
-    const text = `[오늘쪽지] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 · ${result.archetype} 💗\n${myLabel.emoji}${myLabel.label} × ${friendLabel.emoji}${friendLabel.label}\n"${result.headline}"\n너도 궁합 봐봐 👀`;
+    const ohaeng = result.elements
+      ? `\n${result.elements.aKo} × ${result.elements.bKo} = ${result.elements.flowKo} 조합`
+      : '';
+    const text = `[오늘쪽지] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 · ${result.archetype} 💗\n${myLabel.emoji}${myLabel.label} × ${friendLabel.emoji}${friendLabel.label}${ohaeng}\n"${result.headline}"\n너도 누구랑 몇 점인지 봐봐 👀`;
     const ok = await onShare(text);
     onToast(ok ? '궁합 자랑 완료! 💌' : '앗, 공유를 못 했어요');
   }

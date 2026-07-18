@@ -324,6 +324,7 @@ export default function App() {
       doItem: result.dayPlan.steps[0].text,
       dontItem: result.dayPlan.holdOff,
       brag: `상위 ${brag.pct}%`,
+      pinpoint: result.pinpoint,
     });
     logEvent('share', { outcome: r });
     if (r === 'shared') flash('친구에게 공유했어요 💌');
