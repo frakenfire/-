@@ -430,6 +430,7 @@ export default function App() {
           note={note}
           busy={busy}
           zodiacId={zodiac?.id ?? null}
+          streak={streak}
           onDetail={handleDetail}
           onSave={handleSave}
           onShare={handleShare}

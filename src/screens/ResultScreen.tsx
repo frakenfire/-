@@ -15,6 +15,7 @@ type Props = {
   note: Note;
   busy: boolean;
   zodiacId?: ZodiacId | null;
+  streak?: number;
   onDetail: () => void;
   onSave: () => void;
   onShare: () => void;
@@ -30,6 +31,7 @@ export function ResultScreen({
   note,
   busy,
   zodiacId,
+  streak = 0,
   onDetail,
   onSave,
   onShare,
@@ -66,6 +68,9 @@ export function ResultScreen({
   // 풀이 라벨 — month 타입은 초반/중순/월말, 나머지는 오전/오후/저녁.
   const isMonth = result.reading.scale === 'month';
 
+  // 스트릭 마일스톤 — 3·7·14·30일 달성 순간을 축하 이벤트로 (습관 고리 보상)
+  const milestone = [3, 7, 14, 30].includes(streak);
+
   // 내일 예고 — 내일 일진×내 띠를 미리 보여줘 '내일 다시 올 이유'를 만든다.
   // (day 결과 + 띠 설정 시에만. 사주 엔진이라 결정적)
   const tomorrowSaju =
@@ -84,7 +89,7 @@ export function ResultScreen({
         className={`briefing briefing--${rarity.tier} fade-in`}
         style={{ position: 'relative', overflow: 'hidden' }}
       >
-        {luck.total >= 88 || rarity.special ? (
+        {luck.total >= 88 || rarity.special || milestone ? (
           <div className="confetti" aria-hidden>
             {['🎉', '✨', '⭐', '💙', '✨', '🎊', '⭐', '✨'].map((e, i) => (
               <span
@@ -119,6 +124,12 @@ export function ResultScreen({
           <span className="brag__pct">🏆 오늘 총운 상위 {brag.pct}%</span>
           <span className="brag__label">· {brag.label}</span>
         </div>
+
+        {milestone ? (
+          <p className="streak-hit">
+            🔥 {streak}일 연속 쪽지 달성! 꾸준함이 운을 키운대요
+          </p>
+        ) : null}
 
         {result.persona ? <p className="briefing__persona">💌 {result.persona}</p> : null}
         <p className="briefing__headline">{dayPlan.headline}</p>
