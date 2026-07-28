@@ -17,21 +17,24 @@
   --gray-50: #f9fafb;
   --white: #ffffff;
 
-  /* Brand & accents — 토스 블루 시스템 */
-  --brand: #3182f6;
-  --brand-strong: #1b64da;
-  --brand-soft: #e8f3ff;
+  /* Brand & accents — TDS(@toss/tds-colors) 원본 값과 1:1 일치
+     adaptiveBlue500 / 700 / 50, adaptiveOrange500 */
+  --brand: #3182f6; /* TDS adaptiveBlue500 */
+  --brand-strong: #1b64da; /* TDS adaptiveBlue700 */
+  --brand-soft: #e8f3ff; /* TDS adaptiveBlue50 */
   --toss-blue: #3182f6;
-  --orange: #ff6b00; /* 포인트(행운)용, 제한 사용 */
+  --orange: #fe9800; /* TDS adaptiveOrange500 — 포인트(행운)용, 제한 사용 */
 
   /* Semantic score colors — 배경 채움/점/바 등 장식 요소용 (텍스트엔 아래 -text 토큰 사용) */
-  --score-high: #12b886;
-  --score-mid: #3182f6;
-  --score-low: #f59f00;
+  --score-high: #03b26c; /* TDS adaptiveGreen500 */
+  --score-mid: #3182f6; /* TDS adaptiveBlue500 */
+  --score-low: #faa131; /* TDS adaptiveYellow700 */
 
   /* 작은 텍스트에서 WCAG AA(4.5:1, 흰 배경) 충족하는 어두운 변형 */
-  --score-high-text: #0b7856;
-  --score-mid-text: #1b64da;
+  --score-high-text: #027648; /* TDS adaptiveGreen900 (5.69:1) */
+  --score-mid-text: #1b64da; /* TDS adaptiveBlue700 (5.41:1) */
+  /* TDS 노랑/주황 램프는 가장 어두운 900 도 3.0:1 대에 그쳐 본문 AA 를 못 넘긴다.
+     접근성을 우선해 TDS 계열을 유지한 더 어두운 자체 값을 쓴다 (5.28:1) */
   --score-low-text: #9c5d00;
 
   /* Aliases (기존 클래스 호환) */
@@ -66,8 +69,8 @@
   --shadow-cta: 0 6px 16px rgba(49, 130, 246, 0.24);
   --shadow-note: 0 6px 20px rgba(25, 31, 40, 0.09);
 
-  /* 물리감 있는 스프링 이징 — 기본 ease/linear 대신 (taste: no default transitions) */
-  --ease-spring: cubic-bezier(0.32, 0.72, 0, 1);
+  /* 이징 — TDS(@toss/tds-easings) 의 expo 커브를 그대로 사용해 토스 앱과 감각을 맞춘다 */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1); /* TDS expo */
 
   --font-body:
     'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont,

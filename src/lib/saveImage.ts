@@ -26,9 +26,9 @@ const TIER_STYLE: Record<Rarity['tier'], { bg: string; card: string; border: str
 
 function resolveScoreColor(score: number): string {
   const v = scoreColor(score);
-  if (v.includes('high')) return '#12b886';
+  if (v.includes('high')) return '#02a262'; // TDS adaptiveGreen600
   if (v.includes('mid')) return '#3182f6';
-  return '#f59f00';
+  return '#ed6700'; // TDS adaptiveOrange800 (흰 배경 3.21:1)
 }
 
 function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {

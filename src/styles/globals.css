@@ -221,7 +221,7 @@ a:focus-visible {
 
 .btn--secondary {
   background: var(--color-soft-green);
-  color: var(--color-signature-green);
+  color: var(--brand-strong); /* Blue500 은 연파랑 위에서 3.31:1 → Blue700 로 4.82:1 */
 }
 
 .btn--ghost {
@@ -1579,7 +1579,7 @@ a:focus-visible {
 .btn-unlock__sub {
   font-size: 11.5px;
   font-weight: 600;
-  color: var(--brand);
+  color: var(--brand-strong); /* 연파랑 배경 위 AA 확보 (4.82:1) */
   opacity: 0.9;
 }
 
@@ -1601,7 +1601,7 @@ a:focus-visible {
 .brag__label {
   font-size: 12px;
   font-weight: 700;
-  color: #c98a2e;
+  color: #8a6a00; /* 골드 배경 위 4.79:1 */
 }
 
 /* 오늘의 기운 — 홈과 결과를 잇는 키워드 */
@@ -1908,8 +1908,8 @@ a:focus-visible {
   padding: 4px 12px;
 }
 .compat-ohaeng__flow--generate {
-  color: #0b7856;
-  background: #d5f2e4;
+  color: #027648;
+  background: #f0faf6;
 }
 .compat-ohaeng__flow--same {
   color: #1b64da;
@@ -1917,7 +1917,7 @@ a:focus-visible {
 }
 .compat-ohaeng__flow--control {
   color: #9c5d00;
-  background: #ffefd0;
+  background: #fff3e0;
 }
 .compat-result__lines {
   display: flex;
@@ -2191,7 +2191,7 @@ a:focus-visible {
   box-shadow: 0 2px 12px rgba(49, 130, 246, 0.12);
 }
 .letter--rare .letter__from {
-  color: #2f6fd0;
+  color: #1b64da; /* TDS adaptiveBlue700 — 4.61:1 */
 }
 
 .letter--epic {
@@ -2257,7 +2257,7 @@ a:focus-visible {
 }
 .rarity-badge--rare {
   background: #e2eefd;
-  color: #2f6fd0;
+  color: #1b64da; /* TDS adaptiveBlue700 — 4.61:1 */
 }
 .rarity-badge--epic {
   background: #efe4fc;
@@ -2699,8 +2699,8 @@ a:focus-visible {
   padding: 3px 9px;
 }
 .rank-row__tone--great {
-  color: #0b7856;
-  background: #d5f2e4;
+  color: #027648;
+  background: #f0faf6;
 }
 .rank-row__tone--good {
   color: #1b64da;
@@ -2712,7 +2712,7 @@ a:focus-visible {
 }
 .rank-row__tone--caution {
   color: #9c5d00;
-  background: #ffefd0;
+  background: #fff3e0;
 }
 
 /* ── 메인 focal ── '오늘의 나' 훅 카드
@@ -2880,8 +2880,8 @@ a:focus-visible {
   padding: 6px 13px;
 }
 .iljin__tone--great {
-  color: #0b7856;
-  background: #d5f2e4;
+  color: #027648;
+  background: #f0faf6;
 }
 .iljin__tone--good {
   color: #1b64da;
@@ -2893,7 +2893,7 @@ a:focus-visible {
 }
 .iljin__tone--caution {
   color: #9c5d00;
-  background: #ffefd0;
+  background: #fff3e0;
 }
 .iljin__line {
   margin: var(--space-3) 0 0;

@@ -22,9 +22,9 @@ const VIBE_STYLE: Record<CompatVibe, { bg: string; card: string; accent: string;
 };
 
 function scoreHex(score: number): string {
-  if (score >= 85) return '#12b886';
+  if (score >= 85) return '#02a262'; // TDS adaptiveGreen600 (흰 배경 3.31:1)
   if (score >= 73) return '#3182f6';
-  return '#f59f00';
+  return '#ed6700'; // TDS adaptiveOrange800 (흰 배경 3.21:1)
 }
 
 function roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
