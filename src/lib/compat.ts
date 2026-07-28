@@ -49,7 +49,16 @@ export type CompatResult = {
 
 // 지지 관계 태그 — 사주 엔진(saju.zodiacRelation)을 단일 출처로 사용해 매핑만 한다.
 // (예전엔 삼합·육합·상충·원진 표를 여기에 중복 정의했으나 saju.ts 로 일원화)
-type Tag = 'trine' | 'union' | 'clash' | 'harm' | 'same' | 'neutral';
+type Tag =
+  | 'trine'
+  | 'union'
+  | 'clash'
+  | 'punish'
+  | 'harm'
+  | 'break'
+  | 'same'
+  | 'selfPunish'
+  | 'neutral';
 
 function tagOf(a: ZodiacId, b: ZodiacId): Tag {
   const rel: BranchRelation = zodiacRelation(a, b);
@@ -62,10 +71,10 @@ function elementBias(flow: PairElementFlow): number {
 }
 
 export function vibeOf(tag: Tag): CompatVibe {
-  if (tag === 'same') return 'twin';
+  if (tag === 'same' || tag === 'selfPunish') return 'twin';
   if (tag === 'trine' || tag === 'union') return 'harmony';
-  if (tag === 'clash' || tag === 'harm') return 'spark';
-  return 'steady';
+  if (tag === 'clash' || tag === 'harm' || tag === 'punish') return 'spark';
+  return 'steady'; // break(파) 는 작용력이 약해 무난한 쪽으로 본다
 }
 
 export const SCORE_RANGE: Record<CompatVibe, [number, number]> = {
@@ -141,6 +150,24 @@ const REASON: Record<Tag, string[]> = {
     '옛말로 원진 관계예요. 투닥거려도 결국 다시 붙어 있는 사이가 많아요.',
     '원진은 묘하게 신경 쓰이는 관계예요. 그 긴장감이 오히려 끌림이 돼요.',
     '가까이서 툭탁대도 이상하게 멀어지진 않는 조합이에요.',
+  ],
+  selfPunish: [
+    '같은 띠라 편한데, 옛말로 자형이라 부르는 조합이기도 해요. 닮은 만큼 고집도 같이 세요.',
+    '똑같은 띠끼리라 통하는 건 빠른데, 서로 물러서질 않아서 한 번씩 부딪혀요.',
+    '거울 같은 사이예요. 내 단점까지 똑같이 보여서 가끔 뜨끔하죠.',
+    '같은 띠 자형 조합이에요. 잘 맞다가도 같은 지점에서 같이 걸려 넘어져요.',
+  ],
+  punish: [
+    '전통 궁합에서 형이라 부르는 조합이에요. 가까울수록 서로를 다듬게 되는 사이예요.',
+    '삼형에 걸리는 관계예요. 편하기만 한 사이는 아닌데, 그만큼 서로를 성장시켜요.',
+    '형 관계라 예민한 지점이 겹쳐요. 선만 지키면 오히려 오래가는 조합이에요.',
+    '옛말로 형이에요. 부딪히는 순간이 있어도 결국 서로 배우는 게 많은 사이예요.',
+  ],
+  break: [
+    '파라고 부르는 조합이에요. 크게 어긋나진 않는데 타이밍이 살짝 안 맞을 때가 있어요.',
+    '전통 궁합상 파 관계예요. 작은 엇박만 조심하면 무난하게 흘러가요.',
+    '결정적으로 나쁠 건 없는데, 계획이 한 번씩 어긋나기 쉬운 조합이에요.',
+    '파에 해당해요. 서로 속도만 맞춰주면 충분히 잘 지내는 사이예요.',
   ],
   neutral: [
     '뚜렷하게 정해진 상성은 아니에요. 오늘의 기운으로 승부를 보는 조합이에요.',

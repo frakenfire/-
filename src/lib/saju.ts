@@ -135,18 +135,39 @@ function ganzhiIndexFromDateKey(dateKey: string): number {
 // 육합/상충/형·해는 쌍으로 정의
 const UNION = new Set(['0-1', '2-11', '3-10', '4-9', '5-8', '6-7']); // 육합
 const HARM = new Set(['0-7', '1-6', '2-9', '3-8', '4-11', '5-10']); // 원진/해
+// 형(刑) — 삼형 寅巳申(2·5·8)·丑戌未(1·10·7), 상형 子卯(0·3).
+// (寅申·丑未는 충, 巳申은 육합이 우선 적용되어 아래 우선순위에서 흡수된다)
+const PUNISH = new Set(['2-5', '5-8', '2-8', '1-10', '7-10', '1-7', '0-3']);
+// 자형(自刑) — 같은 지지끼리 만나면 형이 되는 넷: 辰(4)·午(6)·酉(9)·亥(11)
+const SELF_PUNISH = new Set([4, 6, 9, 11]);
+// 파(破) — 육파 子酉·丑辰·寅亥·卯午·巳申·戌未. 셋(寅亥·巳申·戌未)은 합/형이 우선.
+const BREAK = new Set(['0-9', '1-4', '2-11', '3-6', '5-8', '7-10']);
 function keyOf(a: number, b: number): string {
   return a < b ? `${a}-${b}` : `${b}-${a}`;
 }
 
-export type BranchRelation = 'self' | 'trine' | 'union' | 'clash' | 'harm' | 'none';
+export type BranchRelation =
+  | 'self'
+  | 'selfPunish'
+  | 'trine'
+  | 'union'
+  | 'clash'
+  | 'punish'
+  | 'harm'
+  | 'break'
+  | 'none';
 
+// 지지 관계 판정 — 한 쌍이 여러 관계에 동시에 걸릴 수 있어(예: 寅申은 충이자 삼형,
+// 巳申은 육합이자 형) 우선순위를 명시한다. 충 > 합 > 형 > 원진 > 파 순으로,
+// 작용력이 큰 관계가 이긴다.
 function branchRelation(a: number, b: number): BranchRelation {
-  if (a === b) return 'self'; // 비화(比和) — 같은 지지
+  if (a === b) return SELF_PUNISH.has(a) ? 'selfPunish' : 'self'; // 자형 / 비화(比和)
+  if (Math.abs(a - b) === 6) return 'clash'; // 상충(정반대)
   if (a % 4 === b % 4) return 'trine'; // 삼합
   if (UNION.has(keyOf(a, b))) return 'union'; // 육합
-  if (Math.abs(a - b) === 6) return 'clash'; // 상충(정반대)
+  if (PUNISH.has(keyOf(a, b))) return 'punish'; // 형
   if (HARM.has(keyOf(a, b))) return 'harm'; // 원진
+  if (BREAK.has(keyOf(a, b))) return 'break'; // 파
   return 'none';
 }
 
@@ -227,7 +248,10 @@ function toneScore(rel: BranchRelation, flow: ElementFlow): number {
   else if (rel === 'union') s += 1.5;
   else if (rel === 'self') s += 0.5;
   else if (rel === 'clash') s -= 1.5;
+  else if (rel === 'punish') s -= 1.2; // 형 — 충 다음으로 껄끄러운 관계
   else if (rel === 'harm') s -= 1;
+  else if (rel === 'break') s -= 0.5; // 파 — 작용력이 약한 관계
+  else if (rel === 'selfPunish') s -= 0.2; // 자형 — 같은 지지지만 스스로 부딪힘
   if (flow === 'day_generates_me') s += 1;
   else if (flow === 'i_control_day') s += 0.5;
   else if (flow === 'same') s += 0.3;
@@ -245,10 +269,13 @@ function toneOf(score: number): SajuTone {
 
 export const REL_KO: Record<BranchRelation, string> = {
   self: '비화',
+  selfPunish: '자형',
   trine: '삼합',
   union: '육합',
   clash: '상충',
+  punish: '상형',
   harm: '원진',
+  break: '상파',
   none: '평운',
 };
 

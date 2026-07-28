@@ -32,7 +32,11 @@ test('띠에 따라 오늘의 관계/톤이 달라진다', () => {
   // 최소한 결과 객체가 유효한 값을 갖는다
   const r = sajuToday('2026-07-12', 'pig');
   assert.ok(['great', 'good', 'steady', 'caution'].includes(r.tone));
-  assert.ok(['self', 'trine', 'union', 'clash', 'harm', 'none'].includes(r.relation));
+  assert.ok(
+    ['self', 'selfPunish', 'trine', 'union', 'clash', 'punish', 'harm', 'break', 'none'].includes(
+      r.relation,
+    ),
+  );
   assert.ok(r.headline.length > 0);
   assert.ok(r.tip.length > 0);
 });
@@ -41,9 +45,9 @@ test('상충(정반대 띠)은 조심 톤 쪽으로 기운다', () => {
   // 2026-07-12 = 丁亥일(지지 亥=돼지). 亥와 상충은 巳(뱀).
   const snake = sajuToday('2026-07-12', 'snake');
   assert.equal(snake.relation, 'clash');
-  // 비화(같은 돼지)는 상충보다 확실히 높은 톤
+  // 亥亥(같은 돼지)는 자형(自刑) — 비화가 아니라 스스로 부딪히는 관계
   const pig = sajuToday('2026-07-12', 'pig');
-  assert.equal(pig.relation, 'self');
+  assert.equal(pig.relation, 'selfPunish');
 });
 
 // ── 궁합 일원화: 지지 관계·오행이 사주 엔진 단일 출처를 따른다 ──

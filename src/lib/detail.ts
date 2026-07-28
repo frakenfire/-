@@ -60,7 +60,7 @@ export function computeDetail(seed: number, luck: LuckSet, zodiac?: ZodiacId | n
     });
     const caution = ZODIACS.filter((z) => {
       const rel = zodiacRelation(zodiac, z.id as ZodiacId);
-      return rel === 'clash' || rel === 'harm';
+      return rel === 'clash' || rel === 'harm' || rel === 'punish';
     });
     goodIdx = ZODIACS.indexOf(
       good.length ? good[Math.abs(Math.trunc(seed / 5)) % good.length] : ZODIACS[0],
