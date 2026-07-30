@@ -681,8 +681,8 @@ a:focus-visible {
   display: inline-block;
   font-size: 12px;
   font-weight: 800;
-  color: var(--orange);
-  background: #fff1e8;
+  color: var(--brand-strong);
+  background: var(--brand-soft);
   padding: 5px 11px;
   border-radius: 999px;
 }
@@ -693,66 +693,8 @@ a:focus-visible {
 }
 
 .streak-pill--crown {
-  color: #8a6d00;
-  background: #fff2b8;
-}
-
-/* ── 오늘의 한 줄 (0탭 즉시 보상) ── */
-.daily-line {
-  background: var(--brand);
-  border-radius: var(--radius-lg);
-  padding: var(--space-4) var(--space-5);
-  margin-bottom: var(--space-4);
-  box-shadow: var(--shadow-cta);
-}
-
-.daily-line__label {
-  display: block;
-  font-size: 12px;
-  font-weight: 800;
-  color: rgba(255, 255, 255, 0.95);
-  margin-bottom: 6px;
-}
-
-.daily-line__text {
-  margin: 0 0 4px;
-  font-size: 18px;
-  font-weight: 800;
-  line-height: 1.5;
-  color: #fff;
-  letter-spacing: -0.02em;
-  word-break: keep-all;
-}
-
-.daily-line__hint {
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.95);
-  font-weight: 600;
-}
-
-.daily-line__zodiac {
-  margin: 2px 0 6px;
-  font-size: 14px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.92);
-  word-break: keep-all;
-}
-
-.daily-line__zodiac b {
-  color: #ffd88a;
-}
-
-.daily-line__zpick {
-  display: flex;
-  align-items: center;
-  min-height: 44px;
-  font-size: 13px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.97);
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 14px;
-  padding: 10px 12px;
-  margin: 2px 0 8px;
+  color: var(--brand-strong);
+  background: var(--brand-soft);
 }
 
 .zodiac-grid {
@@ -1591,23 +1533,23 @@ a:focus-visible {
   margin: 0 0 var(--space-4);
   padding: 7px 12px;
   border-radius: 999px;
-  background: #fff4d6;
+  background: var(--gray-100);
 }
 .brag__pct {
   font-size: 13px;
   font-weight: 800;
-  color: #8f5600;
+  color: var(--gray-900);
 }
 .brag__label {
   font-size: 12px;
   font-weight: 700;
-  color: #8a6a00; /* 골드 배경 위 4.79:1 */
+  color: var(--gray-700);
 }
 
 /* 오늘의 기운 — 홈과 결과를 잇는 키워드 */
 .chip--vibe {
-  background: #fff4d6;
-  color: #b26b00;
+  background: var(--gray-100);
+  color: var(--gray-800);
 }
 .daily-line__vibe {
   margin: 4px 0 6px;
@@ -1624,12 +1566,13 @@ a:focus-visible {
   align-items: center;
   gap: 12px;
   padding: 15px 16px;
-  border: none;
+  border: 1px solid var(--gray-100);
   border-radius: var(--radius-lg);
-  background: #ffe4ee;
+  background: var(--white);
+  box-shadow: var(--shadow-card);
   cursor: pointer;
   text-align: left;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
   transition: transform 0.2s var(--ease-spring);
 }
 .compat-banner:active {
@@ -1666,7 +1609,7 @@ a:focus-visible {
   flex: none;
   font-size: 13px;
   font-weight: 800;
-  color: #b02458;
+  color: var(--brand-strong);
 }
 
 /* ── 친구 궁합 화면 ── */
@@ -2162,8 +2105,8 @@ a:focus-visible {
   font-size: 15px;
   font-weight: 700;
   line-height: 1.5;
-  color: #a9791a;
-  background: #fff7dd;
+  color: var(--brand-strong);
+  background: var(--brand-soft);
   border-radius: var(--radius-md);
   padding: var(--space-3) var(--space-4);
   word-break: keep-all;
@@ -2498,44 +2441,6 @@ a:focus-visible {
 }
 
 /* 인트로 티저 — 오늘 운 좋은 띠 (궁금증 유발) */
-.lucky-today {
-  margin-bottom: var(--space-4);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  background: #fff7e0;
-  border: 1px solid #f3e4b8;
-}
-.lucky-today__title {
-  margin: 0 0 var(--space-3);
-  font-size: 14px;
-  font-weight: 800;
-  color: #8a6a00;
-}
-.lucky-today__chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.lt-chip {
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--gray-800);
-  background: var(--white);
-  border: 1px solid #f0dfa8;
-  border-radius: 999px;
-  padding: 8px 14px;
-}
-.lt-chip--me {
-  color: var(--white);
-  background: var(--brand);
-  border-color: var(--brand);
-}
-.lucky-today__cta {
-  margin: var(--space-3) 0 0;
-  font-size: 12.5px;
-  font-weight: 700;
-  color: #8a6a00;
-}
 .lucky-today__set {
   display: block;
   width: 100%;
@@ -2545,9 +2450,9 @@ a:focus-visible {
   text-align: left;
   font-size: 13px;
   font-weight: 800;
-  color: #8a6a00;
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px dashed #e3c778;
+  color: var(--gray-700);
+  background: var(--gray-50);
+  border: 1px dashed var(--gray-300);
   border-radius: var(--radius-md);
 }
 .lucky-today__set:active {
@@ -2556,11 +2461,12 @@ a:focus-visible {
 
 /* ── 오늘의 띠 서열 ── 리더보드. 매일 갈리는 12띠 랭킹(사주 일진 기반) */
 .rank-card {
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
   padding: var(--space-4);
   border-radius: var(--radius-lg);
-  background: #fff8e6;
-  border: 1px solid #f1e2b6;
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  box-shadow: var(--shadow-card);
 }
 .rank-card__head {
   display: flex;
@@ -2573,7 +2479,7 @@ a:focus-visible {
   margin: 0;
   font-size: 14px;
   font-weight: 800;
-  color: #7a5900;
+  color: var(--gray-900);
 }
 .rank-card__share {
   min-height: 34px;
@@ -2601,14 +2507,14 @@ a:focus-visible {
   gap: 2px;
   padding: 10px 4px 8px;
   background: var(--white);
-  border: 1px solid #eee2bd;
+  border: 1px solid var(--gray-200);
   border-radius: 14px;
 }
 .podium--1 {
   order: 2;
   padding-top: 16px;
-  border-color: #e7c15a;
-  box-shadow: 0 4px 12px rgba(197, 152, 32, 0.16);
+  border-color: var(--gray-300);
+  box-shadow: 0 4px 12px rgba(25, 31, 40, 0.1);
 }
 .podium--2 {
   order: 1;
@@ -2645,8 +2551,8 @@ a:focus-visible {
   padding: 9px 12px;
 }
 .rank-card__me--top {
-  color: #7a5900;
-  background: #fff2c8;
+  color: var(--brand-strong);
+  background: var(--brand-soft);
 }
 .rank-card__more {
   display: block;
@@ -2655,7 +2561,7 @@ a:focus-visible {
   margin-top: var(--space-3);
   font-size: 12.5px;
   font-weight: 700;
-  color: #8a6a00;
+  color: var(--brand-strong);
   text-align: center;
 }
 .rank-list {
@@ -2723,7 +2629,7 @@ a:focus-visible {
   text-align: left;
   position: relative;
   overflow: hidden;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
   padding: var(--space-5);
   border-radius: var(--radius-xl);
   background:
@@ -2765,7 +2671,7 @@ a:focus-visible {
 }
 .today-hook__line b {
   font-weight: 800;
-  color: #ffe9a8;
+  color: #fff;
 }
 .today-hook__hint {
   margin: var(--space-2) 0 0;
@@ -2781,9 +2687,9 @@ a:focus-visible {
   padding: 9px 14px;
   font-size: 13px;
   font-weight: 800;
-  color: #9c3d00;
-  background: #ffe9c8;
-  border: 1px solid #f5cf96;
+  color: var(--brand-strong);
+  background: var(--brand-soft);
+  border: 1px solid #cfe0f7;
   border-radius: 999px;
   display: inline-block;
 }
@@ -2951,9 +2857,9 @@ a:focus-visible {
   padding: 5px 11px;
 }
 .saju-chip--rel {
-  color: #1b64da;
-  background: #ffe9a8;
-  border-color: #ffe9a8;
+  color: var(--brand-strong);
+  background: #fff;
+  border-color: #fff;
 }
 .today-hook__preview-k {
   margin: var(--space-5) 0 var(--space-2);
