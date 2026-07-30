@@ -448,7 +448,7 @@ a:focus-visible {
 .disclaimer {
   font-size: 12px;
   color: var(--color-text-secondary);
-  line-height: 1.6;
+  line-height: 1.5;
   text-align: center;
   padding: var(--space-4) var(--space-2) var(--space-2);
   white-space: pre-line;
@@ -583,7 +583,7 @@ a:focus-visible {
 
 .home-hero__sub {
   font-size: 15px;
-  line-height: 1.6;
+  line-height: 1.5;
   color: var(--gray-600);
   margin: 0;
 }
@@ -733,7 +733,7 @@ a:focus-visible {
 .daily-line__zodiac {
   margin: 2px 0 6px;
   font-size: 14px;
-  line-height: 1.55;
+  line-height: 1.5;
   color: rgba(255, 255, 255, 0.92);
   word-break: keep-all;
 }
@@ -1106,7 +1106,7 @@ a:focus-visible {
   align-items: center;
   gap: 5px;
   word-break: keep-all;
-  line-height: 1.35;
+  line-height: 1.5;
 }
 
 .report__dot {
@@ -1122,7 +1122,7 @@ a:focus-visible {
   font-size: 12.5px;
   font-weight: 600;
   color: var(--gray-700);
-  line-height: 1.6;
+  line-height: 1.5;
   word-break: keep-all;
 }
 
@@ -1151,7 +1151,7 @@ a:focus-visible {
   margin: 0 0 var(--space-2);
   font-size: 21px;
   font-weight: 800;
-  line-height: 1.5;
+  line-height: 1.429;
   letter-spacing: -0.02em;
   color: var(--gray-900);
   word-break: keep-all;
@@ -1214,7 +1214,7 @@ a:focus-visible {
 .plan__text {
   font-size: 15px;
   font-weight: 600;
-  line-height: 1.62;
+  line-height: 1.5;
   color: var(--gray-900);
   word-break: keep-all;
 }
@@ -1249,13 +1249,13 @@ a:focus-visible {
   font-size: 15px;
   font-weight: 700;
   color: var(--brand-strong);
-  line-height: 1.6;
+  line-height: 1.5;
   word-break: keep-all;
 }
 
 /* ── 심층 리포트 (상세화면) ── */
 .report-hero {
-  background: linear-gradient(135deg, #eef5ff, #f7fbff);
+  background: var(--brand-soft);
   border-radius: var(--radius-xl);
   padding: var(--space-6) var(--space-5);
   margin-bottom: var(--space-4);
@@ -1271,7 +1271,7 @@ a:focus-visible {
   margin: 8px 0 6px;
   font-size: 21px;
   font-weight: 800;
-  line-height: 1.45;
+  line-height: 1.429;
   color: var(--gray-900);
   letter-spacing: -0.02em;
   word-break: keep-all;
@@ -1288,7 +1288,7 @@ a:focus-visible {
   font-size: 14px;
   font-weight: 600;
   color: var(--gray-800);
-  line-height: 1.65;
+  line-height: 1.5;
   word-break: keep-all;
   position: relative;
 }
@@ -1372,7 +1372,7 @@ a:focus-visible {
   font-size: 14px;
   font-weight: 600;
   color: var(--gray-800);
-  line-height: 1.6;
+  line-height: 1.5;
   word-break: keep-all;
   position: relative;
 }
@@ -1452,7 +1452,7 @@ a:focus-visible {
   font-size: 15px;
   font-weight: 700;
   color: var(--gray-900);
-  line-height: 1.6;
+  line-height: 1.5;
   word-break: keep-all;
 }
 .lucky__num {
@@ -1546,8 +1546,8 @@ a:focus-visible {
   font-size: 18px;
   font-weight: 800;
   color: #ffffff;
-  line-height: 1.55;
-  letter-spacing: -0.01em;
+  line-height: 1.5;
+  letter-spacing: -0.02em;
   word-break: keep-all;
 }
 .charm__sub {
@@ -1591,7 +1591,7 @@ a:focus-visible {
   margin: 0 0 var(--space-4);
   padding: 7px 12px;
   border-radius: 999px;
-  background: linear-gradient(135deg, #fff4d6, #ffe9b8);
+  background: #fff4d6;
 }
 .brag__pct {
   font-size: 13px;
@@ -1626,7 +1626,7 @@ a:focus-visible {
   padding: 15px 16px;
   border: none;
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, #ffe4ee, #eef2ff);
+  background: #ffe4ee;
   cursor: pointer;
   text-align: left;
   margin-bottom: var(--space-4);
@@ -1658,7 +1658,7 @@ a:focus-visible {
 .compat-banner__desc {
   font-size: 12.5px;
   font-weight: 600;
-  color: var(--gray-600);
+  color: var(--gray-700); /* 틴트 배경 위 AA 확보 */
   margin-top: 2px;
 }
 .compat-banner__cta {
@@ -1769,7 +1769,7 @@ a:focus-visible {
   font-size: 12.5px;
   font-weight: 600;
   color: var(--gray-600);
-  line-height: 1.6;
+  line-height: 1.5;
   word-break: keep-all;
   margin: 0 0 var(--space-4);
 }
@@ -1876,7 +1876,7 @@ a:focus-visible {
   border-radius: 12px;
   padding: 10px 12px;
   margin: 0 0 var(--space-3);
-  line-height: 1.55;
+  line-height: 1.5;
   word-break: keep-all;
   text-align: left;
 }
@@ -2095,7 +2095,7 @@ a:focus-visible {
 .letter__intro {
   margin: 0 0 var(--space-4);
   font-size: 14px;
-  line-height: 1.7;
+  line-height: 1.5;
   color: var(--gray-600);
   word-break: keep-all;
   white-space: pre-line;
@@ -2106,7 +2106,7 @@ a:focus-visible {
   margin: 0 0 var(--space-5);
   font-size: 21px;
   font-weight: 800;
-  line-height: 1.55;
+  line-height: 1.429;
   letter-spacing: -0.02em;
   color: var(--gray-900);
   word-break: keep-all;
@@ -2121,7 +2121,7 @@ a:focus-visible {
 .letter__body-text {
   margin: 0 0 var(--space-5);
   font-size: 16px;
-  line-height: 1.8;
+  line-height: 1.5;
   color: var(--gray-800);
   word-break: keep-all;
   white-space: pre-line;
@@ -2161,7 +2161,7 @@ a:focus-visible {
   margin: 0 0 var(--space-5);
   font-size: 15px;
   font-weight: 700;
-  line-height: 1.7;
+  line-height: 1.5;
   color: #a9791a;
   background: #fff7dd;
   border-radius: var(--radius-md);
@@ -2172,7 +2172,7 @@ a:focus-visible {
 .letter__closing {
   margin: 0;
   font-size: 15px;
-  line-height: 1.7;
+  line-height: 1.5;
   color: var(--gray-700);
   word-break: keep-all;
 }
@@ -2502,7 +2502,7 @@ a:focus-visible {
   margin-bottom: var(--space-4);
   padding: var(--space-4);
   border-radius: var(--radius-lg);
-  background: linear-gradient(135deg, #fff7e0, #fffdf5);
+  background: #fff7e0;
   border: 1px solid #f3e4b8;
 }
 .lucky-today__title {
@@ -2559,7 +2559,7 @@ a:focus-visible {
   margin-bottom: var(--space-4);
   padding: var(--space-4);
   border-radius: var(--radius-lg);
-  background: linear-gradient(150deg, #fff8e6, #fffdf6);
+  background: #fff8e6;
   border: 1px solid #f1e2b6;
 }
 .rank-card__head {
@@ -2757,8 +2757,8 @@ a:focus-visible {
   margin: 0;
   font-size: 20px;
   font-weight: 800;
-  line-height: 1.36;
-  letter-spacing: -0.015em;
+  line-height: 1.45;
+  letter-spacing: -0.02em;
   color: #fff;
   word-break: keep-all;
   text-wrap: balance;
@@ -2782,7 +2782,7 @@ a:focus-visible {
   font-size: 13px;
   font-weight: 800;
   color: #9c3d00;
-  background: linear-gradient(120deg, #ffe9c8, #fff3dd);
+  background: #ffe9c8;
   border: 1px solid #f5cf96;
   border-radius: 999px;
   display: inline-block;
@@ -2826,7 +2826,7 @@ a:focus-visible {
 .iljin {
   padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-lg);
-  background: linear-gradient(160deg, #f3f7ff, #fbfcff);
+  background: var(--brand-soft);
   border: 1px solid #e0eaff;
   box-shadow: var(--shadow-card);
   margin-bottom: var(--space-4);
@@ -2861,7 +2861,7 @@ a:focus-visible {
 .iljin__date {
   font-size: 12px;
   font-weight: 700;
-  color: var(--gray-600);
+  color: var(--gray-700); /* 틴트 배경 위 AA 확보 */
 }
 .iljin__rel {
   font-size: 14px;
@@ -2899,7 +2899,7 @@ a:focus-visible {
   margin: var(--space-3) 0 0;
   font-size: 13.5px;
   font-weight: 600;
-  line-height: 1.55;
+  line-height: 1.5;
   color: var(--gray-800);
   word-break: keep-all;
 }
@@ -2925,7 +2925,7 @@ a:focus-visible {
 .iljin__boost-color small {
   font-size: 11.5px;
   font-weight: 600;
-  color: var(--gray-600);
+  color: var(--gray-700); /* 틴트 배경 위 AA 확보 */
 }
 .iljin__boost-tip {
   font-size: 12.5px;
