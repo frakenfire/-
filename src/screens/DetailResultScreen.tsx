@@ -27,7 +27,15 @@ export function DetailResultScreen({
   const { topPick, match } = detail;
 
   return (
-    <AppLayout onBack={onBack} title="심층 리포트">
+    <AppLayout
+      onBack={onBack}
+      title="심층 리포트"
+      bottom={
+        <button type="button" className="btn btn--primary" disabled={busy} onClick={onShare}>
+          이 리포트, 친구한테 보내주기 💌
+        </button>
+      }
+    >
       <div className="report-hero">
         <span className="report-hero__eyebrow">오늘의 심층 리포트</span>
         <h2 className="report-hero__title">
@@ -73,9 +81,6 @@ export function DetailResultScreen({
       </div>
 
       <div className="btn-stack">
-        <button type="button" className="btn btn--primary" disabled={busy} onClick={onShare}>
-          이 리포트, 친구한테 보내주기 💌
-        </button>
         <button type="button" className="btn btn--secondary" onClick={onCopyLine}>
           부적 문장만 복사할래요
         </button>

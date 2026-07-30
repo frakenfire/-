@@ -1859,8 +1859,8 @@ a:focus-visible {
   background: #e8f3ff;
 }
 .compat-ohaeng__flow--control {
-  color: #9c5d00;
-  background: #fff3e0;
+  color: #d22030;
+  background: #ffeeee;
 }
 .compat-result__lines {
   display: flex;
@@ -2617,8 +2617,8 @@ a:focus-visible {
   background: var(--gray-100);
 }
 .rank-row__tone--caution {
-  color: #9c5d00;
-  background: #fff3e0;
+  color: #d22030;
+  background: #ffeeee;
 }
 
 /* ── 메인 focal ── '오늘의 나' 훅 카드
@@ -2798,8 +2798,8 @@ a:focus-visible {
   background: var(--gray-100);
 }
 .iljin__tone--caution {
-  color: #9c5d00;
-  background: #fff3e0;
+  color: #d22030;
+  background: #ffeeee;
 }
 .iljin__line {
   margin: var(--space-3) 0 0;

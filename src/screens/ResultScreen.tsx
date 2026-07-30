@@ -83,7 +83,17 @@ export function ResultScreen({
     : { title: '오늘의 풀이', desc: '시간대별로 하루를 미리 그려봤어요', m: '🌅 오전', a: '☀️ 오후', e: '🌙 저녁' };
 
   return (
-    <AppLayout onBack={onBack} title={isMonth ? '이번 달 쪽지' : '오늘의 쪽지'}>
+    <AppLayout
+      onBack={onBack}
+      title={isMonth ? '이번 달 쪽지' : '오늘의 쪽지'}
+      bottom={
+        // 가장 중요한 단일 액션(공유)을 화면 하단에 고정 — 실제 토스 BottomCTA 패턴.
+        // 광고 없이, 스크롤과 무관하게 항상 누를 수 있게 둔다.
+        <button type="button" className="btn btn--primary" disabled={busy} onClick={onShare}>
+          이 쪽지, 친구한테 보내주기 💌
+        </button>
+      }
+    >
       {/* 브리핑 카드 */}
       <div
         className={`briefing briefing--${rarity.tier} fade-in`}
@@ -244,20 +254,13 @@ export function ResultScreen({
         </div>
       </div>
 
-      <div className="btn-stack">
-        {/* 공유 = 친구에게 오늘의 처방 보내주기 (광고 없음, 첫 번째 액션) */}
-        <button type="button" className="btn btn--primary" disabled={busy} onClick={onShare}>
-          이 쪽지, 친구한테 보내주기 💌
-        </button>
-
-        <button
-          type="button"
-          className="btn btn--secondary"
-          onClick={() => setLetterOpen((v) => !v)}
-        >
-          {letterOpen ? '요정의 편지 접기' : '요정이 쓴 편지도 읽기 💌'}
-        </button>
-      </div>
+      <button
+        type="button"
+        className="btn btn--secondary"
+        onClick={() => setLetterOpen((v) => !v)}
+      >
+        {letterOpen ? '요정의 편지 접기' : '요정이 쓴 편지도 읽기 💌'}
+      </button>
 
       {letterOpen ? (
         <div style={{ marginTop: 'var(--space-4)' }}>
