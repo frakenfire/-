@@ -69,7 +69,25 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   if (saju) luck.color = saju.luckyColor;
   const detail = computeDetail(seed, luck, zodiac);
   const rarity = computeRarity(seed);
-  const letter = composeLetter({ mood, variant, seed });
+
+  // 콕 집은 한마디 — '어떻게 알았지'의 핵심. 방금 고른 기분을 되읽는 전용 풀에서.
+  // 편지에는 같은 풀의 '다른' 한 줄을 줘, 톤은 맞되 본문과 겹치지 않게 한다.
+  const pinPool = MOOD_PINPOINT[mood] ?? [variant.pinpoint];
+  const pinIdx = pickFreshIndex(Math.abs(Math.trunc(seed / 7)), pinPool.length, `pin:${mood}`);
+  const pinpoint = pinPool[pinIdx];
+  const letterHighlight =
+    pinPool.length > 1
+      ? pinPool[(pinIdx + 1 + (Math.abs(seed) % (pinPool.length - 1))) % pinPool.length]
+      : pinpoint;
+
+  // 편지의 '오늘의 부적'은 실제 계산된 행운 세트를 쓴다 (결과 보고서와 같은 값).
+  const letter = composeLetter({
+    mood,
+    variant,
+    seed,
+    highlight: letterHighlight,
+    luckyLine: `${luck.time}, ${luck.color.name}, ${luck.item}`,
+  });
 
   // 운세 종류(주제·시간척도) × 상태(회복/그라운딩/실행)로 오늘의 설계를 고른다.
   // 결과의 주인공이라 직전과 같은 설계가 연달아 나오지 않게 별도로 회피한다.
@@ -108,8 +126,6 @@ ${variant.flow}`,
     scale: (isMonth ? 'month' : 'day') as 'day' | 'month',
   };
 
-  // 콕 집은 한마디 — '어떻게 알았지'의 핵심. 방금 고른 기분을 되읽는 전용 풀에서.
-  const pinpoint = pickReading(MOOD_PINPOINT[mood] ?? [variant.pinpoint], 7, `pin:${mood}`);
 
   return {
     title: FORTUNE_LABEL[fortuneType],

@@ -86,9 +86,14 @@ export function computeLuck(seed: number, sajuBias = 0): LuckSet {
 
   const base = 65 + Math.floor(r() * 35); // 65~99
   const total = Math.max(65, Math.min(99, base + sajuBias)); // 사주 보정 후 재클램프
+
+  // 항목별 점수는 총운을 기준으로 흩뿌린다.
+  // 예전엔 총운과 완전히 독립된 난수라 '총운 98점(대길)인데 네 항목이 71~91점'
+  // 같은 모순이 생겼다. 이제 총운이 천장 역할을 하고, 항목은 그 아래로 벌어진다.
+  // (-16 ~ +1 편차 → 최고 항목이 총운과 비슷하고, 최저 항목이 '오늘 조심'이 된다)
   const categories: CategoryScore[] = CATEGORY_META.map((c) => ({
     ...c,
-    score: 60 + Math.floor(r() * 40), // 60~99
+    score: Math.max(50, Math.min(99, total - 16 + Math.floor(r() * 18))),
   }));
 
   const color = pick(COLORS, r);

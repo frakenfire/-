@@ -40,10 +40,21 @@ type ComposeInput = {
   variant: Variant;
   seed: number;
   timeSlot?: TimeSlot;
+  /** 결과와 같은 기분 풀에서 뽑은, 결과 본문과는 겹치지 않는 한 줄 */
+  highlight: string;
+  /** 실제로 계산된 행운 세트 — 결과 화면과 어긋나지 않게 하려고 받는다 */
+  luckyLine: string;
 };
 
 // 위계가 있는 손편지 구조를 조합한다.
-export function composeLetter({ mood, variant, seed, timeSlot }: ComposeInput): LetterParts {
+export function composeLetter({
+  mood,
+  variant,
+  seed,
+  timeSlot,
+  highlight,
+  luckyLine,
+}: ComposeInput): LetterParts {
   const slot = timeSlot ?? currentTimeSlot();
 
   // 서로 다른 양의 소수로 나눠 각 섹션 인덱스를 탈상관시킨다 (음수 시프트 회피).
@@ -55,12 +66,15 @@ export function composeLetter({ mood, variant, seed, timeSlot }: ComposeInput): 
   return {
     intro: `${greeting}
 ${empathy}`,
-    highlight: variant.pinpoint,
+    // 예전엔 variant.pinpoint(정적 템플릿)을 써서 결과 본문의 콕집기와 따로 놀았다.
+    // 이제 같은 기분 풀에서 뽑은 다른 한 줄을 받아 톤이 어긋나지 않는다.
+    highlight,
     body: `${variant.summary[0]}
 ${variant.summary[1]}`,
     keepIntro,
-    // 가운뎃점 나열(AI 티) 대신 자연스러운 쉼표 나열로
-    lucky: variant.lucky.split(' · ').join(', '),
+    // 예전엔 variant.lucky(정적 문자열)라, 결과의 행운 보고서가 '저녁·분홍색'인데
+    // 편지 부적은 '밤·남색'이라고 말하는 모순이 있었다. 이제 실제 계산값을 받는다.
+    lucky: luckyLine,
     caution: variant.caution,
     closing,
     sign: SIGN,
