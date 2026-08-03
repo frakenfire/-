@@ -552,18 +552,23 @@ a:focus-visible {
 
 /* ── 홈 히어로 ── */
 .home-hero {
-  padding: var(--space-2) 0 var(--space-5);
+  padding: var(--space-3) 0 var(--space-6);
 }
 
+/* 인사말과 마스코트를 한 줄에 — 인사가 길어지면 두 줄까지 자연스럽게 흐른다 */
 .home-hero__top {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: var(--space-3);
+  gap: var(--space-4);
 }
 
 .home-hero__top .h1 {
   margin-bottom: 0;
+  flex: 1;
+  min-width: 0;
+  word-break: keep-all;
+  text-wrap: balance;
 }
 
 .date-pill {
@@ -574,11 +579,13 @@ a:focus-visible {
   background: var(--gray-100);
   padding: 5px 11px;
   border-radius: 999px;
-  margin-bottom: var(--space-3);
+  margin-bottom: var(--space-4);
 }
 
 .home-hero .h1 {
-  margin-bottom: var(--space-3);
+  margin-bottom: 0;
+  font-size: 24px;
+  line-height: 1.375;
 }
 
 .home-hero__sub {
@@ -2196,7 +2203,7 @@ a:focus-visible {
 }
 .rarity-badge--common {
   background: #f2f4f6;
-  color: #6b7684;
+  color: var(--gray-700); /* 회색 틴트 위 AA 확보 (6.45:1) */
 }
 .rarity-badge--rare {
   background: #e2eefd;

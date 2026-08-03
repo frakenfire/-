@@ -3,10 +3,10 @@ import { FortuneTypeButton } from '../components/FortuneTypeButton';
 import { Mascot } from '../components/Mascot';
 import { FORTUNE_TYPES, FORTUNE_LABEL } from '../data/fortuneTypes';
 import { findNote } from '../data/notes';
-import { HOME } from '../data/copy';
+import { GREETINGS } from '../data/copy';
 import { useState } from 'react';
 import { todayVibe } from '../lib/dayVibe';
-import { todayKey } from '../lib/dateSeed';
+import { todayKey, hashSeed } from '../lib/dateSeed';
 import { sajuToday, iljinOf, dailyZodiacRanking } from '../lib/saju';
 import { shareMessage } from '../lib/share';
 import { findZodiac, ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac';
@@ -20,12 +20,13 @@ function todayLabel(): string {
   return `${d.getMonth() + 1}월 ${d.getDate()}일 (${week})`;
 }
 
-function greeting(): string {
+// 시간대를 고르고, 그 안에서 날짜 seed 로 문구를 골라 매일 다른 인사를 건넨다.
+function greeting(dateKey: string): string {
   const h = new Date().getHours();
-  if (h >= 5 && h < 11) return '좋은 아침이에요 ☀️';
-  if (h >= 11 && h < 17) return '오후도 잘 버티고 있죠? 🍀';
-  if (h >= 17 && h < 22) return '오늘도 수고했어요 🌙';
-  return '늦은 밤까지 애썼어요 ✨';
+  const slot =
+    h >= 5 && h < 11 ? 'morning' : h >= 11 && h < 17 ? 'afternoon' : h >= 17 && h < 22 ? 'evening' : 'night';
+  const pool = GREETINGS[slot];
+  return pool[hashSeed(`greet|${dateKey}|${slot}`) % pool.length];
 }
 
 type Props = {
@@ -84,24 +85,23 @@ export function HomeScreen({
 
   return (
     <AppLayout>
+      {/* 첫 블록 — 상단 네비에 앱 이름이 이미 있어서, 큰 제목 자리는 앱 이름을
+          반복하지 않고 '나에게 건네는 인사'가 차지한다. (예전엔 같은 글자가 두 번) */}
       <div className="home-hero">
-        <div className="home-hero__top">
-          <div>
-            <div className="pill-row">
-              <span className="date-pill">{todayLabel()}</span>
-              {streak >= 7 ? (
-                <span className="streak-pill streak-pill--crown">👑 {streak}일째!</span>
-              ) : streak >= 2 ? (
-                <span className="streak-pill">🔥 {streak}일째 쪽지</span>
-              ) : (
-                <span className="streak-pill streak-pill--new">🌱 오늘의 첫 쪽지</span>
-              )}
-            </div>
-            <h1 className="h1">{HOME.title}</h1>
-          </div>
-          <Mascot size={78} score={streak >= 3 ? 90 : 80} />
+        <div className="pill-row">
+          <span className="date-pill">{todayLabel()}</span>
+          {streak >= 7 ? (
+            <span className="streak-pill streak-pill--crown">👑 {streak}일째!</span>
+          ) : streak >= 2 ? (
+            <span className="streak-pill">🔥 {streak}일째 쪽지</span>
+          ) : (
+            <span className="streak-pill streak-pill--new">🌱 오늘의 첫 쪽지</span>
+          )}
         </div>
-        <p className="home-hero__sub">{greeting()}</p>
+        <div className="home-hero__top">
+          <h1 className="h1">{greeting(todayKey())}</h1>
+          <Mascot size={72} score={streak >= 3 ? 90 : 80} />
+        </div>
       </div>
 
       {/* ★ 메인 focal — '오늘의 나' 훅 카드
