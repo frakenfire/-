@@ -2630,7 +2630,7 @@ a:focus-visible {
   position: relative;
   overflow: hidden;
   margin-bottom: var(--space-6);
-  padding: var(--space-5);
+  padding: var(--space-6);
   border-radius: var(--radius-xl);
   background:
     radial-gradient(130% 80% at 100% 0%, #4a93ff 0%, transparent 55%),
@@ -2654,16 +2654,16 @@ a:focus-visible {
   padding: 6px 14px;
 }
 .today-hook__persona {
-  margin: var(--space-4) 0 var(--space-1);
+  margin: 22px 0 6px;
   font-size: 14px;
   font-weight: 700;
   color: #eaf2ff;
 }
 .today-hook__line {
   margin: 0;
-  font-size: 20px;
+  font-size: 21px;
   font-weight: 800;
-  line-height: 1.45;
+  line-height: 1.429;
   letter-spacing: -0.02em;
   color: #fff;
   word-break: keep-all;
@@ -2674,7 +2674,7 @@ a:focus-visible {
   color: #fff;
 }
 .today-hook__hint {
-  margin: var(--space-2) 0 0;
+  margin: 10px 0 0;
   font-size: 13px;
   font-weight: 600;
   line-height: 1.5;
@@ -2845,7 +2845,7 @@ a:focus-visible {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: var(--space-3);
+  margin-top: 14px;
 }
 .saju-chip {
   font-size: 11.5px;
@@ -2862,7 +2862,7 @@ a:focus-visible {
   border-color: #fff;
 }
 .today-hook__preview-k {
-  margin: var(--space-5) 0 var(--space-2);
+  margin: 28px 0 10px;
   font-size: 12px;
   font-weight: 700;
   color: #cfe2ff;
@@ -2871,14 +2871,14 @@ a:focus-visible {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  margin: 0 0 var(--space-4);
+  margin: 0 0 var(--space-5);
 }
 .th-cell {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 12px 6px;
+  gap: 5px;
+  padding: 15px 6px;
   background: rgba(255, 255, 255, 0.13);
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 14px;
