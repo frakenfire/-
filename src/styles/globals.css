@@ -516,7 +516,7 @@ a:focus-visible {
 
 @keyframes toast-in {
   from {
-    opacity: 0;
+    opacity: 0.4;
     transform: translate(-50%, 8px);
   }
   to {
@@ -529,9 +529,13 @@ a:focus-visible {
   animation: fade-in 0.22s ease;
 }
 
+/* 등장 애니메이션의 시작 불투명도를 0 이 아니라 0.4 로 둔다.
+   웹뷰가 애니메이션을 멈추면(저전력 모드·백그라운드 등) 시작 프레임에 머무는데,
+   0 이면 본문이 통째로 안 보이게 된다. 0.4 면 페이드 느낌은 유지하면서
+   최악의 경우에도 내용을 읽을 수 있다. (confetti 는 장식이라 그대로 둔다) */
 @keyframes fade-in {
   from {
-    opacity: 0;
+    opacity: 0.4;
     transform: translateY(6px);
   }
   to {
@@ -620,7 +624,7 @@ a:focus-visible {
 
 @keyframes note-in {
   from {
-    opacity: 0;
+    opacity: 0.4;
     transform: translateY(12px) rotate(var(--tilt, 0deg));
   }
   to {
@@ -968,7 +972,7 @@ a:focus-visible {
 @keyframes stamp-in {
   0% {
     transform: scale(1.7);
-    opacity: 0;
+    opacity: 0.4;
   }
   60% {
     transform: scale(0.94);
