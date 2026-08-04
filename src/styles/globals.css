@@ -1802,7 +1802,7 @@ a:focus-visible {
 }
 .compat-ohaeng__pair i {
   font-style: normal;
-  color: var(--gray-400);
+  color: var(--gray-700); /* 13px 기호 — 카드 배경이 순백이 아니라 gray-600(4.11)은 미달 */
   margin: 0 2px;
 }
 .compat-ohaeng__flow {
@@ -2902,8 +2902,10 @@ a:focus-visible {
   font-size: 15px;
   font-style: normal;
   line-height: 1;
-  color: #fff;
-  background: var(--brand);
+  color: var(--brand-strong);
+  /* 어두운 히어로 카드 위 흰 원 + 진한 파랑 화살표.
+     흰 글자 on --brand 는 3.71 로 AA(4.5) 미달이었다. */
+  background: #fff;
   border-radius: 999px;
   transition: transform 0.24s var(--ease-spring);
 }

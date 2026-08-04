@@ -21,6 +21,9 @@ jobs:
         run: npm test
       - name: Web build
         run: npm run build:web
+      # 운영 번들에 mock 광고 코드가 섞이면 '광고 안 봐도 보상이 열리는' 앱이 나간다.
+      - name: mock 광고 코드 가드
+        run: npm run check:no-mock
       # 출시 준비 가드는 정보 제공용(placeholder 남아 있으면 리포트).
       # 콘솔 값 미설정 상태의 개발 브랜치를 막지 않도록 실패해도 통과시킨다.
       - name: Release readiness (informational)

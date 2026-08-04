@@ -11,7 +11,9 @@
 - **서버/DB/로그인 없음** — 상태는 React state, 기록은 `localStorage`(선택형 값만)
 - **개인정보/자유입력 저장 없음** (`src/lib/storage.ts`) — 띠도 생년월일 없이 선택형 값만
 - **가볍고 희망적인 톤, 해요체** — 의료/금융/법률 조언 및 단정·불안 표현 금지
-- **광고는 mock** — `Promise<boolean>` mock (`src/lib/ads.ts`), 실배포 시 앱인토스 광고 SDK로 교체
+- **광고는 앱인토스 실 SDK** — `showFullScreenAd` (`src/lib/ads.ts`).
+  `userEarnedReward` 이벤트가 왔을 때만 보상하고, 중도 닫기·실패·미지원은 절대 보상으로 위장하지 않음.
+  로컬 `npm run dev` 에서만 mock 이고, 운영 번들에 섞이지 않았는지는 `npm run check:no-mock` 이 검사
 - **디자인** — 화이트 캔버스 + 토스 그레이 램프(`#191f28`~`#f9fafb`) + 토스 블루 `#3182f6`(브랜드/CTA),
   세만틱 컬러(초록/블루/앰버)로 점수 표현, 20~24px 라운드, 단일 레이어 소프트 섀도우
 - **쪽지/별/스티커 느낌의 가벼운 뽑기 UI** — 무거운 명상/타로/무속 느낌 배제
@@ -30,10 +32,15 @@ Home → Mood(기분 선택) → NotePick(쪽지 3장 중 1장) → Reveal(로�
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
-npm run build      # 타입체크 + 프로덕션 빌드 → dist/
-npm run preview
+npm run dev              # http://localhost:5173 (광고는 mock)
+npm run verify           # 타입체크 + 테스트 + 빌드 + mock광고 가드 — 커밋 전 이거 하나면 됨
+npm run audit            # 실제 브라우저로 전 화면 클릭 점검 (playwright 필요)
+npm run check:release    # 콘솔 발급값 3종이 채워졌는지
+npx ait build            # .ait 번들
+npx ait deploy           # 심사 제출
 ```
+
+**출시까지 남은 절차와 붙여넣을 프롬프트는 [`release/로컬-작업-프롬프트.md`](release/로컬-작업-프롬프트.md)** 에 있습니다.
 
 ## 폴더 구조
 
@@ -47,7 +54,7 @@ src/
   data/                   # fortuneTypes · notes(12) · resultTemplates · dayDesign · readings
                           # detailContent · luckyFood · zodiac · letterFragments · copy
   lib/                    # generateFortune · luck · detail · compat · dayVibe · letter · rarity
-                          # ads(mock) · dateSeed · storage · share · saveImage
+                          # ads(앱인토스 SDK) · saju · dateSeed · storage · share · saveImage
   types/                  # fortune.ts
 ```
 
