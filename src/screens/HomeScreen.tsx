@@ -59,6 +59,7 @@ export function HomeScreen({
   const [pick, setPick] = useState<'zodiac' | 'star' | null>(null);
   const [rankOpen, setRankOpen] = useState(false);
   const [shared, setShared] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
   const vibe = todayVibe(todayKey());
   const iljin = iljinOf(todayKey());
   const saju = zodiac ? sajuToday(todayKey(), zodiac.id) : null;
@@ -301,15 +302,35 @@ export function HomeScreen({
         </div>
       ) : null}
 
-      <button
-        type="button"
-        className="reset-link"
-        onClick={() => {
-          if (window.confirm('내 띠·별자리·저장한 사람·출석 기록을 모두 지울까요?')) onReset();
-        }}
-      >
-        내 데이터 전체 삭제
-      </button>
+      {/* 삭제 확인 — window.confirm 은 웹뷰·샌드박스 iframe 에서 조용히 false 를
+          돌려주는 경우가 있어(그러면 눌러도 아무 일도 안 일어남) 앱 안에서 두 번
+          눌러 확인받는다. 어떤 환경에서도 동작하고, 실수로 지우는 것도 막는다. */}
+      {confirmReset ? (
+        <div className="reset-confirm">
+          <p className="reset-confirm__q">
+            내 띠·별자리·저장한 사람·출석 기록을 모두 지울까요?
+          </p>
+          <div className="reset-confirm__row">
+            <button type="button" className="reset-confirm__no" onClick={() => setConfirmReset(false)}>
+              아니요
+            </button>
+            <button
+              type="button"
+              className="reset-confirm__yes"
+              onClick={() => {
+                setConfirmReset(false);
+                onReset();
+              }}
+            >
+              네, 전부 지울게요
+            </button>
+          </div>
+        </div>
+      ) : (
+        <button type="button" className="reset-link" onClick={() => setConfirmReset(true)}>
+          내 데이터 전체 삭제
+        </button>
+      )}
     </AppLayout>
   );
 }
