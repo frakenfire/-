@@ -7,6 +7,7 @@ import { generateFortune } from './lib/generateFortune';
 import { luckPercentile } from './lib/luck';
 import { showRewardAd, isRewarded, isUnsupportedFreePass, adResultMessage } from './lib/ads';
 import { shareBriefing, shareForUnlock, copyText } from './lib/share';
+import { AppLayout } from './components/AppLayout';
 import { saveResultCard } from './lib/saveImage';
 import {
   incrementDailyDrawCount,
@@ -170,6 +171,18 @@ export default function App() {
   // 퍼널 계측 — 화면 진입 로깅 (토스 Analytics, 미지원 시 no-op)
   useEffect(() => {
     logEvent('screen_view', { screen });
+    // 화면이 바뀌면 항상 맨 위에서 시작한다.
+    // 스크롤 컨테이너는 환경에 따라 달라진다(콘텐츠가 길면 window, 웹뷰처럼 높이가
+    // 고정되면 .app__body). 둘 다 초기화하지 않으면, 앞 화면에서 내려둔 스크롤이
+    // 그대로 남아 새 화면이 중간부터 보이고 '빈 화면'처럼 느껴진다.
+    if (typeof window !== 'undefined') {
+      try {
+        window.scrollTo(0, 0);
+        document.querySelector('.app__body')?.scrollTo(0, 0);
+      } catch {
+        /* no-op */
+      }
+    }
     // 궁합 화면만 해시로 반영(새로고침 유지 + 딥링크 재현). replaceState 라 히스토리 오염 없음.
     const target = screen === 'compat' ? '#/compat' : '#/';
     if (typeof window !== 'undefined' && window.location.hash !== target) {
@@ -449,6 +462,28 @@ export default function App() {
           onSave={handleSave}
           onBack={() => setScreen('result')}
         />
+      )}
+
+      {/* 안전망 — 결과/심층 화면인데 데이터가 없으면(저장 실패·비정상 복원 등)
+          빈 화면을 보여주지 않고 홈으로 돌아갈 길을 준다. */}
+      {(screen === 'result' || screen === 'detail') && !(result && note) && (
+        <AppLayout onBack={() => setScreen('home')} title="오늘의 쪽지">
+          <div className="empty-state">
+            <p className="empty-state__title">쪽지를 불러오지 못했어요</p>
+            <p className="empty-state__desc">잠시 문제가 있었어요. 다시 뽑아볼까요?</p>
+            <button
+              type="button"
+              className="btn btn--primary"
+              onClick={() => {
+                setNote(null);
+                setDrawNonce((n) => n + 1);
+                setScreen('home');
+              }}
+            >
+              처음으로 돌아가기
+            </button>
+          </div>
+        </AppLayout>
       )}
 
       {screen === 'compat' && (
