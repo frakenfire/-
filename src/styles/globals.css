@@ -2666,6 +2666,12 @@ a:focus-visible {
   font-weight: 700;
   color: #eaf2ff;
 }
+/* 띠를 고른 상태에선 위의 persona 줄('○○띠인 당신,')이 일진 배지와의 간격을
+   갖고 있다. 띠 미설정이면 그 줄이 없어 헤드라인이 배지에 그대로 붙으므로,
+   배지 바로 뒤에 올 때만 같은 22px 를 직접 준다. */
+.today-hook__kw + .today-hook__line {
+  margin-top: 22px;
+}
 .today-hook__line {
   margin: 0;
   font-size: 21px;
