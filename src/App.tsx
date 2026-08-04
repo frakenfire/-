@@ -336,7 +336,9 @@ export default function App() {
       headline: result.dayPlan.headline,
       doItem: result.dayPlan.steps[0].text,
       dontItem: result.dayPlan.holdOff,
-      brag: `상위 ${brag.pct}%`,
+      // 자랑거리일 때만 공유 문구에 넣는다 — "상위 90% 🏆" 를 친구에게 보내는 건
+      // 자랑이 아니라 김빠지는 일이라, 그런 날엔 점수만 담아 보낸다.
+      brag: brag.isBrag ? `상위 ${brag.pct}%` : undefined,
       pinpoint: result.pinpoint,
     });
     logEvent('share', { outcome: r });

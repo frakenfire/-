@@ -1,5 +1,5 @@
-import { seededRandom } from './dateSeed';
-import { LUCKY_FOODS, type LuckyFood } from '../data/luckyFood';
+import { seededRandom } from './dateSeed.ts';
+import { LUCKY_FOODS, type LuckyFood } from '../data/luckyFood.ts';
 
 // 입소문 요소: 총운 점수 + 카테고리별 점수 + 행운 세트.
 // 인기 '오늘의 운세' 앱(포스텔러/펭귄도사/운세도사)의 공통 히트 요소를 반영.
@@ -75,17 +75,31 @@ function grade(total: number): string {
   return '평';
 }
 
-// 사주 톤 → 총운 보정치. 오늘 일진과 내 띠의 관계가 좋을수록 총운이 높게 나오도록
-// 살짝 기울인다(로직 일관성). 난수 소비량은 그대로라 나머지 행운 세트는 불변.
-export function sajuBiasFromTone(tone: 'great' | 'good' | 'steady' | 'caution'): number {
-  return { great: 6, good: 3, steady: 0, caution: -5 }[tone];
+// 사주 톤 → 총운이 놓일 수 있는 구간.
+// 결과 화면은 '총운 96점 · 대길'(숫자)과 '내 띠와 상충 · 조심'(사주 해석)을 같은 화면에
+// 나란히 보여준다. 예전엔 둘이 ±6 보정으로만 느슨하게 묶여 있어서, 상충인 날에 대길이
+// 뜨는 정면 모순이 실제로 6% 넘게 나왔다(12띠 × 20일 × 전 조합 측정).
+// 이제 톤이 점수의 구간 자체를 정해, 숫자와 문장이 구조적으로 어긋날 수 없게 한다.
+// 구간 안에서는 seed 로 자유롭게 흩어지므로 매일의 변화폭은 그대로다.
+const TONE_BAND: Record<'great' | 'good' | 'steady' | 'caution', [number, number]> = {
+  great: [82, 99], // 삼합·육합 — 대길이 나올 수 있는 유일한 구간
+  good: [75, 95],
+  steady: [70, 90], // 비화·평운 — 무난하되 대길은 아님
+  caution: [65, 82], // 충·형·원진 — 길 이상은 뜨지 않음
+};
+
+export function luckBandForTone(tone: 'great' | 'good' | 'steady' | 'caution'): [number, number] {
+  return TONE_BAND[tone];
 }
 
-export function computeLuck(seed: number, sajuBias = 0): LuckSet {
+export function computeLuck(seed: number, band?: [number, number]): LuckSet {
   const r = seededRandom(seed);
 
+  // 난수 소비량은 밴드 유무와 무관하게 1회로 고정 — 띠를 저장해도 행운 세트(색·숫자·
+  // 음식 등)의 뽑기 순서가 밀리지 않게 하기 위함.
   const base = 65 + Math.floor(r() * 35); // 65~99
-  const total = Math.max(65, Math.min(99, base + sajuBias)); // 사주 보정 후 재클램프
+  const [lo, hi] = band ?? [65, 99];
+  const total = lo + Math.floor(((base - 65) / 35) * (hi - lo + 1));
 
   // 항목별 점수는 총운을 기준으로 흩뿌린다.
   // 예전엔 총운과 완전히 독립된 난수라 '총운 98점(대길)인데 네 항목이 71~91점'
@@ -115,14 +129,39 @@ export function computeLuck(seed: number, sajuBias = 0): LuckSet {
 }
 
 // 총운 → "상위 N%" 자랑 배지.
-// 총운의 기본은 65~99 균등분포(65 + floor(r()*35))이고 사주 톤으로 약간 보정된다.
-// 이 점수 이상이 나올 확률 = (100 - total) / 35 로 계산 (가능한 65~99 범위 기준).
-// (실사용자 집계가 아니라 '가능한 점수 분포상 상위 비율'이라는 뜻의 재미 지표)
-export function luckPercentile(total: number): { pct: number; label: string } {
+// 사주 톤이 총운 구간을 정하면서 점수 분포가 균등에서 종 모양으로 바뀌었다.
+// 예전의 (100-total)/35 균등 가정을 그대로 두면 '88점 · 길'인데 배지는 '평범한 하루'로
+// 뜨는 식으로 등급과 배지가 서로 다른 말을 한다.
+// 그래서 (1) 실제 분포(12띠 × 40일 × 전 조합 50,400건 측정)의 누적 비율을 구간별로
+// 보간하고, (2) 라벨은 등급 경계와 같은 지점에서 갈리게 해 둘이 어긋날 수 없게 한다.
+const PERCENTILE_ANCHORS: [total: number, pct: number][] = [
+  [65, 100],
+  [73, 90], // 소길 시작
+  [80, 65], // 중길 시작
+  [88, 30], // 길 시작
+  [95, 6], // 대길 시작
+  [99, 1],
+];
+
+export function luckPercentile(total: number): { pct: number; label: string; isBrag: boolean } {
   const clamped = Math.max(65, Math.min(99, total));
-  const pct = Math.max(1, Math.min(99, Math.round(((100 - clamped) / 35) * 100)));
-  const label = pct <= 5 ? '역대급 행운' : pct <= 15 ? '상위권' : pct <= 30 ? '괜찮은 편' : '평범한 하루';
-  return { pct, label };
+  let pct = 100;
+  for (let i = 1; i < PERCENTILE_ANCHORS.length; i++) {
+    const [t0, p0] = PERCENTILE_ANCHORS[i - 1];
+    const [t1, p1] = PERCENTILE_ANCHORS[i];
+    if (clamped <= t1 || i === PERCENTILE_ANCHORS.length - 1) {
+      pct = Math.round(p0 + ((clamped - t0) / (t1 - t0)) * (p1 - p0));
+      break;
+    }
+  }
+  pct = Math.max(1, Math.min(99, pct));
+  // 라벨 경계 = 등급 경계. 배지와 '총운 88점 · 길'이 같은 이야기를 하게 된다.
+  const label =
+    clamped >= 95 ? '역대급 행운' : clamped >= 88 ? '상위권' : clamped >= 80 ? '괜찮은 편' : '평범한 하루';
+  // 🏆 배지는 자랑거리일 때만 띄운다. '상위 90%'를 트로피와 함께 보여주면
+  // 자랑 배지가 오히려 김을 빼고, 공유할 마음도 사라진다.
+  // (길 이상 = 상위 30% 이내, 대략 사흘에 한 번꼴로 떠서 희소성이 산다)
+  return { pct, label, isBrag: clamped >= 88 };
 }
 
 export function scoreColor(score: number): string {

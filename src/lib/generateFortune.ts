@@ -5,7 +5,7 @@ import { findZodiac } from '../data/zodiac';
 import { findStarSign } from '../data/starSign';
 import { ZODIAC_TRAIT, STAR_TRAIT } from '../data/traits';
 import { hashSeed } from './dateSeed';
-import { computeLuck, sajuBiasFromTone } from './luck';
+import { computeLuck, luckBandForTone } from './luck';
 import { sajuToday } from './saju';
 import { computeDetail } from './detail';
 import { composeLetter } from './letter';
@@ -19,6 +19,7 @@ import {
   AFTERNOON_READINGS,
   EVENING_READINGS,
   GRADE_READING,
+  GRADE_READING_MONTH,
   MIND_READINGS,
   MONTH_EARLY_READINGS,
   MONTH_LATE_READINGS,
@@ -61,9 +62,10 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const variant = variants[pickFreshIndex(seed, variants.length, `tpl:${fortuneType}`)];
 
   const lead = NOTE_LEAD[note.id] ?? '오늘의 쪽지가 도착했어요.';
-  // 오늘 일진×내 띠 사주 — 띠가 있으면 총운을 살짝 보정(로직 일관성)하고 결과에 담는다.
+  // 오늘 일진×내 띠 사주 — 띠가 있으면 사주 톤이 총운의 구간을 정한다(로직 일관성).
+  // 띠를 안 골랐으면 근거가 없으므로 전 구간(65~99)을 그대로 쓴다.
   const saju = zodiac && dateKey ? sajuToday(dateKey, zodiac) : null;
-  const luck = computeLuck(seed, saju ? sajuBiasFromTone(saju.tone) : 0);
+  const luck = computeLuck(seed, saju ? luckBandForTone(saju.tone) : undefined);
   // 행운 색을 사주 개운 컬러로 연결 — 띠를 알면 색이 랜덤이 아니라
   // '내 오행을 생해주는 오행(인성)'의 오방색에서 나온다. 매일의 색에 근거가 생긴다.
   if (saju) luck.color = saju.luckyColor;
@@ -71,14 +73,19 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const rarity = computeRarity(seed);
 
   // 콕 집은 한마디 — '어떻게 알았지'의 핵심. 방금 고른 기분을 되읽는 전용 풀에서.
-  // 편지에는 같은 풀의 '다른' 한 줄을 줘, 톤은 맞되 본문과 겹치지 않게 한다.
-  const pinPool = MOOD_PINPOINT[mood] ?? [variant.pinpoint];
-  const pinIdx = pickFreshIndex(Math.abs(Math.trunc(seed / 7)), pinPool.length, `pin:${mood}`);
-  const pinpoint = pinPool[pinIdx];
+  const isMonth = fortuneType === 'month';
+  const moodPool = MOOD_PINPOINT[mood] ?? [variant.pinpoint];
+  // '이번 달의 나'는 월간 리포트라 기분 풀(4분의 3이 '오늘/하루'로 쓰여 있다)을 그대로
+  // 쓰면 "오늘이 그런 쪽이에요" 가 월간 화면 맨 위에 박힌다. 월간은 월간 문장으로.
+  // 회피 이력은 기분 풀에 대해 한 번만 갱신한다(키 하나 = 풀 하나).
+  const moodIdx = pickFreshIndex(Math.abs(Math.trunc(seed / 7)), moodPool.length, `pin:${mood}`);
+  // 편지는 어떤 주제로 뽑았든 '오늘 쓴 편지'라 기분 풀을 그대로 쓰되,
+  // 본문에 나온 한마디와는 다른 줄을 골라 같은 문장이 두 번 보이지 않게 한다.
   const letterHighlight =
-    pinPool.length > 1
-      ? pinPool[(pinIdx + 1 + (Math.abs(seed) % (pinPool.length - 1))) % pinPool.length]
-      : pinpoint;
+    moodPool.length > 1
+      ? moodPool[(moodIdx + 1 + (Math.abs(seed) % (moodPool.length - 1))) % moodPool.length]
+      : moodPool[moodIdx];
+  const pinpoint = isMonth ? variant.pinpoint : moodPool[moodIdx];
 
   // 편지의 '오늘의 부적'은 실제 계산된 행운 세트를 쓴다 (결과 보고서와 같은 값).
   const letter = composeLetter({
@@ -110,11 +117,10 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   // 하루 풀이: 등급 해설 + 시간대·사람·마음 해석을 seed 로 조합.
   // 서로 다른 소수로 나눠 섹션 간 조합이 매일 갈라지게 하고, 섹션마다
   // 직전과 다른 문장이 나오도록 독립된 회피 이력을 둔다.
-  const isMonth = fortuneType === 'month';
   const pickReading = (arr: string[], div: number, key: string) =>
     arr[pickFreshIndex(Math.abs(Math.trunc(seed / div)), arr.length, key)];
   const reading = {
-    overall: `${GRADE_READING[luck.grade] ?? GRADE_READING['평']}
+    overall: `${(isMonth ? GRADE_READING_MONTH : GRADE_READING)[luck.grade] ?? GRADE_READING['평']}
 ${variant.flow}`,
     // month 타입은 초반/중순/월말 풀로, 나머지는 오전/오후/저녁 풀로.
     morning: pickReading(isMonth ? MONTH_EARLY_READINGS : MORNING_READINGS, 3, `read:morning:${isMonth}`),

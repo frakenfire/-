@@ -130,10 +130,12 @@ export function ResultScreen({
           )}
         </div>
 
-        <div className="brag" aria-label={`오늘 상위 ${brag.pct}퍼센트`}>
-          <span className="brag__pct">🏆 오늘 총운 상위 {brag.pct}%</span>
-          <span className="brag__label">· {brag.label}</span>
-        </div>
+        {brag.isBrag ? (
+          <div className="brag" aria-label={`오늘 상위 ${brag.pct}퍼센트`}>
+            <span className="brag__pct">🏆 오늘 총운 상위 {brag.pct}%</span>
+            <span className="brag__label">· {brag.label}</span>
+          </div>
+        ) : null}
 
         {milestone ? (
           <p className="streak-hit">
