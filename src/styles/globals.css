@@ -516,11 +516,9 @@ a:focus-visible {
 
 @keyframes toast-in {
   from {
-    opacity: 0.4;
     transform: translate(-50%, 8px);
   }
   to {
-    opacity: 1;
     transform: translate(-50%, 0);
   }
 }
@@ -529,17 +527,18 @@ a:focus-visible {
   animation: fade-in 0.22s ease;
 }
 
-/* 등장 애니메이션의 시작 불투명도를 0 이 아니라 0.4 로 둔다.
-   웹뷰가 애니메이션을 멈추면(저전력 모드·백그라운드 등) 시작 프레임에 머무는데,
-   0 이면 본문이 통째로 안 보이게 된다. 0.4 면 페이드 느낌은 유지하면서
-   최악의 경우에도 내용을 읽을 수 있다. (confetti 는 장식이라 그대로 둔다) */
+/* 등장 애니메이션은 투명도를 건드리지 않고 위치만 움직인다.
+   투명도로 등장시키면 두 가지가 문제가 된다.
+   (1) 0 에서 시작하면, 웹뷰가 애니메이션을 멈췄을 때(저전력 모드·백그라운드 등)
+       시작 프레임에 갇혀 내용이 통째로 안 보인다.
+   (2) 그렇다고 0.4 에서 시작하면 반투명한 유령 상태가 눈에 보여 버그처럼 읽힌다.
+   위치만 움직이면 요소는 항상 완전히 불투명하고, 애니메이션이 멈춰도
+   6px 어긋난 채로 멀쩡히 보인다. (confetti 는 장식이라 그대로 둔다) */
 @keyframes fade-in {
   from {
-    opacity: 0.4;
     transform: translateY(6px);
   }
   to {
-    opacity: 1;
     transform: translateY(0);
   }
 }
@@ -624,11 +623,9 @@ a:focus-visible {
 
 @keyframes note-in {
   from {
-    opacity: 0.4;
     transform: translateY(12px) rotate(var(--tilt, 0deg));
   }
   to {
-    opacity: 1;
     transform: rotate(var(--tilt, 0deg));
   }
 }
@@ -972,15 +969,12 @@ a:focus-visible {
 @keyframes stamp-in {
   0% {
     transform: scale(1.7);
-    opacity: 0.4;
   }
   60% {
     transform: scale(0.94);
-    opacity: 1;
   }
   100% {
     transform: scale(1);
-    opacity: 1;
   }
 }
 .briefing .rarity-badge {
