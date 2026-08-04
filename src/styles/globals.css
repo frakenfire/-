@@ -3023,3 +3023,18 @@ a:focus-visible {
   color: var(--white);
   background: #d22030; /* TDS adaptiveRed700 — 되돌릴 수 없는 동작 */
 }
+
+/* 접힌 쪽지 — 3장 모두 같은 색. 색이 다르면 '느낌'이 아니라 '색'으로 고르게 되고,
+   뒷면인데 서로 다른 카드라는 힌트를 주게 된다. 내용은 열어야 알 수 있어야 한다. */
+.note--facedown {
+  background: var(--white);
+  border-color: var(--gray-200);
+}
+.note--facedown .note__hint {
+  color: var(--gray-700);
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  word-break: keep-all;
+  line-height: 1.35;
+}

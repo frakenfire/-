@@ -9,17 +9,19 @@ type Props = {
   index?: number;
   /** idle: 대기 · opening: 선택돼 펼쳐짐 · dim: 다른 쪽지 선택됨 */
   state?: 'idle' | 'opening' | 'dim';
+  /** 접힌 상태에서 보여줄 한 줄 (3장이 서로 다른 문구를 갖는다) */
+  teaser?: string;
   onClick?: () => void;
 };
 
 // PRD §5.3 — 접힌 쪽지. 기울인 배치 + 순차 등장, 선택 시 펼쳐지는 모션.
-export function NoteCard({ note, faceDown, index = 0, state = 'idle', onClick }: Props) {
+export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, onClick }: Props) {
   const tilt = [-4, 0, 4][index % 3];
   const opening = state === 'opening';
   return (
     <button
       type="button"
-      className={`note ${NOTE_COLOR_CLASS[note.color]} note--${state}`}
+      className={`note ${faceDown ? 'note--facedown' : NOTE_COLOR_CLASS[note.color]} note--${state}`}
       style={
         {
           '--tilt': `${tilt}deg`,
@@ -32,7 +34,9 @@ export function NoteCard({ note, faceDown, index = 0, state = 'idle', onClick }:
       <span className="note__seal" aria-hidden>
         {opening ? '💌' : faceDown ? '✉️' : note.icon}
       </span>
-      <span className="note__hint">{opening ? '두근두근' : faceDown ? '쪽지' : note.name}</span>
+      <span className="note__hint">
+        {opening ? '두근두근' : faceDown ? (teaser ?? '쪽지') : note.name}
+      </span>
     </button>
   );
 }

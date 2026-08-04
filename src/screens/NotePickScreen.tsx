@@ -1,8 +1,20 @@
 import { AppLayout } from '../components/AppLayout';
 import { NoteCard } from '../components/NoteCard';
 import { Mascot } from '../components/Mascot';
-import { NOTE_PICK } from '../data/copy';
+import { NOTE_PICK, NOTE_TEASERS } from '../data/copy';
+import { todayKey, hashSeed } from '../lib/dateSeed';
 import type { Note } from '../types/fortune';
+
+// 3장에 서로 다른 문구를 준다. 날짜가 바뀌면 조합도 바뀌고, 같은 날엔 고정.
+function pickTeasers(seedKey: string): string[] {
+  const pool = [...NOTE_TEASERS];
+  const out: string[] = [];
+  for (let i = 0; i < 3; i += 1) {
+    const idx = hashSeed(`${seedKey}|${i}`) % pool.length;
+    out.push(pool.splice(idx, 1)[0]);
+  }
+  return out;
+}
 
 type Props = {
   notes: Note[];
@@ -22,6 +34,8 @@ export function NotePickScreen({
   onPick,
   onBack,
 }: Props) {
+  const teasers = pickTeasers(`${todayKey()}|${fortuneLabel}`);
+
   return (
     <AppLayout onBack={busy ? undefined : onBack} step={2} totalSteps={2}>
       {fortuneLabel ? <span className="eyebrow">{fortuneLabel}</span> : null}
@@ -37,6 +51,7 @@ export function NotePickScreen({
             note={note}
             faceDown
             index={i}
+            teaser={teasers[i]}
             state={
               openingId
                 ? openingId === note.id
