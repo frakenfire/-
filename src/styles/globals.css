@@ -1378,7 +1378,7 @@ a:focus-visible {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: var(--brand);
+  background: var(--brand-strong); /* 18px 는 일반 텍스트 기준(4.5:1) */
   color: #fff;
   font-size: 18px;
   font-weight: 800;
@@ -1589,7 +1589,7 @@ a:focus-visible {
   border-radius: 9px;
   font-size: 14px;
   font-weight: 700;
-  color: var(--gray-600);
+  color: var(--gray-700); /* gray-100 위 AA */
 }
 .seg-tab--on {
   background: var(--white);
@@ -1609,7 +1609,7 @@ a:focus-visible {
 .compat-pair__x {
   font-size: 22px;
   font-weight: 800;
-  color: var(--gray-400);
+  color: var(--gray-600); /* 큰 글자 AA(3:1) */
   flex: none;
 }
 .compat-pick {
@@ -2357,7 +2357,7 @@ a:focus-visible {
   color: var(--gray-900);
 }
 .me-pick__chev {
-  color: var(--gray-500); /* 대비 확보 */
+  color: var(--gray-700); /* 흰 배경 위 AA(4.5:1) */
   font-weight: 700;
 }
 .me-grid {
@@ -2437,6 +2437,7 @@ a:focus-visible {
   color: var(--gray-900);
 }
 .rank-card__share {
+  position: relative;
   min-height: 34px;
   font-size: 12px;
   font-weight: 800;
@@ -2445,6 +2446,13 @@ a:focus-visible {
   border-radius: 999px;
   padding: 7px 13px;
   transition: transform 0.2s var(--ease-spring);
+}
+/* 알약 모양은 34px 그대로 두고 탭 영역만 44px 로 넓힌다 (최소 터치 영역).
+   카드 제목 옆에 붙는 칩이라 눈에 보이는 크기를 키우면 제목을 눌러버린다. */
+.rank-card__share::after {
+  content: '';
+  position: absolute;
+  inset: -5px 0;
 }
 .rank-card__share:active {
   transform: scale(0.95);
@@ -2512,7 +2520,7 @@ a:focus-visible {
 .rank-card__more {
   display: block;
   width: 100%;
-  min-height: 40px;
+  min-height: 44px; /* 최소 터치 영역 */
   margin-top: var(--space-3);
   font-size: 12.5px;
   font-weight: 700;

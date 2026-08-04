@@ -1,5 +1,5 @@
-import { hashSeed, seededRandom } from './dateSeed';
-import type { ZodiacId } from '../data/zodiac';
+import { hashSeed, seededRandom } from './dateSeed.ts';
+import type { ZodiacId } from '../data/zodiac.ts';
 import {
   zodiacRelation,
   pairElementFlow,
@@ -10,7 +10,7 @@ import {
   type BranchRelation,
   type PairElementFlow,
   type Element,
-} from './saju';
+} from './saju.ts';
 
 // 오늘의 친구 궁합 — 로그인 없이 되는 바이럴 훅.
 // 내 띠 + 상대 띠 + 날짜로 결정적 점수/코멘트. 순서 무관(정렬)로 같은 쌍은 같은 결과.
@@ -194,6 +194,27 @@ const HEAD_GOOD = [
   '오늘은 대화가 술술 풀려요.',
   '편안하게 흘러가는 하루예요.',
 ];
+// 상충·원진·형(spark)은 점수가 높아도 '편안하게 흘러가는' 사이가 아니다.
+// 예전엔 점수 밴드만 보고 골라서, '불꽃 튀는 사이 · 부딪히기 쉽지만' 바로 아래에
+// '편안하게 흘러가는 하루예요' 가 붙는 정면 모순이 났다.
+// spark 는 결(텐션)을 인정하면서 점수만 반영하는 별도 풀을 쓴다.
+const HEAD_SPARK = [
+  '오늘은 티키타카가 잘 붙는 날이에요.',
+  '부딪혀도 금방 풀리는 하루예요.',
+  '텐션이 살아 있는 날이에요.',
+  '오늘은 자극이 나쁘지 않게 도는 날이에요.',
+  '서로 물러서지 않아도 재밌게 흘러가요.',
+  '오늘은 온도차가 오히려 매력인 날이에요.',
+];
+const HEAD_SPARK_LOW = [
+  '오늘은 한 발씩만 물러서면 돼요.',
+  '괜히 예민해지는 날이니 말은 짧게요.',
+  '오늘은 이기려 들지 않는 쪽이 이겨요.',
+  '살짝 부딪혀도 오늘 안에 안 풀어도 괜찮아요.',
+  '오늘은 거리를 조금 두는 게 서로 편해요.',
+  '툭탁거려도 결국 다시 붙는 사이예요.',
+];
+
 const HEAD_OK = [
   '오늘은 서로 한 발씩 맞춰가요.',
   '조금 어긋나도 노력하면 괜찮아요.',
@@ -269,7 +290,16 @@ export function computeCompat(dateKey: string, a: ZodiacId, b: ZodiacId): Compat
   }));
   const score = Math.round(categories.reduce((s, c) => s + c.score, 0) / categories.length);
   const band: CompatBand = score >= 85 ? 'best' : score >= 70 ? 'good' : 'ok';
-  const head = band === 'best' ? HEAD_BEST : band === 'good' ? HEAD_GOOD : HEAD_OK;
+  const head =
+    vibe === 'spark'
+      ? band === 'ok'
+        ? HEAD_SPARK_LOW
+        : HEAD_SPARK
+      : band === 'best'
+        ? HEAD_BEST
+        : band === 'good'
+          ? HEAD_GOOD
+          : HEAD_OK;
 
   return {
     score,

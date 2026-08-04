@@ -1,4 +1,4 @@
-import { hashSeed } from '../lib/dateSeed';
+import { hashSeed } from '../lib/dateSeed.ts';
 
 // 별자리 — 띠와 나란히 쓰는 두 번째 정체성 선택. 생년월일이 아니라
 // 별자리 12개 중 직접 선택(선택형 값만 저장, PRD 개인정보 원칙 준수).

@@ -131,8 +131,8 @@ export function ResultScreen({
         </div>
 
         {brag.isBrag ? (
-          <div className="brag" aria-label={`오늘 상위 ${brag.pct}퍼센트`}>
-            <span className="brag__pct">🏆 오늘 총운 상위 {brag.pct}%</span>
+          <div className="brag" aria-label={`${isMonth ? '이번 달' : '오늘'} 상위 ${brag.pct}퍼센트`}>
+            <span className="brag__pct">🏆 {isMonth ? '이번 달' : '오늘'} 총운 상위 {brag.pct}%</span>
             <span className="brag__label">· {brag.label}</span>
           </div>
         ) : null}
@@ -280,7 +280,8 @@ export function ResultScreen({
         </button>
 
         <button type="button" className="btn btn--secondary" disabled={busy} onClick={onSave}>
-          결과 카드 저장하기 📸 스토리에 올리기
+          {/* 두 동작처럼 보이면 안 된다 — 실제 동작은 '저장' 하나고, 스토리는 그 다음 안내다. */}
+          카드 저장하고 스토리에 올리기 📸
         </button>
 
         <button type="button" className="btn btn--ghost" disabled={busy} onClick={onRetry}>

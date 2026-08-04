@@ -2,8 +2,12 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { computeLuck, luckBandForTone, luckPercentile } from './luck.ts';
 import { iljinOf, sajuToday } from './saju.ts';
-import { GRADE_READING, GRADE_READING_MONTH } from '../data/readings.ts';
+import { GRADE_READING, GRADE_READING_MONTH, MONTH_PEOPLE_READINGS, PEOPLE_READINGS } from '../data/readings.ts';
 import { TEMPLATES } from '../data/resultTemplates.ts';
+import { PLANS, moodGroup } from '../data/dayDesign.ts';
+import { computeCompat } from './compat.ts';
+import { computeStarCompat } from './starCompat.ts';
+import { STAR_SIGNS } from '../data/starSign.ts';
 
 // 결과 화면은 '총운 96점 · 대길'(숫자)과 '내 띠와 상충 · 조심'(사주 해석)을
 // 한 화면에 나란히 보여준다. 둘이 반대 방향을 가리키면 "이 앱 안 맞네"가 된다.
@@ -133,4 +137,78 @@ test('월간 리포트의 콕 집은 한마디는 일간 표현을 쓰지 않는
   for (const v of TEMPLATES.month) {
     assert.ok(!/오늘|하루/.test(v.pinpoint), `월간 템플릿 한마디에 일간 표현: ${v.pinpoint}`);
   }
+});
+
+test('월간 리포트의 사람 해석도 월간 문장이다', () => {
+  for (const line of MONTH_PEOPLE_READINGS) {
+    assert.ok(!/오늘|하루/.test(line), `월간 사람 해석에 일간 표현: ${line}`);
+  }
+  // 일간 풀과 줄 수가 같아야 같은 seed 로직에서 다양성이 유지된다.
+  assert.equal(MONTH_PEOPLE_READINGS.length, PEOPLE_READINGS.length);
+});
+
+test('down 설계(지침·불안·외로움 공용)는 피로 전용 표현을 쓰지 않는다', () => {
+  // moodGroup 은 tired · anxious · lonely 를 모두 'down' 으로 묶는다.
+  // 그 풀이 '피곤한', '몸이 무거운' 처럼 피로 전용으로 쓰여 있으면,
+  // '불안해요'·'외로워요' 를 고른 사람이 화면 제일 큰 줄에서 남의 말을 읽게 된다.
+  const FATIGUE = /(피곤|몸이 무거운|컨디션|지친 날|지친 채|지친 몸|지친 상태|지친 감정|졸리)/;
+  const offenders: string[] = [];
+  for (const [type, groups] of Object.entries(PLANS)) {
+    for (const plan of (groups as any).down) {
+      const lines = [plan.headline, plan.vibe, plan.holdOff, ...plan.steps.map((s: any) => s.text)];
+      for (const l of lines) if (FATIGUE.test(l)) offenders.push(`${type}: ${l}`);
+    }
+  }
+  assert.deepEqual(offenders, [], `피로 전용 표현 ${offenders.length}건`);
+});
+
+test('moodGroup 이 down 으로 묶는 기분은 셋 뿐이고, 설계가 존재한다', () => {
+  assert.equal(moodGroup('tired'), 'down');
+  assert.equal(moodGroup('anxious'), 'down');
+  assert.equal(moodGroup('lonely'), 'down');
+  assert.equal(moodGroup('good'), 'up');
+  assert.equal(moodGroup('soso'), 'flat');
+  for (const [type, groups] of Object.entries(PLANS)) {
+    for (const g of ['up', 'flat', 'down']) {
+      assert.ok((groups as any)[g]?.length > 0, `${type}.${g} 설계 없음`);
+    }
+  }
+});
+
+test('궁합 한 줄이 관계의 결과 반대로 말하지 않는다', () => {
+  // '불꽃 튀는 사이(상충)' 바로 아래에 '편안하게 흘러가는 하루예요' 가 붙으면
+  // 한 카드 안에서 말이 갈린다. 상충·원진·형(spark)에는 매끄러움을 단정하지 않는다.
+  const SMOOTH = /(편안하게|술술|손발이|죽이 척척|초록불|무난하게 잘 통)/;
+  const ZODIACS = [
+    'rat', 'ox', 'tiger', 'rabbit', 'dragon', 'snake',
+    'horse', 'sheep', 'monkey', 'rooster', 'dog', 'pig',
+  ] as const;
+  const bad: string[] = [];
+  for (const a of ZODIACS) {
+    for (const b of ZODIACS) {
+      for (let d = 0; d < 40; d++) {
+        const dateKey = `2026-0${1 + (d % 9)}-${String(1 + (d % 28)).padStart(2, '0')}`;
+        const c = computeCompat(dateKey, a, b);
+        if (c.vibe !== 'spark') continue;
+        if (SMOOTH.test(c.headline)) bad.push(`${a}×${b}: ${c.headline}`);
+      }
+    }
+  }
+  assert.deepEqual([...new Set(bad)], [], `spark 조합에 매끄러움 단정 ${bad.length}건`);
+});
+
+test('별자리 궁합 한 줄도 관계의 결과 반대로 말하지 않는다', () => {
+  const SMOOTH = /(술술|자연스럽게 리듬이|완벽하게 겹치|텔레파시|말 안 해도)/;
+  const bad: string[] = [];
+  for (const a of STAR_SIGNS) {
+    for (const bs of STAR_SIGNS) {
+      for (let d = 0; d < 20; d++) {
+        const dateKey = `2026-0${1 + (d % 9)}-${String(1 + (d % 28)).padStart(2, '0')}`;
+        const c = computeStarCompat(dateKey, a.id, bs.id);
+        if (c.vibe !== 'spark') continue;
+        if (SMOOTH.test(c.headline)) bad.push(`${a.label}×${bs.label}: ${c.headline}`);
+      }
+    }
+  }
+  assert.deepEqual([...new Set(bad)], [], `spark 별자리 조합에 매끄러움 단정 ${bad.length}건`);
 });

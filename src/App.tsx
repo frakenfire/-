@@ -168,6 +168,23 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // 날짜가 실제로 바뀌면(앱을 켜둔 채 자정을 넘긴 경우) 어제 것을 오늘 것으로
+  // 들고 있지 않도록 오늘 기준 상태를 다시 읽는다.
+  // dateKey 는 visibilitychange 마다 갱신되지만 아래 값들은 마운트 때 한 번만
+  // 읽혔던 탓에, 자정을 넘기면 홈이 어제 편지를 '오늘 받은 편지'로 보여줬다.
+  const lastSyncedDate = useRef(dateKey);
+  useEffect(() => {
+    if (lastSyncedDate.current === dateKey) return;
+    lastSyncedDate.current = dateKey;
+    setTodayReading(loadTodayReading(dateKey));
+    setRarityCounts(getRarityCounts(dateKey));
+    setStreak(peekStreak());
+    // 어제 뽑은 결과 화면을 띄워둔 채 자정을 넘겼다면 홈으로 되돌린다.
+    setResult(null);
+    setNote(null);
+    setScreen((cur) => (cur === 'result' || cur === 'detail' || cur === 'reveal' ? 'home' : cur));
+  }, [dateKey]);
+
   // 퍼널 계측 — 화면 진입 로깅 (토스 Analytics, 미지원 시 no-op)
   useEffect(() => {
     logEvent('screen_view', { screen });

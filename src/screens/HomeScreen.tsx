@@ -56,6 +56,8 @@ export function HomeScreen({
   onReset,
 }: Props) {
   const yNote = yesterdayRecord ? findNote(yesterdayRecord.noteId) : null;
+  // 오늘 이미 뽑았으면 그 결과를 히어로 카드에도 반영한다(잠긴 ? → 실제 값).
+  const drawn = todayReading?.result ?? null;
   const [pick, setPick] = useState<'zodiac' | 'star' | null>(null);
   const [rankOpen, setRankOpen] = useState(false);
   const [shared, setShared] = useState(false);
@@ -96,7 +98,11 @@ export function HomeScreen({
           ) : streak >= 2 ? (
             <span className="streak-pill">🔥 {streak}일째 쪽지</span>
           ) : (
-            <span className="streak-pill streak-pill--new">🌱 오늘의 첫 쪽지</span>
+            // 오늘 이미 뽑았는데 '오늘의 첫 쪽지'가 그대로 붙어 있으면
+            // 아직 안 뽑은 것처럼 읽힌다. 뽑은 뒤엔 위의 🔥 N일째와 같은 말투로.
+            <span className="streak-pill streak-pill--new">
+              {todayReading ? '🌱 1일째 쪽지' : '🌱 오늘의 첫 쪽지'}
+            </span>
           )}
         </div>
         <div className="home-hero__top">
@@ -139,25 +145,32 @@ export function HomeScreen({
           </>
         )}
 
-        {/* '이런 걸 볼 수 있다' — 뽑으면 열리는 것 미리보기(잠긴 ?)로 궁금증 */}
-        <p className="today-hook__preview-k">쪽지를 뽑으면 이런 걸 볼 수 있어요</p>
+        {/* 아직 안 뽑았으면 잠긴 ?로 궁금증을, 이미 뽑았으면 오늘 나온 값을 그대로 보여준다.
+            (이미 88점을 본 사람에게 '?점'을 다시 내미는 건 뒷걸음질이다) */}
+        <p className="today-hook__preview-k">
+          {drawn ? '오늘 쪽지에서 나온 거예요' : '쪽지를 뽑으면 이런 걸 볼 수 있어요'}
+        </p>
         <div className="today-hook__reveal" aria-hidden>
           <div className="th-cell">
             <span className="th-cell__k">오늘 총운</span>
-            <span className="th-cell__v">?<i>점</i></span>
+            <span className="th-cell__v">{drawn ? drawn.luck.total : '?'}<i>점</i></span>
           </div>
           <div className="th-cell">
             <span className="th-cell__k">행운의 색</span>
-            <span className="th-cell__v th-cell__v--q">?</span>
+            <span className={`th-cell__v${drawn ? '' : ' th-cell__v--q'}`}>
+              {drawn ? drawn.luck.color.name : '?'}
+            </span>
           </div>
           <div className="th-cell">
             <span className="th-cell__k">행운 음식</span>
-            <span className="th-cell__v th-cell__v--q">?</span>
+            <span className={`th-cell__v${drawn ? '' : ' th-cell__v--q'}`}>
+              {drawn ? drawn.luck.food.name : '?'}
+            </span>
           </div>
         </div>
 
         <span className="today-hook__cta">
-          쪽지 뽑기 시작하기
+          {drawn ? '다른 기분으로 하나 더 뽑기' : '쪽지 뽑기 시작하기'}
           <i className="today-hook__cta-arrow" aria-hidden>›</i>
         </span>
       </button>

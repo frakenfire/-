@@ -1,6 +1,6 @@
-import { hashSeed, seededRandom } from './dateSeed';
-import type { StarSignId } from '../data/starSign';
-import { ARCHETYPE as ZODIAC_ARCHETYPE, SCORE_RANGE, type CompatBand, type CompatCategory, type CompatResult, type CompatVibe } from './compat';
+import { hashSeed, seededRandom } from './dateSeed.ts';
+import type { StarSignId } from '../data/starSign.ts';
+import { ARCHETYPE as ZODIAC_ARCHETYPE, SCORE_RANGE, type CompatBand, type CompatCategory, type CompatResult, type CompatVibe } from './compat.ts';
 
 // 별자리 궁합 — compat.ts(띠 궁합)와 같은 점수/카테고리 구조, 서양 점성술의
 // 4원소(불/땅/바람/물)·정반대 별자리 이론에 근거해 쌍마다 실제로 다른 "이유"를 준다.
@@ -101,6 +101,22 @@ const HEAD_GOOD = [
   '작은 배려면 더 좋아질 조합이에요.',
   '오늘은 대화가 술술 풀리는 궁합이에요.',
 ];
+// 대립·불화(spark) 조합에는 매끄러움을 단정하지 않는다.
+// 띠 궁합과 같은 이유 — '정반대편에 있는 사이' 바로 아래 '대화가 술술 풀리는'이 붙으면
+// 한 카드 안에서 말이 갈린다.
+const HEAD_SPARK = [
+  '오늘은 다른 점이 오히려 재밌게 도는 날이에요.',
+  '온도차가 매력으로 보이는 하루예요.',
+  '부딪혀도 금방 풀리는 조합이에요.',
+  '오늘은 티키타카가 잘 붙어요.',
+];
+const HEAD_SPARK_LOW = [
+  '오늘은 한 발씩만 물러서면 돼요.',
+  '서로 달라서 생기는 오해는 오늘 안에 안 풀어도 괜찮아요.',
+  '오늘은 이기려 들지 않는 쪽이 편해요.',
+  '거리를 조금 두면 오히려 잘 지내는 조합이에요.',
+];
+
 const HEAD_OK = [
   '오늘은 서로 다른 속도를 맞춰가요.',
   '조금 다르게 느껴도 매력으로 봐줘요.',
@@ -159,7 +175,16 @@ export function computeStarCompat(dateKey: string, a: StarSignId, b: StarSignId)
   }));
   const score = Math.round(categories.reduce((s, c) => s + c.score, 0) / categories.length);
   const band: CompatBand = score >= 85 ? 'best' : score >= 70 ? 'good' : 'ok';
-  const head = band === 'best' ? HEAD_BEST : band === 'good' ? HEAD_GOOD : HEAD_OK;
+  const head =
+    vibe === 'spark'
+      ? band === 'ok'
+        ? HEAD_SPARK_LOW
+        : HEAD_SPARK
+      : band === 'best'
+        ? HEAD_BEST
+        : band === 'good'
+          ? HEAD_GOOD
+          : HEAD_OK;
 
   return {
     score,

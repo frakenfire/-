@@ -197,6 +197,26 @@ export function CompatScreen({
         onBack={picking === 'friend' && !friend ? () => setPicking(null) : onBack}
         title="친구 궁합"
       >
+        {/* 처음 고르는 단계에서도 띠/별자리를 바꿀 수 있어야 한다.
+            (홈 배너가 '띠 또는 별자리만 고르면' 이라고 약속한다) */}
+        {picking === 'my' ? (
+          <div className="seg-tabs">
+            <button
+              type="button"
+              className={mode === 'zodiac' ? 'seg-tab seg-tab--on' : 'seg-tab'}
+              onClick={() => setMode('zodiac')}
+            >
+              🐭 띠 궁합
+            </button>
+            <button
+              type="button"
+              className={mode === 'star' ? 'seg-tab seg-tab--on' : 'seg-tab'}
+              onClick={() => setMode('star')}
+            >
+              ⭐ 별자리 궁합
+            </button>
+          </div>
+        ) : null}
         <h2 className="h2">
           {picking === 'my' ? `내 ${modeLabel}는 뭐예요?` : `상대는 무슨 ${modeLabel}예요?`}
         </h2>

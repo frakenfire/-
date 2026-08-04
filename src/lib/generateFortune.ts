@@ -24,6 +24,7 @@ import {
   MONTH_EARLY_READINGS,
   MONTH_LATE_READINGS,
   MONTH_MID_READINGS,
+  MONTH_PEOPLE_READINGS,
   MORNING_READINGS,
   PEOPLE_READINGS,
 } from '../data/readings';
@@ -75,9 +76,7 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   // 콕 집은 한마디 — '어떻게 알았지'의 핵심. 방금 고른 기분을 되읽는 전용 풀에서.
   const isMonth = fortuneType === 'month';
   const moodPool = MOOD_PINPOINT[mood] ?? [variant.pinpoint];
-  // '이번 달의 나'는 월간 리포트라 기분 풀(4분의 3이 '오늘/하루'로 쓰여 있다)을 그대로
-  // 쓰면 "오늘이 그런 쪽이에요" 가 월간 화면 맨 위에 박힌다. 월간은 월간 문장으로.
-  // 회피 이력은 기분 풀에 대해 한 번만 갱신한다(키 하나 = 풀 하나).
+  // 회피 이력은 기분 풀 하나에 대해 한 번만 갱신한다(키 하나 = 풀 하나).
   const moodIdx = pickFreshIndex(Math.abs(Math.trunc(seed / 7)), moodPool.length, `pin:${mood}`);
   // 편지는 어떤 주제로 뽑았든 '오늘 쓴 편지'라 기분 풀을 그대로 쓰되,
   // 본문에 나온 한마디와는 다른 줄을 골라 같은 문장이 두 번 보이지 않게 한다.
@@ -85,6 +84,8 @@ export function generateFortune(input: FortuneInput): FortuneResult {
     moodPool.length > 1
       ? moodPool[(moodIdx + 1 + (Math.abs(seed) % (moodPool.length - 1))) % moodPool.length]
       : moodPool[moodIdx];
+  // '이번 달의 나'는 월간 리포트라 기분 풀(12줄 중 9줄이 '오늘/하루')을 그대로 쓰면
+  // "오늘이 그런 쪽이에요" 가 월간 화면 맨 위에 박힌다. 월간은 월간 문장으로.
   const pinpoint = isMonth ? variant.pinpoint : moodPool[moodIdx];
 
   // 편지의 '오늘의 부적'은 실제 계산된 행운 세트를 쓴다 (결과 보고서와 같은 값).
@@ -126,7 +127,7 @@ ${variant.flow}`,
     morning: pickReading(isMonth ? MONTH_EARLY_READINGS : MORNING_READINGS, 3, `read:morning:${isMonth}`),
     afternoon: pickReading(isMonth ? MONTH_MID_READINGS : AFTERNOON_READINGS, 11, `read:afternoon:${isMonth}`),
     evening: pickReading(isMonth ? MONTH_LATE_READINGS : EVENING_READINGS, 17, `read:evening:${isMonth}`),
-    people: pickReading(PEOPLE_READINGS, 23, 'read:people'),
+    people: pickReading(isMonth ? MONTH_PEOPLE_READINGS : PEOPLE_READINGS, 23, `read:people:${isMonth}`),
     // 마음 관리 — 방금 고른 기분 전용 풀(무드 에코). 기분마다 회피 이력을 분리.
     mind: pickReading(MOOD_MIND[mood] ?? MIND_READINGS, 31, `read:mind:${mood}`),
     scale: (isMonth ? 'month' : 'day') as 'day' | 'month',
