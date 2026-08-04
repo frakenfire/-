@@ -181,7 +181,7 @@ a:focus-visible {
   display: inline-block;
   font-size: 13px;
   font-weight: 800;
-  color: var(--color-signature-green);
+  color: var(--brand-strong); /* 연파랑 배경 위 AA */
   background: var(--color-soft-green);
   padding: 4px 10px;
   border-radius: 999px;
@@ -307,7 +307,7 @@ a:focus-visible {
 .menu-row__chevron {
   font-size: 20px;
   font-weight: 700;
-  color: var(--gray-400);
+  color: var(--gray-500); /* 20px 큰 글씨 3:1 확보 */
   flex-shrink: 0;
 }
 
@@ -591,17 +591,7 @@ a:focus-visible {
   line-height: 1.375;
 }
 
-.home-hero__sub {
-  font-size: 15px;
-  line-height: 1.5;
-  color: var(--gray-600);
-  margin: 0;
-}
 
-.home-hero__sub b {
-  color: var(--brand);
-  font-weight: 800;
-}
 
 .note-hint {
   text-align: center;
@@ -878,36 +868,9 @@ a:focus-visible {
   }
 }
 
-.cat-row__label {
-  width: 76px;
-  flex-shrink: 0;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--gray-800);
-}
 
-.cat-row__bar {
-  flex: 1;
-  height: 8px;
-  border-radius: 999px;
-  background: var(--gray-100);
-  overflow: hidden;
-}
 
-.cat-row__fill {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-  transition: width 0.5s ease;
-}
 
-.cat-row__score {
-  width: 30px;
-  flex-shrink: 0;
-  text-align: right;
-  font-size: 15px;
-  font-weight: 800;
-}
 
 /* ── 행운 세트 그리드 ── */
 .lucky-grid {
@@ -1555,13 +1518,6 @@ a:focus-visible {
 .chip--vibe {
   background: var(--gray-100);
   color: var(--gray-800);
-}
-.daily-line__vibe {
-  margin: 4px 0 6px;
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: var(--gray-900);
 }
 
 /* ── 친구 궁합 배너 (홈·결과) ── */
@@ -2257,12 +2213,6 @@ a:focus-visible {
   color: var(--gray-900);
 }
 
-.mood-mascot {
-  display: flex;
-  justify-content: center;
-  margin-top: var(--space-6);
-  animation: bob 2.6s ease-in-out infinite;
-}
 
 /* ── 콕 집은 한마디 (핀포인트 훅) ── */
 .pinpoint {
@@ -2407,7 +2357,7 @@ a:focus-visible {
   color: var(--gray-900);
 }
 .me-pick__chev {
-  color: var(--gray-400);
+  color: var(--gray-500); /* 대비 확보 */
   font-weight: 700;
 }
 .me-grid {
@@ -2595,7 +2545,7 @@ a:focus-visible {
   text-align: right;
   font-size: 13px;
   font-weight: 800;
-  color: var(--gray-500);
+  color: var(--gray-600); /* 흰 배경 위 AA */
 }
 .rank-row__name {
   flex: 1;
@@ -2637,9 +2587,10 @@ a:focus-visible {
   margin-bottom: var(--space-6);
   padding: var(--space-6);
   border-radius: var(--radius-xl);
-  background:
-    radial-gradient(130% 80% at 100% 0%, #4a93ff 0%, transparent 55%),
-    linear-gradient(160deg, #3182f6 0%, #1b64da 100%);
+  /* Blue500(#3182f6) 위에서는 순백색조차 3.71:1 이라 작은 글씨가 AA 를 못 넘긴다.
+     TDS 램프에서 한 단계 어두운 Blue700 → Blue900 으로 낮춰 본문·보조 텍스트가
+     모두 4.5:1 이상 확보되게 한다. 하이라이트도 Blue500 까지만 밝힌다. */
+  background: linear-gradient(160deg, #1b64da 0%, #194aa6 100%);
   /* 상단 안쪽 하이라이트(빛 반사) + 은은한 컬러 섀도우 → 기계 가공된 카드 질감 */
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.22),
@@ -2689,7 +2640,7 @@ a:focus-visible {
   font-size: 13px;
   font-weight: 600;
   line-height: 1.5;
-  color: #dbeafe;
+  color: #eaf2ff;
   word-break: keep-all;
 }
 /* 스트릭 마일스톤 축하 — 3·7·14·30일 달성 시 브리핑 상단에 */
@@ -2880,7 +2831,7 @@ a:focus-visible {
   margin: 28px 0 10px;
   font-size: 12px;
   font-weight: 700;
-  color: #cfe2ff;
+  color: #eaf2ff;
 }
 .today-hook__reveal {
   display: grid;
@@ -2901,7 +2852,7 @@ a:focus-visible {
 .th-cell__k {
   font-size: 11px;
   font-weight: 700;
-  color: #e1ecff;
+  color: #eaf2ff;
 }
 .th-cell__v {
   font-family: var(--font-num);
