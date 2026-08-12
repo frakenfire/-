@@ -2536,6 +2536,72 @@ a:focus-visible {
 .podium--1 .podium__name {
   color: var(--brand-strong);
 }
+/* 내 순위 카드 — 띠를 고른 직후 '내 것'이 한눈에 보이는 확인 장치 */
+.me-rank {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: var(--space-3) 0 0;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: var(--brand-soft);
+  border: 1px solid #cfe2fb;
+}
+.me-rank__emoji {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  background: var(--white);
+  border-radius: 999px;
+}
+.me-rank__body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.me-rank__title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.me-rank__sub {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-700);
+}
+.me-rank__rank {
+  flex: none;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 1px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--brand-strong);
+}
+.me-rank__rank b {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.me-rank__rank i {
+  font-style: normal;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-600);
+  margin-left: 2px;
+}
+.me-rank--top {
+  background: #fff7e0;
+  border-color: #e7c15a;
+}
+.me-rank--top .me-rank__rank {
+  color: #8a5f0e; /* 금색 톤 AA */
+}
 .rank-card__me {
   margin: var(--space-3) 0 0;
   font-size: 13px;

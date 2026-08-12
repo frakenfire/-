@@ -200,16 +200,25 @@ export function HomeScreen({
           })}
         </div>
 
-        {myRank ? (
-          <p className={`rank-card__me${myRank.rank <= 3 ? ' rank-card__me--top' : ''}`}>
-            {myRank.rank === 1
-              ? '오늘 내 띠가 1위! 자랑각이에요 👑'
-              : myRank.rank <= 3
-                ? `내 띠는 오늘 ${myRank.rank}위! 기분 좋게 시작해요`
-                : myRank.rank >= 11
-                  ? `내 띠는 오늘 ${myRank.rank}위… 쪽지로 반전 만들어봐요`
-                  : `내 띠는 오늘 ${myRank.rank}위 (${myRank.relationKo})`}
-          </p>
+        {myRank && zodiac ? (
+          /* 누른 직후 '내 것'이 한눈에 보여야 한다 — 이모지 + 큰 순위 숫자 카드.
+             예전엔 회색 한 줄 텍스트라 방금 고른 결과가 어디 있는지 안 보였다. */
+          <div className={`me-rank${myRank.rank <= 3 ? ' me-rank--top' : ''}`}>
+            <span className="me-rank__emoji" aria-hidden>{zodiac.emoji}</span>
+            <span className="me-rank__body">
+              <span className="me-rank__title">내 {zodiac.label}, 오늘</span>
+              <span className="me-rank__sub">
+                {myRank.rank === 1
+                  ? '1위! 단톡방 자랑각이에요 👑'
+                  : myRank.rank <= 3
+                    ? '포디움에 올랐어요 · 기분 좋게 시작해요'
+                    : `${myRank.relationKo} · 기운 ${myRank.toneWord}`}
+              </span>
+            </span>
+            <span className="me-rank__rank">
+              <b className="num">{myRank.rank}</b>위<i>/12</i>
+            </span>
+          </div>
         ) : (
           <button
             type="button"
@@ -222,7 +231,18 @@ export function HomeScreen({
         {!zodiac && pick === 'zodiac' ? (
           <div className="zodiac-grid zodiac-grid--full me-grid">
             {ZODIACS.map((z) => (
-              <button key={z.id} type="button" className="zodiac-chip" onClick={() => onZodiac(z.id)}>
+              <button
+                key={z.id}
+                type="button"
+                className="zodiac-chip"
+                onClick={() => {
+                  onZodiac(z.id);
+                  // 포디움(1~3위) 밖이면 전체 목록을 자동으로 펼쳐,
+                  // 방금 고른 내 띠가 어디 있는지 바로 보이게 한다.
+                  const mine = ranking.find((row) => row.animal === z.id);
+                  if (mine && mine.rank > 3) setRankOpen(true);
+                }}
+              >
                 {z.emoji} {z.label}
               </button>
             ))}
