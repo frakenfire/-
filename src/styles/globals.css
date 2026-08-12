@@ -1190,7 +1190,7 @@ a:focus-visible {
   color: var(--brand-strong);
 }
 .report-hero__summary {
-  margin: 0;
+  margin: var(--space-3) 0 0; /* 제목과 6px 로 붙어 있던 것을 리듬(12px)에 맞춤 */
   padding: var(--space-3) var(--space-4);
   border-left: 3px solid var(--brand);
   background: rgba(255, 255, 255, 0.6);
@@ -2361,7 +2361,9 @@ a:focus-visible {
   font-weight: 700;
 }
 .me-grid {
-  margin: 0 0 var(--space-3);
+  /* 위의 '내 띠 고르면…' 점선 버튼과 딱 붙어 있었다(측정 0px).
+     카드 내부 리듬(12px)에 맞춘다. */
+  margin: var(--space-3) 0 var(--space-3);
 }
 .mood-heading {
   font-size: 15px;
@@ -2392,6 +2394,7 @@ a:focus-visible {
   align-items: center;
   justify-content: center;
   min-height: 0;
+  margin-top: var(--space-4); /* 화면이 좁아 flex 여백이 0 이 돼도 최소 간격 보장 */
   opacity: 0.95;
 }
 
