@@ -78,6 +78,13 @@ const ads = {
   REPLACE_REWARD_RETRY: args['ad-retry'] ?? args['ad-group'],
   REPLACE_REWARD_COMPAT: args['ad-compat'] ?? args['ad-group'],
 };
+// 3.5) 알림 템플릿 코드 (선택 — 아침 알림 리텐션용)
+if (args['noti-template'] && typeof args['noti-template'] === 'string') {
+  edit('src/lib/toss.ts', [
+    [`'REPLACE_NOTI_TEMPLATE'`, `'${args['noti-template']}'`, `알림 템플릿 → ${args['noti-template']}`],
+  ]);
+}
+
 const adEdits = Object.entries(ads)
   .filter(([, v]) => typeof v === 'string' && v.length > 0)
   .map(([k, v]) => [`'${k}'`, `'${v}'`, `${k} → ${v}`]);
@@ -94,6 +101,9 @@ if (done.length === 0 && errors.length === 0) {
 
 지면별로 다른 광고 그룹을 쓰려면 --ad-group 대신:
   --ad-detail=... --ad-save=... --ad-retry=... --ad-compat=...
+
+선택(리텐션 부스터): 콘솔에서 알림 템플릿을 등록했으면
+  --noti-template=템플릿코드   ← 결과 화면에 '아침 알림 받기' 카드가 켜져요
 `);
   process.exit(0);
 }

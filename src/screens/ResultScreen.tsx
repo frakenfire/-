@@ -22,6 +22,9 @@ type Props = {
   onRetry: () => void;
   onCompat: () => void;
   onBack: () => void;
+  // 아침 알림 동의 — 콘솔 템플릿 미설정이면 App 이 카드 자체를 숨긴다
+  showNotiCard?: boolean;
+  onAskNoti?: () => void;
 };
 
 // 결과 = 기분에 맞춘 하루 설계.
@@ -32,6 +35,8 @@ export function ResultScreen({
   busy,
   zodiacId,
   streak = 0,
+  showNotiCard = false,
+  onAskNoti,
   onDetail,
   onSave,
   onShare,
@@ -316,6 +321,19 @@ export function ResultScreen({
             </span>
           </span>
         </div>
+      ) : null}
+
+      {/* 아침 알림 옵트인 — 내일 예고로 궁금증을 만든 직후가 동의율이 가장 높다.
+          한 번 답하면(동의/거절) 다시 조르지 않는다. */}
+      {showNotiCard && onAskNoti ? (
+        <button type="button" className="noti-card" onClick={onAskNoti} disabled={busy}>
+          <span className="noti-card__icon" aria-hidden>🔔</span>
+          <span className="noti-card__body">
+            <span className="noti-card__title">내일 아침, 오늘의 쪽지 알림 받기</span>
+            <span className="noti-card__desc">눈 뜨자마자 하루 기운부터 확인해요</span>
+          </span>
+          <span className="noti-card__cta">받을래요</span>
+        </button>
       ) : null}
 
       <AdBanner />

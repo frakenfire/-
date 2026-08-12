@@ -329,3 +329,22 @@ export function clearAllData(): boolean {
     return false;
   }
 }
+
+// ── 알림 동의 / 리뷰 요청 상태 (한 번 물었으면 조르지 않는다) ──
+const ASK_KEYS = {
+  notiAsked: 'tomorrowNoteNotiAsked', // 'agreed' | 'rejected' | 'asked'
+  reviewAsked: 'tomorrowNoteReviewAsked', // '1'
+} as const;
+
+export function getNotiAskState(): string | null {
+  return safeGet(ASK_KEYS.notiAsked);
+}
+export function setNotiAskState(state: 'agreed' | 'rejected' | 'asked'): void {
+  safeSet(ASK_KEYS.notiAsked, state);
+}
+export function hasAskedReview(): boolean {
+  return safeGet(ASK_KEYS.reviewAsked) === '1';
+}
+export function markReviewAsked(): void {
+  safeSet(ASK_KEYS.reviewAsked, '1');
+}

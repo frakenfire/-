@@ -2997,3 +2997,55 @@ a:focus-visible {
   word-break: keep-all;
   line-height: 1.35;
 }
+
+/* ── 아침 알림 옵트인 카드 (결과 화면, 내일 예고 아래) ──
+   내일 예고가 만든 궁금증을 알림 동의로 잇는 리텐션 장치.
+   콘솔 알림 템플릿이 없으면 렌더 자체가 되지 않는다. */
+.noti-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 64px;
+  margin-top: var(--space-3);
+  padding: 14px 16px;
+  text-align: left;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  border-radius: 16px;
+  transition: transform 0.2s var(--ease-spring);
+}
+.noti-card:active {
+  transform: scale(0.98);
+}
+.noti-card__icon {
+  font-size: 22px;
+}
+.noti-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.noti-card__title {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--gray-900);
+  line-height: 1.4;
+}
+.noti-card__desc {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--gray-700); /* 흰 배경 계열 위 AA */
+  line-height: 1.5;
+}
+.noti-card__cta {
+  flex: none;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--white);
+  background: var(--brand);
+  border-radius: 999px;
+  padding: 8px 14px;
+}

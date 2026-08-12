@@ -126,3 +126,54 @@ export function reportError(where: string, error: unknown): void {
   const message = error instanceof Error ? error.message : String(error);
   logEvent('app_error', { where, message: message.slice(0, 300) });
 }
+
+// ── 리텐션: 아침 운세 알림 ──────────────────────────────────
+// 운세 앱의 재방문은 '아침에 오는 알림'이 만든다(점신·포스텔러의 공통 장치).
+// 앱인토스는 콘솔에서 알림 템플릿을 등록하고, SDK 로 동의 UI 를 띄운 뒤
+// 콘솔에서 발송하는 구조다. 템플릿 코드를 아직 안 받았으면 기능 전체를 숨긴다.
+export const NOTI_TEMPLATE_CODE = 'REPLACE_NOTI_TEMPLATE';
+
+/** 알림 동의를 요청할 수 있는 상태인가 (콘솔 템플릿 코드가 채워졌는가) */
+export function canAskNotification(): boolean {
+  return !NOTI_TEMPLATE_CODE.startsWith('REPLACE_');
+}
+
+export type NotiAgreement = 'newAgreement' | 'alreadyAgreed' | 'agreementRejected' | 'unsupported';
+
+/**
+ * 푸시 알림 동의 UI 를 요청한다. 토스 밖/미설정/실패는 전부 'unsupported' 로
+ * 조용히 수렴 — 알림은 부가 기능이라 어떤 경우에도 본 흐름을 막지 않는다.
+ */
+export async function askNotificationAgreement(): Promise<NotiAgreement> {
+  if (!canAskNotification()) return 'unsupported';
+  try {
+    const { requestNotificationAgreement } = await import('@apps-in-toss/web-framework');
+    return await new Promise<NotiAgreement>((resolve) => {
+      try {
+        requestNotificationAgreement({
+          options: { templateCode: NOTI_TEMPLATE_CODE },
+          onEvent: (r: { type: NotiAgreement }) => resolve(r.type),
+          onError: () => resolve('unsupported'),
+        });
+      } catch {
+        resolve('unsupported');
+      }
+    });
+  } catch {
+    return 'unsupported';
+  }
+}
+
+// ── 평판: 미니앱 리뷰 요청 ──────────────────────────────────
+// 기분 좋은 순간(대길·스트릭 달성)에 한 번만 요청한다. 그 외 타이밍의
+// 리뷰 요청은 평점을 깎는다. 미지원/실패는 조용히 무시.
+export async function askReview(): Promise<boolean> {
+  try {
+    const { requestReview } = await import('@apps-in-toss/web-framework');
+    if (!supported(requestReview)) return false;
+    await requestReview();
+    return true;
+  } catch {
+    return false;
+  }
+}

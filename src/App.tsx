@@ -23,13 +23,13 @@ import {
   getRarityCounts,
 } from './lib/storage';
 import { clearAllData } from './lib/storage';
-import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError } from './lib/toss';
+import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError, canAskNotification, askNotificationAgreement, askReview } from './lib/toss';
 import { findNote } from './data/notes';
 import { findZodiac } from './data/zodiac';
 import type { Zodiac, ZodiacId } from './data/zodiac';
 import { findStarSign } from './data/starSign';
 import type { StarSign, StarSignId } from './data/starSign';
-import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign } from './lib/storage';
+import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, getNotiAskState, setNotiAskState, hasAskedReview, markReviewAsked } from './lib/storage';
 
 import { HomeScreen } from './screens/HomeScreen';
 import { MoodScreen } from './screens/MoodScreen';
@@ -296,6 +296,17 @@ export default function App() {
       setTodayReading(snapshot);
       logEvent('result_viewed', { fortuneType });
       setScreen('result');
+      // 기분 좋은 순간(대길·3일 스트릭)에 미니앱 리뷰를 한 번만 요청.
+      // 실제로 리뷰 UI 가 뜬 경우에만 소진 처리(토스 밖에서 기회를 태우지 않게).
+      const streakNow = peekStreak();
+      if (!hasAskedReview() && (generated.luck.grade === '대길' || streakNow >= 3)) {
+        void askReview().then((shown) => {
+          if (shown) {
+            markReviewAsked();
+            logEvent('review_requested', { grade: generated.luck.grade, streak: streakNow });
+          }
+        });
+      }
     } catch (e) {
       reportError('handlePick', e);
       flash('앗, 쪽지를 여는 중 문제가 생겼어요. 다시 시도해 주세요');
@@ -372,6 +383,31 @@ export default function App() {
   }
 
   // 결과 카드 저장 = 바이럴 공유 자산이라 광고 게이팅 없이 무료로(확산 우선).
+  // 아침 알림 옵트인 — 템플릿 코드가 콘솔에서 발급된 경우에만, 아직 안 물었을 때만.
+  const [notiCardVisible, setNotiCardVisible] = useState(
+    () => canAskNotification() && getNotiAskState() === null,
+  );
+
+  async function handleAskNoti() {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const r = await askNotificationAgreement();
+      logEvent('noti_agreement', { result: r });
+      if (r === 'newAgreement' || r === 'alreadyAgreed') {
+        setNotiAskState('agreed');
+        setNotiCardVisible(false);
+        flash('내일 아침에 쪽지로 찾아갈게요 🔔');
+      } else if (r === 'agreementRejected') {
+        setNotiAskState('rejected'); // 거절했으면 다시 조르지 않는다
+        setNotiCardVisible(false);
+      }
+      // unsupported — 카드 유지(토스 안에서 다시 시도 가능), 알림 없음
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function handleSave() {
     if (busy || !result || !note) return;
     const snapshot = result;
@@ -469,6 +505,8 @@ export default function App() {
           onRetry={handleRetry}
           onCompat={() => setScreen('compat')}
           onBack={() => setScreen('home')}
+          showNotiCard={notiCardVisible}
+          onAskNoti={handleAskNoti}
         />
       )}
 
