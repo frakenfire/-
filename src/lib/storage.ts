@@ -1,4 +1,4 @@
-import type { FortuneResult, FortuneType } from '../types/fortune';
+import type { FortuneResult, FortuneType } from '../types/fortune.ts';
 
 // PRD §14 — 개인정보/자유입력 저장 금지. 선택형 값 + 생성된 결과 텍스트만 저장.
 

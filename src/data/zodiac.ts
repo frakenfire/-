@@ -1,4 +1,4 @@
-import { hashSeed } from '../lib/dateSeed';
+import { hashSeed } from '../lib/dateSeed.ts';
 
 // 띠별 오늘의 한 줄 — 운세 앱 표준 필수 기능.
 // 띠는 12개 중 선택(선택형 값만 저장, 생년월일 아님 — PRD 개인정보 원칙 준수).

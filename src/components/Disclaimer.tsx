@@ -1,4 +1,4 @@
-import { DISCLAIMER } from '../data/copy';
+import { DISCLAIMER } from '../data/copy.ts';
 
 // PRD §5.2 — 필수 고지. 결과 화면 하단에 항상 노출한다.
 export function Disclaimer() {

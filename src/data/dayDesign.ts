@@ -1,4 +1,4 @@
-import type { FortuneType, Mood } from '../types/fortune';
+import type { FortuneType, Mood } from '../types/fortune.ts';
 
 // 오늘의 설계 — 결과의 주인공.
 // 운세 종류(무엇이 궁금한지) × 상태(지금 기분)로 내용을 결정한다.

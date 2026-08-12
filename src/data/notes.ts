@@ -1,4 +1,4 @@
-import type { Note, NoteColor } from '../types/fortune';
+import type { Note, NoteColor } from '../types/fortune.ts';
 
 // PRD §14 — 쪽지 데이터 12개. 뽑는 재미를 위한 이름·아이콘·색상.
 export const NOTES: Note[] = [

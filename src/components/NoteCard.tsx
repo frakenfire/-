@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
-import type { Note } from '../types/fortune';
-import { NOTE_COLOR_CLASS } from '../data/notes';
+import type { Note } from '../types/fortune.ts';
+import { NOTE_COLOR_CLASS } from '../data/notes.ts';
 
 type Props = {
   note: Note;

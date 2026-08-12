@@ -1,18 +1,18 @@
-import { AppLayout } from '../components/AppLayout';
-import { FortuneTypeButton } from '../components/FortuneTypeButton';
-import { Mascot } from '../components/Mascot';
-import { FORTUNE_TYPES, FORTUNE_LABEL } from '../data/fortuneTypes';
-import { findNote } from '../data/notes';
-import { GREETINGS } from '../data/copy';
+import { AppLayout } from '../components/AppLayout.tsx';
+import { FortuneTypeButton } from '../components/FortuneTypeButton.tsx';
+import { Mascot } from '../components/Mascot.tsx';
+import { FORTUNE_TYPES, FORTUNE_LABEL } from '../data/fortuneTypes.ts';
+import { findNote } from '../data/notes.ts';
+import { GREETINGS } from '../data/copy.ts';
 import { useState } from 'react';
-import { todayVibe } from '../lib/dayVibe';
-import { todayKey, hashSeed } from '../lib/dateSeed';
-import { sajuToday, iljinOf, dailyZodiacRanking } from '../lib/saju';
-import { shareMessage } from '../lib/share';
-import { findZodiac, ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac';
-import { ZODIAC_TRAIT } from '../data/traits';
-import type { StoredResult, TodayReading, RarityCounts } from '../lib/storage';
-import type { FortuneType } from '../types/fortune';
+import { todayVibe } from '../lib/dayVibe.ts';
+import { todayKey, hashSeed } from '../lib/dateSeed.ts';
+import { sajuToday, iljinOf, dailyZodiacRanking } from '../lib/saju.ts';
+import { shareMessage } from '../lib/share.ts';
+import { findZodiac, ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac.ts';
+import { ZODIAC_TRAIT } from '../data/traits.ts';
+import type { StoredResult, TodayReading, RarityCounts } from '../lib/storage.ts';
+import type { FortuneType } from '../types/fortune.ts';
 
 function todayLabel(): string {
   const d = new Date();

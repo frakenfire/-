@@ -1,4 +1,4 @@
-import type { FortuneType } from '../types/fortune';
+import type { FortuneType } from '../types/fortune.ts';
 
 export type FortuneTypeMeta = {
   key: FortuneType;

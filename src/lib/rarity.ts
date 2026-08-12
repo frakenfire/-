@@ -1,4 +1,4 @@
-import { hashSeed } from './dateSeed';
+import { hashSeed } from './dateSeed.ts';
 
 // 쪽지 등급(가챠) — 토스 '행운복권/행운퀴즈'식 즉각 보상 도파민을 옮긴 장치.
 // 대부분 일반이지만 가끔 레어/에픽/전설이 떠서 "나 전설 떴어 ㅋㅋ" 캡처·자랑을 유발한다.

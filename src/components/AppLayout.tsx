@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { APP_NAME } from '../data/copy';
+import { APP_NAME } from '../data/copy.ts';
 
 type Props = {
   children: ReactNode;

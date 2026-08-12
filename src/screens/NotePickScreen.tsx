@@ -1,9 +1,9 @@
-import { AppLayout } from '../components/AppLayout';
-import { NoteCard } from '../components/NoteCard';
-import { Mascot } from '../components/Mascot';
-import { NOTE_PICK, NOTE_TEASERS } from '../data/copy';
-import { todayKey, hashSeed } from '../lib/dateSeed';
-import type { Note } from '../types/fortune';
+import { AppLayout } from '../components/AppLayout.tsx';
+import { NoteCard } from '../components/NoteCard.tsx';
+import { Mascot } from '../components/Mascot.tsx';
+import { NOTE_PICK, NOTE_TEASERS } from '../data/copy.ts';
+import { todayKey, hashSeed } from '../lib/dateSeed.ts';
+import type { Note } from '../types/fortune.ts';
 
 // 3장에 서로 다른 문구를 준다. 날짜가 바뀌면 조합도 바뀌고, 같은 날엔 고정.
 function pickTeasers(seedKey: string): string[] {

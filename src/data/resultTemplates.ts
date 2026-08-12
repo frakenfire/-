@@ -1,4 +1,4 @@
-import type { FortuneType } from '../types/fortune';
+import type { FortuneType } from '../types/fortune.ts';
 
 // PRD §6 / §12 + 리서치 — 결과 템플릿. AI 없이 fortuneType + note + dateSeed 조합.
 // 톤: 가볍고 희망적, 해요체. 금지 표현(§10.2) 없음.

@@ -1,4 +1,4 @@
-import { hashSeed } from './dateSeed';
+import { hashSeed } from './dateSeed.ts';
 
 // 오늘의 기운 — 하루를 관통하는 키워드. 날짜만으로 결정(운세 종류·기분과 무관).
 // 홈의 '오늘의 한 줄'과 모든 결과 화면에 똑같이 떠서, 홈→결과가 하나로 이어진다.

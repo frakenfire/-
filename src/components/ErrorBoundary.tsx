@@ -1,5 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
-import { reportError } from '../lib/toss';
+import { reportError } from '../lib/toss.ts';
 
 // 최후의 안전망 — 어떤 에러에도 흰 화면 대신 복구 화면을 보여준다.
 type Props = { children: ReactNode };

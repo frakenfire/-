@@ -1,4 +1,4 @@
-import type { Mood } from '../types/fortune';
+import type { Mood } from '../types/fortune.ts';
 
 // 무드 에코 — 사용자가 방금 고른 기분을 정확히 되읽어주는 콜드리딩 문장.
 // "어떻게 알았지" 순간의 핵심 재료라, 기분마다 전용 풀을 둔다(기분 무반응 방지).

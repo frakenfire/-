@@ -23,6 +23,8 @@ export type Note = {
 export type NoteColor = 'softGreen' | 'cream' | 'softYellow' | 'softPink';
 
 export type FortuneResult = {
+  /** 해석 엔진 버전 — 스냅샷/로그 재현성 추적용 */
+  engineVersion?: number;
   title: string;
   subtitle: string;
   /** 띠×별자리 조합 개인화 한 줄 ("직진하는 🐯범띠 × 화려한 ♌사자자리인 당신에게") */

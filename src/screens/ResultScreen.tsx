@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { AppLayout } from '../components/AppLayout';
-import { LetterCard } from '../components/LetterCard';
-import { Disclaimer } from '../components/Disclaimer';
-import { AdBadge, AdBanner } from '../components/AdNotice';
-import { luckPercentile } from '../lib/luck';
-import { ELEMENT_EMOJI, ELEMENT_KO, sajuToday } from '../lib/saju';
-import { todayVibe } from '../lib/dayVibe';
-import { todayKey } from '../lib/dateSeed';
-import type { ZodiacId } from '../data/zodiac';
-import type { FortuneResult, Note } from '../types/fortune';
+import { AppLayout } from '../components/AppLayout.tsx';
+import { LetterCard } from '../components/LetterCard.tsx';
+import { Disclaimer } from '../components/Disclaimer.tsx';
+import { AdBadge, AdBanner } from '../components/AdNotice.tsx';
+import { luckPercentile } from '../lib/luck.ts';
+import { ELEMENT_EMOJI, ELEMENT_KO, sajuToday } from '../lib/saju.ts';
+import { todayVibe } from '../lib/dayVibe.ts';
+import { todayKey } from '../lib/dateSeed.ts';
+import type { ZodiacId } from '../data/zodiac.ts';
+import type { FortuneResult, Note } from '../types/fortune.ts';
 
 type Props = {
   result: FortuneResult;

@@ -1,7 +1,7 @@
-import { scoreColor } from './luck';
-import { moodFromScore } from '../components/Mascot';
-import { saveImageData } from './toss';
-import type { Rarity } from './rarity';
+import { scoreColor } from './luck.ts';
+import { moodFromScore } from '../components/Mascot.tsx';
+import { saveImageData } from './toss.ts';
+import type { Rarity } from './rarity.ts';
 
 // PRD §7.2 + 리서치 — 세로 공유 카드. 마스코트 + 총운 점수 + 콕 집은 한마디.
 // 등급(전설/에픽)이 뜨면 카드 자체가 금박/보라 트로피가 되어 자랑을 유발한다.

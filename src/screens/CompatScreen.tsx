@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { AppLayout } from '../components/AppLayout';
-import { AdBadge } from '../components/AdNotice';
-import { Disclaimer } from '../components/Disclaimer';
-import { ZODIACS, findZodiac, type ZodiacId } from '../data/zodiac';
-import { STAR_SIGNS, findStarSign, type StarSignId } from '../data/starSign';
-import { computeCompat, type CompatResult } from '../lib/compat';
-import { computeStarCompat } from '../lib/starCompat';
-import { saveCompatCard } from '../lib/compatCard';
-import { scoreColor, scoreTextColor } from '../lib/luck';
+import { AppLayout } from '../components/AppLayout.tsx';
+import { AdBadge } from '../components/AdNotice.tsx';
+import { Disclaimer } from '../components/Disclaimer.tsx';
+import { ZODIACS, findZodiac, type ZodiacId } from '../data/zodiac.ts';
+import { STAR_SIGNS, findStarSign, type StarSignId } from '../data/starSign.ts';
+import { computeCompat, type CompatResult } from '../lib/compat.ts';
+import { computeStarCompat } from '../lib/starCompat.ts';
+import { saveCompatCard } from '../lib/compatCard.ts';
+import { scoreColor, scoreTextColor } from '../lib/luck.ts';
 import {
   RELATIONS,
   addSavedPerson,
@@ -16,7 +16,7 @@ import {
   removeSavedPerson,
   type RelationKey,
   type SavedPerson,
-} from '../lib/storage';
+} from '../lib/storage.ts';
 
 type Mode = 'zodiac' | 'star';
 

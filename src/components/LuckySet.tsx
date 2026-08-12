@@ -1,4 +1,4 @@
-import type { LuckSet } from '../lib/luck';
+import type { LuckSet } from '../lib/luck.ts';
 
 // 행운 세트 — 숫자 나열 대신 '오늘의 행운 미션' 하나로 묶어 실제로 하게 만든다.
 // 색/시간/방향/음식은 코디·동선처럼 쓸 수 있는 것만, 숫자는 활용법과 함께.

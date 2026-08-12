@@ -1,6 +1,6 @@
-import { Mascot } from './Mascot';
-import type { LetterParts } from '../types/fortune';
-import type { Rarity } from '../lib/rarity';
+import { Mascot } from './Mascot.tsx';
+import type { LetterParts } from '../types/fortune.ts';
+import type { Rarity } from '../lib/rarity.ts';
 
 // 쪽지 요정의 손편지 — 눈에 꽂히는 위계로 렌더링.
 // 인사(작게) → 콕 집은 한마디(크게, 형광 강조) → 본문 → 오늘의 부적(박스) → 맺음 → 서명.

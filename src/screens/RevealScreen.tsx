@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { AppLayout } from '../components/AppLayout';
-import { Mascot } from '../components/Mascot';
-import type { FortuneType } from '../types/fortune';
+import { AppLayout } from '../components/AppLayout.tsx';
+import { Mascot } from '../components/Mascot.tsx';
+import type { FortuneType } from '../types/fortune.ts';
 
 // 몽글몽글 로딩 연출 — 쪽지 요정이 결과를 "준비하는" 과정을 보여준다.
 // 단계별 멘트가 기대감(두근두근)을 만들고, 결과 타율을 높여 보이게 한다.

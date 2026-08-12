@@ -7,10 +7,10 @@
 //  - 그 외(로컬 개발·웹 프리뷰): mock (개발 편의). 단, mock 은 운영 번들에서
 //    빌드 가드(CI: scripts/check-no-mock, .github/workflows/ci.yml)로 차단한다.
 import { showFullScreenAd } from '@apps-in-toss/web-framework';
-import type { AdResult } from './adResult';
+import type { AdResult } from './adResult.ts';
 
-export { isRewarded, isUnsupportedFreePass, adResultMessage } from './adResult';
-export type { AdResult } from './adResult';
+export { isRewarded, isUnsupportedFreePass, adResultMessage } from './adResult.ts';
+export type { AdResult } from './adResult.ts';
 
 // 광고 지점별 adGroupId.
 // ⚠️ TODO(콘솔): 앱인토스 콘솔에서 발급받은 실제 adGroupId 로 교체해야 운영 노출됨.

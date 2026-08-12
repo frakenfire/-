@@ -1,4 +1,4 @@
-import type { Mood } from '../types/fortune';
+import type { Mood } from '../types/fortune.ts';
 
 // 쪽지 요정의 편지 조각 데이터베이스.
 // 인사(시간대) × 공감(기분) × 이음말 × 조언 서두 × 맺음(기분) 을 조합하고,

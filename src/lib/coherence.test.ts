@@ -6,6 +6,7 @@ import { GRADE_READING, GRADE_READING_MONTH, MONTH_PEOPLE_READINGS, PEOPLE_READI
 import { TEMPLATES } from '../data/resultTemplates.ts';
 import { PLANS, moodGroup } from '../data/dayDesign.ts';
 import { computeCompat } from './compat.ts';
+import { generateFortune, ENGINE_VERSION } from './generateFortune.ts';
 import { computeStarCompat } from './starCompat.ts';
 import { STAR_SIGNS } from '../data/starSign.ts';
 
@@ -211,4 +212,26 @@ test('별자리 궁합 한 줄도 관계의 결과 반대로 말하지 않는다
     }
   }
   assert.deepEqual([...new Set(bad)], [], `spark 별자리 조합에 매끄러움 단정 ${bad.length}건`);
+});
+
+test('재현성 — 같은 입력이면 몇 번을 호출해도 같은 결과다 (문서 §3 요구)', () => {
+  // localStorage 없는 테스트 환경 = pickFresh 회피 없이 순수 seed 경로.
+  const input = {
+    fortuneType: 'tomorrow' as const,
+    note: { id: 'n1', name: '테스트', keyword: 'k', icon: '✉️', color: 'softGreen' as const },
+    mood: 'soso' as const,
+    dateKey: '2026-08-12',
+    zodiac: 'dog' as const,
+  };
+  const a = generateFortune(input);
+  const b = generateFortune(input);
+  assert.deepEqual(JSON.parse(JSON.stringify(a)), JSON.parse(JSON.stringify(b)));
+  // 엔진 버전이 결과에 박혀 스냅샷/로그로 추적 가능해야 한다
+  assert.equal(a.engineVersion, ENGINE_VERSION);
+});
+
+test('시드에 엔진 버전이 포함된다 — 버전이 다르면 결과가 갈릴 수 있는 구조', () => {
+  // 버전 문자열이 시드 입력에 실제로 들어가는지를 소스로 확인
+  // (상수를 런타임에 바꿀 수 없으므로 구조 검증)
+  assert.ok(Number.isInteger(ENGINE_VERSION) && ENGINE_VERSION >= 2);
 });

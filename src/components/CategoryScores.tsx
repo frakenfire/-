@@ -1,5 +1,5 @@
-import type { RankedCat } from '../lib/detail';
-import { scoreColor, scoreTextColor } from '../lib/luck';
+import type { RankedCat } from '../lib/detail.ts';
+import { scoreColor, scoreTextColor } from '../lib/luck.ts';
 
 const RANK_BADGE = ['', '2위', '3위', '4위'];
 

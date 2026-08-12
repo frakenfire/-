@@ -1,5 +1,5 @@
-import type { LetterParts, Mood } from '../types/fortune';
-import type { Variant } from '../data/resultTemplates';
+import type { LetterParts, Mood } from '../types/fortune.ts';
+import type { Variant } from '../data/resultTemplates.ts';
 import {
   CLOSINGS,
   EMPATHY,
@@ -7,7 +7,7 @@ import {
   KEEP_INTROS,
   SIGN,
   type TimeSlot,
-} from '../data/letterFragments';
+} from '../data/letterFragments.ts';
 
 export function currentTimeSlot(date = new Date()): TimeSlot {
   const h = date.getHours();

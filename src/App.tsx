@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import type { FortuneResult, FortuneType, Mood, Note } from './types/fortune';
-import { NOTES } from './data/notes';
-import { FORTUNE_LABEL } from './data/fortuneTypes';
-import { hashSeed, pickBySeed, todayKey } from './lib/dateSeed';
-import { generateFortune } from './lib/generateFortune';
-import { luckPercentile } from './lib/luck';
-import { showRewardAd, isRewarded, isUnsupportedFreePass, adResultMessage } from './lib/ads';
-import { shareBriefing, shareForUnlock, copyText } from './lib/share';
-import { AppLayout } from './components/AppLayout';
-import { saveResultCard } from './lib/saveImage';
+import type { FortuneResult, FortuneType, Mood, Note } from './types/fortune.ts';
+import { NOTES } from './data/notes.ts';
+import { FORTUNE_LABEL } from './data/fortuneTypes.ts';
+import { hashSeed, pickBySeed, todayKey } from './lib/dateSeed.ts';
+import { generateFortune } from './lib/generateFortune.ts';
+import { luckPercentile } from './lib/luck.ts';
+import { showRewardAd, isRewarded, isUnsupportedFreePass, adResultMessage } from './lib/ads.ts';
+import { shareBriefing, shareForUnlock, copyText } from './lib/share.ts';
+import { AppLayout } from './components/AppLayout.tsx';
+import { saveResultCard } from './lib/saveImage.ts';
 import {
   incrementDailyDrawCount,
   loadTodayReading,
@@ -21,23 +21,23 @@ import {
   getRecordForDate,
   bumpRarity,
   getRarityCounts,
-} from './lib/storage';
-import { clearAllData } from './lib/storage';
-import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError, canAskNotification, askNotificationAgreement, askReview } from './lib/toss';
-import { findNote } from './data/notes';
-import { findZodiac } from './data/zodiac';
-import type { Zodiac, ZodiacId } from './data/zodiac';
-import { findStarSign } from './data/starSign';
-import type { StarSign, StarSignId } from './data/starSign';
-import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, getNotiAskState, setNotiAskState, hasAskedReview, markReviewAsked } from './lib/storage';
+} from './lib/storage.ts';
+import { clearAllData } from './lib/storage.ts';
+import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError, canAskNotification, askNotificationAgreement, askReview } from './lib/toss.ts';
+import { findNote } from './data/notes.ts';
+import { findZodiac } from './data/zodiac.ts';
+import type { Zodiac, ZodiacId } from './data/zodiac.ts';
+import { findStarSign } from './data/starSign.ts';
+import type { StarSign, StarSignId } from './data/starSign.ts';
+import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, getNotiAskState, setNotiAskState, hasAskedReview, markReviewAsked } from './lib/storage.ts';
 
-import { HomeScreen } from './screens/HomeScreen';
-import { MoodScreen } from './screens/MoodScreen';
-import { NotePickScreen } from './screens/NotePickScreen';
-import { RevealScreen } from './screens/RevealScreen';
-import { ResultScreen } from './screens/ResultScreen';
-import { DetailResultScreen } from './screens/DetailResultScreen';
-import { CompatScreen } from './screens/CompatScreen';
+import { HomeScreen } from './screens/HomeScreen.tsx';
+import { MoodScreen } from './screens/MoodScreen.tsx';
+import { NotePickScreen } from './screens/NotePickScreen.tsx';
+import { RevealScreen } from './screens/RevealScreen.tsx';
+import { ResultScreen } from './screens/ResultScreen.tsx';
+import { DetailResultScreen } from './screens/DetailResultScreen.tsx';
+import { CompatScreen } from './screens/CompatScreen.tsx';
 
 type ScreenName = 'home' | 'mood' | 'pick' | 'reveal' | 'result' | 'detail' | 'compat';
 
@@ -294,7 +294,7 @@ export default function App() {
       const snapshot = { ...record, result: generated };
       saveTodayReading(snapshot);
       setTodayReading(snapshot);
-      logEvent('result_viewed', { fortuneType });
+      logEvent('result_viewed', { fortuneType, engineVersion: generated.engineVersion });
       setScreen('result');
       // 기분 좋은 순간(대길·3일 스트릭)에 미니앱 리뷰를 한 번만 요청.
       // 실제로 리뷰 UI 가 뜬 경우에만 소진 처리(토스 밖에서 기회를 태우지 않게).

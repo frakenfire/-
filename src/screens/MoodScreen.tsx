@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { AppLayout } from '../components/AppLayout';
-import { MOODS } from '../data/letterFragments';
-import { ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac';
-import { STAR_SIGNS, type StarSign, type StarSignId } from '../data/starSign';
-import type { Mood } from '../types/fortune';
+import { AppLayout } from '../components/AppLayout.tsx';
+import { MOODS } from '../data/letterFragments.ts';
+import { ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac.ts';
+import { STAR_SIGNS, type StarSign, type StarSignId } from '../data/starSign.ts';
+import type { Mood } from '../types/fortune.ts';
 
 type Props = {
   fortuneLabel: string;

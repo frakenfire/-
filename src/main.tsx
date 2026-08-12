@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import App from './App';
-import { ErrorBoundary } from './components/ErrorBoundary';
+import App from './App.tsx';
+import { ErrorBoundary } from './components/ErrorBoundary.tsx';
 // Pretendard — 제품용 한글 UI 폰트. 다이나믹 서브셋(unicode-range)으로
 // 화면에 실제로 쓰이는 글자만 런타임에 로드된다. (self-host, CSP 안전)
 import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';

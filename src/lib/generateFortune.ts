@@ -1,20 +1,20 @@
-import type { FortuneResult, FortuneType, Mood, Note } from '../types/fortune';
-import type { ZodiacId } from '../data/zodiac';
-import type { StarSignId } from '../data/starSign';
-import { findZodiac } from '../data/zodiac';
-import { findStarSign } from '../data/starSign';
-import { ZODIAC_TRAIT, STAR_TRAIT } from '../data/traits';
-import { hashSeed } from './dateSeed';
-import { computeLuck, luckBandForTone } from './luck';
-import { sajuToday } from './saju';
-import { computeDetail } from './detail';
-import { composeLetter } from './letter';
-import { computeRarity, RARITY_LINE } from './rarity';
-import { FORTUNE_LABEL } from '../data/fortuneTypes';
-import { NOTE_LEAD, TEMPLATES } from '../data/resultTemplates';
-import { MOOD_PINPOINT, MOOD_MIND } from '../data/moodEcho';
-import { PLANS, moodGroup } from '../data/dayDesign';
-import { pickFreshIndex } from './pickFresh';
+import type { FortuneResult, FortuneType, Mood, Note } from '../types/fortune.ts';
+import type { ZodiacId } from '../data/zodiac.ts';
+import type { StarSignId } from '../data/starSign.ts';
+import { findZodiac } from '../data/zodiac.ts';
+import { findStarSign } from '../data/starSign.ts';
+import { ZODIAC_TRAIT, STAR_TRAIT } from '../data/traits.ts';
+import { hashSeed } from './dateSeed.ts';
+import { computeLuck, luckBandForTone } from './luck.ts';
+import { sajuToday } from './saju.ts';
+import { computeDetail } from './detail.ts';
+import { composeLetter } from './letter.ts';
+import { computeRarity, RARITY_LINE } from './rarity.ts';
+import { FORTUNE_LABEL } from '../data/fortuneTypes.ts';
+import { NOTE_LEAD, TEMPLATES } from '../data/resultTemplates.ts';
+import { MOOD_PINPOINT, MOOD_MIND } from '../data/moodEcho.ts';
+import { PLANS, moodGroup } from '../data/dayDesign.ts';
+import { pickFreshIndex } from './pickFresh.ts';
 import {
   AFTERNOON_READINGS,
   EVENING_READINGS,
@@ -27,10 +27,14 @@ import {
   MONTH_PEOPLE_READINGS,
   MORNING_READINGS,
   PEOPLE_READINGS,
-} from '../data/readings';
+} from '../data/readings.ts';
 
 // PRD §12 — 결과 생성 로직.
 // AI API 없이 (fortuneType + note + mood + dateSeed) 조합으로 결정적 결과를 만든다.
+
+// 해석 엔진 버전 — 시드에 포함돼 '같은 입력 = 같은 결과'가 버전 단위로 보장된다.
+// 규칙·풀을 크게 바꿀 때 올리면, 왜 결과가 달라졌는지 로그로 추적할 수 있다.
+export const ENGINE_VERSION = 2; // v2: 톤 밴드 일관성 + 콘텐츠 147/60 확장
 
 export type FortuneInput = {
   fortuneType: FortuneType;
@@ -56,7 +60,9 @@ function buildPersona(zodiac?: ZodiacId | null, star?: StarSignId | null): strin
 export function generateFortune(input: FortuneInput): FortuneResult {
   const { fortuneType, note, mood, dateKey = '', zodiac = null, star = null } = input;
   // 기분 + 띠 + 별자리까지 seed 에 넣어, 세 조합으로 결과가 갈라지게 한다.
-  const seed = hashSeed(`${dateKey}|${fortuneType}|${note.id}|${mood}|${zodiac ?? ''}|${star ?? ''}`);
+  const seed = hashSeed(
+    `v${ENGINE_VERSION}|${dateKey}|${fortuneType}|${note.id}|${mood}|${zodiac ?? ''}|${star ?? ''}`,
+  );
   const persona = buildPersona(zodiac, star);
 
   const variants = TEMPLATES[fortuneType];
@@ -135,6 +141,7 @@ ${variant.flow}`,
 
 
   return {
+    engineVersion: ENGINE_VERSION,
     title: FORTUNE_LABEL[fortuneType],
     subtitle: `${note.name} 쪽지`,
     persona,

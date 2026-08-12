@@ -1,5 +1,5 @@
-import { saveImageData } from './toss';
-import type { CompatResult, CompatVibe } from './compat';
+import { saveImageData } from './toss.ts';
+import type { CompatResult, CompatVibe } from './compat.ts';
 
 // 친구 궁합 결과 이미지 카드 — 인스타 스토리 규격(9:16).
 // 이 카테고리 바이럴의 핵심 표면: "우리 궁합 90점" 카드를 스크린샷해 스토리에 올린다.

@@ -1,5 +1,5 @@
-import type { ZodiacId } from './zodiac';
-import type { StarSignId } from './starSign';
+import type { ZodiacId } from './zodiac.ts';
+import type { StarSignId } from './starSign.ts';
 
 // 띠·별자리 조합을 '내 얘기'처럼 만들기 위한 성격 특성 한 단어.
 // 띠(12) × 별자리(12) = 144가지 캐릭터 문구가 조합으로 생긴다.

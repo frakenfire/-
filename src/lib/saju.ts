@@ -11,7 +11,7 @@
 // 정확도: 일진 계산은 (JDN + 49) % 60, 甲子=0 (표준 만세력과 일치. 1970-01-01=辛巳, 2000-01-01=戊午 검증).
 // 주의: 오락용이며 절기 기준 월주/시주는 다루지 않는다(일진·띠 관계에 집중).
 
-import type { ZodiacId } from '../data/zodiac';
+import type { ZodiacId } from '../data/zodiac.ts';
 
 // 결정적 해시/선택 — dateSeed 와 동일한 FNV-1a 방식을 내장(이 모듈을 순수 leaf 로
 // 유지해 노드 테스트 러너에서 바로 검증 가능하게 함).

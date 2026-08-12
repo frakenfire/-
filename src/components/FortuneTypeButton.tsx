@@ -1,4 +1,4 @@
-import type { FortuneTypeMeta } from '../data/fortuneTypes';
+import type { FortuneTypeMeta } from '../data/fortuneTypes.ts';
 
 type Props = {
   meta: FortuneTypeMeta;

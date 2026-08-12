@@ -1,7 +1,7 @@
-import type { CategoryScore, LuckSet } from './luck';
-import { ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac';
-import { zodiacRelation } from './saju';
-import { pickFresh } from './pickFresh';
+import type { CategoryScore, LuckSet } from './luck.ts';
+import { ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac.ts';
+import { zodiacRelation } from './saju.ts';
+import { pickFresh } from './pickFresh.ts';
 import {
   BAND_TAG,
   CATEGORY_INTERP,
@@ -13,7 +13,7 @@ import {
   SUMMARY_TEMPLATES,
   band,
   type Band,
-} from '../data/detailContent';
+} from '../data/detailContent.ts';
 
 // 심층 리포트 — 광고를 눌러서라도 보고 싶은 보상 페이지의 콘텐츠를 seed 로 계산.
 

@@ -1,8 +1,8 @@
-import { AppLayout } from '../components/AppLayout';
-import { CategoryScores } from '../components/CategoryScores';
-import { LuckySetGrid } from '../components/LuckySet';
-import { Disclaimer } from '../components/Disclaimer';
-import type { FortuneResult } from '../types/fortune';
+import { AppLayout } from '../components/AppLayout.tsx';
+import { CategoryScores } from '../components/CategoryScores.tsx';
+import { LuckySetGrid } from '../components/LuckySet.tsx';
+import { Disclaimer } from '../components/Disclaimer.tsx';
+import type { FortuneResult } from '../types/fortune.ts';
 
 type Props = {
   result: FortuneResult;
