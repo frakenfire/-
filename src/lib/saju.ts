@@ -272,6 +272,20 @@ function toneOf(score: number): SajuTone {
   return 'caution';
 }
 
+// 전통 용어에 붙이는 쉬운 말 — '비화·자형·원진' 같은 말은 일반 유저가 모른다.
+// 용어는 사주앱다움을 위해 유지하되, 항상 괄호로 뜻을 병기해 "이게 뭐지?"를 없앤다.
+export const REL_GLOSS: Record<BranchRelation, string> = {
+  self: '같은 기운',
+  selfPunish: '고집 겹침',
+  trine: '찰떡 조합',
+  union: '짝꿍 조합',
+  clash: '부딪히는 날',
+  punish: '긴장 조심',
+  harm: '애증 기류',
+  break: '엇박 주의',
+  none: '무난한 사이',
+};
+
 export const REL_KO: Record<BranchRelation, string> = {
   self: '비화',
   selfPunish: '자형',
@@ -398,6 +412,8 @@ export type SajuToday = {
   iljin: { hanja: string; kor: string; stemEl: Element; branchEl: Element };
   relation: BranchRelation;
   relationKo: string;
+  /** 쉬운 말 병기 — '비화' 만 보면 모르는 유저를 위해 항상 함께 노출 */
+  relationGloss: string;
   flow: ElementFlow;
   tone: SajuTone;
   toneWord: string;
@@ -421,6 +437,7 @@ export type ZodiacRank = {
   rank: number; // 1~12
   relation: BranchRelation;
   relationKo: string;
+  relationGloss: string;
   tone: SajuTone;
   toneWord: string;
 };
@@ -450,6 +467,7 @@ export function dailyZodiacRanking(dateKey: string): ZodiacRank[] {
     rank: i + 1,
     relation: s.relation,
     relationKo: REL_KO[s.relation],
+    relationGloss: REL_GLOSS[s.relation],
     tone: s.tone,
     toneWord: TONE_WORD[s.tone],
   }));
@@ -491,6 +509,7 @@ export function sajuToday(dateKey: string, zodiacId: ZodiacId): SajuToday {
     iljin: iljinOf(dateKey),
     relation,
     relationKo: REL_KO[relation],
+    relationGloss: REL_GLOSS[relation],
     flow,
     tone,
     toneWord: TONE_WORD[tone],

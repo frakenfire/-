@@ -208,7 +208,7 @@ export function ResultScreen({
             <div className="iljin__flow">
               <span className="iljin__date">오늘의 일진 · {result.saju.iljin.kor}일</span>
               <span className="iljin__rel">
-                내 띠와 <b>{result.saju.relationKo}</b> · {ELEMENT_EMOJI[result.saju.myElement]}
+                내 띠와 <b>{result.saju.relationKo}</b>({result.saju.relationGloss}) · {ELEMENT_EMOJI[result.saju.myElement]}
                 {ELEMENT_KO[result.saju.myElement]} 기운
               </span>
             </div>
@@ -317,7 +317,7 @@ export function ResultScreen({
             <span className="tmr-tease__v">
               {tomorrowBetter
                 ? `내일은 오늘보다 기운이 좋아요 (${tomorrowSaju.relationKo}). 내일 쪽지 잊지 마요!`
-                : `내일은 내 띠와 ${tomorrowSaju.relationKo}, 기운 ${tomorrowSaju.toneWord}. 내일 쪽지로 확인해요`}
+                : `내일은 내 띠와 ${tomorrowSaju.relationKo}(${tomorrowSaju.relationGloss}). 내일 쪽지로 확인해요`}
             </span>
           </span>
         </div>

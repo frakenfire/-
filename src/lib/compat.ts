@@ -40,6 +40,8 @@ export type CompatResult = {
     b: Element;
     flow: PairElementFlow;
     flowKo: string;
+    /** 쉬운 말 병기 — '상극'만 보면 높은 점수와 모순으로 읽힌다 */
+    flowGloss: string;
     aKo: string;
     bKo: string;
     aEmoji: string;
@@ -317,6 +319,7 @@ export function computeCompat(dateKey: string, a: ZodiacId, b: ZodiacId): Compat
       b: elementOfZodiac(b),
       flow,
       flowKo: PAIR_FLOW_KO[flow],
+      flowGloss: { generate: '서로 살리는 기운', control: '자극 있는 기운', same: '같은 기운' }[flow],
       aKo: ELEMENT_KO[elementOfZodiac(a)],
       bKo: ELEMENT_KO[elementOfZodiac(b)],
       aEmoji: ELEMENT_EMOJI[elementOfZodiac(a)],

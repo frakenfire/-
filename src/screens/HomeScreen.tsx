@@ -82,7 +82,7 @@ export function HomeScreen({
     const outcome = await shareMessage(lines.join('\n'));
     if (outcome === 'copied') {
       setShared(true);
-      window.setTimeout(() => setShared(false), 1800);
+      window.setTimeout(() => setShared(false), 2600);
     }
   }
 
@@ -128,7 +128,7 @@ export function HomeScreen({
             <p className="today-hook__line">{saju.title}</p>
             <div className="today-hook__saju" aria-hidden>
               <span className="saju-chip saju-chip--rel">
-                내 띠와 {saju.relationKo}
+                내 띠와 {saju.relationKo}({saju.relationGloss})
               </span>
               <span className="saju-chip">기운 {saju.toneWord}</span>
             </div>
@@ -180,9 +180,13 @@ export function HomeScreen({
         <div className="rank-card__head">
           <p className="rank-card__title">🏆 오늘의 띠 서열</p>
           <button type="button" className="rank-card__share" onClick={shareRanking}>
-            {shared ? '복사됨!' : '단톡방에 던지기 💬'}
+            {shared ? '복사됨 ✓' : '단톡방에 던지기 💬'}
           </button>
         </div>
+
+        {shared ? (
+          <p className="rank-card__copied">서열표 복사 완료! 단톡방에 붙여넣기만 하면 돼요</p>
+        ) : null}
 
         <div className="rank-podium">
           {ranking.slice(0, 3).map((r, i) => {
@@ -212,7 +216,7 @@ export function HomeScreen({
                   ? '1위! 단톡방 자랑각이에요 👑'
                   : myRank.rank <= 3
                     ? '포디움에 올랐어요 · 기분 좋게 시작해요'
-                    : `${myRank.relationKo} · 기운 ${myRank.toneWord}`}
+                    : `${myRank.relationKo}(${myRank.relationGloss}) · 기운 ${myRank.toneWord}`}
               </span>
             </span>
             <span className="me-rank__rank">

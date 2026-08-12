@@ -353,15 +353,18 @@ export function CompatScreen({
 
             <p className="compat-result__reason">🔮 {result.reason}</p>
 
+            {/* 오행은 '속 기운' 보조 정보 — 라벨과 쉬운 말을 붙여, 높은 점수 옆의
+                '상극' 이 모순처럼 읽히지 않게 한다 */}
             {result.elements ? (
               <div className="compat-ohaeng">
+                <span className="compat-ohaeng__label">속 기운</span>
                 <span className="compat-ohaeng__pair">
                   {result.elements.aEmoji} {result.elements.aKo}
                   <i>×</i>
                   {result.elements.bEmoji} {result.elements.bKo}
                 </span>
                 <span className={`compat-ohaeng__flow compat-ohaeng__flow--${result.elements.flow}`}>
-                  {result.elements.flowKo}
+                  {result.elements.flowKo} · {result.elements.flowGloss}
                 </span>
               </div>
             ) : null}
