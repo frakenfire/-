@@ -17,6 +17,9 @@ export type { AdResult } from './adResult';
 // 'REPLACE_' 접두사가 남아 있으면 CI 가드가 빌드를 실패시킨다.
 export const AD_GROUPS = {
   detail: 'REPLACE_REWARD_DETAIL',
+  // saveImage 는 현재 게이트로 쓰지 않는다(예비) — 카드 저장은 무료로 풀어
+  // 저장→스토리 공유→유입 성장 루프에 마찰을 없앤다. 나중에 유료화하려면
+  // App.tsx handleSave 를 runRewardGate('saveImage', ...) 로 감싸면 된다.
   saveImage: 'REPLACE_REWARD_SAVE',
   retry: 'REPLACE_REWARD_RETRY',
   compat: 'REPLACE_REWARD_COMPAT',

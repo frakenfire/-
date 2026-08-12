@@ -226,6 +226,9 @@ async function run(browser) {
     check(t.includes('오늘의 일진'), '[홈] 일진 카드 노출');
     check(t.includes('오늘의 띠 서열'), '[홈] 띠 서열 노출');
     check(t.includes('쪽지 뽑기 시작하기'), '[홈] 시작 CTA 노출');
+    // 앱인토스 반려 사유: 진입 직후 바텀시트/모달이 자동으로 뜨면 안 된다
+    const modalCount = await page.locator('[role="dialog"], [class*="bottom-sheet"], [class*="bottomsheet"], dialog[open]').count();
+    check(modalCount === 0, '[홈] 진입 즉시 모달/바텀시트 없음 (토스 정책)', `${modalCount}개 발견`);
     await diagnose(page, '홈');
     await page.context().close();
   }
