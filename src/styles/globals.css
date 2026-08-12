@@ -146,11 +146,11 @@ a:focus-visible {
   bottom: 0;
   padding: var(--space-4) var(--space-5)
     calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
-  background: linear-gradient(
-    to top,
-    var(--color-cream) 72%,
-    rgba(255, 248, 237, 0)
-  );
+  /* 불투명 단색. 페이드(투명 구간)를 쓰면 흰 카드 위에선 예쁘지만
+     어두운 카드(부적·내일 예고)가 지나갈 때 버튼 둘레로 어두운 띠가 비친다.
+     TDS BottomCTA 도 불투명 배경이다. 경계는 위쪽 얇은 선으로 정리. */
+  background: var(--color-cream);
+  border-top: 1px solid var(--gray-100);
 }
 
 /* ── 타이포 ── */
@@ -2467,17 +2467,21 @@ a:focus-visible {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
-  padding: 10px 4px 8px;
+  justify-content: flex-end; /* 높이가 달라도 동물·이름 기준선이 나란히 */
+  gap: 4px;
+  padding: 10px 4px 10px;
   background: var(--white);
   border: 1px solid var(--gray-200);
   border-radius: 14px;
+  overflow: hidden; /* 어떤 글리프도 카드 밖으로 나가지 않는다 */
 }
 .podium--1 {
   order: 2;
-  padding-top: 16px;
-  border-color: var(--gray-300);
-  box-shadow: 0 4px 12px rgba(25, 31, 40, 0.1);
+  padding-top: 14px;
+  padding-bottom: 12px;
+  background: var(--brand-soft);
+  border-color: #cfe2fb;
+  box-shadow: 0 4px 12px rgba(49, 130, 246, 0.14);
 }
 .podium--2 {
   order: 1;
@@ -2489,20 +2493,45 @@ a:focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 1px;
 }
-.podium__medal {
-  font-size: 15px;
+/* 순위는 이모지 메달 대신 텍스트 배지 — 플랫폼마다 크기가 다른 메달 글리프가
+   iOS 에서 카드 테두리를 뚫는 문제(리본이 라인박스 위로 그려짐)를 구조적으로 제거 */
+.podium__rank {
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--gray-100);
+  color: var(--gray-700);
+  margin-bottom: 2px;
+}
+.podium--1 .podium__rank {
+  background: #fff0bf;
+  color: #8a5f0e; /* 금색 톤 유지하며 AA(4.96) — a9791a 는 3.4 로 미달 */
+  box-shadow: 0 0 0 1px #e7c15a inset;
+}
+.podium--2 .podium__rank {
+  background: var(--gray-100);
+  color: var(--gray-700);
+}
+.podium--3 .podium__rank {
+  background: #fdeee2;
+  color: #a4552a;
 }
 .podium__emoji {
   font-size: 26px;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 .podium--1 .podium__emoji {
-  font-size: 32px;
+  font-size: 34px;
 }
 .podium__name {
   font-size: 12px;
   font-weight: 800;
   color: var(--gray-800);
+}
+.podium--1 .podium__name {
+  color: var(--brand-strong);
 }
 .rank-card__me {
   margin: var(--space-3) 0 0;

@@ -190,7 +190,9 @@ export function HomeScreen({
             const me = zodiac?.id === r.animal;
             return (
               <div key={r.animal} className={`podium podium--${i + 1}${me ? ' podium--me' : ''}`}>
-                <span className="podium__medal" aria-hidden>{['🥇', '🥈', '🥉'][i]}</span>
+                {/* 메달 이모지는 iOS 에서 글리프가 라인박스를 넘쳐 카드 테두리를 뚫는다.
+                    텍스트 배지는 어느 플랫폼에서든 같은 크기로 그려진다. */}
+                <span className="podium__rank">{i + 1}위</span>
                 <span className="podium__emoji" aria-hidden>{z?.emoji}</span>
                 <span className="podium__name">{z?.label}{me ? ' (나!)' : ''}</span>
               </div>
