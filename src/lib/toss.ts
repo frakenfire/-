@@ -6,6 +6,8 @@ import {
   getServerTime as tossGetServerTime,
   eventLog as tossEventLog,
   SafeAreaInsets,
+  requestNotificationAgreement as tossRequestNotiAgreement,
+  requestReview as tossRequestReview,
 } from '@apps-in-toss/web-framework';
 
 function supported(fn: unknown): boolean {
@@ -147,10 +149,9 @@ export type NotiAgreement = 'newAgreement' | 'alreadyAgreed' | 'agreementRejecte
 export async function askNotificationAgreement(): Promise<NotiAgreement> {
   if (!canAskNotification()) return 'unsupported';
   try {
-    const { requestNotificationAgreement } = await import('@apps-in-toss/web-framework');
     return await new Promise<NotiAgreement>((resolve) => {
       try {
-        requestNotificationAgreement({
+        tossRequestNotiAgreement({
           options: { templateCode: NOTI_TEMPLATE_CODE },
           onEvent: (r: { type: NotiAgreement }) => resolve(r.type),
           onError: () => resolve('unsupported'),
@@ -169,9 +170,8 @@ export async function askNotificationAgreement(): Promise<NotiAgreement> {
 // 리뷰 요청은 평점을 깎는다. 미지원/실패는 조용히 무시.
 export async function askReview(): Promise<boolean> {
   try {
-    const { requestReview } = await import('@apps-in-toss/web-framework');
-    if (!supported(requestReview)) return false;
-    await requestReview();
+    if (!supported(tossRequestReview)) return false;
+    await tossRequestReview();
     return true;
   } catch {
     return false;
