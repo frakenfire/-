@@ -6,7 +6,10 @@
 // 다시 나올 수 있었다. 최근 3개까지 피하되, 풀이 작으면 피할 수 있는 만큼만 피한다
 // (회피 수 ≥ 풀 크기면 고를 게 없어지므로 len-1 로 캡).
 
-const HISTORY_DEPTH = 3;
+// 회피 깊이는 풀 크기에 맞춰 자동으로 커진다 — 풀이 12개면 최근 6개를 피해
+// '최소 7일 무반복'이 보장되고, 풀이 6개면 5개를 피해 사실상 순환이 된다.
+const MAX_HISTORY_DEPTH = 6;
+const depthFor = (len: number) => Math.min(MAX_HISTORY_DEPTH, len - 1);
 
 function loadHistory(key: string): number[] {
   try {
@@ -31,14 +34,14 @@ export function pickFreshIndex(seed: number, len: number, storageKey: string): n
   try {
     const key = `tomorrowNoteLastVariant:${storageKey}`;
     const history = loadHistory(key);
-    const avoid = new Set(history.slice(0, Math.min(HISTORY_DEPTH, len - 1)));
+    const avoid = new Set(history.slice(0, depthFor(len)));
     if (avoid.has(idx)) {
       // seed 에서 파생된 결정적 보폭으로 회피 — 같은 입력이면 같은 결과(재현성 유지)
       const step = 1 + (Math.abs(Math.trunc(seed / 7)) % (len - 1));
       for (let i = 0; i < len && avoid.has(idx); i++) idx = (idx + step) % len;
       if (avoid.has(idx)) idx = (base + 1) % len; // 전부 회피 불가하면 최소한 직전과 다르게
     }
-    const next = [idx, ...history.filter((n) => n !== idx)].slice(0, HISTORY_DEPTH);
+    const next = [idx, ...history.filter((n) => n !== idx)].slice(0, MAX_HISTORY_DEPTH);
     window.localStorage.setItem(key, JSON.stringify(next));
   } catch {
     /* localStorage 불가 환경에서는 seed 값 그대로 사용 */

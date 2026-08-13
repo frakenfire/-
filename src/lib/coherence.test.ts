@@ -84,8 +84,10 @@ test('등급 해설은 행동을 지시하지 않는다(뒤에 붙는 흐름 문
   // 등급 해설 바로 뒤에 variant.flow 가 이어붙는다. variant.flow 가 행동 지침을
   // 담당하므로, 등급 해설이 같은 층위에서 반대 지시를 하면 한 문단이 자기모순이 된다.
   const IMPERATIVE = /(해보세요|나가보세요|덜어내면|꺼내기에|옮겨도 좋은)/;
-  for (const [grade, line] of Object.entries(GRADE_READING)) {
-    assert.ok(!IMPERATIVE.test(line), `${grade} 해설이 행동을 지시함: ${line}`);
+  for (const [grade, lines] of Object.entries(GRADE_READING)) {
+    for (const line of lines) {
+      assert.ok(!IMPERATIVE.test(line), `${grade} 해설이 행동을 지시함: ${line}`);
+    }
   }
 });
 
@@ -125,9 +127,11 @@ test('🏆 배지는 자랑거리(길 이상)일 때만 켜진다', () => {
 test('월간 리포트 총평은 "하루"가 아니라 "달"로 말한다', () => {
   // 화면에는 '이번 달 초반 / 중순 / 월말' 이 붙는데 총평만 일간 문장이면
   // 한 화면 안에서 시간 단위가 어긋난다.
-  for (const [grade, line] of Object.entries(GRADE_READING_MONTH)) {
-    assert.ok(!/하루|오늘/.test(line), `${grade} 월간 총평에 일간 표현: ${line}`);
-    assert.ok(/달|시기|한 달|이번 달/.test(line), `${grade} 월간 총평에 월간 표현 없음: ${line}`);
+  for (const [grade, lines] of Object.entries(GRADE_READING_MONTH)) {
+    for (const line of lines) {
+      assert.ok(!/하루|오늘/.test(line), `${grade} 월간 총평에 일간 표현: ${line}`);
+      assert.ok(/달|시기|한 달|이번 달/.test(line), `${grade} 월간 총평에 월간 표현 없음: ${line}`);
+    }
   }
   // 등급 키가 일간/월간 양쪽에 모두 있어야 폴백 없이 매칭된다.
   assert.deepEqual(Object.keys(GRADE_READING_MONTH).sort(), Object.keys(GRADE_READING).sort());

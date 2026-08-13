@@ -127,7 +127,11 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const pickReading = (arr: string[], div: number, key: string) =>
     arr[pickFreshIndex(Math.abs(Math.trunc(seed / div)), arr.length, key)];
   const reading = {
-    overall: `${(isMonth ? GRADE_READING_MONTH : GRADE_READING)[luck.grade] ?? GRADE_READING['평']}
+    overall: `${pickReading(
+      (isMonth ? GRADE_READING_MONTH : GRADE_READING)[luck.grade] ?? GRADE_READING['평'],
+      5,
+      `read:grade:${isMonth}:${luck.grade}`,
+    )}
 ${variant.flow}`,
     // month 타입은 초반/중순/월말 풀로, 나머지는 오전/오후/저녁 풀로.
     morning: pickReading(isMonth ? MONTH_EARLY_READINGS : MORNING_READINGS, 3, `read:morning:${isMonth}`),
