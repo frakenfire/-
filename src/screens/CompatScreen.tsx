@@ -407,7 +407,7 @@ export function CompatScreen({
 
           <div className="save-person">
             <p className="save-person__title">이 사람, 내 사람으로 저장할까요?</p>
-            <p className="save-person__desc">관계만 골라두면 다음부터 한 번에 바로 확인해요</p>
+            <p className="save-person__desc">관계만 골라두면, 올 때마다 이 사람과의 오늘 궁합이 자동으로 떠요 (로그인 없이 이 폰에만 저장)</p>
             <div className="save-person__chips">
               {RELATIONS.map((r) => (
                 <button
