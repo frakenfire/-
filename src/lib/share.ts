@@ -40,12 +40,20 @@ function tossSupported(fn: unknown): fn is { isSupported?: () => boolean } {
   return typeof fn === 'function';
 }
 
+// 앱인토스 딥링크 슬러그 — 콘솔 발급 앱 ID 와 반드시 같아야 링크가 열린다.
+// apply-console-values.mjs 가 granite.config.ts 의 appName 과 함께 교체하고,
+// check-release-ready 가 둘의 불일치를 잡는다.
+export const INTOSS_APP_SLUG = 'today-note';
+
 // 앱인토스 딥링크를 붙여 수신자가 미니앱으로 바로 진입하게 한다. (토스 웹뷰에서만 동작)
+// getTossShareLink 는 'intoss://<앱이름>[/경로]' 형식만 받는다 — '/' 같은 상대경로를
+// 넘기면 조용히 실패해 링크 없는 문구가 나갔다.
 async function appendTossLink(text: string, path: string): Promise<string> {
   try {
     if (getTossShareLink && (getTossShareLink as { isSupported?: () => boolean }).isSupported?.() !== false) {
-      const link = await getTossShareLink(path);
-      if (link) return `${text}\n${link}`;
+      const deepPath = `intoss://${INTOSS_APP_SLUG}${path === '/' ? '' : path}`;
+      const link = await getTossShareLink(deepPath);
+      if (link) return `${text}\n\n👉 ${link}`;
     }
   } catch {
     /* 딥링크 실패 시 링크 없이 공유 */
@@ -129,4 +137,34 @@ export async function shareForUnlock(text: string, path = '/compat'): Promise<bo
 /** 결과 공유(자랑). 상태를 그대로 돌려줘 화면이 취소/성공을 구분해 안내한다. */
 export async function shareBriefing(b: ShareBriefing, path = '/'): Promise<ShareOutcome> {
   return shareMessage(buildShareText(b), path);
+}
+
+
+// ── 띠 서열 공유 문구 ────────────────────────────────────────
+// 단톡방에 던져지는 앱의 얼굴. 순위마다 기운 한 단어를 붙여 '내용'이 있게 하고,
+// 받은 사람이 자기 순위를 확인하러 들어오게 훅으로 닫는다. (링크는 shareMessage 가 붙임)
+export type RankingShareRow = { label: string; emoji: string; toneWord: string };
+
+export function buildRankingShareText(args: {
+  dateLabel: string;
+  top3: RankingShareRow[];
+  last: RankingShareRow;
+  me?: { label: string; emoji: string; rank: number; gloss: string } | null;
+}): string {
+  const medal = ['🥇', '🥈', '🥉'];
+  const lines = [
+    `🏆 오늘의 띠 서열 · ${args.dateLabel}`,
+    ``,
+    ...args.top3.map((r, i) => `${medal[i]} ${r.emoji} ${r.label} · ${r.toneWord}`),
+    `⋯`,
+    `😇 12위 ${args.last.emoji} ${args.last.label} · ${args.last.toneWord}`,
+    ``,
+  ];
+  if (args.me) {
+    lines.push(`나(${args.me.emoji}${args.me.label})는 오늘 ${args.me.rank}위 — ${args.me.gloss}`);
+    lines.push(`네 띠는 몇 위게? 3초면 나와 👇`);
+  } else {
+    lines.push(`네 띠는 몇 위인지 3초면 나와 👇`);
+  }
+  return lines.join('\n');
 }

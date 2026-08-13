@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { todayVibe } from '../lib/dayVibe.ts';
 import { todayKey, hashSeed } from '../lib/dateSeed.ts';
 import { sajuToday, iljinOf, dailyZodiacRanking } from '../lib/saju.ts';
-import { shareMessage } from '../lib/share.ts';
+import { shareMessage, buildRankingShareText } from '../lib/share.ts';
 import { findZodiac, ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac.ts';
 import { ZODIAC_TRAIT } from '../data/traits.ts';
 import type { StoredResult, TodayReading, RarityCounts } from '../lib/storage.ts';
@@ -69,17 +69,22 @@ export function HomeScreen({
   const myRank = zodiac ? ranking.find((r) => r.animal === zodiac.id) ?? null : null;
 
   async function shareRanking() {
-    const top3 = ranking.slice(0, 3);
-    const last = ranking[ranking.length - 1];
-    const medal = ['🥇', '🥈', '🥉'];
     const z = (id: ZodiacId) => findZodiac(id);
-    const lines = [
-      `[오늘쪽지] ${todayLabel()} 오늘의 띠 서열 🏆`,
-      top3.map((r, i) => `${medal[i]} ${z(r.animal)?.emoji}${z(r.animal)?.label}`).join('  '),
-      `… 꼴찌 ${z(last.animal)?.emoji}${z(last.animal)?.label} 😇`,
-      myRank ? `내 띠는 ${myRank.rank}위! 너는 몇 위? 👀` : '네 띠는 몇 위인지 확인해봐 👀',
-    ];
-    const outcome = await shareMessage(lines.join('\n'));
+    const row = (r: (typeof ranking)[number]) => ({
+      label: z(r.animal)?.label ?? '',
+      emoji: z(r.animal)?.emoji ?? '',
+      toneWord: r.toneWord,
+    });
+    const text = buildRankingShareText({
+      dateLabel: todayLabel(),
+      top3: ranking.slice(0, 3).map(row),
+      last: row(ranking[ranking.length - 1]),
+      me:
+        myRank && zodiac
+          ? { label: zodiac.label, emoji: zodiac.emoji, rank: myRank.rank, gloss: myRank.relationGloss }
+          : null,
+    });
+    const outcome = await shareMessage(text);
     if (outcome === 'copied') {
       setShared(true);
       window.setTimeout(() => setShared(false), 2600);

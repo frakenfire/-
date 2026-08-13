@@ -53,6 +53,10 @@ if (args['app-name']) {
     edit('granite.config.ts', [
       [`appName: 'today-note'`, `appName: '${args['app-name']}'`, `appName → ${args['app-name']}`],
     ]);
+    // 공유 딥링크 슬러그는 appName 과 반드시 동일해야 링크가 열린다
+    edit('src/lib/share.ts', [
+      [`INTOSS_APP_SLUG = 'today-note'`, `INTOSS_APP_SLUG = '${args['app-name']}'`, `공유 딥링크 슬러그 → ${args['app-name']}`],
+    ]);
   }
 }
 

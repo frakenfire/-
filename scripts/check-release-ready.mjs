@@ -30,6 +30,19 @@ check(
   'adGroupId 가 아직 REPLACE_ placeholder 예요 (콘솔 발급 adGroupId 로 교체)',
 );
 
+// 공유 딥링크 슬러그는 granite appName 과 같아야 링크가 열린다 (불일치 = 죽은 링크)
+try {
+  const granite = readFileSync(new URL('../granite.config.ts', import.meta.url), 'utf8');
+  const shareSrc = readFileSync(new URL('../src/lib/share.ts', import.meta.url), 'utf8');
+  const appName = granite.match(/appName:\s*'([^']+)'/)?.[1];
+  const slug = shareSrc.match(/INTOSS_APP_SLUG = '([^']+)'/)?.[1];
+  if (appName && slug && appName !== slug) {
+    problems.push(`공유 딥링크 슬러그(${slug})가 appName(${appName})과 달라요 — 공유 링크가 죽습니다. apply-console-values 를 다시 실행하세요`);
+  }
+} catch {
+  /* 파일을 못 읽는 경우는 위의 개별 검사에서 이미 잡힘 */
+}
+
 if (problems.length > 0) {
   console.error('\n❌ 출시 준비 미완료 — 아래 항목을 먼저 교체하세요:\n');
   for (const p of problems) console.error(`  - ${p}`);

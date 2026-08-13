@@ -7,6 +7,8 @@ import { TEMPLATES } from '../data/resultTemplates.ts';
 import { PLANS, moodGroup } from '../data/dayDesign.ts';
 import { computeCompat } from './compat.ts';
 import { generateFortune, ENGINE_VERSION } from './generateFortune.ts';
+import { buildRankingShareText, INTOSS_APP_SLUG } from './share.ts';
+import { readFileSync } from 'node:fs';
 import { computeStarCompat } from './starCompat.ts';
 import { STAR_SIGNS } from '../data/starSign.ts';
 
@@ -238,4 +240,27 @@ test('시드에 엔진 버전이 포함된다 — 버전이 다르면 결과가 
   // 버전 문자열이 시드 입력에 실제로 들어가는지를 소스로 확인
   // (상수를 런타임에 바꿀 수 없으므로 구조 검증)
   assert.ok(Number.isInteger(ENGINE_VERSION) && ENGINE_VERSION >= 2);
+});
+
+test('띠 서열 공유 문구 — 순위·기운·훅·내 순위가 전부 담긴다', () => {
+  const t = buildRankingShareText({
+    dateLabel: '8월 13일 (목)',
+    top3: [
+      { label: '토끼띠', emoji: '🐰', toneWord: '크게 트임' },
+      { label: '말띠', emoji: '🐴', toneWord: '순조' },
+      { label: '닭띠', emoji: '🐔', toneWord: '안정' },
+    ],
+    last: { label: '쥐띠', emoji: '🐭', toneWord: '조심' },
+    me: { label: '개띠', emoji: '🐶', rank: 5, gloss: '짝꿍 조합' },
+  });
+  for (const must of ['🥇', '크게 트임', '12위', '조심', '개띠', '5위', '짝꿍 조합', '몇 위게']) {
+    assert.ok(t.includes(must), `공유 문구에 "${must}" 누락:\n${t}`);
+  }
+  assert.ok(t.split('\n').length <= 11, '단톡방용 문구가 너무 길다');
+});
+
+test('공유 딥링크 슬러그가 granite appName 과 일치한다 (죽은 링크 방지)', () => {
+  const granite = readFileSync(new URL('../../granite.config.ts', import.meta.url), 'utf8');
+  const appName = granite.match(/appName:\s*'([^']+)'/)?.[1];
+  assert.equal(INTOSS_APP_SLUG, appName);
 });
