@@ -24,3 +24,25 @@ test('unsupported 는 명시적 무료 정책으로만 통과(보상 위장 아�
   assert.equal(isRewarded(r), false); // 보상으로 위장하지 않음
   assert.equal(isUnsupportedFreePass(r), true); // 별도 정책으로만 통과
 });
+
+// ── 전체 삭제 무결성 — '내 데이터 전체 삭제'가 이 앱의 키를 하나도 안 남기는지 ──
+import { clearAllData } from './storage.ts';
+
+test('clearAllData 는 tomorrowNote 접두사 키를 전부 지운다', () => {
+  const store = new Map<string, string>();
+  (globalThis as unknown as { window: unknown }).window = {
+    localStorage: {
+      get length() { return store.size; },
+      key: (i: number) => [...store.keys()][i] ?? null,
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => { store.set(k, v); },
+      removeItem: (k: string) => { store.delete(k); },
+    },
+  };
+  store.set('tomorrowNoteZodiac', 'dog');
+  store.set('tomorrowNoteNotiAsked', 'agreed');
+  store.set('tomorrowNoteLastVariant:pin:soso', '[1,2]');
+  store.set('otherAppKey', 'keep'); // 남의 키는 건드리지 않는다
+  assert.equal(clearAllData(), true);
+  assert.deepEqual([...store.keys()], ['otherAppKey']);
+});

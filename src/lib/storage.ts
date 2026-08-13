@@ -47,16 +47,6 @@ export function saveResult(result: StoredResult): void {
   safeSet(KEYS.lastResult, JSON.stringify(result));
 }
 
-export function loadResult(): StoredResult | null {
-  const raw = safeGet(KEYS.lastResult);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as StoredResult;
-  } catch {
-    return null;
-  }
-}
-
 // ── 뽑기 기록 히스토리 (최근 7일) ──
 // lastResult 하나만 저장하면 오늘 새로 뽑을 때 어제 기록이 사라진다.
 // 날짜별로 최근 7건을 보관해 '어제의 쪽지' 등이 안정적으로 남게 한다.
@@ -305,25 +295,18 @@ export function updateStreak(todayKey: string, yesterdayKey: string): number {
 }
 
 // ── 내 데이터 전체 삭제 (사용자가 기기 로컬 데이터 생명주기를 통제) ──
-const ALL_KEYS = [
-  KEYS.lastResult,
-  KEYS.todayReading,
-  KEYS.dailyDrawCount,
-  KEYS.dailyDrawDate,
-  KEYS.lastVisitDate,
-  HISTORY_KEY,
-  RARITY_KEY,
-  ZODIAC_KEY,
-  STAR_KEY,
-  SAVED_PEOPLE_KEY,
-  STREAK_KEYS.date,
-  STREAK_KEYS.count,
-];
-
 /** 이 앱이 저장한 모든 로컬 데이터를 지운다. 성공 여부 반환. */
 export function clearAllData(): boolean {
   try {
-    for (const k of ALL_KEYS) window.localStorage.removeItem(k);
+    // 나열식 삭제는 새 키가 생길 때마다 빼먹는다(실제로 알림 동의 상태와
+    // 노출 이력 'tomorrowNoteLastVariant:*' 가 남았었다).
+    // 이 앱의 모든 키는 'tomorrowNote' 접두사를 쓰므로 접두사로 전부 지운다.
+    const doomed: string[] = [];
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const k = window.localStorage.key(i);
+      if (k && k.startsWith('tomorrowNote')) doomed.push(k);
+    }
+    for (const k of doomed) window.localStorage.removeItem(k);
     return true;
   } catch {
     return false;

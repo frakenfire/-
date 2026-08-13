@@ -1,6 +1,7 @@
 import type { LetterParts, Mood } from '../types/fortune.ts';
 import type { Variant } from '../data/resultTemplates.ts';
 import {
+  BRIDGES,
   CLOSINGS,
   EMPATHY,
   GREETINGS,
@@ -60,12 +61,17 @@ export function composeLetter({
   // 서로 다른 양의 소수로 나눠 각 섹션 인덱스를 탈상관시킨다 (음수 시프트 회피).
   const greeting = pickFresh(GREETINGS[slot], seed, `ltr:greet:${slot}`);
   const empathy = pickFresh(EMPATHY[mood], Math.floor(seed / 7), `ltr:emp:${mood}`);
+  // 이음말 — 공감에서 콕집기(highlight)로 넘어가는 다리. 설계에 있었는데
+  // 조립에서 빠져 있던 조각이라, 편지 도입부의 변주 폭도 함께 늘어난다.
+  const bridge = pickFresh(BRIDGES, Math.floor(seed / 13), 'ltr:bridge');
   const keepIntro = pickFresh(KEEP_INTROS, Math.floor(seed / 29), 'ltr:keep');
   const closing = pickFresh(CLOSINGS[mood], Math.floor(seed / 53), `ltr:close:${mood}`);
 
   return {
     intro: `${greeting}
-${empathy}`,
+${empathy}
+
+${bridge}`,
     // 예전엔 variant.pinpoint(정적 템플릿)을 써서 결과 본문의 콕집기와 따로 놀았다.
     // 이제 같은 기분 풀에서 뽑은 다른 한 줄을 받아 톤이 어긋나지 않는다.
     highlight,

@@ -77,8 +77,3 @@ export type LetterParts = {
   closing: string; // 맺음
   sign: string; // 서명
 };
-
-export type Choice<T extends string> = {
-  key: T;
-  label: string;
-};

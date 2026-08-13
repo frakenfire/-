@@ -2,12 +2,6 @@
 
 export const APP_NAME = '오늘쪽지 뽑기';
 
-export const HOME = {
-  title: APP_NAME,
-  lead: '오늘 하루, 어떻게 흘러갈까요?\n쪽지 한 장 톡 뽑아볼까요?',
-  cta: '쪽지 뽑으러 가기',
-};
-
 // 홈 최상단 인사 — 상단 네비에 이미 앱 이름이 있어서, 큰 제목 자리는
 // 앱 이름을 반복하는 대신 '나에게 건네는 말'이 차지한다.
 // 시간대 × 날짜 seed 로 골라 같은 시간대라도 날마다 다른 인사가 나온다.
@@ -44,10 +38,6 @@ export const GREETINGS: Record<'morning' | 'afternoon' | 'evening' | 'night', st
     '푹 자는 게 오늘의 마지막 할 일이에요 🌛',
     '조용한 이 시간, 잘 어울려요 ✨',
   ],
-};
-
-export const QUESTIONS = {
-  fortuneType: '오늘은 뭐가 제일 궁금해요?',
 };
 
 // 접힌 쪽지 3장에 붙는 짧은 문구 — 내용을 흘리지 않으면서 뽑는 재미를 준다.
