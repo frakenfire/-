@@ -11,6 +11,8 @@ import { buildRankingShareText, INTOSS_APP_SLUG } from './share.ts';
 import { readFileSync } from 'node:fs';
 import { computeStarCompat } from './starCompat.ts';
 import { STAR_SIGNS } from '../data/starSign.ts';
+import { computeWeekAhead, buildWeekShareText } from './weekAhead.ts';
+import { weekIdOf } from './storage.ts';
 
 // 결과 화면은 '총운 96점 · 대길'(숫자)과 '내 띠와 상충 · 조심'(사주 해석)을
 // 한 화면에 나란히 보여준다. 둘이 반대 방향을 가리키면 "이 앱 안 맞네"가 된다.
@@ -263,4 +265,79 @@ test('공유 딥링크 슬러그가 granite appName 과 일치한다 (죽은 링
   const granite = readFileSync(new URL('../../granite.config.ts', import.meta.url), 'utf8');
   const appName = granite.match(/appName:\s*'([^']+)'/)?.[1];
   assert.equal(INTOSS_APP_SLUG, appName);
+});
+
+// ── 이번 주 운세 캘린더 ────────────────────────────────────────────────
+// 서버 없이 미래 7일을 계산하므로, 오늘 화면과 캘린더의 오늘 칸이 어긋나면
+// 그 자리에서 신뢰가 깨진다. 날짜·톤·최고날 선정이 엔진과 일치하는지 검증한다.
+
+test('주간 캘린더 — 오늘부터 7일, 날짜가 연속하고 톤이 사주 엔진과 일치한다', () => {
+  for (const z of ZODIACS) {
+    const w = computeWeekAhead('2026-08-14', z);
+    assert.equal(w.days.length, 7);
+    assert.equal(w.days[0].dateKey, '2026-08-14');
+    assert.equal(w.days[0].isToday, true);
+    assert.equal(w.days[6].dateKey, '2026-08-20');
+    assert.equal(w.days.filter((d) => d.isToday).length, 1, '오늘 칸은 하나여야 한다');
+    for (const d of w.days) {
+      // 캘린더의 각 칸은 그날 홈/결과 화면이 보여줄 것과 같은 값이어야 한다
+      const s = sajuToday(d.dateKey, z);
+      assert.equal(d.tone, s.tone);
+      assert.equal(d.toneWord, s.toneWord);
+      assert.equal(d.iljinKor, s.iljin.kor);
+    }
+  }
+});
+
+test('주간 캘린더 — 월말/윤년 경계에서도 날짜가 밀리지 않는다', () => {
+  assert.equal(computeWeekAhead('2026-08-29', 'dog').days[6].dateKey, '2026-09-04');
+  assert.equal(computeWeekAhead('2028-02-26', 'dog').days[6].dateKey, '2028-03-03'); // 2028 윤년
+  assert.equal(computeWeekAhead('2026-12-29', 'dog').days[6].dateKey, '2027-01-04');
+});
+
+test('주간 캘린더 — best 는 실제로 가장 좋은 날이고 동점이면 가까운 날', () => {
+  const RANK = { great: 3, good: 2, steady: 1, caution: 0 } as const;
+  for (const z of ZODIACS) {
+    for (const start of ['2026-08-14', '2026-11-02', '2027-03-19']) {
+      const w = computeWeekAhead(start, z);
+      const top = Math.max(...w.days.map((d) => RANK[d.tone]));
+      assert.equal(RANK[w.best.tone], top, `${z}/${start}: best 가 최고 톤이 아니다`);
+      const firstTop = w.days.find((d) => RANK[d.tone] === top)!;
+      assert.equal(w.best.dateKey, firstTop.dateKey, '동점이면 더 가까운 날이어야 한다');
+      // 조심 날 표기는 실제 caution 인 날에만 붙는다
+      if (w.caution) assert.equal(w.caution.tone, 'caution');
+      else assert.ok(!w.days.some((d) => d.tone === 'caution'));
+    }
+  }
+});
+
+test('주간 캘린더 헤드라인이 best 톤과 모순되지 않는다', () => {
+  for (const z of ZODIACS) {
+    const w = computeWeekAhead('2026-08-14', z);
+    if (w.best.tone === 'great') assert.ok(w.headline.includes('크게'), w.headline);
+    else if (w.best.tone === 'good') assert.ok(w.headline.includes('순해요'), w.headline);
+    else assert.ok(w.headline.includes('잔잔'), w.headline);
+    // 오늘이 최고일 땐 "오늘", 아니면 요일이 찍혀야 어느 날인지 알 수 있다
+    if (w.best.isToday) assert.ok(w.headline.includes('오늘') || w.headline.includes('잔잔'));
+  }
+});
+
+test('주간 캘린더 공유 문구 — 7일이 모두 담기고 단톡방에 넣을 길이다', () => {
+  const w = computeWeekAhead('2026-08-14', 'dog');
+  const t = buildWeekShareText(w, '개띠', '🐶');
+  assert.ok(t.includes('🐶개띠'), t);
+  assert.ok(t.includes(w.headline), t);
+  for (const d of w.days) assert.ok(t.includes(d.short), `${d.short} 누락:\n${t}`);
+  assert.ok(t.split('\n').length <= 13, '공유 문구가 너무 길다');
+});
+
+test('주간 잠금 해제는 그 주에만 유효하다 (월요일마다 다시 잠김)', () => {
+  // 같은 주(월~일)는 같은 식별자, 주가 넘어가면 달라져야 한다
+  assert.equal(weekIdOf('2026-08-10'), '2026-08-10'); // 월
+  assert.equal(weekIdOf('2026-08-14'), '2026-08-10'); // 금
+  assert.equal(weekIdOf('2026-08-16'), '2026-08-10'); // 일 — 아직 같은 주
+  assert.notEqual(weekIdOf('2026-08-17'), '2026-08-10'); // 다음 월요일
+  assert.equal(weekIdOf('2026-08-17'), '2026-08-17');
+  // 월 경계를 넘는 주도 월요일로 되감긴다
+  assert.equal(weekIdOf('2026-09-01'), '2026-08-31');
 });

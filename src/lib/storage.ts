@@ -331,3 +331,24 @@ export function hasAskedReview(): boolean {
 export function markReviewAsked(): void {
   safeSet(ASK_KEYS.reviewAsked, '1');
 }
+
+// ── 주간 캘린더 해금 (스트릭 보상 또는 광고) ──
+// 해금은 '그 주'에만 유효하다 — 매주 다시 열게 해야 스트릭·광고가 계속 돈다.
+const WEEK_UNLOCK_KEY = 'tomorrowNoteWeekUnlock';
+
+/** 주 식별자 — 월요일 기준. 같은 주 안에서는 한 번만 열면 된다. */
+export function weekIdOf(dateKey: string): string {
+  const d = new Date(`${dateKey}T12:00:00`);
+  const day = d.getDay(); // 0=일
+  const back = day === 0 ? 6 : day - 1; // 월요일까지 되감기
+  d.setDate(d.getDate() - back);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+export function isWeekUnlocked(dateKey: string): boolean {
+  return safeGet(WEEK_UNLOCK_KEY) === weekIdOf(dateKey);
+}
+
+export function unlockWeek(dateKey: string): boolean {
+  return safeSet(WEEK_UNLOCK_KEY, weekIdOf(dateKey));
+}

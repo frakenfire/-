@@ -265,6 +265,56 @@ async function run(browser) {
     }
   }
 
+  // 2-b. 이번 주 운세 캘린더 — 띠를 골라야 뜨는 카드라 별도 경로로 점검한다.
+  //      잠금 상태에서 "뭐가 열리는지"가 보여야 하고, 열면 7일이 전부 나와야 한다.
+  {
+    const page = await newPage(browser);
+    await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+    await wait(page, 500);
+    try {
+      await setZodiac(page, '🐭 쥐띠');
+      await wait(page, 700);
+
+      const locked = await bodyText(page);
+      check(locked.includes('이번 주 내 운세'), '[주간] 띠 선택 후 캘린더 카드 노출');
+      // 잠긴 상태에서도 무엇이 열리는지 + 어떻게 열리는지가 둘 다 보여야 한다
+      check(locked.includes('앞으로 7일'), '[주간] 잠금 상태에서 가치 설명 노출');
+      check(/연속 뽑으면 무료로 열려요|무료로 열려요 🎁/.test(locked),
+        '[주간] 무료 해제 조건이 숫자로 보임',
+        (locked.match(/.{0,30}무료로 열려요.{0,10}/) || [''])[0]);
+
+      await diagnose(page, '주간(잠김)');
+
+      await page.getByText('이번 주 미리보기', { exact: false }).first().click();
+      await wait(page, 1500);
+      const open = await bodyText(page);
+      check(/이번 주는 .+(트여요|순해요|잔잔해요)/.test(open), '[주간] 해제 후 헤드라인 노출',
+        (open.match(/이번 주는 [^\n]*/) || [''])[0]);
+      const rows = await page.locator('.week-row').count();
+      check(rows === 7, '[주간] 7일이 모두 표시', `${rows}행`);
+      const today = await page.locator('.week-row--today').count();
+      check(today === 1, '[주간] 오늘 칸이 정확히 하나', `${today}개`);
+      const best = await page.locator('.week-row--best').count();
+      check(best === 1, '[주간] 가장 좋은 날이 정확히 하나', `${best}개`);
+      // 각 행이 요일·날짜·관계·기운을 다 갖고 있어야 "이게 뭐지"가 안 생긴다
+      const empty = await page.locator('.week-row').evaluateAll((els) =>
+        els.filter((el) => ['__day', '__date', '__rel', '__tone']
+          .some((k) => !(el.querySelector(`.week-row${k}`)?.textContent || '').trim())).length);
+      check(empty === 0, '[주간] 빈 칸 없음', `${empty}행 비어있음`);
+
+      await diagnose(page, '주간(열림)');
+
+      // 새로고침해도 같은 주 안에서는 열린 채로 남아야 한다
+      await page.reload({ waitUntil: 'networkidle' });
+      await wait(page, 1000);
+      check((await page.locator('.week-row').count()) === 7, '[주간] 새로고침 후에도 열린 상태 유지');
+      check((await page.locator('.week-card__share').count()) === 1, '[주간] 해제 후 공유 버튼 노출');
+    } catch (e) {
+      bad('[주간] 캘린더 경로', e.message.split('\n')[0]);
+    }
+    await page.context().close();
+  }
+
   // 3. 운세 7종 관통 + 월간 화면의 시간 단위
   {
     const TOPICS = [

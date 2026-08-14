@@ -6,7 +6,7 @@ import { hashSeed, pickBySeed, todayKey } from './lib/dateSeed.ts';
 import { generateFortune } from './lib/generateFortune.ts';
 import { luckPercentile } from './lib/luck.ts';
 import { showRewardAd, isRewarded, isUnsupportedFreePass, adResultMessage } from './lib/ads.ts';
-import { shareBriefing, shareForUnlock, copyText } from './lib/share.ts';
+import { shareBriefing, shareForUnlock, copyText, shareMessage } from './lib/share.ts';
 import { AppLayout } from './components/AppLayout.tsx';
 import { saveResultCard } from './lib/saveImage.ts';
 import {
@@ -29,7 +29,7 @@ import { findZodiac } from './data/zodiac.ts';
 import type { Zodiac, ZodiacId } from './data/zodiac.ts';
 import { findStarSign } from './data/starSign.ts';
 import type { StarSign, StarSignId } from './data/starSign.ts';
-import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, getNotiAskState, setNotiAskState, hasAskedReview, markReviewAsked } from './lib/storage.ts';
+import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, getNotiAskState, setNotiAskState, hasAskedReview, markReviewAsked, isWeekUnlocked, unlockWeek } from './lib/storage.ts';
 
 import { HomeScreen } from './screens/HomeScreen.tsx';
 import { MoodScreen } from './screens/MoodScreen.tsx';
@@ -177,6 +177,7 @@ export default function App() {
     if (lastSyncedDate.current === dateKey) return;
     lastSyncedDate.current = dateKey;
     setTodayReading(loadTodayReading(dateKey));
+    setWeekUnlocked(isWeekUnlocked(dateKey));
     setRarityCounts(getRarityCounts(dateKey));
     setStreak(peekStreak());
     // 어제 뽑은 결과 화면을 띄워둔 채 자정을 넘겼다면 홈으로 되돌린다.
@@ -383,6 +384,35 @@ export default function App() {
   }
 
   // 결과 카드 저장 = 바이럴 공유 자산이라 광고 게이팅 없이 무료로(확산 우선).
+  // 주간 캘린더 해금 — 스트릭 3일 이상이면 무료, 아니면 보상형 광고.
+  // (습관이 붙은 유저는 보상으로 돌려주고, 아직인 유저에게선 광고 수익이 난다)
+  const [weekUnlocked, setWeekUnlocked] = useState(() => isWeekUnlocked(todayKey()));
+
+  async function handleUnlockWeek() {
+    if (busy) return;
+    if (streak >= 3) {
+      unlockWeek(dateKey);
+      setWeekUnlocked(true);
+      logEvent('week_unlock', { via: 'streak', streak });
+      flash(`${streak}일 연속 보상! 이번 주 캘린더가 열렸어요 🎁`);
+      return;
+    }
+    await runRewardGate('retry', () => {
+      unlockWeek(dateKey);
+      setWeekUnlocked(true);
+      logEvent('week_unlock', { via: 'ad', streak });
+      flash('이번 주 캘린더가 열렸어요 🗓️');
+    });
+  }
+
+  async function handleShareWeek(text: string) {
+    const r = await shareMessage(text);
+    logEvent('share_week', { outcome: r });
+    if (r === 'shared') flash('이번 주 운세를 공유했어요 💌');
+    else if (r === 'copied') flash('공유 문구 복사 완료! 💌');
+    else if (r === 'failed') flash('앗, 공유를 못 했어요');
+  }
+
   // 아침 알림 옵트인 — 템플릿 코드가 콘솔에서 발급된 경우에만, 아직 안 물었을 때만.
   const [notiCardVisible, setNotiCardVisible] = useState(
     () => canAskNotification() && getNotiAskState() === null,
@@ -462,6 +492,9 @@ export default function App() {
           onCompat={() => setScreen('compat')}
           onSelect={handleType}
           onReset={handleReset}
+          weekUnlocked={weekUnlocked}
+          onUnlockWeek={handleUnlockWeek}
+          onShareWeek={handleShareWeek}
         />
       )}
 
