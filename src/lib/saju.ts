@@ -70,7 +70,7 @@ export const ELEMENT_COLORS: Record<Element, { name: string; hex: string }[]> = 
 };
 
 // 천간 10 — 한자 / 한글 / 오행 / 음양
-const STEMS: { hanja: string; kor: string; el: Element }[] = [
+export const STEMS: { hanja: string; kor: string; el: Element }[] = [
   { hanja: '甲', kor: '갑', el: 'wood' },
   { hanja: '乙', kor: '을', el: 'wood' },
   { hanja: '丙', kor: '병', el: 'fire' },
@@ -84,7 +84,7 @@ const STEMS: { hanja: string; kor: string; el: Element }[] = [
 ];
 
 // 지지 12 — 한자 / 한글 / 띠 / 오행. 배열 순서 = 子丑寅卯辰巳午未申酉戌亥 = 띠 순서.
-const BRANCHES: { hanja: string; kor: string; animal: ZodiacId; el: Element }[] = [
+export const BRANCHES: { hanja: string; kor: string; animal: ZodiacId; el: Element }[] = [
   { hanja: '子', kor: '자', animal: 'rat', el: 'water' },
   { hanja: '丑', kor: '축', animal: 'ox', el: 'earth' },
   { hanja: '寅', kor: '인', animal: 'tiger', el: 'wood' },
@@ -108,7 +108,7 @@ const BRANCH_OF_ANIMAL: Record<ZodiacId, number> = BRANCHES.reduce(
 );
 
 // 율리우스적일(Fliegel–Van Flandern, 그레고리력) — 정확한 정수 일련번호.
-function toJDN(y: number, m: number, d: number): number {
+export function toJDN(y: number, m: number, d: number): number {
   const a = Math.floor((14 - m) / 12);
   const yy = y + 4800 - a;
   const mm = m + 12 * a - 3;
