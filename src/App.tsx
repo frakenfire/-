@@ -618,6 +618,7 @@ export default function App() {
           onEdit={() => setScreen('birth')}
           onShare={handleShareSaju}
           onDeleteBirth={handleDeleteBirth}
+          onDraw={() => handleType('tomorrow')}
         />
       )}
 

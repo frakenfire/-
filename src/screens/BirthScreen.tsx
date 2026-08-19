@@ -35,10 +35,11 @@ export function BirthScreen({ initial, onSave, onBack }: Props) {
 
   return (
     <AppLayout onBack={onBack}>
-      <span className="eyebrow">내 사주 만들기</span>
+      <span className="eyebrow">쪽지를 나에게 맞추기</span>
       <h2 className="h2">언제 태어났어요?</h2>
       <p className="lead">
-        사주는 태어난 <b>순간</b>으로 세워요. 이 기기에만 저장되고 어디에도 보내지 않아요.
+        태어난 <b>순간</b>으로 사주를 세우면, 오늘 쪽지가 나만의 것이 돼요.
+        이 기기에만 저장되고 어디에도 보내지 않아요.
       </p>
 
       <div className="birth-form">

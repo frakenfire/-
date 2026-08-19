@@ -120,6 +120,20 @@ export function ResultScreen({
         </button>
       }
     >
+      {/* 내가 뽑은 쪽지 — 이 앱의 정체성이자, 방금 한 선택의 보상.
+          이게 없으면 19장 중 하나를 고른 의식이 결과에 아무 흔적도 남기지 않는다.
+          (실제로 그동안 쪽지 이름이 결과 어디에도 안 나왔다) */}
+      <div className={`drawn drawn--${note.color} fade-in`}>
+        <span className="drawn__pin" aria-hidden />
+        <span className="drawn__icon" aria-hidden>{note.icon}</span>
+        <span className="drawn__text">
+          <span className="drawn__k">내가 뽑은 쪽지</span>
+          <strong className="drawn__name">{note.name}</strong>
+          <span className="drawn__lead">{result.summaryLines[0]}</span>
+        </span>
+        <span className="drawn__kw">{note.keyword}</span>
+      </div>
+
       {/* 브리핑 카드 */}
       <div
         className={`briefing briefing--${rarity.tier} fade-in`}
@@ -264,10 +278,8 @@ export function ResultScreen({
           같은 날이어도 내 일간에 따라 십신이 달라지고, 신강신약에 따라 약이 되기도 독이 되기도 한다. */}
       {result.daily ? (
         <div className="mygod fade-in">
-          <div className="mygod__head">
-            <span className="mygod__badge">{TEN_GOD_KO[result.daily.dayGod]}</span>
-            <p className="mygod__title">{result.daily.reading.title}</p>
-          </div>
+          <span className="mygod__eyebrow">이 쪽지가 당신에게 닿은 자리</span>
+          <p className="mygod__title">{result.daily.reading.title}</p>
           <p className="mygod__body">{result.daily.reading.body}</p>
           <p className={`mygod__fit mygod__fit--${result.daily.fit}`}>{result.daily.fitLine}</p>
           <ul className="mygod__acts">
@@ -280,6 +292,11 @@ export function ResultScreen({
               {result.daily.reading.avoid}
             </li>
           </ul>
+          {/* 사주 용어는 헤드라인이 아니라 근거 자리에 둔다 — 정확함은 지키되 앞세우지 않는다 */}
+          <p className="mygod__why">
+            근거 · 내 일간 <b>{result.daily.myStemHanja}</b> × 오늘 일진{' '}
+            <b>{result.daily.iljin.hanja}</b> = <b>{TEN_GOD_KO[result.daily.dayGod]}</b>
+          </p>
         </div>
       ) : null}
 

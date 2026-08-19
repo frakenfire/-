@@ -3,7 +3,9 @@ import assert from 'node:assert/strict';
 import { computeLuck, luckBandForTone, luckPercentile } from './luck.ts';
 import { iljinOf, sajuToday } from './saju.ts';
 import { GRADE_READING, GRADE_READING_MONTH, MONTH_PEOPLE_READINGS, PEOPLE_READINGS } from '../data/readings.ts';
-import { TEMPLATES } from '../data/resultTemplates.ts';
+import { TEMPLATES, NOTE_LEAD } from '../data/resultTemplates.ts';
+import { NOTES } from '../data/notes.ts';
+import { NOTE_DIRECTION, directionOfText, conflicts } from '../data/noteDirection.ts';
 import { PLANS, moodGroup } from '../data/dayDesign.ts';
 import { computeCompat } from './compat.ts';
 import { generateFortune, ENGINE_VERSION } from './generateFortune.ts';
@@ -340,4 +342,73 @@ test('주간 잠금 해제는 그 주에만 유효하다 (월요일마다 다시
   assert.equal(weekIdOf('2026-08-17'), '2026-08-17');
   // 월 경계를 넘는 주도 월요일로 되감긴다
   assert.equal(weekIdOf('2026-09-01'), '2026-08-31');
+});
+
+// ── 쪽지 컨셉 ──────────────────────────────────────────────────────────────
+// 이 앱의 정체성은 '쪽지를 뽑는' 것이다. 사주를 붙이면서 쪽지가 장식으로 밀려나면
+// 오늘쪽지 뽑기가 아니게 된다. 뽑은 쪽지가 결과에 남고, 결과를 실제로 바꿔야 한다.
+
+test('뽑은 쪽지가 결과에 그대로 실려 나온다', () => {
+  for (const note of NOTES) {
+    const r = generateFortune({
+      fortuneType: 'tomorrow',
+      note,
+      mood: 'soso',
+      dateKey: '2026-08-19',
+      zodiac: 'dog',
+    });
+    // 화면이 note.name/keyword 를 직접 그리므로, 결과에는 쪽지별 풀이 한 줄이 있어야 한다
+    assert.equal(r.subtitle, `${note.name} 쪽지`);
+    assert.equal(r.summaryLines[0], NOTE_LEAD[note.id]);
+    assert.ok(r.summaryLines[0].length > 5, `${note.name} 의 풀이가 비어 있다`);
+  }
+});
+
+test('쪽지를 바꾸면 결과가 실제로 달라진다 (뒷면이 같은 셔플이 아니다)', () => {
+  const base = {
+    fortuneType: 'tomorrow' as const,
+    mood: 'soso' as const,
+    dateKey: '2026-08-19',
+    zodiac: 'dog' as const,
+  };
+  const bodies = new Set(NOTES.map((n) => generateFortune({ ...base, note: n }).summaryLines[1]));
+  assert.ok(bodies.size >= 3, `쪽지 ${NOTES.length}장이 본문 ${bodies.size}종밖에 못 만든다`);
+});
+
+test('쪽지의 처방과 본문의 처방이 부딪히지 않는다', () => {
+  // '용기 한 스푼(나서라)' 을 뽑았는데 본문이 '루틴만 지켜라' 면 뭘 하라는 건지 알 수 없다.
+  const types = Object.keys(TEMPLATES) as (keyof typeof TEMPLATES)[];
+  const moods = ['good', 'soso', 'tired', 'anxious', 'lonely'] as const;
+  let clash = 0;
+  let total = 0;
+  for (const note of NOTES) {
+    for (const fortuneType of types) {
+      for (const mood of moods) {
+        for (let d = 1; d <= 6; d += 1) {
+          const r = generateFortune({
+            fortuneType,
+            note,
+            mood,
+            dateKey: `2026-0${d}-15`,
+            zodiac: 'dog',
+          });
+          const body = directionOfText(
+            `${r.summaryLines[1]} ${r.summaryLines[2]} ${r.detailFlow} ${r.goodPoint}`,
+          );
+          total += 1;
+          if (conflicts(NOTE_DIRECTION[note.id] ?? 'any', body)) clash += 1;
+        }
+      }
+    }
+  }
+  assert.equal(clash, 0, `${total}건 중 ${clash}건에서 쪽지와 본문이 반대 방향을 말한다`);
+});
+
+test('모든 쪽지에 방향이 선언돼 있다 (새 쪽지를 추가하고 빼먹지 않게)', () => {
+  for (const note of NOTES) {
+    assert.ok(
+      NOTE_DIRECTION[note.id] !== undefined,
+      `${note.name}(${note.id}) 의 방향이 없다 — noteDirection.ts 에 추가해야 한다`,
+    );
+  }
 });

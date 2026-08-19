@@ -15,6 +15,7 @@ import { composeLetter } from './letter.ts';
 import { computeRarity, RARITY_LINE } from './rarity.ts';
 import { FORTUNE_LABEL } from '../data/fortuneTypes.ts';
 import { NOTE_LEAD, TEMPLATES } from '../data/resultTemplates.ts';
+import { NOTE_DIRECTION, directionOfText, conflicts } from '../data/noteDirection.ts';
 import { MOOD_PINPOINT, MOOD_MIND } from '../data/moodEcho.ts';
 import { PLANS, moodGroup } from '../data/dayDesign.ts';
 import { pickFreshIndex } from './pickFresh.ts';
@@ -72,8 +73,16 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   );
   const persona = buildPersona(zodiac, star);
 
-  const variants = TEMPLATES[fortuneType];
-  const variant = variants[pickFreshIndex(seed, variants.length, `tpl:${fortuneType}`)];
+  // 뽑은 쪽지가 결과의 결을 정한다.
+  // '용기 한 스푼'을 뽑았는데 본문이 "루틴만 지켜도 남는 장사"면 두 처방이 부딪힌다.
+  // 쪽지 방향과 정면으로 어긋나는 변주는 후보에서 뺀다. (남는 게 없으면 원래 풀을 쓴다)
+  const all = TEMPLATES[fortuneType];
+  const noteDir = NOTE_DIRECTION[note.id] ?? 'any';
+  const fitting = all.filter(
+    (v) => !conflicts(noteDir, directionOfText(`${v.summary.join(' ')} ${v.flow} ${v.good}`)),
+  );
+  const variants = fitting.length > 0 ? fitting : all;
+  const variant = variants[pickFreshIndex(seed, variants.length, `tpl:${fortuneType}:${noteDir}`)];
 
   const lead = NOTE_LEAD[note.id] ?? '오늘의 쪽지가 도착했어요.';
   // 오늘 일진×내 띠 사주 — 띠가 있으면 사주 톤이 총운의 구간을 정한다(로직 일관성).

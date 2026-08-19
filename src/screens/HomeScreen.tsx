@@ -210,7 +210,7 @@ export function HomeScreen({
         >
           <span className="saju-entry__icon" aria-hidden>{sajuBadge.icon}</span>
           <span className="saju-entry__text">
-            <span className="saju-entry__k">내 사주</span>
+            <span className="saju-entry__k">쪽지가 맞춰진 기준 · 내 사주</span>
             <strong className="saju-entry__v">{sajuBadge.name}</strong>
           </span>
           <span className="saju-entry__chev" aria-hidden>›</span>
@@ -219,9 +219,9 @@ export function HomeScreen({
         <button type="button" className="saju-entry" onClick={onSaju}>
           <span className="saju-entry__icon" aria-hidden>🔮</span>
           <span className="saju-entry__text">
-            <span className="saju-entry__k">아직 띠로만 보고 있어요</span>
-            <strong className="saju-entry__v">생년월일로 내 사주 만들기</strong>
-            <span className="saju-entry__sub">태어난 순간으로 세우면 나만의 결과가 나와요</span>
+            <span className="saju-entry__k">지금은 띠로만 보고 있어요</span>
+            <strong className="saju-entry__v">쪽지를 나에게 맞추기</strong>
+            <span className="saju-entry__sub">생년월일을 넣으면 오늘 쪽지가 나만의 것이 돼요</span>
           </span>
           <span className="saju-entry__chev" aria-hidden>›</span>
         </button>

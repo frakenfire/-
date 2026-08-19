@@ -4103,3 +4103,111 @@ a:focus-visible {
   border-color: #f5c4c0;
   color: #a3302a; /* 흰 배경 5.9:1 */
 }
+
+/* ── 내가 뽑은 쪽지 ── 결과 맨 위. 방금 한 선택의 보상이자 이 앱의 정체성.
+   색은 뽑기 화면에서 고른 그 쪽지의 색을 그대로 쓴다 — 초록 쪽지를 뽑았으면 결과도 초록.
+   같은 종이가 넘어온 것처럼 보여야 '내가 뽑은 것'이라는 감각이 이어진다. */
+.drawn {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding: var(--space-4) var(--space-4) var(--space-4);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--gray-200);
+  background: var(--white);
+  overflow: hidden;
+}
+.drawn--softGreen {
+  background: #e6f7ee;
+  border-color: #bfe6d2;
+}
+.drawn--cream {
+  background: #fff3da;
+  border-color: #f4e0b0;
+}
+.drawn--softYellow {
+  background: #fff0c2;
+  border-color: #f3dd93;
+}
+.drawn--softPink {
+  background: #ffe4ee;
+  border-color: #f6c4d6;
+}
+/* 종이에 꽂힌 핀 — 쪽지라는 사물감을 주는 최소한의 장치 */
+.drawn__pin {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.1);
+}
+.drawn__icon {
+  flex: 0 0 auto;
+  margin-top: 6px;
+  font-size: 30px;
+  line-height: 1.1;
+}
+.drawn__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1 1 auto;
+  margin-top: 6px;
+}
+.drawn__k {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--gray-700);
+}
+.drawn__name {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.drawn__lead {
+  margin-top: 3px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gray-800);
+  line-height: 1.55;
+}
+.drawn__kw {
+  flex: 0 0 auto;
+  margin-top: 6px;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--gray-800);
+  white-space: nowrap;
+}
+
+/* 십신 카드 — 용어를 헤드라인에서 내리고 근거 자리로 */
+.mygod__eyebrow {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--brand-strong);
+}
+.mygod__why {
+  margin: var(--space-3) 0 0;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--gray-100);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+  line-height: 1.6;
+}
+.mygod__why b {
+  font-weight: 800;
+  color: var(--gray-800);
+}

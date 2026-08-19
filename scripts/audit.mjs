@@ -325,10 +325,12 @@ async function run(browser) {
 
       // 사주를 아직 안 만든 사람에게 진입점이 보이고, 이유가 함께 있어야 한다
       const home = await bodyText(page);
-      check(home.includes('내 사주 만들기'), '[사주] 홈에 진입점 노출');
+      check(home.includes('쪽지를 나에게 맞추기'), '[사주] 홈에 진입점 노출');
       check(home.includes('띠로만'), '[사주] 왜 필요한지 이유가 함께 보임');
+      // 사주는 별도 기능이 아니라 쪽지를 맞추기 위한 것 — 문구가 쪽지에 봉사해야 한다
+      check(/오늘 쪽지가 나만의 것이 돼요/.test(home), '[사주] 진입 문구가 쪽지에 봉사함');
 
-      await page.getByText('생년월일로 내 사주 만들기', { exact: false }).first().click();
+      await page.getByText('쪽지를 나에게 맞추기', { exact: false }).first().click();
       await wait(page, 800);
       check((await bodyText(page)).includes('언제 태어났어요'), '[사주입력] 화면 진입');
       // 개인정보를 받는 화면이므로 어디에 저장되는지 먼저 말해야 한다
@@ -405,6 +407,9 @@ async function run(browser) {
       await wait(page, 800);
       check((await page.locator('.saju-entry--done').count()) === 1,
         '[사주] 새로고침 후 홈에 내 일간 배지 노출');
+      // 홈의 첫 CTA 는 언제나 쪽지 뽑기여야 한다 (사주가 주인공을 뺏으면 안 된다)
+      const firstCta = await page.locator('.today-hook__cta').first().innerText();
+      check(/쪽지/.test(firstCta), '[쪽지] 홈 첫 CTA 는 쪽지 뽑기', firstCta.trim());
       // 사주를 세웠으면 띠를 다시 묻지 않아야 한다 (같은 걸 두 번 묻는 순간 "이게 뭐지"가 생긴다)
       const homeAfter = await bodyText(page);
       check(!homeAfter.includes('내 띠를 고르면'), '[사주] 사주가 있으면 띠를 다시 묻지 않음',
@@ -435,8 +440,11 @@ async function run(browser) {
       check(!res.includes('내 띠와'), '[사주결과] 띠 기준 문구가 함께 뜨지 않음(기준 이원화 방지)');
       check(/오늘 하면 좋아요/.test(res) && /오늘은 피하세요/.test(res),
         '[사주결과] 할 것·피할 것이 함께 나옴');
-      const badge = (await page.locator('.mygod__badge').innerText()).trim();
-      check(badge.length >= 2, '[사주결과] 십신 이름 표시', badge);
+      // 사주 용어는 헤드라인이 아니라 근거 자리에 있어야 한다
+      check((await page.locator('.mygod__badge').count()) === 0,
+        '[사주결과] 십신 용어가 헤드라인을 차지하지 않음');
+      check((await page.locator('.mygod__why').count()) === 1, '[사주결과] 사주 근거를 밝힘');
+      check(res.includes('이 쪽지가 당신에게 닿은 자리'), '[사주결과] 해석이 쪽지 언어로 감싸짐');
       const fit = await page.locator('.mygod__fit').count();
       check(fit === 1, '[사주결과] 신강신약 판정 한 줄 노출');
       await diagnose(page, '사주결과');
@@ -455,12 +463,40 @@ async function run(browser) {
       await wait(page, 900);
       check((await page.locator('.saju-entry--done').count()) === 0,
         '[사주] 삭제 후 홈 배지가 사라짐');
-      check((await bodyText(page)).includes('생년월일로 내 사주 만들기'),
+      check((await bodyText(page)).includes('쪽지를 나에게 맞추기'),
         '[사주] 삭제 후 다시 만들기로 되돌아감');
       const gone = await page.evaluate(() => window.localStorage.getItem('tomorrowNoteBirth'));
       check(gone === null, '[사주] 삭제 후 저장소에 생년월일이 남지 않음', String(gone));
     } catch (e) {
       bad('[사주] 경로', e.message.split('\n')[0]);
+    }
+    await page.context().close();
+  }
+
+  // 2-C. 쪽지 컨셉 유지 — 이 앱의 정체성.
+  // 사주를 붙이면서 표면이 사주로 덮이면 '오늘쪽지 뽑기'가 아니게 된다.
+  // 뽑은 쪽지가 결과에 남는지, 고른 것이 실제로 반영되는지 본다.
+  {
+    const page = await newPage(browser);
+    try {
+      await drawTo(page, {});
+      const t = await bodyText(page);
+      check((await page.locator('.drawn').count()) === 1, '[쪽지] 결과에 뽑은 쪽지 카드 노출');
+      const name = (await page.locator('.drawn__name').innerText()).trim();
+      check(name.length >= 2, '[쪽지] 뽑은 쪽지 이름이 결과에 남음', name);
+      check(t.includes('내가 뽑은 쪽지'), '[쪽지] 내가 뽑았다는 사실을 명시');
+      const kw = (await page.locator('.drawn__kw').innerText()).trim();
+      check(kw.length >= 1, '[쪽지] 쪽지 키워드 표시', kw);
+      // 뽑기 화면에서 고른 그 색이 결과까지 이어져야 '같은 종이'로 느껴진다
+      const cls = await page.locator('.drawn').getAttribute('class');
+      check(/drawn--(softGreen|cream|softYellow|softPink)/.test(cls),
+        '[쪽지] 뽑은 쪽지 색이 결과까지 이어짐', cls);
+      // 쪽지 이름이 실제로 고른 것과 같아야 한다 (아무 쪽지나 보여주면 의미 없다)
+      const lead = (await page.locator('.drawn__lead').innerText()).trim();
+      check(lead.length >= 5, '[쪽지] 쪽지별 풀이 한 줄이 함께 나옴', lead.slice(0, 24));
+      await diagnose(page, '쪽지결과');
+    } catch (e) {
+      bad('[쪽지] 컨셉 유지', e.message.split('\n')[0]);
     }
     await page.context().close();
   }

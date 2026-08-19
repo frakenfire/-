@@ -18,6 +18,7 @@ type Props = {
   onEdit: () => void;
   onShare: (text: string) => void;
   onDeleteBirth: () => void;
+  onDraw: () => void;
 };
 
 const EL_ORDER: Element[] = ['wood', 'fire', 'earth', 'metal', 'water'];
@@ -41,7 +42,7 @@ const EL_TEXT: Record<Element, string> = {
 // 내 사주 한 장 — 여덟 글자, 오행 저울, 기운의 방향.
 // 사주는 낯선 한자 덩어리라 그냥 보여주면 아무것도 전달되지 않는다.
 // 그래서 순서를 '나는 누구인가(일간) → 근거(팔자) → 저울(오행) → 쓰는 법' 으로 뒀다.
-export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth }: Props) {
+export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, onDraw }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const pillars = useMemo(() => computeFourPillars(birth), [birth]);
   const profile = useMemo(() => analyzeSaju(pillars), [pillars]);
@@ -219,7 +220,11 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth }: 
         <p className="useful-card__how">{useful.how}</p>
       </div>
 
-      <button type="button" className="btn btn--primary" onClick={share}>
+      {/* 사주는 목적이 아니라 쪽지를 맞추기 위한 근거다. 마지막엔 쪽지로 돌려보낸다. */}
+      <button type="button" className="btn btn--primary" onClick={onDraw}>
+        이 사주로 오늘 쪽지 뽑기 💌
+      </button>
+      <button type="button" className="btn btn--secondary" onClick={share}>
         내 일간 자랑하기 💬
       </button>
       {/* 개인정보를 받았으니 지우는 길도 같은 화면에 둔다 — 설정 깊숙이 숨기지 않는다 */}
