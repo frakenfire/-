@@ -2,7 +2,7 @@
    - 캔버스: 화이트, 차콜 헤딩(#191f28), 토스 그레이 램프
    - 브랜드/CTA: 토스 블루 #3182f6
    - 점수/정보 액센트: 토스 블루 #3182f6, 세만틱(green/blue/amber)
-   - 행운 포인트/스티커: SIGNATURE ORANGE #ff4b00 제한 사용 */
+   - 행운 포인트/스티커: TDS adaptiveOrange500 제한 사용 */
 :root {
   /* Toss grayscale ramp */
   --gray-900: #191f28;
@@ -39,15 +39,15 @@
 
   /* 오행 색 — 막대·점 등 장식용(밝은 값)과 글자용(AA 통과하는 어두운 값)을 분리한다.
      노랑·초록 계열은 밝은 값 그대로 글자에 쓰면 흰 배경에서 2점대라 본문 AA(4.5)를 못 넘는다. */
-  --el-wood: #2f9e63;
-  --el-fire: #e8695f;
-  --el-earth: #c9a227;
-  --el-metal: #8c9aa8;
+  --el-wood: #03b26c;
+  --el-fire: #f66570;
+  --el-earth: #ffb331;
+  --el-metal: #8b95a1;
   --el-water: #3182f6;
-  --el-wood-text: #1d7a4c; /* 흰 배경 5.3:1 */
-  --el-fire-text: #b23a2f; /* 5.9:1 */
-  --el-earth-text: #8a6d1f; /* 5.0:1 */
-  --el-metal-text: #5c6b7a; /* 5.6:1 */
+  --el-wood-text: #027648; /* 흰 배경 5.3:1 */
+  --el-fire-text: #bc1b2a; /* 5.9:1 */
+  --el-earth-text: #9c5d00; /* 5.0:1 */
+  --el-metal-text: #4e5968; /* 5.6:1 */
   --el-water-text: #1b64da; /* 5.4:1 */
 
   /* Aliases (기존 클래스 호환) */
@@ -58,8 +58,8 @@
   --color-signature-orange: var(--orange);
   --color-cream: var(--white);
   --color-soft-green: var(--brand-soft);
-  --color-soft-yellow: #fff4cc;
-  --color-soft-pink: #ffe9f0;
+  --color-soft-yellow: #ffefbf;
+  --color-soft-pink: #ffeeee;
   --color-border: var(--gray-200);
   --color-text-secondary: var(--gray-600);
 

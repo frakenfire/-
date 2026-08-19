@@ -32,8 +32,11 @@ export type DayMasterInfo = {
   shadow: string;
   /** 이 사람이 살아나는 순간 */
   shines: string;
-  /** 대표 색 (카드 그라데이션) */
+  /** 대표 색 — 배경 틴트·테두리 등 장식용 (TDS 값) */
   hue: string;
+  /** 같은 계열의 글자용 색 — 밝은 값을 글자에 쓰면 흰 배경에서 AA 를 못 넘는다.
+      실제로 戊(토)의 노랑을 한자에 그대로 썼다가 대비 1.79 가 나왔다. */
+  hueText: string;
 };
 
 export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
@@ -45,7 +48,8 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     strengths: ['추진력', '책임감', '리더 기질'],
     shadow: '아니다 싶어도 이미 세운 계획이라 끝까지 가버릴 때가 있어요.',
     shines: '아무도 먼저 나서지 않는 자리에서 "그럼 제가 할게요" 할 때',
-    hue: '#2f9e63',
+    hue: '#03b26c',
+    hueText: '#027648',
   },
   eul: {
     id: 'eul', hanja: '乙', kor: '을목', icon: '🌿', name: '풀과 덩굴',
@@ -55,7 +59,8 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     strengths: ['적응력', '섬세함', '끈기'],
     shadow: '맞추는 게 익숙해서 정작 내가 뭘 원하는지 놓칠 때가 있어요.',
     shines: '아무도 답이 없다고 할 때 옆길을 찾아낼 때',
-    hue: '#5cb85c',
+    hue: '#15c47e',
+    hueText: '#027648',
   },
   byeong: {
     id: 'byeong', hanja: '丙', kor: '병화', icon: '☀️', name: '한낮의 해',
@@ -65,7 +70,8 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     strengths: ['밝음', '솔직함', '분위기 메이커'],
     shadow: '기분이 그대로 새어나가서 주변이 같이 출렁일 때가 있어요.',
     shines: '가라앉은 자리에 들어가 공기를 바꿔놓을 때',
-    hue: '#f5883b',
+    hue: '#f57800',
+    hueText: '#bc1b2a',
   },
   jeong: {
     id: 'jeong', hanja: '丁', kor: '정화', icon: '🕯️', name: '촛불',
@@ -75,7 +81,8 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     strengths: ['집중력', '눈치', '깊이'],
     shadow: '너무 잘 알아채서 혼자 마음을 앓을 때가 많아요.',
     shines: '아무도 못 본 디테일을 짚어낼 때',
-    hue: '#e8695f',
+    hue: '#f66570',
+    hueText: '#bc1b2a',
   },
   mu: {
     id: 'mu', hanja: '戊', kor: '무토', icon: '⛰️', name: '큰 산',
@@ -85,7 +92,8 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     strengths: ['안정감', '포용력', '신뢰'],
     shadow: '움직여야 할 때도 일단 버티는 쪽을 골라요.',
     shines: '모두가 흔들릴 때 혼자 그대로 서 있을 때',
-    hue: '#b08d57',
+    hue: '#ffb331',
+    hueText: '#9c5d00',
   },
   gi: {
     id: 'gi', hanja: '己', kor: '기토', icon: '🌾', name: '기름진 밭',
@@ -95,7 +103,8 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     strengths: ['살뜰함', '현실감각', '뒷심'],
     shadow: '남 걱정을 먼저 하다 정작 내 것을 미뤄둬요.',
     shines: '누군가 나 때문에 잘됐다는 말을 들을 때',
-    hue: '#c9a227',
+    hue: '#ffb331',
+    hueText: '#9c5d00',
   },
   gyeong: {
     id: 'gyeong', hanja: '庚', kor: '경금', icon: '⚔️', name: '벼려진 쇠',
@@ -105,7 +114,8 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     strengths: ['결단력', '의리', '추진'],
     shadow: '직진하는 말이 상대에겐 베이는 말이 될 때가 있어요.',
     shines: '아무도 결정 못 할 때 "이걸로 가자" 할 때',
-    hue: '#8c9aa8',
+    hue: '#8b95a1',
+    hueText: '#4e5968',
   },
   sin: {
     id: 'sin', hanja: '辛', kor: '신금', icon: '💎', name: '보석',
@@ -115,7 +125,8 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     strengths: ['안목', '섬세함', '자존'],
     shadow: '기준이 높아 스스로를 제일 많이 깎아요.',
     shines: '내가 고른 게 결국 옳았다고 판명될 때',
-    hue: '#a9b7c6',
+    hue: '#b0b8c1',
+    hueText: '#4e5968',
   },
   im: {
     id: 'im', hanja: '壬', kor: '임수', icon: '🌊', name: '큰 물',
@@ -126,6 +137,7 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     shadow: '관심이 넓어 한 군데 오래 머무는 게 어려워요.',
     shines: '복잡하게 얽힌 걸 한 번에 정리해줄 때',
     hue: '#3182f6',
+    hueText: '#1b64da',
   },
   gye: {
     id: 'gye', hanja: '癸', kor: '계수', icon: '💧', name: '이슬비',
@@ -135,7 +147,8 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     strengths: ['공감력', '직관', '차분함'],
     shadow: '남의 감정까지 다 받아서 혼자 무거워져요.',
     shines: '누군가 "너한테는 말할 수 있어" 할 때',
-    hue: '#5b7fd4',
+    hue: '#4593fc',
+    hueText: '#1b64da',
   },
 };
 

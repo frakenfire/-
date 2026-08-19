@@ -15,10 +15,10 @@ type CompatCardInput = {
 
 // vibe 별 배경/포인트 톤 (앱 화면과 동일 계열)
 const VIBE_STYLE: Record<CompatVibe, { bg: string; card: string; accent: string; badge: string }> = {
-  twin: { bg: '#ffe9f0', card: '#ffffff', accent: '#e64980', badge: '#ffd0e0' },
-  harmony: { bg: '#e8f3ff', card: '#ffffff', accent: '#1b64da', badge: '#cfe4ff' },
+  twin: { bg: '#ffeeee', card: '#ffffff', accent: '#e42939', badge: '#ffd4d6' },
+  harmony: { bg: '#e8f3ff', card: '#ffffff', accent: '#1b64da', badge: '#c9e2ff' },
   steady: { bg: '#f2f4f6', card: '#ffffff', accent: '#4e5968', badge: '#e5e8eb' },
-  spark: { bg: '#fff4cc', card: '#ffffff', accent: '#d9820b', badge: '#ffe8a3' },
+  spark: { bg: '#ffefbf', card: '#ffffff', accent: '#9c5d00', badge: '#ffe69b' },
 };
 
 function scoreHex(score: number): string {

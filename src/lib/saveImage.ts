@@ -19,9 +19,9 @@ type SaveInput = {
 // 등급별 카드 트리트먼트
 const TIER_STYLE: Record<Rarity['tier'], { bg: string; card: string; border: string | null; accent: string }> = {
   common: { bg: '#f2f4f6', card: '#ffffff', border: null, accent: '#333d4b' },
-  rare: { bg: '#e8f1fd', card: '#f6faff', border: '#9dc3f0', accent: '#2f6fd0' },
-  epic: { bg: '#efe6fc', card: '#faf6ff', border: '#c9a8ef', accent: '#7b3fd4' },
-  legendary: { bg: '#f7ecc8', card: '#fffcef', border: '#e7c15a', accent: '#b8860b' },
+  rare: { bg: '#e8f3ff', card: '#f9fafb', border: '#90c2ff', accent: '#1b64da' },
+  epic: { bg: '#f9f0fc', card: '#f9fafb', border: '#da9bef', accent: '#8222a2' },
+  legendary: { bg: '#ffefbf', card: '#fff9e7', border: '#ffd158', accent: '#9c5d00' },
 };
 
 function resolveScoreColor(score: number): string {
@@ -247,7 +247,7 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
       const label = `일진 ${input.saju.iljin}일 · ${input.saju.rel} · 기운 ${input.saju.tone}`;
       ctx.font = 'bold 22px ' + CARD_FONT;
       const tw = Math.min(boxW, ctx.measureText(label).width + 44);
-      ctx.fillStyle = '#eef3ff';
+      ctx.fillStyle = '#e8f3ff';
       roundRect(ctx, cx - tw / 2, sy - 32, tw, 48, 24);
       ctx.fill();
       ctx.fillStyle = '#1b64da';

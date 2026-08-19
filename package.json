@@ -17,10 +17,11 @@
     "typecheck": "tsc -b --noEmit",
     "test": "node --experimental-strip-types --test 'src/**/*.test.ts'",
     "check:release": "node scripts/check-release-ready.mjs",
-    "verify": "npm run typecheck && npm run test && npm run build:web && npm run check:no-mock && npm run check:policy",
+    "verify": "npm run typecheck && npm run test && npm run build:web && npm run check:no-mock && npm run check:policy && npm run check:palette",
     "audit": "node scripts/audit.mjs",
     "check:no-mock": "node scripts/check-no-mock.mjs",
-    "check:policy": "node scripts/check-bundle-policy.mjs"
+    "check:policy": "node scripts/check-bundle-policy.mjs",
+    "check:palette": "node scripts/check-palette.mjs"
   },
   "dependencies": {
     "@apps-in-toss/web-framework": "^2.10.5",

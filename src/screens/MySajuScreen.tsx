@@ -77,7 +77,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
   return (
     <AppLayout onBack={onBack}>
       {/* 1. 나는 누구인가 — 여기서 "이게 나야"가 안 오면 나머지는 안 읽힌다 */}
-      <div className="dm-hero" style={{ ['--dm-hue' as string]: dm.hue }}>
+      <div className="dm-hero" style={{ ['--dm-hue' as string]: dm.hue, ['--dm-hue-text' as string]: dm.hueText }}>
         <span className="dm-hero__label">내 일간 · 사주 속의 나</span>
         <span className="dm-hero__icon" aria-hidden>
           {dm.icon}

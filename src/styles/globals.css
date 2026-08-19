@@ -1449,7 +1449,7 @@ a:focus-visible {
 .charm__label {
   font-size: 12px;
   font-weight: 800;
-  color: #9db4ff;
+  color: #90c2ff;
 }
 .charm__text {
   margin: 10px 0 8px;
@@ -1475,7 +1475,7 @@ a:focus-visible {
   padding: 13px 16px;
   background: var(--brand-soft);
   color: var(--brand-strong);
-  border: 1px solid #cfe2fb;
+  border: 1px solid #c9e2ff;
 }
 .btn-unlock__top {
   display: inline-flex;
@@ -1970,14 +1970,14 @@ a:focus-visible {
 
 /* 등급별 브리핑 테두리 */
 .briefing--rare {
-  border-color: #cfe0f7;
+  border-color: #c9e2ff;
 }
 .briefing--epic {
-  border-color: #dcc9f5;
+  border-color: #edccf8;
   box-shadow: 0 2px 14px rgba(123, 63, 212, 0.14);
 }
 .briefing--legendary {
-  border: 2px solid #e7c15a;
+  border: 2px solid #ffd158;
   box-shadow: 0 8px 28px rgba(197, 152, 32, 0.22);
 }
 
@@ -2100,7 +2100,7 @@ a:focus-visible {
 
 /* ── 등급별 편지지 ── */
 .letter--rare {
-  border-color: #cfe0f7;
+  border-color: #c9e2ff;
   box-shadow: 0 2px 12px rgba(49, 130, 246, 0.12);
 }
 .letter--rare .letter__from {
@@ -2108,18 +2108,18 @@ a:focus-visible {
 }
 
 .letter--epic {
-  border-color: #dcc9f5;
+  border-color: #edccf8;
   box-shadow: 0 2px 14px rgba(123, 63, 212, 0.14);
 }
 .letter--epic .letter__from {
-  color: #7b3fd4;
+  color: #8222a2;
 }
 .letter--epic .letter__highlight mark {
-  background: linear-gradient(transparent 62%, #efe4fc 62%);
+  background: linear-gradient(transparent 62%, #f9f0fc 62%);
 }
 
 .letter--legendary {
-  border: 2px solid #e7c15a;
+  border: 2px solid #ffd158;
   box-shadow: 0 8px 28px rgba(197, 152, 32, 0.22);
   position: relative;
   overflow: hidden;
@@ -2145,10 +2145,10 @@ a:focus-visible {
   }
 }
 .letter--legendary .letter__from {
-  color: #b8860b;
+  color: #9c5d00;
 }
 .letter--legendary .letter__highlight mark {
-  background: linear-gradient(transparent 62%, #fff0bf 62%);
+  background: linear-gradient(transparent 62%, #ffefbf 62%);
 }
 
 /* ── 등급 뱃지 ── */
@@ -2169,17 +2169,17 @@ a:focus-visible {
   color: var(--gray-700); /* 회색 틴트 위 AA 확보 (6.45:1) */
 }
 .rarity-badge--rare {
-  background: #e2eefd;
+  background: #e8f3ff;
   color: #1b64da; /* TDS adaptiveBlue700 — 4.61:1 */
 }
 .rarity-badge--epic {
-  background: #efe4fc;
-  color: #7b3fd4;
+  background: #f9f0fc;
+  color: #8222a2;
 }
 .rarity-badge--legendary {
-  background: #fff0bf;
-  color: #a9791a;
-  box-shadow: 0 0 0 1px #e7c15a inset;
+  background: #ffefbf;
+  color: #9c5d00;
+  box-shadow: 0 0 0 1px #ffd158 inset;
 }
 
 
@@ -2321,14 +2321,14 @@ a:focus-visible {
   padding: 7px 14px;
 }
 .collection__item--leg {
-  color: #7a5900;
-  background: #fffbe8;
-  border-color: #e7c15a;
+  color: #9c5d00;
+  background: #fff9e7;
+  border-color: #ffd158;
 }
 .collection__item--epic {
-  color: #7b3fd4;
-  background: #f7f0ff;
-  border-color: #c9a8ef;
+  color: #8222a2;
+  background: #f9f0fc;
+  border-color: #da9bef;
 }
 
 /* 오늘의 나 — 기분 + 띠 + 별자리 조합 입력 */
@@ -2703,7 +2703,7 @@ a:focus-visible {
   padding-top: 14px;
   padding-bottom: 12px;
   background: var(--brand-soft);
-  border-color: #cfe2fb;
+  border-color: #c9e2ff;
   box-shadow: 0 4px 12px rgba(49, 130, 246, 0.14);
 }
 .podium--2 {
@@ -2729,17 +2729,17 @@ a:focus-visible {
   margin-bottom: 2px;
 }
 .podium--1 .podium__rank {
-  background: #fff0bf;
-  color: #8a5f0e; /* 금색 톤 유지하며 AA(4.96) — a9791a 는 3.4 로 미달 */
-  box-shadow: 0 0 0 1px #e7c15a inset;
+  background: #ffefbf;
+  color: #9c5d00; /* 금색 톤 유지하며 AA(4.96) — a9791a 는 3.4 로 미달 */
+  box-shadow: 0 0 0 1px #ffd158 inset;
 }
 .podium--2 .podium__rank {
   background: var(--gray-100);
   color: var(--gray-700);
 }
 .podium--3 .podium__rank {
-  background: #fdeee2;
-  color: #a4552a;
+  background: #fff3e0;
+  color: #9c5d00;
 }
 .podium__emoji {
   font-size: 26px;
@@ -2765,7 +2765,7 @@ a:focus-visible {
   padding: 12px 16px;
   border-radius: 14px;
   background: var(--brand-soft);
-  border: 1px solid #cfe2fb;
+  border: 1px solid #c9e2ff;
 }
 .me-rank__emoji {
   flex: none;
@@ -2816,11 +2816,11 @@ a:focus-visible {
   margin-left: 2px;
 }
 .me-rank--top {
-  background: #fff7e0;
-  border-color: #e7c15a;
+  background: #fff9e7;
+  border-color: #ffd158;
 }
 .me-rank--top .me-rank__rank {
-  color: #8a5f0e; /* 금색 톤 AA */
+  color: #9c5d00; /* 금색 톤 AA */
 }
 .rank-card__me {
   margin: var(--space-3) 0 0;
@@ -2930,7 +2930,7 @@ a:focus-visible {
   display: inline-block;
   font-size: 12.5px;
   font-weight: 800;
-  color: #eaf2ff;
+  color: #e8f3ff;
   background: rgba(255, 255, 255, 0.16);
   border-radius: 999px;
   padding: 6px 14px;
@@ -2939,7 +2939,7 @@ a:focus-visible {
   margin: 22px 0 6px;
   font-size: 14px;
   font-weight: 700;
-  color: #eaf2ff;
+  color: #e8f3ff;
 }
 /* 띠를 고른 상태에선 위의 persona 줄('○○띠인 당신,')이 일진 배지와의 간격을
    갖고 있다. 띠 미설정이면 그 줄이 없어 헤드라인이 배지에 그대로 붙으므로,
@@ -2966,7 +2966,7 @@ a:focus-visible {
   font-size: 13px;
   font-weight: 600;
   line-height: 1.5;
-  color: #eaf2ff;
+  color: #e8f3ff;
   word-break: keep-all;
 }
 /* 스트릭 마일스톤 축하 — 3·7·14·30일 달성 시 브리핑 상단에 */
@@ -2977,7 +2977,7 @@ a:focus-visible {
   font-weight: 800;
   color: var(--brand-strong);
   background: var(--brand-soft);
-  border: 1px solid #cfe0f7;
+  border: 1px solid #c9e2ff;
   border-radius: 999px;
   display: inline-block;
 }
@@ -2990,7 +2990,7 @@ a:focus-visible {
   margin-top: var(--space-4);
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
-  background: linear-gradient(150deg, #1f2733, #333d4b);
+  background: linear-gradient(150deg, #191f28, #333d4b);
 }
 .tmr-tease__moon {
   flex: none;
@@ -3005,13 +3005,13 @@ a:focus-visible {
 .tmr-tease__k {
   font-size: 11.5px;
   font-weight: 800;
-  color: #aab4c0;
+  color: #b0b8c1;
 }
 .tmr-tease__v {
   font-size: 13px;
   font-weight: 700;
   line-height: 1.5;
-  color: #f4f7fb;
+  color: #f9fafb;
   word-break: keep-all;
 }
 
@@ -3021,7 +3021,7 @@ a:focus-visible {
   padding: var(--space-5);
   border-radius: var(--radius-lg);
   background: var(--brand-soft);
-  border: 1px solid #e0eaff;
+  border: 1px solid #e8f3ff;
   box-shadow: var(--shadow-card);
   /* 사주(일진)는 위아래 카드와 성격이 다른 블록이라 32px 로 확실히 띄운다.
      16px(일반 카드 간격)이면 앞뒤에 붙어 보여 별개 정보로 안 읽힌다.
@@ -3044,9 +3044,9 @@ a:focus-visible {
   font-size: 21px;
   font-weight: 800;
   letter-spacing: 1px;
-  color: #a33a2e;
-  background: #fdf3f1;
-  border: 2px solid #d8968d;
+  color: #bc1b2a;
+  background: #ffeeee;
+  border: 2px solid #feafb4;
   border-radius: 10px;
 }
 .iljin__flow {
@@ -3107,7 +3107,7 @@ a:focus-visible {
   gap: 4px;
   margin-top: var(--space-3);
   padding-top: var(--space-3);
-  border-top: 1px dashed #d5e3fa;
+  border-top: 1px dashed #c9e2ff;
 }
 .iljin__boost-color {
   display: inline-flex;
@@ -3142,7 +3142,7 @@ a:focus-visible {
 .saju-chip {
   font-size: 11.5px;
   font-weight: 800;
-  color: #eaf2ff;
+  color: #e8f3ff;
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
@@ -3157,7 +3157,7 @@ a:focus-visible {
   margin: 28px 0 10px;
   font-size: 12px;
   font-weight: 700;
-  color: #eaf2ff;
+  color: #e8f3ff;
 }
 .today-hook__reveal {
   display: grid;
@@ -3178,7 +3178,7 @@ a:focus-visible {
 .th-cell__k {
   font-size: 11px;
   font-weight: 700;
-  color: #eaf2ff;
+  color: #e8f3ff;
 }
 .th-cell__v {
   font-family: var(--font-num);
@@ -3576,8 +3576,8 @@ a:focus-visible {
   margin: 0 0 var(--space-4);
   padding: 11px 13px;
   border-radius: 12px;
-  background: #fff7e6;
-  border: 1px solid #f3d9a4;
+  background: #fff9e7;
+  border: 1px solid #ffe69b;
   font-size: 12.5px;
   font-weight: 600;
   color: var(--score-low-text);
@@ -3585,7 +3585,7 @@ a:focus-visible {
 }
 .birth-warn--info {
   background: var(--brand-soft);
-  border-color: #bcdcff;
+  border-color: #c9e2ff;
   color: var(--brand-strong);
 }
 
@@ -3622,8 +3622,9 @@ a:focus-visible {
   font-weight: 800;
   color: var(--gray-900);
 }
+ /* 한자는 글자다 — 장식용 밝은 값(--dm-hue)을 쓰면 흰 배경에서 AA 를 못 넘는다 */
 .dm-hero__name b {
-  color: var(--dm-hue, var(--brand));
+  color: var(--dm-hue-text, var(--brand-strong));
 }
 .dm-hero__tag {
   margin: 0;
@@ -3929,7 +3930,7 @@ a:focus-visible {
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   background: var(--brand-soft);
-  border: 1px solid #bcdcff;
+  border: 1px solid #c9e2ff;
 }
 .useful-card__title {
   margin: 0 0 4px;
@@ -4012,11 +4013,11 @@ a:focus-visible {
   color: var(--gray-700);
 }
 .mygod__fit--needed {
-  background: #e8f7ef;
+  background: #f0faf6;
   color: var(--score-high-text);
 }
 .mygod__fit--excess {
-  background: #fff7e6;
+  background: #fff9e7;
   color: var(--score-low-text);
 }
 .mygod__acts {
@@ -4099,9 +4100,9 @@ a:focus-visible {
   color: var(--gray-800);
 }
 .privacy-note__btn--danger {
-  background: #fdeceb;
-  border-color: #f5c4c0;
-  color: #a3302a; /* 흰 배경 5.9:1 */
+  background: #ffeeee;
+  border-color: #feafb4;
+  color: #bc1b2a; /* 흰 배경 5.9:1 */
 }
 
 /* ── 내가 뽑은 쪽지 ── 결과 맨 위. 방금 한 선택의 보상이자 이 앱의 정체성.
