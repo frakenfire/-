@@ -43,6 +43,9 @@ type Props = {
   onReset: () => void;
   /** 주간 캘린더 — 스트릭 3일 이상이면 무료, 아니면 광고로 연다 */
   weekUnlocked: boolean;
+  /** 사주를 이미 세웠으면 일간 배지, 아니면 null */
+  sajuBadge: { icon: string; name: string; hue: string } | null;
+  onSaju: () => void;
   onUnlockWeek: () => void;
   onShareWeek: (text: string) => void;
 };
@@ -51,6 +54,8 @@ type Props = {
 export function HomeScreen({
   streak,
   weekUnlocked,
+  sajuBadge,
+  onSaju,
   onUnlockWeek,
   onShareWeek,
   rarityCounts,
@@ -193,6 +198,34 @@ export function HomeScreen({
           <i className="today-hook__cta-arrow" aria-hidden>›</i>
         </span>
       </button>
+
+      {/* 내 사주 — 이 앱에서 가장 개인적인 값이라 홈 상단에 둔다.
+          아직 안 만든 사람에겐 '띠로는 12분의 1'이라는 이유를 대고 부른다. */}
+      {sajuBadge ? (
+        <button
+          type="button"
+          className="saju-entry saju-entry--done"
+          style={{ ['--saju-hue' as string]: sajuBadge.hue }}
+          onClick={onSaju}
+        >
+          <span className="saju-entry__icon" aria-hidden>{sajuBadge.icon}</span>
+          <span className="saju-entry__text">
+            <span className="saju-entry__k">내 사주</span>
+            <strong className="saju-entry__v">{sajuBadge.name}</strong>
+          </span>
+          <span className="saju-entry__chev" aria-hidden>›</span>
+        </button>
+      ) : (
+        <button type="button" className="saju-entry" onClick={onSaju}>
+          <span className="saju-entry__icon" aria-hidden>🔮</span>
+          <span className="saju-entry__text">
+            <span className="saju-entry__k">아직 띠로만 보고 있어요</span>
+            <strong className="saju-entry__v">생년월일로 내 사주 만들기</strong>
+            <span className="saju-entry__sub">태어난 순간으로 세우면 나만의 결과가 나와요</span>
+          </span>
+          <span className="saju-entry__chev" aria-hidden>›</span>
+        </button>
+      )}
 
       {/* 이번 주 운세 캘린더 — 스트릭에 줄 보상이자, 좋은 날을 미리 알려
           그날 다시 오게 만드는 리텐션 장치. 잠금 해제는 스트릭(무료) 또는 광고. */}

@@ -1,0 +1,238 @@
+import { useMemo } from 'react';
+import { AppLayout } from '../components/AppLayout.tsx';
+import { computeFourPillars, type BirthInput } from '../lib/fourPillars.ts';
+import { analyzeSaju, balanceShape, TEN_GOD_KO } from '../lib/tenGods.ts';
+import { DAY_MASTER_BY_INDEX } from '../data/dayMaster.ts';
+import {
+  GROUP_READING,
+  STRENGTH_READING,
+  MISSING_READING,
+  USEFUL_READING,
+  ELEMENT_SHORT,
+} from '../data/sajuContent.ts';
+import { ELEMENT_KO, type Element } from '../lib/saju.ts';
+
+type Props = {
+  birth: BirthInput;
+  onBack: () => void;
+  onEdit: () => void;
+  onShare: (text: string) => void;
+};
+
+const EL_ORDER: Element[] = ['wood', 'fire', 'earth', 'metal', 'water'];
+// 막대·채움용(밝은 값)과 글자용(AA 통과하는 어두운 값)을 나눈다.
+// 같은 색을 둘 다 쓰면 노랑·초록이 흰 배경에서 2점대로 떨어져 글자가 안 읽힌다.
+const EL_HUE: Record<Element, string> = {
+  wood: 'var(--el-wood)',
+  fire: 'var(--el-fire)',
+  earth: 'var(--el-earth)',
+  metal: 'var(--el-metal)',
+  water: 'var(--el-water)',
+};
+const EL_TEXT: Record<Element, string> = {
+  wood: 'var(--el-wood-text)',
+  fire: 'var(--el-fire-text)',
+  earth: 'var(--el-earth-text)',
+  metal: 'var(--el-metal-text)',
+  water: 'var(--el-water-text)',
+};
+
+// 내 사주 한 장 — 여덟 글자, 오행 저울, 기운의 방향.
+// 사주는 낯선 한자 덩어리라 그냥 보여주면 아무것도 전달되지 않는다.
+// 그래서 순서를 '나는 누구인가(일간) → 근거(팔자) → 저울(오행) → 쓰는 법' 으로 뒀다.
+export function MySajuScreen({ birth, onBack, onEdit, onShare }: Props) {
+  const pillars = useMemo(() => computeFourPillars(birth), [birth]);
+  const profile = useMemo(() => analyzeSaju(pillars), [pillars]);
+  const dm = DAY_MASTER_BY_INDEX[pillars.dayStem];
+  const group = GROUP_READING[profile.dominantGroup];
+  const strength = STRENGTH_READING[profile.strength];
+  const useful = USEFUL_READING[profile.usefulElement];
+  // 막대와 문장이 어긋나지 않도록 요약 문구를 분포에서 직접 뽑는다
+  const shape = balanceShape(profile);
+
+  const cols: { label: string; pillar: typeof pillars.year | null }[] = [
+    { label: '년', pillar: pillars.year },
+    { label: '월', pillar: pillars.month },
+    { label: '일', pillar: pillars.day },
+    { label: '시', pillar: pillars.hour },
+  ];
+
+  function share() {
+    onShare(
+      [
+        `${dm.icon} 내 일간은 ${dm.hanja} ${dm.name}`,
+        `"${dm.tagline}"`,
+        ``,
+        `사주 ${pillars.year.hanja} ${pillars.month.hanja} ${pillars.day.hanja}${pillars.hour ? ` ${pillars.hour.hanja}` : ''}`,
+        `${strength.label} · ${group.keyword} 중심`,
+        ``,
+        `너는 무슨 일간인지 봐봐 👇`,
+      ].join('\n'),
+    );
+  }
+
+  return (
+    <AppLayout onBack={onBack}>
+      {/* 1. 나는 누구인가 — 여기서 "이게 나야"가 안 오면 나머지는 안 읽힌다 */}
+      <div className="dm-hero" style={{ ['--dm-hue' as string]: dm.hue }}>
+        <span className="dm-hero__label">내 일간 · 사주 속의 나</span>
+        <span className="dm-hero__icon" aria-hidden>
+          {dm.icon}
+        </span>
+        <h2 className="dm-hero__name">
+          <b>{dm.hanja}</b> {dm.name}
+        </h2>
+        <p className="dm-hero__tag">{dm.tagline}</p>
+        <p className="dm-hero__nature">{dm.nature}</p>
+        <ul className="dm-chips">
+          {dm.strengths.map((s) => (
+            <li key={s} className="dm-chip">
+              {s}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="dm-two">
+        <div className="dm-note">
+          <span className="dm-note__k">이럴 때 살아나요</span>
+          <p className="dm-note__v">{dm.shines}</p>
+        </div>
+        <div className="dm-note dm-note--shadow">
+          <span className="dm-note__k">조심할 건 하나</span>
+          <p className="dm-note__v">{dm.shadow}</p>
+        </div>
+      </div>
+
+      {/* 2. 근거 — 여덟 글자. 한자만 두면 벽이라 아래 한글을 붙인다 */}
+      <div className="pillars-card">
+        <div className="pillars-card__head">
+          <p className="pillars-card__title">내 사주 여덟 글자</p>
+          <button type="button" className="pillars-card__edit" onClick={onEdit}>
+            수정
+          </button>
+        </div>
+        <div className="pillars-grid">
+          {cols.map((c) => (
+            <div key={c.label} className={c.label === '일' ? 'pcol pcol--me' : 'pcol'}>
+              <span className="pcol__label">{c.label}</span>
+              {c.pillar ? (
+                <>
+                  <span className="pcol__stem" style={{ color: EL_TEXT[stemEl(c.pillar.stem)] }}>
+                    {c.pillar.hanja[0]}
+                  </span>
+                  <span className="pcol__branch" style={{ color: EL_TEXT[branchEl(c.pillar.branch)] }}>
+                    {c.pillar.hanja[1]}
+                  </span>
+                  <span className="pcol__kor">{c.pillar.kor}</span>
+                </>
+              ) : (
+                <>
+                  <span className="pcol__stem pcol__stem--none">?</span>
+                  <span className="pcol__branch pcol__branch--none">?</span>
+                  <span className="pcol__kor">시각 모름</span>
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+        <p className="pillars-card__foot">
+          가운데 <b>일간({pillars.dayMaster.hanja})</b>이 '나'예요. 나머지 글자는 전부 나와의
+          관계로 읽어요.
+        </p>
+        {pillars.corrections.notes.length > 0 ? (
+          <ul className="pillars-corr">
+            {pillars.corrections.notes.map((n) => (
+              <li key={n}>· {n}</li>
+            ))}
+          </ul>
+        ) : null}
+      </div>
+
+      {/* 3. 오행 저울 — 숫자를 그림으로. 지장간까지 풀어 센 값이다 */}
+      <div className="elbal-card">
+        <p className="elbal-card__title">내 안의 오행</p>
+        <ul className="elbal-list">
+          {EL_ORDER.map((e) => {
+            const pct = Math.round(profile.balance[e] * 100);
+            return (
+              <li key={e} className="elbal-row">
+                <span className="elbal-row__k" style={{ color: EL_TEXT[e] }}>
+                  {ELEMENT_SHORT[e]}
+                </span>
+                <span className="elbal-row__bar">
+                  <i style={{ width: `${Math.max(pct, 2)}%`, background: EL_HUE[e] }} />
+                </span>
+                <span className="elbal-row__v num">{pct}%</span>
+              </li>
+            );
+          })}
+        </ul>
+        <p className="elbal-card__foot">
+          가장 많은 건 <b>{ELEMENT_KO[profile.strongest]}</b>
+          {shape.kind === 'missing' ? (
+            <> · 거의 없는 건 {profile.missing.map((m) => ELEMENT_KO[m]).join(', ')}</>
+          ) : shape.kind === 'tilted' ? (
+            <> · 이쪽으로 많이 쏠려 있어요</>
+          ) : shape.kind === 'thin' ? (
+            <> · 가장 옅은 건 {ELEMENT_KO[shape.el]}</>
+          ) : (
+            <> · 다섯 기운이 고르게 있어요</>
+          )}
+        </p>
+        {shape.kind !== 'even' ? (
+          <p className="elbal-missing">{MISSING_READING[shape.el]}</p>
+        ) : null}
+      </div>
+
+      {/* 4. 어떻게 쓰는가 */}
+      <div className="reading-card">
+        <p className="reading-card__badge">
+          {strength.label} · {strength.short}
+        </p>
+        <p className="reading-card__body">{strength.body}</p>
+        <p className="reading-card__tip">💡 {strength.tip}</p>
+      </div>
+
+      <div className="reading-card reading-card--group">
+        <p className="reading-card__badge">
+          {group.icon} {group.title}
+        </p>
+        <p className="reading-card__body">{group.body}</p>
+        <ul className="god-chips">
+          {profile.gods.map((g) => (
+            <li key={g.position} className="god-chip">
+              <span className="god-chip__pos">{g.position}</span>
+              {TEN_GOD_KO[g.god]}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="useful-card">
+        <p className="useful-card__title">
+          나를 살리는 기운 · <b>{ELEMENT_KO[profile.usefulElement]}</b>
+        </p>
+        <p className="useful-card__what">{useful.what}이 필요해요</p>
+        <p className="useful-card__how">{useful.how}</p>
+      </div>
+
+      <button type="button" className="btn btn--primary" onClick={share}>
+        내 일간 자랑하기 💬
+      </button>
+      <p className="birth-hint birth-hint--center">
+        생년월일은 이 기기에만 있어요. 앱을 지우면 함께 사라져요.
+      </p>
+    </AppLayout>
+  );
+}
+
+// 화면에서만 쓰는 작은 매핑 — 엔진을 건드리지 않기 위해 여기에 둔다
+const STEM_EL: Element[] = ['wood','wood','fire','fire','earth','earth','metal','metal','water','water'];
+const BRANCH_EL: Element[] = ['water','earth','wood','wood','earth','fire','fire','earth','metal','metal','earth','water'];
+function stemEl(i: number): Element {
+  return STEM_EL[i];
+}
+function branchEl(i: number): Element {
+  return BRANCH_EL[i];
+}

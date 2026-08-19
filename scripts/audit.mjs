@@ -315,6 +315,114 @@ async function run(browser) {
     await page.context().close();
   }
 
+  // 2-B. 내 사주 — 생년월일시 입력 → 사주 카드.
+  // 이 앱에서 제일 개인적인 값을 다루는 경로라 한 칸도 빈 채로 나가면 안 된다.
+  {
+    const page = await newPage(browser);
+    try {
+      await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+      await wait(page, 600);
+
+      // 사주를 아직 안 만든 사람에게 진입점이 보이고, 이유가 함께 있어야 한다
+      const home = await bodyText(page);
+      check(home.includes('내 사주 만들기'), '[사주] 홈에 진입점 노출');
+      check(home.includes('띠로만'), '[사주] 왜 필요한지 이유가 함께 보임');
+
+      await page.getByText('생년월일로 내 사주 만들기', { exact: false }).first().click();
+      await wait(page, 800);
+      check((await bodyText(page)).includes('언제 태어났어요'), '[사주입력] 화면 진입');
+      // 개인정보를 받는 화면이므로 어디에 저장되는지 먼저 말해야 한다
+      check(/이 기기에만 저장|어디에도 보내지/.test(await bodyText(page)),
+        '[사주입력] 저장 위치를 먼저 고지');
+      await diagnose(page, '사주입력');
+
+      // 아무것도 안 넣었을 때 CTA 가 눌리면 안 된다
+      const ctaDisabled = await page.locator('.btn--primary').first().isDisabled();
+      check(ctaDisabled, '[사주입력] 미입력 상태에서 진행 차단');
+
+      // 입춘 경계(2024-02-04 10:00) — 달력 띠와 사주 띠가 갈리는 날
+      await page.locator('input[type="date"]').fill('2024-02-04');
+      await page.locator('input[type="time"]').fill('10:00');
+      await wait(page, 600);
+      const peek = await bodyText(page);
+      check(/당신의 일간/.test(peek), '[사주입력] 입력 도중 미리보기 노출');
+      check(peek.includes('앞 해의 띠'), '[사주입력] 입춘 경계 안내가 뜬다');
+      check((await page.locator('.birth-peek__pillars').innerText()).trim().length >= 8,
+        '[사주입력] 미리보기에 팔자가 채워짐');
+
+      // 시각 모름 경로도 살아 있어야 한다 (모르는 사람이 많다)
+      await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
+      await wait(page, 500);
+      check((await page.locator('input[type="time"]').isDisabled()),
+        '[사주입력] 시각 모름 선택 시 시간 입력 비활성');
+      check((await bodyText(page)).includes('세 기둥'), '[사주입력] 시각 없이도 되는 이유 설명');
+      await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
+      await wait(page, 400);
+
+      await page.getByText('내 사주 보기', { exact: false }).first().click();
+      await wait(page, 1200);
+
+      const saju = await bodyText(page);
+      check(saju.includes('내 일간'), '[사주] 카드 화면 진입');
+      check(saju.length > 500, '[사주] 빈 화면 아님', `글자 ${saju.length}자`);
+
+      // 네 기둥이 모두 서 있고, 일주가 '나'로 표시돼야 한다
+      const pcols = await page.locator('.pcol').count();
+      check(pcols === 4, '[사주] 네 기둥 모두 표시', `${pcols}칸`);
+      check((await page.locator('.pcol--me').count()) === 1, '[사주] 일주가 나로 강조됨');
+      const emptyPcol = await page.locator('.pcol').evaluateAll((els) =>
+        els.filter((el) => !(el.querySelector('.pcol__stem')?.textContent || '').trim()).length);
+      check(emptyPcol === 0, '[사주] 빈 기둥 없음', `${emptyPcol}칸 비어있음`);
+
+      // 오행 다섯 줄이 모두 있고 합이 100% 근처여야 한다
+      const bars = await page.locator('.elbal-row').count();
+      check(bars === 5, '[사주] 오행 다섯 줄 표시', `${bars}줄`);
+      const sum = await page.locator('.elbal-row__v').evaluateAll((els) =>
+        els.reduce((a, el) => a + parseInt(el.textContent, 10), 0));
+      check(Math.abs(sum - 100) <= 2, '[사주] 오행 합이 100%', `${sum}%`);
+
+      // 적용된 보정이 근거로 보여야 한다 (왜 이 값인지 확인 가능해야 신뢰가 생긴다)
+      check((await page.locator('.pillars-corr li').count()) >= 1, '[사주] 적용된 보정 근거 노출');
+      check(/신강|신약/.test(saju), '[사주] 강약 판정 노출');
+      check(/나를 살리는 기운/.test(saju), '[사주] 용신 안내 노출');
+
+      await diagnose(page, '사주');
+
+      // 공유 · 수정 버튼이 실제로 동작해야 한다
+      await page.getByText('내 일간 자랑하기', { exact: false }).first().click();
+      await wait(page, 1200);
+      check(/공유|복사/.test(await bodyText(page)), '[사주] 내 일간 자랑하기 동작');
+
+      await page.locator('.pillars-card__edit').first().click();
+      await wait(page, 800);
+      check((await bodyText(page)).includes('언제 태어났어요'), '[사주] 수정 버튼 → 입력 화면');
+      // 수정 화면엔 기존 값이 채워져 있어야 한다 (처음부터 다시 입력시키면 안 된다)
+      check((await page.locator('input[type="date"]').inputValue()) === '2024-02-04',
+        '[사주] 수정 시 기존 값 유지');
+
+      // 새로고침해도 사주가 남고, 홈 진입점이 내 일간으로 바뀌어야 한다
+      await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+      await wait(page, 800);
+      check((await page.locator('.saju-entry--done').count()) === 1,
+        '[사주] 새로고침 후 홈에 내 일간 배지 노출');
+      // 사주를 세웠으면 띠를 다시 묻지 않아야 한다 (같은 걸 두 번 묻는 순간 "이게 뭐지"가 생긴다)
+      const homeAfter = await bodyText(page);
+      check(!homeAfter.includes('내 띠를 고르면'), '[사주] 사주가 있으면 띠를 다시 묻지 않음',
+        (homeAfter.match(/.{0,20}내 띠를 고르면.{0,20}/) || [''])[0]);
+      check((await page.locator('.me-rank').count()) === 1,
+        '[사주] 사주에서 딴 띠가 서열 카드에 반영됨');
+      check((await page.locator('.week-card').count()) === 1,
+        '[사주] 띠가 채워져 주간 캘린더도 열림');
+
+      await page.locator('.saju-entry--done').first().click();
+      await wait(page, 1000);
+      check((await bodyText(page)).includes('내 일간'), '[사주] 홈 배지 → 사주 화면 복귀');
+    } catch (e) {
+      bad('[사주] 경로', e.message.split('\n')[0]);
+    }
+    await page.context().close();
+  }
+
   // 3. 운세 7종 관통 + 월간 화면의 시간 단위
   {
     const TOPICS = [

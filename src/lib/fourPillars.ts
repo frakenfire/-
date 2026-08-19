@@ -232,3 +232,38 @@ export function pillarsHanja(p: FourPillars): string {
     .map((x) => x.hanja)
     .join(' ');
 }
+
+/**
+ * 경계 근접 안내 — 절기나 시주 경계에 바싹 붙어 태어난 사람에게 알린다.
+ *
+ * 우리 계산 오차는 1분 미만이지만, 문제는 계산이 아니라 '기억' 이다.
+ * 출생 시각은 대개 분 단위로 정확하지 않고, 경계에서 1분 차이는 기둥을 통째로 바꾼다.
+ * 그럴 땐 모르는 척 단정하는 것보다 사실대로 말하는 편이 낫다.
+ */
+export function boundaryNotice(input: BirthInput): string | null {
+  const { year, month, day, hour, minute = 0, longitude = SEOUL_LONGITUDE, trueSolar = true } = input;
+  if (hour === null) return null;
+
+  const off = koreaOffsetAt(year, month, day, hour, minute);
+  const jdUt = toJulianDay(year, month, day, hour, minute, 0) - off.offsetMin / 1440;
+  const jde = jdUt + deltaTSeconds(year, month) / 86400;
+
+  // 절기 경계 — 태양 황경이 30°의 배수(입춘 기준)에서 얼마나 떨어져 있는가.
+  const progress = (((apparentSolarLongitude(jde) - 315) % 360) + 360) % 360;
+  const degToBoundary = Math.min(progress % 30, 30 - (progress % 30));
+  // 태양은 하루 약 0.9856° 이동 → 1° ≈ 1461분
+  const minsToTerm = degToBoundary * 1461;
+  if (minsToTerm < 120) {
+    return '절기가 바뀌는 시각과 2시간 안쪽이에요. 태어난 시각이 조금만 달라도 사주가 통째로 바뀌니, 시각이 정확한지 한 번만 확인해 주세요.';
+  }
+
+  // 시주 경계 — 진태양시 기준 홀수 시(23,1,3…)마다 바뀐다.
+  const jdSolar = trueSolar ? jdUt + longitude / 15 / 24 : jdUt + off.offsetMin / 1440;
+  const t = fromJulianDay(jdSolar);
+  const minsInto = ((t.hour + 1) % 2) * 60 + t.minute;
+  const minsToHour = Math.min(minsInto, 120 - minsInto);
+  if (minsToHour < 10) {
+    return '시주가 바뀌는 경계와 10분 안쪽이에요. 태어난 시각이 정확하지 않다면 결과가 달라질 수 있어요.';
+  }
+  return null;
+}

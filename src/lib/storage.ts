@@ -352,3 +352,42 @@ export function isWeekUnlocked(dateKey: string): boolean {
 export function unlockWeek(dateKey: string): boolean {
   return safeSet(WEEK_UNLOCK_KEY, weekIdOf(dateKey));
 }
+
+// ── 생년월일시 ────────────────────────────────────────────────────────────
+// 사주를 세우려면 태어난 순간이 필요하다. 서버로 보내지 않고 이 기기에만 둔다.
+// (그래서 앱을 지우면 사라진다 — 화면에서 그 사실을 명시한다)
+const BIRTH_KEY = 'tomorrowNoteBirth';
+
+export type StoredBirth = {
+  /** 'YYYY-MM-DD' 양력 */
+  date: string;
+  /** 'HH:MM' 또는 null(모름) */
+  time: string | null;
+};
+
+export function loadBirth(): StoredBirth | null {
+  const raw = safeGet(BIRTH_KEY);
+  if (!raw) return null;
+  try {
+    const v = JSON.parse(raw) as StoredBirth;
+    // 저장 포맷이 깨졌거나 예전 버전이면 없는 것으로 본다 (잘못된 사주를 보여주느니 다시 받는다)
+    if (typeof v?.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v.date)) return null;
+    if (v.time !== null && !/^\d{2}:\d{2}$/.test(v.time ?? '')) return null;
+    return { date: v.date, time: v.time ?? null };
+  } catch {
+    return null;
+  }
+}
+
+export function saveBirth(b: StoredBirth): boolean {
+  return safeSet(BIRTH_KEY, JSON.stringify(b));
+}
+
+export function clearBirth(): boolean {
+  try {
+    window.localStorage.removeItem(BIRTH_KEY);
+    return true;
+  } catch {
+    return false;
+  }
+}

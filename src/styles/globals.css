@@ -3367,3 +3367,593 @@ a:focus-visible {
   border-radius: 999px;
   padding: 8px 14px;
 }
+
+/* ══ 내 사주 ══════════════════════════════════════════════════════════════
+   띠(1/12)에서 사주(사실상 1인 1결과)로 넘어가는 화면들.
+   낯선 한자를 다루므로 색과 여백으로 위계를 만들어야 벽처럼 보이지 않는다. */
+
+/* ── 홈 진입 카드 ── */
+.saju-entry {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 44px;
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  box-shadow: var(--shadow-card);
+  text-align: left;
+  transition: transform 0.2s var(--ease-spring);
+  overflow: hidden;
+}
+.saju-entry:active {
+  transform: scale(0.98);
+}
+/* 사주를 세운 사람에겐 자기 일간 색을 띠처럼 둘러준다 — '내 것'이라는 신호 */
+.saju-entry--done {
+  border-left: 4px solid var(--saju-hue, var(--brand));
+}
+.saju-entry__icon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--gray-50);
+  font-size: 22px;
+  line-height: 1;
+}
+.saju-entry--done .saju-entry__icon {
+  background: color-mix(in srgb, var(--saju-hue, var(--brand)) 12%, var(--white));
+}
+.saju-entry__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0; /* 긴 문구가 카드를 밀어내지 않게 */
+  flex: 1 1 auto;
+}
+.saju-entry__k {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+.saju-entry__v {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.saju-entry__sub {
+  margin-top: 2px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--gray-600);
+  line-height: 1.45;
+}
+/* 셰브런도 정보다 — gray-400 은 흰 배경에서 2.01:1 로 AA 미달이라 한 단계 올린다 */
+.saju-entry__chev {
+  flex: 0 0 auto;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+
+/* ── 생년월일시 입력 ── */
+.birth-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin: var(--space-5) 0 var(--space-4);
+}
+.birth-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+}
+.birth-field--off {
+  opacity: 0.45;
+}
+.birth-field__k {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-700);
+}
+/* 네이티브 피커를 그대로 쓴다 — 직접 만든 휠보다 빠르고, 기기 접근성 설정을 따른다 */
+.birth-field__input {
+  width: 100%;
+  min-height: 34px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.birth-field__input:disabled {
+  color: var(--gray-500);
+}
+.birth-unknown {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--gray-700);
+  text-align: left;
+}
+.birth-unknown--on {
+  background: var(--brand-soft);
+  border-color: var(--brand);
+  color: var(--brand-strong);
+}
+.birth-unknown__box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  border-radius: 6px;
+  border: 1.5px solid var(--gray-300);
+  background: var(--white);
+  font-size: 13px;
+  font-weight: 900;
+  color: var(--brand-strong);
+}
+.birth-unknown--on .birth-unknown__box {
+  border-color: var(--brand);
+}
+.birth-hint {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-600);
+  line-height: 1.5;
+}
+.birth-hint--center {
+  margin-top: var(--space-3);
+  text-align: center;
+}
+
+/* 입력 도중 미리보기 — 다 채우기 전에 '이게 나오는구나'가 와야 이탈이 준다 */
+.birth-peek {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: var(--space-4);
+  padding: var(--space-5) var(--space-4);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--peek-hue, var(--brand)) 8%, var(--white));
+  border: 1px solid color-mix(in srgb, var(--peek-hue, var(--brand)) 25%, var(--white));
+  text-align: center;
+  overflow: hidden;
+}
+.birth-peek__label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+.birth-peek__icon {
+  font-size: 40px;
+  line-height: 1.2;
+}
+.birth-peek__name {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.birth-peek__tag {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-700);
+}
+.birth-peek__pillars {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--gray-600);
+}
+.birth-warn {
+  margin: 0 0 var(--space-4);
+  padding: 11px 13px;
+  border-radius: 12px;
+  background: #fff7e6;
+  border: 1px solid #f3d9a4;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--score-low-text);
+  line-height: 1.55;
+}
+.birth-warn--info {
+  background: var(--brand-soft);
+  border-color: #bcdcff;
+  color: var(--brand-strong);
+}
+
+/* ── 일간 히어로 ── 이 화면에서 "이게 나야"가 오는 자리 ── */
+.dm-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: var(--space-4);
+  padding: var(--space-6) var(--space-4) var(--space-5);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(
+    170deg,
+    color-mix(in srgb, var(--dm-hue, var(--brand)) 16%, var(--white)) 0%,
+    var(--white) 72%
+  );
+  border: 1px solid color-mix(in srgb, var(--dm-hue, var(--brand)) 22%, var(--white));
+  text-align: center;
+  overflow: hidden;
+}
+.dm-hero__label {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--gray-600);
+}
+.dm-hero__icon {
+  font-size: 52px;
+  line-height: 1.15;
+}
+.dm-hero__name {
+  margin: 0;
+  font-size: 25px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.dm-hero__name b {
+  color: var(--dm-hue, var(--brand));
+}
+.dm-hero__tag {
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+.dm-hero__nature {
+  margin: var(--space-3) 0 0;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--gray-700);
+  line-height: 1.65;
+  text-align: left;
+}
+.dm-chips {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.dm-chip {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--white);
+  border: 1px solid color-mix(in srgb, var(--dm-hue, var(--brand)) 30%, var(--white));
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--gray-800);
+}
+
+.dm-two {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+.dm-note {
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  box-shadow: var(--shadow-card);
+}
+.dm-note--shadow {
+  background: var(--gray-50);
+}
+.dm-note__k {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--gray-700);
+}
+.dm-note__v {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--gray-800);
+  line-height: 1.6;
+}
+
+/* ── 여덟 글자 ── */
+.pillars-card {
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.pillars-card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: var(--space-3);
+}
+.pillars-card__title {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.pillars-card__edit {
+  position: relative;
+  min-height: 32px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--gray-100);
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--gray-700);
+}
+.pillars-card__edit::after {
+  content: '';
+  position: absolute;
+  inset: -6px 0; /* 보이는 칩은 작게, 탭 영역만 44px */
+}
+.pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.pcol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 4px;
+  border-radius: 12px;
+  background: var(--gray-50);
+}
+/* 일주(일간)가 '나' 라서 시각적으로 한 칸 올려준다 */
+.pcol--me {
+  background: var(--brand-soft);
+  box-shadow: inset 0 0 0 1.5px var(--brand);
+}
+.pcol__label {
+  font-size: 10.5px;
+  font-weight: 800;
+  color: var(--gray-700);
+}
+.pcol__stem,
+.pcol__branch {
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1.15;
+}
+.pcol__stem--none,
+.pcol__branch--none {
+  color: var(--gray-400);
+}
+.pcol__kor {
+  margin-top: 2px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--gray-700);
+}
+.pillars-card__foot {
+  margin: var(--space-3) 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-700);
+  line-height: 1.55;
+}
+/* 적용된 보정을 숨기지 않는다 — 왜 이 값이 나왔는지 확인할 수 있어야 신뢰가 생긴다 */
+.pillars-corr {
+  margin: var(--space-3) 0 0;
+  padding: 10px 12px;
+  list-style: none;
+  border-radius: 10px;
+  background: var(--gray-50);
+}
+.pillars-corr li {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+  line-height: 1.6;
+}
+
+/* ── 오행 저울 ── */
+.elbal-card {
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  box-shadow: var(--shadow-card);
+}
+.elbal-card__title {
+  margin: 0 0 var(--space-3);
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.elbal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.elbal-row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 42px;
+  align-items: center;
+  gap: 10px;
+}
+.elbal-row__k {
+  font-size: 13px;
+  font-weight: 800;
+}
+.elbal-row__bar {
+  display: block;
+  height: 10px;
+  border-radius: 999px;
+  background: var(--gray-100);
+  overflow: hidden;
+}
+.elbal-row__bar i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+.elbal-row__v {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--gray-700);
+  text-align: right;
+}
+.elbal-card__foot {
+  margin: var(--space-3) 0 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+  line-height: 1.55;
+}
+.elbal-missing {
+  margin: var(--space-2) 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--gray-50);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+  line-height: 1.6;
+}
+
+/* ── 해석 카드 ── */
+.reading-card {
+  margin-bottom: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  box-shadow: var(--shadow-card);
+}
+.reading-card__badge {
+  display: inline-block;
+  margin: 0 0 var(--space-3);
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--brand-strong);
+}
+.reading-card--group .reading-card__badge {
+  background: var(--gray-100);
+  color: var(--gray-800);
+}
+.reading-card__body {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--gray-800);
+  line-height: 1.65;
+}
+.reading-card__tip {
+  margin: var(--space-3) 0 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--gray-50);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--gray-700);
+  line-height: 1.6;
+}
+.god-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.god-chip {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  font-size: 11.5px;
+  font-weight: 800;
+  color: var(--gray-800);
+}
+.god-chip__pos {
+  font-size: 9.5px;
+  font-weight: 800;
+  color: var(--gray-700);
+}
+
+.useful-card {
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--brand-soft);
+  border: 1px solid #bcdcff;
+}
+.useful-card__title {
+  margin: 0 0 4px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--brand-strong);
+}
+.useful-card__what {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+.useful-card__how {
+  margin: 6px 0 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+  line-height: 1.6;
+}
+
+/* 화면이 넓어지면 두 칸으로 — 375px 에서는 세로가 읽기 편하다 */
+@media (min-width: 400px) {
+  .dm-two {
+    grid-template-columns: 1fr 1fr;
+  }
+}

@@ -11,7 +11,7 @@ import {
 } from './astro.ts';
 import { koreaOffsetAt, trueSolarCorrectionMin } from './koreaTime.ts';
 import { computeFourPillars, ipchunJdUt, pillarsHanja } from './fourPillars.ts';
-import { analyzeSaju, tenGodOf, mainHiddenStem, hiddenStemsOf, GOD_GROUP_OF } from './tenGods.ts';
+import { analyzeSaju, balanceShape, tenGodOf, mainHiddenStem, hiddenStemsOf, GOD_GROUP_OF } from './tenGods.ts';
 import { STEMS, BRANCHES, toJDN } from './saju.ts';
 
 // ── 천문 계산 ──────────────────────────────────────────────────────────────
@@ -315,4 +315,28 @@ test('사주가 사람마다 실제로 갈라진다 (전부 같은 결과가 나
   }
   // 144 개 표본에서 사실상 전부 달라야 한다 (띠 12종과는 비교가 안 되는 해상도)
   assert.ok(seen.size > 130, `서로 다른 사주 ${seen.size}종 (144 표본)`);
+});
+
+test('오행 요약 문구가 막대 그림과 모순되지 않는다', () => {
+  // 화면엔 막대가 함께 뜬다. 화 4% / 수 54% 를 그려놓고 "고르게" 라고 쓰면 그 자리에서 들킨다.
+  let evenCount = 0;
+  for (let y = 1960; y <= 2010; y += 1) {
+    for (const h of [1, 7, 13, 19, null]) {
+      const prof = analyzeSaju(computeFourPillars({ year: y, month: (y % 12) + 1, day: 15, hour: h }));
+      const shape = balanceShape(prof);
+      const vals = Object.values(prof.balance);
+      const max = Math.max(...vals);
+      const min = Math.min(...vals);
+      if (shape.kind === 'even') {
+        evenCount += 1;
+        // '고르다'고 말하려면 실제로 고르러야 한다
+        assert.ok(max < 0.4, `고르다고 했는데 최대가 ${(max * 100).toFixed(0)}%`);
+        assert.ok(min >= 0.1, `고르다고 했는데 최소가 ${(min * 100).toFixed(0)}%`);
+      }
+      if (shape.kind === 'tilted') assert.ok(max >= 0.4);
+      if (shape.kind === 'thin') assert.ok(min < 0.1 && min >= 0.03);
+      if (shape.kind === 'missing') assert.ok(min < 0.03);
+    }
+  }
+  assert.ok(evenCount > 0, "'고르다' 케이스가 한 번도 안 나오면 규칙이 죽은 것");
 });

@@ -29,7 +29,8 @@ import { findZodiac } from './data/zodiac.ts';
 import type { Zodiac, ZodiacId } from './data/zodiac.ts';
 import { findStarSign } from './data/starSign.ts';
 import type { StarSign, StarSignId } from './data/starSign.ts';
-import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, getNotiAskState, setNotiAskState, hasAskedReview, markReviewAsked, isWeekUnlocked, unlockWeek } from './lib/storage.ts';
+import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, getNotiAskState, setNotiAskState, hasAskedReview, markReviewAsked, isWeekUnlocked, unlockWeek, loadBirth, saveBirth,
+  type StoredBirth } from './lib/storage.ts';
 
 import { HomeScreen } from './screens/HomeScreen.tsx';
 import { MoodScreen } from './screens/MoodScreen.tsx';
@@ -38,8 +39,12 @@ import { RevealScreen } from './screens/RevealScreen.tsx';
 import { ResultScreen } from './screens/ResultScreen.tsx';
 import { DetailResultScreen } from './screens/DetailResultScreen.tsx';
 import { CompatScreen } from './screens/CompatScreen.tsx';
+import { BirthScreen, toBirthInput } from './screens/BirthScreen.tsx';
+import { MySajuScreen } from './screens/MySajuScreen.tsx';
+import { computeFourPillars } from './lib/fourPillars.ts';
+import { DAY_MASTER_BY_INDEX } from './data/dayMaster.ts';
 
-type ScreenName = 'home' | 'mood' | 'pick' | 'reveal' | 'result' | 'detail' | 'compat';
+type ScreenName = 'home' | 'mood' | 'pick' | 'reveal' | 'result' | 'detail' | 'compat' | 'birth' | 'saju';
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -413,6 +418,48 @@ export default function App() {
     else if (r === 'failed') flash('앗, 공유를 못 했어요');
   }
 
+  // ── 내 사주 ──
+  // 띠(1/12)로는 '나를 위한 결과'가 안 나온다. 생년월일시를 받아 사주 여덟 글자를 세운다.
+  // 저장은 이 기기 localStorage 뿐이고 서버로 나가지 않는다.
+  const [birth, setBirth] = useState<StoredBirth | null>(() => loadBirth());
+  const birthInput = useMemo(
+    () => (birth ? toBirthInput(birth.date, birth.time) : null),
+    [birth],
+  );
+
+  function handleSaveBirth(b: StoredBirth) {
+    setBirth(b);
+    saveBirth(b);
+    logEvent('birth_saved', { hasTime: b.time !== null });
+    setScreen('saju');
+  }
+
+  // 홈에 보여줄 일간 배지 — 사주를 세운 사람에게는 '내 것'이 홈에서 바로 보여야 한다.
+  const sajuBadge = useMemo(() => {
+    if (!birthInput) return null;
+    const dm = DAY_MASTER_BY_INDEX[computeFourPillars(birthInput).dayStem];
+    return { icon: dm.icon, name: `${dm.hanja} ${dm.name}`, hue: dm.hue };
+  }, [birthInput]);
+
+  // 사주를 세우면 띠는 이미 정해진다(그것도 입춘 기준이라 더 정확하다).
+  // 그런데도 홈이 "내 띠를 고르면…"이라고 물으면 유저는 "방금 넣었는데?" 가 된다.
+  // 사주가 있으면 띠를 자동으로 맞춰, 같은 걸 두 번 묻지 않는다.
+  useEffect(() => {
+    if (!birthInput) return;
+    const derived = computeFourPillars(birthInput).zodiac;
+    if (zodiac?.id === derived) return;
+    setZodiac(findZodiac(derived) ?? null);
+    saveMyZodiac(derived);
+  }, [birthInput, zodiac?.id]);
+
+  async function handleShareSaju(text: string) {
+    const r = await shareMessage(text);
+    logEvent('share_saju', { outcome: r });
+    if (r === 'shared') flash('내 일간을 공유했어요 💌');
+    else if (r === 'copied') flash('공유 문구 복사 완료! 💌');
+    else if (r === 'failed') flash('앗, 공유를 못 했어요');
+  }
+
   // 아침 알림 옵트인 — 템플릿 코드가 콘솔에서 발급된 경우에만, 아직 안 물었을 때만.
   const [notiCardVisible, setNotiCardVisible] = useState(
     () => canAskNotification() && getNotiAskState() === null,
@@ -490,6 +537,8 @@ export default function App() {
           onZodiac={handleZodiac}
           onReopen={handleReopen}
           onCompat={() => setScreen('compat')}
+          sajuBadge={sajuBadge}
+          onSaju={() => setScreen(birth ? 'saju' : 'birth')}
           onSelect={handleType}
           onReset={handleReset}
           weekUnlocked={weekUnlocked}
@@ -541,6 +590,28 @@ export default function App() {
           showNotiCard={notiCardVisible}
           onAskNoti={handleAskNoti}
         />
+      )}
+
+      {screen === 'birth' && (
+        <BirthScreen
+          initial={birth}
+          onSave={handleSaveBirth}
+          onBack={() => setScreen(birth ? 'saju' : 'home')}
+        />
+      )}
+
+      {screen === 'saju' && birthInput && (
+        <MySajuScreen
+          birth={birthInput}
+          onBack={() => setScreen('home')}
+          onEdit={() => setScreen('birth')}
+          onShare={handleShareSaju}
+        />
+      )}
+
+      {/* 안전망 — 저장된 생년월일이 깨졌으면 사주 화면 대신 입력으로 되돌린다 */}
+      {screen === 'saju' && !birthInput && (
+        <BirthScreen initial={null} onSave={handleSaveBirth} onBack={() => setScreen('home')} />
       )}
 
       {screen === 'detail' && result && (

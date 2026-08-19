@@ -258,3 +258,32 @@ export function hiddenStemsOf(branch: number): { stem: number; hanja: string; we
 export function branchHanja(branch: number): string {
   return BRANCHES[branch].hanja;
 }
+
+/**
+ * 오행 분포를 한 문장으로 요약할 때 쓸 '모양'.
+ *
+ * 이게 왜 별도 규칙인가: 화면에는 막대가 함께 있다. 화 4% / 수 54% 를 그려놓고
+ * "고르게 있어요" 라고 쓰면 그 자리에서 신뢰가 깨진다.
+ * 그래서 문장을 고르는 기준을 분포에서 직접 끌어낸다.
+ */
+export type BalanceShape =
+  | { kind: 'missing'; el: Element } // 사실상 없는 오행이 있다
+  | { kind: 'tilted'; el: Element } // 한쪽으로 크게 쏠렸다
+  | { kind: 'thin'; el: Element } // 눈에 띄게 옅은 오행이 있다
+  | { kind: 'even' }; // 정말로 고르다
+
+/** 쏠림 판정 기준 — 고르다면 다섯이 각 20% 부근이어야 한다. */
+const TILTED_AT = 0.4;
+const THIN_AT = 0.1;
+
+export function balanceShape(p: SajuProfile): BalanceShape {
+  if (p.missing.length > 0) return { kind: 'missing', el: p.missing[0] };
+  if (p.balance[p.strongest] >= TILTED_AT) return { kind: 'tilted', el: p.strongest };
+
+  const els = Object.keys(p.balance) as Element[];
+  let weakest = els[0];
+  for (const e of els) if (p.balance[e] < p.balance[weakest]) weakest = e;
+  if (p.balance[weakest] < THIN_AT) return { kind: 'thin', el: weakest };
+
+  return { kind: 'even' };
+}
