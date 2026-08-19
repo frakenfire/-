@@ -21,7 +21,7 @@ export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, on
   return (
     <button
       type="button"
-      className={`note ${faceDown ? 'note--facedown' : NOTE_COLOR_CLASS[note.color]} note--${state}`}
+      className={`note ${NOTE_COLOR_CLASS[note.color]}${faceDown ? ' note--facedown' : ''} note--${state}`}
       style={
         {
           '--tilt': `${tilt}deg`,

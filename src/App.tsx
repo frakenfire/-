@@ -565,6 +565,7 @@ export default function App() {
           onPickZodiac={handleSaveMyZodiac}
           onPickStar={handleSaveMyStarSign}
           onSelect={handleMood}
+          hasBirth={birthInput !== null}
           onBack={() => setScreen('home')}
         />
       )}

@@ -163,9 +163,7 @@ export function HomeScreen({
             <p className="today-hook__line">
               지금은 <b>‘{vibe.word}’</b> 기운이 좋아요
             </p>
-            <p className="today-hook__hint">
-              {vibe.line} 내 띠를 고르면 오늘 일진과 얼마나 맞는지 봐요.
-            </p>
+            <p className="today-hook__hint">{vibe.line}</p>
           </>
         )}
 
@@ -219,7 +217,7 @@ export function HomeScreen({
         <button type="button" className="saju-entry" onClick={onSaju}>
           <span className="saju-entry__icon" aria-hidden>🔮</span>
           <span className="saju-entry__text">
-            <span className="saju-entry__k">지금은 띠로만 보고 있어요</span>
+            <span className="saju-entry__k">지금은 모두에게 같은 쪽지예요</span>
             <strong className="saju-entry__v">쪽지를 나에게 맞추기</strong>
             <span className="saju-entry__sub">생년월일을 넣으면 오늘 쪽지가 나만의 것이 돼요</span>
           </span>

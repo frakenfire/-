@@ -13,6 +13,8 @@ type Props = {
   onPickStar: (id: StarSignId) => void;
   onSelect: (m: Mood) => void;
   onBack: () => void;
+  /** 사주를 넣었으면 띠·별자리는 이미 정해진 값이라 다시 묻지 않는다 */
+  hasBirth?: boolean;
 };
 
 // 지금 나 = 기분 + 띠 + 별자리. 세 개를 조합해 '나에게 딱 맞는' 쪽지를 만든다.
@@ -25,6 +27,7 @@ export function MoodScreen({
   onPickStar,
   onSelect,
   onBack,
+  hasBirth = false,
 }: Props) {
   const [open, setOpen] = useState<'zodiac' | 'star' | null>(null);
 
@@ -32,9 +35,16 @@ export function MoodScreen({
     <AppLayout onBack={onBack} step={1} totalSteps={2}>
       {fortuneLabel ? <span className="eyebrow">{fortuneLabel}</span> : null}
       <h2 className="h2">쪽지를 쓰기 전에, 지금 나는?</h2>
-      <p className="lead">기분 · 띠 · 별자리를 고르면 나에게 딱 맞는 쪽지가 나와요.</p>
+      <p className="lead">
+        {hasBirth
+          ? '내 사주는 이미 반영돼 있어요. 지금 기분만 알려주세요.'
+          : '기분 · 띠 · 별자리를 고르면 나에게 딱 맞는 쪽지가 나와요.'}
+      </p>
 
-      {/* 내 띠 · 별자리 (눌러서 고르기 — 결과에 반영) */}
+      {/* 내 띠 · 별자리 — 사주가 없을 때의 가벼운 개인화 경로.
+          사주가 있으면 띠는 이미 입춘 기준으로 정해져 있어, 또 물으면 "방금 넣었는데?"가 된다. */}
+      {hasBirth ? null : (
+      <>
       <div className="me-picks">
         <button
           type="button"
@@ -94,6 +104,8 @@ export function MoodScreen({
           ))}
         </div>
       ) : null}
+      </>
+      )}
 
       <p className="mood-heading">지금 기분은 어때요?</p>
       <div className="mood-grid">

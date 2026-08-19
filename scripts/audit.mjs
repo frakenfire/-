@@ -326,7 +326,7 @@ async function run(browser) {
       // 사주를 아직 안 만든 사람에게 진입점이 보이고, 이유가 함께 있어야 한다
       const home = await bodyText(page);
       check(home.includes('쪽지를 나에게 맞추기'), '[사주] 홈에 진입점 노출');
-      check(home.includes('띠로만'), '[사주] 왜 필요한지 이유가 함께 보임');
+      check(home.includes('모두에게 같은 쪽지'), '[사주] 왜 필요한지 이유가 함께 보임');
       // 사주는 별도 기능이 아니라 쪽지를 맞추기 위한 것 — 문구가 쪽지에 봉사해야 한다
       check(/오늘 쪽지가 나만의 것이 돼요/.test(home), '[사주] 진입 문구가 쪽지에 봉사함');
 
@@ -410,6 +410,17 @@ async function run(browser) {
       // 홈의 첫 CTA 는 언제나 쪽지 뽑기여야 한다 (사주가 주인공을 뺏으면 안 된다)
       const firstCta = await page.locator('.today-hook__cta').first().innerText();
       check(/쪽지/.test(firstCta), '[쪽지] 홈 첫 CTA 는 쪽지 뽑기', firstCta.trim());
+      // 기분 화면에서도 띠·별자리를 다시 묻지 않아야 한다 — 같은 목적의 입력이 세 갈래면 컨셉이 흐려진다
+      await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+      await wait(page, 500);
+      await page.getByText('쪽지 뽑기 시작하기').first().click();
+      await wait(page, 600);
+      const moodText = await bodyText(page);
+      check(!moodText.includes('내 별자리'), '[사주] 사주가 있으면 기분 화면에서 띠·별자리를 안 물음');
+      check(moodText.includes('내 사주는 이미 반영돼 있어요'), '[사주] 이미 반영됐음을 알려줌');
+      await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+      await wait(page, 500);
+
       // 사주를 세웠으면 띠를 다시 묻지 않아야 한다 (같은 걸 두 번 묻는 순간 "이게 뭐지"가 생긴다)
       const homeAfter = await bodyText(page);
       check(!homeAfter.includes('내 띠를 고르면'), '[사주] 사주가 있으면 띠를 다시 묻지 않음',
