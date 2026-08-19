@@ -15,7 +15,7 @@ import type { ZodiacId } from '../data/zodiac.ts';
 
 // 결정적 해시/선택 — dateSeed 와 동일한 FNV-1a 방식을 내장(이 모듈을 순수 leaf 로
 // 유지해 노드 테스트 러너에서 바로 검증 가능하게 함).
-function hashSeed(input: string): number {
+export function hashSeed(input: string): number {
   let h = 2166136261;
   for (let i = 0; i < input.length; i += 1) {
     h ^= input.charCodeAt(i);
@@ -124,7 +124,7 @@ export function toJDN(y: number, m: number, d: number): number {
 }
 
 // dateKey 'YYYY-MM-DD' → 60갑자 인덱스(0=甲子)
-function ganzhiIndexFromDateKey(dateKey: string): number {
+export function ganzhiIndexFromDateKey(dateKey: string): number {
   const [y, m, d] = dateKey.split('-').map((n) => parseInt(n, 10));
   const jdn = toJDN(y, m, d);
   return (((jdn + 49) % 60) + 60) % 60;
@@ -160,7 +160,7 @@ export type BranchRelation =
 // 지지 관계 판정 — 한 쌍이 여러 관계에 동시에 걸릴 수 있어(예: 寅申은 충이자 삼형,
 // 巳申은 육합이자 형) 우선순위를 명시한다. 충 > 합 > 형 > 원진 > 파 순으로,
 // 작용력이 큰 관계가 이긴다.
-function branchRelation(a: number, b: number): BranchRelation {
+export function branchRelation(a: number, b: number): BranchRelation {
   if (a === b) return SELF_PUNISH.has(a) ? 'selfPunish' : 'self'; // 자형 / 비화(比和)
   if (Math.abs(a - b) === 6) return 'clash'; // 상충(정반대)
   if (a % 4 === b % 4) return 'trine'; // 삼합
@@ -215,7 +215,7 @@ export type ElementFlow =
   | 'i_control_day' // 내가 일간을 극 — 주도하는 기운
   | 'same'; // 비화 — 안정/친화
 
-function elementFlow(dayEl: Element, myEl: Element): ElementFlow {
+export function elementFlow(dayEl: Element, myEl: Element): ElementFlow {
   if (dayEl === myEl) return 'same';
   if (GEN_NEXT[dayEl] === myEl) return 'day_generates_me';
   if (GEN_NEXT[myEl] === dayEl) return 'i_generate_day';
@@ -265,7 +265,7 @@ function toneScore(rel: BranchRelation, flow: ElementFlow): number {
 // 그대로 두고 '어디부터 조심이라 부를지'만 조정한 것.
 // 예전 값(4.0/2.8/1.8)은 조심이 39%라 열흘 중 나흘이 경고였는데,
 // 이제 great 19% / good 35% / steady 34% / caution 12% 로 균형이 잡힌다.
-function toneOf(score: number): SajuTone {
+export function toneOf(score: number): SajuTone {
   if (score >= 3.5) return 'great';
   if (score >= 2.3) return 'good';
   if (score >= 1.0) return 'steady';
@@ -306,7 +306,7 @@ const TONE_WORD: Record<SajuTone, string> = {
 };
 
 // 히어로 큰 제목용 짧은 문구 — 톤별 풀에서 seed로 골라 같은 톤이라도 날마다 변주
-const TONE_TITLE: Record<SajuTone, string[]> = {
+export const TONE_TITLE: Record<SajuTone, string[]> = {
   great: [
     '오늘 기운이 크게 트였어요',
     '오늘은 뭘 해도 잘 풀릴 기운이에요',
@@ -377,7 +377,7 @@ const HEADLINE: Record<SajuTone, string[]> = {
   ],
 };
 
-const TIP: Record<SajuTone, string[]> = {
+export const TIP: Record<SajuTone, string[]> = {
   great: [
     '먼저 연락하거나 제안해보기 좋아요.',
     '중요한 한 걸음을 오늘 떼보세요.',

@@ -29,7 +29,7 @@ import { findZodiac } from './data/zodiac.ts';
 import type { Zodiac, ZodiacId } from './data/zodiac.ts';
 import { findStarSign } from './data/starSign.ts';
 import type { StarSign, StarSignId } from './data/starSign.ts';
-import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, getNotiAskState, setNotiAskState, hasAskedReview, markReviewAsked, isWeekUnlocked, unlockWeek, loadBirth, saveBirth,
+import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, getNotiAskState, setNotiAskState, hasAskedReview, markReviewAsked, isWeekUnlocked, unlockWeek, loadBirth, saveBirth, clearBirth,
   type StoredBirth } from './lib/storage.ts';
 
 import { HomeScreen } from './screens/HomeScreen.tsx';
@@ -39,7 +39,8 @@ import { RevealScreen } from './screens/RevealScreen.tsx';
 import { ResultScreen } from './screens/ResultScreen.tsx';
 import { DetailResultScreen } from './screens/DetailResultScreen.tsx';
 import { CompatScreen } from './screens/CompatScreen.tsx';
-import { BirthScreen, toBirthInput } from './screens/BirthScreen.tsx';
+import { BirthScreen } from './screens/BirthScreen.tsx';
+import { parseBirth } from './lib/birth.ts';
 import { MySajuScreen } from './screens/MySajuScreen.tsx';
 import { computeFourPillars } from './lib/fourPillars.ts';
 import { DAY_MASTER_BY_INDEX } from './data/dayMaster.ts';
@@ -283,6 +284,7 @@ export default function App() {
         dateKey,
         zodiac: zodiac?.id ?? null,
         star: starSign?.id ?? null,
+        birth: birthInput,
       });
       setResult(generated);
       // 쪽지 오픈 모션(0.5s)을 보여준 뒤 몽글 로딩 연출로 전환.
@@ -423,7 +425,7 @@ export default function App() {
   // 저장은 이 기기 localStorage 뿐이고 서버로 나가지 않는다.
   const [birth, setBirth] = useState<StoredBirth | null>(() => loadBirth());
   const birthInput = useMemo(
-    () => (birth ? toBirthInput(birth.date, birth.time) : null),
+    () => (birth ? parseBirth(birth.date, birth.time) : null),
     [birth],
   );
 
@@ -451,6 +453,14 @@ export default function App() {
     setZodiac(findZodiac(derived) ?? null);
     saveMyZodiac(derived);
   }, [birthInput, zodiac?.id]);
+
+  function handleDeleteBirth() {
+    clearBirth();
+    setBirth(null);
+    logEvent('birth_deleted', {});
+    flash('생년월일을 지웠어요');
+    setScreen('home');
+  }
 
   async function handleShareSaju(text: string) {
     const r = await shareMessage(text);
@@ -580,6 +590,7 @@ export default function App() {
           note={note}
           busy={busy}
           zodiacId={zodiac?.id ?? null}
+          birth={birthInput}
           streak={streak}
           onDetail={handleDetail}
           onSave={handleSave}
@@ -606,6 +617,7 @@ export default function App() {
           onBack={() => setScreen('home')}
           onEdit={() => setScreen('birth')}
           onShare={handleShareSaju}
+          onDeleteBirth={handleDeleteBirth}
         />
       )}
 

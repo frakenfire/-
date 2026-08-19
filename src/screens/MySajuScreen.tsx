@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { computeFourPillars, type BirthInput } from '../lib/fourPillars.ts';
 import { analyzeSaju, balanceShape, TEN_GOD_KO } from '../lib/tenGods.ts';
@@ -17,6 +17,7 @@ type Props = {
   onBack: () => void;
   onEdit: () => void;
   onShare: (text: string) => void;
+  onDeleteBirth: () => void;
 };
 
 const EL_ORDER: Element[] = ['wood', 'fire', 'earth', 'metal', 'water'];
@@ -40,7 +41,8 @@ const EL_TEXT: Record<Element, string> = {
 // 내 사주 한 장 — 여덟 글자, 오행 저울, 기운의 방향.
 // 사주는 낯선 한자 덩어리라 그냥 보여주면 아무것도 전달되지 않는다.
 // 그래서 순서를 '나는 누구인가(일간) → 근거(팔자) → 저울(오행) → 쓰는 법' 으로 뒀다.
-export function MySajuScreen({ birth, onBack, onEdit, onShare }: Props) {
+export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth }: Props) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
   const pillars = useMemo(() => computeFourPillars(birth), [birth]);
   const profile = useMemo(() => analyzeSaju(pillars), [pillars]);
   const dm = DAY_MASTER_BY_INDEX[pillars.dayStem];
@@ -220,9 +222,33 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare }: Props) {
       <button type="button" className="btn btn--primary" onClick={share}>
         내 일간 자랑하기 💬
       </button>
-      <p className="birth-hint birth-hint--center">
-        생년월일은 이 기기에만 있어요. 앱을 지우면 함께 사라져요.
-      </p>
+      {/* 개인정보를 받았으니 지우는 길도 같은 화면에 둔다 — 설정 깊숙이 숨기지 않는다 */}
+      <div className="privacy-note">
+        <p className="privacy-note__body">
+          생년월일은 <b>이 기기에만</b> 있어요. 서버로 보내지 않고, 앱을 지우면 함께 사라져요.
+        </p>
+        {confirmDelete ? (
+          <div className="privacy-note__confirm">
+            <span>정말 지울까요? 사주는 다시 볼 수 없어요.</span>
+            <div className="privacy-note__acts">
+              <button type="button" className="privacy-note__btn" onClick={() => setConfirmDelete(false)}>
+                그대로 둘게요
+              </button>
+              <button
+                type="button"
+                className="privacy-note__btn privacy-note__btn--danger"
+                onClick={onDeleteBirth}
+              >
+                네, 지울게요
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button type="button" className="privacy-note__del" onClick={() => setConfirmDelete(true)}>
+            생년월일 삭제
+          </button>
+        )}
+      </div>
     </AppLayout>
   );
 }

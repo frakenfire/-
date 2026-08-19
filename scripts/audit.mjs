@@ -417,6 +417,48 @@ async function run(browser) {
       await page.locator('.saju-entry--done').first().click();
       await wait(page, 1000);
       check((await bodyText(page)).includes('내 일간'), '[사주] 홈 배지 → 사주 화면 복귀');
+
+      // 사주를 넣은 사람의 '오늘 결과'가 실제로 개인 기준으로 바뀌는가.
+      // 여기가 안 바뀌면 사주 화면만 따로 놀고, 매일 보는 결과는 여전히 띠 12분의 1이다.
+      await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+      await wait(page, 500);
+      await page.getByText('쪽지 뽑기 시작하기').first().click();
+      await wait(page, 500);
+      await page.locator('button', { hasText: '그냥 그래요' }).first().click();
+      await wait(page, 600);
+      await page.locator('[class*="note"]').first().click();
+      await wait(page, 4300);
+
+      const res = await bodyText(page);
+      check((await page.locator('.mygod').count()) === 1, '[사주결과] 오늘의 십신 카드 노출');
+      check(res.includes('내 일간'), '[사주결과] 띠가 아니라 일간 기준으로 말함');
+      check(!res.includes('내 띠와'), '[사주결과] 띠 기준 문구가 함께 뜨지 않음(기준 이원화 방지)');
+      check(/오늘 하면 좋아요/.test(res) && /오늘은 피하세요/.test(res),
+        '[사주결과] 할 것·피할 것이 함께 나옴');
+      const badge = (await page.locator('.mygod__badge').innerText()).trim();
+      check(badge.length >= 2, '[사주결과] 십신 이름 표시', badge);
+      const fit = await page.locator('.mygod__fit').count();
+      check(fit === 1, '[사주결과] 신강신약 판정 한 줄 노출');
+      await diagnose(page, '사주결과');
+
+      // 개인정보를 받았으면 지우는 길이 앱 안에 있어야 한다 (설정 깊숙이 숨기지 않는다)
+      await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+      await wait(page, 600);
+      await page.locator('.saju-entry--done').first().click();
+      await wait(page, 900);
+      check((await bodyText(page)).includes('서버로 보내지 않고'),
+        '[사주] 저장 범위를 결과 화면에서도 고지');
+      await page.getByText('생년월일 삭제', { exact: false }).first().click();
+      await wait(page, 400);
+      check((await bodyText(page)).includes('정말 지울까요'), '[사주] 삭제는 두 단계 확인');
+      await page.getByText('네, 지울게요', { exact: false }).first().click();
+      await wait(page, 900);
+      check((await page.locator('.saju-entry--done').count()) === 0,
+        '[사주] 삭제 후 홈 배지가 사라짐');
+      check((await bodyText(page)).includes('생년월일로 내 사주 만들기'),
+        '[사주] 삭제 후 다시 만들기로 되돌아감');
+      const gone = await page.evaluate(() => window.localStorage.getItem('tomorrowNoteBirth'));
+      check(gone === null, '[사주] 삭제 후 저장소에 생년월일이 남지 않음', String(gone));
     } catch (e) {
       bad('[사주] 경로', e.message.split('\n')[0]);
     }

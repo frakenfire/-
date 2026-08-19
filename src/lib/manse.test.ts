@@ -13,6 +13,10 @@ import { koreaOffsetAt, trueSolarCorrectionMin } from './koreaTime.ts';
 import { computeFourPillars, ipchunJdUt, pillarsHanja } from './fourPillars.ts';
 import { analyzeSaju, balanceShape, tenGodOf, mainHiddenStem, hiddenStemsOf, GOD_GROUP_OF } from './tenGods.ts';
 import { STEMS, BRANCHES, toJDN } from './saju.ts';
+import { dailyForMe, needFit, asSajuToday } from './dailySaju.ts';
+import { generateFortune } from './generateFortune.ts';
+import { NOTES } from '../data/notes.ts';
+import { saveBirth, loadBirth, clearAllData } from './storage.ts';
 
 // ── 천문 계산 ──────────────────────────────────────────────────────────────
 
@@ -339,4 +343,197 @@ test('오행 요약 문구가 막대 그림과 모순되지 않는다', () => {
     }
   }
   assert.ok(evenCount > 0, "'고르다' 케이스가 한 번도 안 나오면 규칙이 죽은 것");
+});
+
+// ── 오늘 일진 × 내 사주 ─────────────────────────────────────────────────────
+// 여기가 '띠 운세'와 갈리는 지점이다. 같은 날이 사람마다 달라야 하고,
+// 한 사람의 매일이 갈려야 하고, 숫자와 문장이 어긋나면 안 된다.
+
+function addDaysKey(k: string, n: number): string {
+  const d = new Date(`${k}T12:00:00`);
+  d.setDate(d.getDate() + n);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+function meFor(y: number, m: number, d: number, h: number | null) {
+  const p = computeFourPillars({ year: y, month: m, day: d, hour: h });
+  return { p, a: analyzeSaju(p) };
+}
+
+test('같은 날이 사람마다 다르게 읽힌다 (띠 12분의 1에서 벗어난다)', () => {
+  const gods = new Set<string>();
+  const tones = new Set<string>();
+  for (let y = 1970; y <= 2005; y += 1) {
+    const { p, a } = meFor(y, (y % 12) + 1, 15, 9);
+    const r = dailyForMe('2026-03-10', p, a);
+    gods.add(r.dayGod);
+    tones.add(r.tone);
+  }
+  assert.equal(gods.size, 10, `같은 날 십신이 ${gods.size}종 (10종이어야 한다)`);
+  assert.ok(tones.size >= 3, `같은 날 톤이 ${tones.size}종`);
+});
+
+test('한 사람의 매일이 갈리고, 연속 이틀 같은 헤드라인이 없다', () => {
+  const { p, a } = meFor(1993, 11, 7, 5);
+  const rows = Array.from({ length: 30 }, (_, i) => dailyForMe(addDaysKey('2026-08-19', i), p, a));
+  const titles = rows.map((r) => r.reading.title);
+  for (let i = 1; i < titles.length; i += 1) {
+    assert.notEqual(titles[i], titles[i - 1], `${i + 1}일차에 어제와 같은 헤드라인`);
+  }
+  // 십신이 10개뿐이라 문장이 하나면 열흘마다 같은 말이 돈다. 풀을 늘린 효과를 고정한다.
+  assert.ok(new Set(titles).size >= 18, `30일간 헤드라인 ${new Set(titles).size}종`);
+  const combos = rows.map((r) => `${r.reading.title}|${r.reading.body}|${r.reading.doThis}`);
+  assert.ok(new Set(combos).size >= 25, `30일간 조합 ${new Set(combos).size}종`);
+});
+
+test("'조심하라'면서 '약이 된다'고 말하지 않는다 (톤과 문장의 모순)", () => {
+  let bad = 0;
+  for (let y = 1970; y <= 2005; y += 1) {
+    for (const h of [3, 9, 15, 21]) {
+      const { p, a } = meFor(y, (y % 12) + 1, 15, h);
+      for (let i = 0; i < 60; i += 1) {
+        const r = dailyForMe(addDaysKey('2026-01-01', i), p, a);
+        if (r.tone === 'caution' && r.fit === 'needed') bad += 1;
+      }
+    }
+  }
+  assert.equal(bad, 0, `모순 ${bad}건`);
+});
+
+test('톤 분포가 띠 엔진과 비슷하다 (조심이 매일이면 경고가 무의미해진다)', () => {
+  const c: Record<string, number> = {};
+  let n = 0;
+  for (let y = 1970; y <= 2005; y += 1) {
+    for (const h of [3, 15]) {
+      const { p, a } = meFor(y, (y % 12) + 1, 15, h);
+      for (let i = 0; i < 60; i += 1) {
+        const t = dailyForMe(addDaysKey('2026-01-01', i), p, a).tone;
+        c[t] = (c[t] ?? 0) + 1;
+        n += 1;
+      }
+    }
+  }
+  const pct = (k: string) => ((c[k] ?? 0) / n) * 100;
+  assert.ok(pct('great') > 12 && pct('great') < 28, `대길 ${pct('great').toFixed(1)}%`);
+  assert.ok(pct('caution') > 5 && pct('caution') < 20, `조심 ${pct('caution').toFixed(1)}%`);
+});
+
+test('신강/신약에 따라 같은 십신이 약도 되고 독도 된다', () => {
+  // 억부의 핵심. 강한 사람에겐 덜어내는 쪽이, 약한 사람에겐 채우는 쪽이 약이다.
+  const strong = { strength: 'strong' } as never;
+  const weak = { strength: 'weak' } as never;
+  assert.equal(needFit(strong, 'output'), 'needed');
+  assert.equal(needFit(strong, 'support'), 'excess');
+  assert.equal(needFit(weak, 'support'), 'needed');
+  assert.equal(needFit(weak, 'wealth'), 'excess');
+});
+
+test('결과가 사주로 개인화되고, 사주가 없으면 기존 띠 경로가 그대로 산다', () => {
+  const base = {
+    fortuneType: 'tomorrow' as const,
+    note: NOTES[0],
+    mood: 'soso' as const,
+    dateKey: '2026-08-19',
+    zodiac: 'dog' as const,
+  };
+  const a = generateFortune({ ...base, birth: { year: 1993, month: 11, day: 7, hour: 5 } });
+  const b = generateFortune({ ...base, birth: { year: 1988, month: 5, day: 8, hour: 14 } });
+  assert.ok(a.daily && b.daily, '사주를 넣으면 개인 해석이 있어야 한다');
+  assert.notEqual(a.daily!.dayGod, b.daily!.dayGod, '사주가 다르면 십신도 달라야 한다');
+  assert.equal(a.daily!.myStemHanja.length, 1, '내 일간이 한 글자로 실려야 한다');
+  // 화면이 읽는 saju 도 개인 기준으로 갈아끼워져야 한다 (두 기준이 한 화면에 섞이면 모순)
+  assert.equal(a.saju!.tone, a.daily!.tone);
+  assert.equal(a.saju!.headline, a.daily!.reading.title);
+
+  const noBirth = generateFortune(base);
+  assert.equal(noBirth.daily ?? null, null, '사주가 없으면 개인 해석도 없다');
+  assert.ok(noBirth.saju, '띠만 있어도 기존 경로는 살아 있어야 한다');
+
+  // 결정적이어야 한다
+  assert.deepEqual(
+    generateFortune({ ...base, birth: { year: 1993, month: 11, day: 7, hour: 5 } }),
+    a,
+  );
+});
+
+test('총운 점수가 사주 톤과 모순되지 않는다 (개인 사주 경로)', () => {
+  const BAND: Record<string, [number, number]> = {
+    great: [80, 99],
+    good: [72, 95],
+    steady: [68, 90],
+    caution: [65, 82],
+  };
+  for (let y = 1980; y <= 2000; y += 1) {
+    for (let i = 0; i < 20; i += 1) {
+      const r = generateFortune({
+        fortuneType: 'tomorrow',
+        note: NOTES[i % NOTES.length],
+        mood: 'soso',
+        dateKey: addDaysKey('2026-01-01', i),
+        zodiac: 'dog',
+        birth: { year: y, month: (y % 12) + 1, day: 15, hour: 9 },
+      });
+      const [lo, hi] = BAND[r.saju!.tone];
+      assert.ok(
+        r.luck.total >= lo && r.luck.total <= hi,
+        `${r.saju!.tone} 인데 총운 ${r.luck.total}점 (${lo}~${hi} 밖)`,
+      );
+    }
+  }
+});
+
+test('전체 삭제가 생년월일까지 지운다 (개인정보가 남으면 안 된다)', () => {
+  // 접두사 방식이라 새 키가 생겨도 자동으로 걸리지만, 개인정보라 명시적으로 고정한다.
+  const store = new Map<string, string>();
+  (globalThis as { window?: unknown }).window = {
+    localStorage: {
+      get length() {
+        return store.size;
+      },
+      key: (i: number) => [...store.keys()][i] ?? null,
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, v),
+      removeItem: (k: string) => void store.delete(k),
+    },
+  };
+  saveBirth({ date: '1993-11-07', time: '05:40' });
+  assert.deepEqual(loadBirth(), { date: '1993-11-07', time: '05:40' });
+  store.set('someOtherApp', 'keep me');
+
+  clearAllData();
+  assert.equal(loadBirth(), null, '전체 삭제 후에도 생년월일이 남아 있다');
+  assert.equal(store.get('someOtherApp'), 'keep me', '남의 키까지 지우면 안 된다');
+});
+
+test('저장된 생년월일이 깨져 있으면 없는 것으로 본다 (틀린 사주를 보여주느니)', () => {
+  const store = new Map<string, string>();
+  (globalThis as { window?: unknown }).window = {
+    localStorage: {
+      get length() {
+        return store.size;
+      },
+      key: (i: number) => [...store.keys()][i] ?? null,
+      getItem: (k: string) => store.get(k) ?? null,
+      setItem: (k: string, v: string) => void store.set(k, v),
+      removeItem: (k: string) => void store.delete(k),
+    },
+  };
+  for (const bad of ['{}', 'not json', '{"date":"1993-13-99"}', '{"date":"1993-11-07","time":"25:00"}']) {
+    store.set('tomorrowNoteBirth', bad);
+    assert.equal(loadBirth(), null, `깨진 값(${bad})을 받아들였다`);
+  }
+});
+
+test('한 화면에 같은 문장이 두 번 찍히지 않는다', () => {
+  // 일진 스트립의 팁과 십신 카드의 '오늘 하면 좋아요'가 같은 문장이면
+  // 바로 위아래에 똑같은 말이 두 번 보인다. 실제로 그랬다.
+  for (let y = 1970; y <= 2005; y += 1) {
+    for (let i = 0; i < 20; i += 1) {
+      const dateKey = addDaysKey('2026-01-01', i);
+      const { p, a } = meFor(y, (y % 12) + 1, 15, 9);
+      const d = dailyForMe(dateKey, p, a);
+      const s = asSajuToday(d, dateKey);
+      assert.notEqual(s.tip, d.reading.doThis, `${y}/${dateKey}: 팁과 할 일이 같다`);
+      assert.notEqual(s.title, s.headline, `${y}/${dateKey}: 제목과 헤드라인이 같다`);
+    }
+  }
 });

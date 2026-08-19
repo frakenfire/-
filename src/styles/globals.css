@@ -3957,3 +3957,149 @@ a:focus-visible {
     grid-template-columns: 1fr 1fr;
   }
 }
+
+/* ── 오늘, 나에게 ── 십신 카드. 띠 운세와 갈리는 핵심이라 결과에서 가장 눈에 띄어야 한다 */
+.mygod {
+  margin-bottom: var(--space-6);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+  background: var(--white);
+  border: 1px solid var(--brand-soft);
+  box-shadow: var(--shadow-card);
+  border-left: 4px solid var(--brand);
+  overflow: hidden;
+}
+.mygod__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--space-3);
+  flex-wrap: wrap;
+}
+ /* 흰 글자를 얹으므로 --brand(3.71:1) 이 아니라 한 단계 진한 --brand-strong 을 쓴다 */
+.mygod__badge {
+  flex: 0 0 auto;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: var(--brand-strong);
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--white);
+}
+.mygod__title {
+  margin: 0;
+  min-width: 0;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--gray-900);
+}
+.mygod__body {
+  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--gray-800);
+  line-height: 1.65;
+}
+/* 같은 십신도 신강/신약에 따라 약이 되고 독이 된다 — 그 판정을 색으로 구분한다 */
+.mygod__fit {
+  margin: var(--space-3) 0 0;
+  padding: 9px 12px;
+  border-radius: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  line-height: 1.6;
+  background: var(--gray-50);
+  color: var(--gray-700);
+}
+.mygod__fit--needed {
+  background: #e8f7ef;
+  color: var(--score-high-text);
+}
+.mygod__fit--excess {
+  background: #fff7e6;
+  color: var(--score-low-text);
+}
+.mygod__acts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.mygod__act {
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--gray-800);
+  line-height: 1.55;
+}
+.mygod__act--do {
+  background: var(--brand-soft);
+}
+.mygod__act--dont {
+  background: var(--gray-50);
+}
+.mygod__act-k {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--gray-700);
+}
+
+/* ── 개인정보 안내 ── 받았으면 지우는 길도 같은 화면에 둔다 */
+.privacy-note {
+  margin-top: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--gray-50);
+  border: 1px solid var(--gray-200);
+  text-align: center;
+}
+.privacy-note__body {
+  margin: 0 0 var(--space-3);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--gray-700);
+  line-height: 1.6;
+}
+.privacy-note__del {
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: var(--white);
+  border: 1px solid var(--gray-300);
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--gray-700);
+}
+.privacy-note__confirm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--gray-800);
+}
+.privacy-note__acts {
+  display: flex;
+  gap: 8px;
+}
+.privacy-note__btn {
+  flex: 1 1 0;
+  min-height: 44px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--white);
+  border: 1px solid var(--gray-300);
+  font-size: 12.5px;
+  font-weight: 800;
+  color: var(--gray-800);
+}
+.privacy-note__btn--danger {
+  background: #fdeceb;
+  border-color: #f5c4c0;
+  color: #a3302a; /* 흰 배경 5.9:1 */
+}

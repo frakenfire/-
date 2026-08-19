@@ -7,6 +7,9 @@ import { ZODIAC_TRAIT, STAR_TRAIT } from '../data/traits.ts';
 import { hashSeed } from './dateSeed.ts';
 import { computeLuck, luckBandForTone } from './luck.ts';
 import { sajuToday } from './saju.ts';
+import { computeFourPillars, type BirthInput } from './fourPillars.ts';
+import { analyzeSaju } from './tenGods.ts';
+import { dailyForMe, asSajuToday, type DailyMe } from './dailySaju.ts';
 import { computeDetail } from './detail.ts';
 import { composeLetter } from './letter.ts';
 import { computeRarity, RARITY_LINE } from './rarity.ts';
@@ -43,6 +46,8 @@ export type FortuneInput = {
   dateKey?: string;
   zodiac?: ZodiacId | null; // 내 띠 (있으면 결과를 개인화)
   star?: StarSignId | null; // 내 별자리 (있으면 결과를 개인화)
+  /** 생년월일시 (있으면 띠 대신 사주 팔자로 개인화 — 12분의 1이 아니라 사람마다 다른 결과) */
+  birth?: BirthInput | null;
 };
 
 // 띠 × 별자리 → "직진하는 범띠 × 화려한 사자자리인 당신" 한 줄.
@@ -58,10 +63,12 @@ function buildPersona(zodiac?: ZodiacId | null, star?: StarSignId | null): strin
 }
 
 export function generateFortune(input: FortuneInput): FortuneResult {
-  const { fortuneType, note, mood, dateKey = '', zodiac = null, star = null } = input;
+  const { fortuneType, note, mood, dateKey = '', zodiac = null, star = null, birth = null } = input;
   // 기분 + 띠 + 별자리까지 seed 에 넣어, 세 조합으로 결과가 갈라지게 한다.
+  // 사주가 있으면 시드에도 넣는다 — 같은 날 같은 기분이어도 사람마다 다른 문장이 나오게.
+  const birthKey = birth ? `${birth.year}-${birth.month}-${birth.day}-${birth.hour ?? 'x'}` : '';
   const seed = hashSeed(
-    `v${ENGINE_VERSION}|${dateKey}|${fortuneType}|${note.id}|${mood}|${zodiac ?? ''}|${star ?? ''}`,
+    `v${ENGINE_VERSION}|${dateKey}|${fortuneType}|${note.id}|${mood}|${zodiac ?? ''}|${star ?? ''}|${birthKey}`,
   );
   const persona = buildPersona(zodiac, star);
 
@@ -71,7 +78,18 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const lead = NOTE_LEAD[note.id] ?? '오늘의 쪽지가 도착했어요.';
   // 오늘 일진×내 띠 사주 — 띠가 있으면 사주 톤이 총운의 구간을 정한다(로직 일관성).
   // 띠를 안 골랐으면 근거가 없으므로 전 구간(65~99)을 그대로 쓴다.
-  const saju = zodiac && dateKey ? sajuToday(dateKey, zodiac) : null;
+  // 생년월일시가 있으면 띠(12분의 1) 대신 내 일간 기준으로 오늘을 읽는다.
+  // 두 톤을 같이 띄우면 "좋대 vs 조심하래" 로 모순이 보이므로 아예 갈아끼운다.
+  let daily: DailyMe | null = null;
+  if (birth && dateKey) {
+    const pillars = computeFourPillars(birth);
+    daily = dailyForMe(dateKey, pillars, analyzeSaju(pillars));
+  }
+  const saju = daily
+    ? asSajuToday(daily, dateKey)
+    : zodiac && dateKey
+      ? sajuToday(dateKey, zodiac)
+      : null;
   const luck = computeLuck(seed, saju ? luckBandForTone(saju.tone) : undefined);
   // 행운 색을 사주 개운 컬러로 연결 — 띠를 알면 색이 랜덤이 아니라
   // '내 오행을 생해주는 오행(인성)'의 오방색에서 나온다. 매일의 색에 근거가 생긴다.
@@ -150,6 +168,7 @@ ${variant.flow}`,
     subtitle: `${note.name} 쪽지`,
     persona,
     saju,
+    daily,
     pinpoint,
     summaryLines: [lead, variant.summary[0], variant.summary[1]],
     detailFlow: variant.flow,

@@ -31,6 +31,8 @@ export type FortuneResult = {
   persona?: string;
   /** 오늘 일진×내 띠 사주 (띠 설정 시에만). 결과 화면 '오늘의 사주 한 컷'용 */
   saju?: import('../lib/saju').SajuToday | null;
+  /** 생년월일시를 넣은 사람에게만 — 오늘 일진이 '내 일간'에게 무엇인지(십신 기준) */
+  daily?: import('../lib/dailySaju').DailyMe | null;
   pinpoint: string;
   summaryLines: string[];
   detailFlow: string;

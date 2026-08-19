@@ -25,6 +25,8 @@ export type TodayReading = {
   result: FortuneResult;
 };
 
+import { parseBirth } from './birth.ts';
+
 function safeGet(key: string): string | null {
   try {
     return window.localStorage.getItem(key);
@@ -358,6 +360,7 @@ export function unlockWeek(dateKey: string): boolean {
 // (그래서 앱을 지우면 사라진다 — 화면에서 그 사실을 명시한다)
 const BIRTH_KEY = 'tomorrowNoteBirth';
 
+
 export type StoredBirth = {
   /** 'YYYY-MM-DD' 양력 */
   date: string;
@@ -370,10 +373,12 @@ export function loadBirth(): StoredBirth | null {
   if (!raw) return null;
   try {
     const v = JSON.parse(raw) as StoredBirth;
-    // 저장 포맷이 깨졌거나 예전 버전이면 없는 것으로 본다 (잘못된 사주를 보여주느니 다시 받는다)
-    if (typeof v?.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(v.date)) return null;
-    if (v.time !== null && !/^\d{2}:\d{2}$/.test(v.time ?? '')) return null;
-    return { date: v.date, time: v.time ?? null };
+    if (typeof v?.date !== 'string') return null;
+    const time = typeof v.time === 'string' ? v.time : null;
+    // 형식만 보면 "25:00" 같은 값이 통과한다. 화면과 같은 검증을 써서
+    // 저장소에 남은 이상한 값이 잘못된 사주로 이어지지 않게 한다.
+    if (!parseBirth(v.date, time)) return null;
+    return { date: v.date, time };
   } catch {
     return null;
   }

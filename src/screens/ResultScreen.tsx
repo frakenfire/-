@@ -5,6 +5,9 @@ import { Disclaimer } from '../components/Disclaimer.tsx';
 import { AdBadge, AdBanner } from '../components/AdNotice.tsx';
 import { luckPercentile } from '../lib/luck.ts';
 import { ELEMENT_EMOJI, ELEMENT_KO, sajuToday } from '../lib/saju.ts';
+import { TEN_GOD_KO, analyzeSaju } from '../lib/tenGods.ts';
+import { computeFourPillars, type BirthInput } from '../lib/fourPillars.ts';
+import { dailyForMe, asSajuToday } from '../lib/dailySaju.ts';
 import { todayVibe } from '../lib/dayVibe.ts';
 import { todayKey } from '../lib/dateSeed.ts';
 import type { ZodiacId } from '../data/zodiac.ts';
@@ -15,6 +18,8 @@ type Props = {
   note: Note;
   busy: boolean;
   zodiacId?: ZodiacId | null;
+  /** 사주를 넣었으면 내일 예고도 일간 기준으로 */
+  birth?: BirthInput | null;
   streak?: number;
   onDetail: () => void;
   onSave: () => void;
@@ -34,6 +39,7 @@ export function ResultScreen({
   note,
   busy,
   zodiacId,
+  birth = null,
   streak = 0,
   showNotiCard = false,
   onAskNoti,
@@ -79,7 +85,22 @@ export function ResultScreen({
   // 내일 예고 — 내일 일진×내 띠를 미리 보여줘 '내일 다시 올 이유'를 만든다.
   // (day 결과 + 띠 설정 시에만. 사주 엔진이라 결정적)
   const tomorrowSaju =
-    !isMonth && zodiacId ? sajuToday(todayKey(new Date(Date.now() + 86400000)), zodiacId) : null;
+    isMonth
+      ? null
+      : // 사주를 넣었으면 내일도 내 일간 기준으로 본다. 오늘은 일간, 내일은 띠로 말하면
+        // 같은 카드 안에서 기준이 갈려 "어느 쪽 얘기지?" 가 된다.
+        birth
+        ? asSajuToday(
+            dailyForMe(
+              todayKey(new Date(Date.now() + 86400000)),
+              computeFourPillars(birth),
+              analyzeSaju(computeFourPillars(birth)),
+            ),
+            todayKey(new Date(Date.now() + 86400000)),
+          )
+        : zodiacId
+          ? sajuToday(todayKey(new Date(Date.now() + 86400000)), zodiacId)
+          : null;
   const TONE_RANK = { caution: 0, steady: 1, good: 2, great: 3 } as const;
   const tomorrowBetter =
     tomorrowSaju && result.saju ? TONE_RANK[tomorrowSaju.tone] > TONE_RANK[result.saju.tone] : false;
@@ -207,10 +228,20 @@ export function ResultScreen({
             <span className="iljin__seal" aria-hidden>{result.saju.iljin.hanja}</span>
             <div className="iljin__flow">
               <span className="iljin__date">오늘의 일진 · {result.saju.iljin.kor}일</span>
-              <span className="iljin__rel">
-                내 띠와 <b>{result.saju.relationKo}</b>({result.saju.relationGloss}) · {ELEMENT_EMOJI[result.saju.myElement]}
-                {ELEMENT_KO[result.saju.myElement]} 기운
-              </span>
+              {/* 사주를 넣은 사람에겐 '내 띠' 가 아니라 '내 일간' 기준으로 말한다.
+                  같은 화면에서 기준이 둘이면 어느 쪽 말인지 헷갈린다. */}
+              {result.daily ? (
+                <span className="iljin__rel">
+                  내 일간 <b>{result.daily.myStemHanja}</b>에게 오늘은{' '}
+                  <b>{TEN_GOD_KO[result.daily.dayGod]}</b> · {ELEMENT_EMOJI[result.daily.myElement]}
+                  {ELEMENT_KO[result.daily.myElement]} 기운
+                </span>
+              ) : (
+                <span className="iljin__rel">
+                  내 띠와 <b>{result.saju.relationKo}</b>({result.saju.relationGloss}) · {ELEMENT_EMOJI[result.saju.myElement]}
+                  {ELEMENT_KO[result.saju.myElement]} 기운
+                </span>
+              )}
             </div>
             <span className={`iljin__tone iljin__tone--${result.saju.tone}`}>
               {result.saju.toneWord}
@@ -225,6 +256,30 @@ export function ResultScreen({
             </span>
             <span className="iljin__boost-tip">💡 {result.saju.tip}</span>
           </div>
+        </div>
+      ) : null}
+
+      {/* 오늘, 나에게 — 사주를 넣은 사람만 보는 자리.
+          띠 운세와 갈리는 핵심이라 결과에서 가장 눈에 띄는 곳에 둔다.
+          같은 날이어도 내 일간에 따라 십신이 달라지고, 신강신약에 따라 약이 되기도 독이 되기도 한다. */}
+      {result.daily ? (
+        <div className="mygod fade-in">
+          <div className="mygod__head">
+            <span className="mygod__badge">{TEN_GOD_KO[result.daily.dayGod]}</span>
+            <p className="mygod__title">{result.daily.reading.title}</p>
+          </div>
+          <p className="mygod__body">{result.daily.reading.body}</p>
+          <p className={`mygod__fit mygod__fit--${result.daily.fit}`}>{result.daily.fitLine}</p>
+          <ul className="mygod__acts">
+            <li className="mygod__act mygod__act--do">
+              <span className="mygod__act-k">오늘 하면 좋아요</span>
+              {result.daily.reading.doThis}
+            </li>
+            <li className="mygod__act mygod__act--dont">
+              <span className="mygod__act-k">오늘은 피하세요</span>
+              {result.daily.reading.avoid}
+            </li>
+          </ul>
         </div>
       ) : null}
 
@@ -317,7 +372,9 @@ export function ResultScreen({
             <span className="tmr-tease__v">
               {tomorrowBetter
                 ? `내일은 오늘보다 기운이 좋아요 (${tomorrowSaju.relationKo}). 내일 쪽지 잊지 마요!`
-                : `내일은 내 띠와 ${tomorrowSaju.relationKo}(${tomorrowSaju.relationGloss}). 내일 쪽지로 확인해요`}
+                : result.daily
+                  ? `내일 기운은 ${tomorrowSaju.toneWord} 내일 쪽지로 확인해요`
+                  : `내일은 내 띠와 ${tomorrowSaju.relationKo}(${tomorrowSaju.relationGloss}). 내일 쪽지로 확인해요`}
             </span>
           </span>
         </div>

@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { AppLayout } from '../components/AppLayout.tsx';
-import { computeFourPillars, boundaryNotice, type BirthInput } from '../lib/fourPillars.ts';
+import { computeFourPillars, boundaryNotice } from '../lib/fourPillars.ts';
+import { parseBirth } from '../lib/birth.ts';
 import { DAY_MASTER_BY_INDEX } from '../data/dayMaster.ts';
 import type { StoredBirth } from '../lib/storage.ts';
 
@@ -10,26 +11,6 @@ type Props = {
   onBack: () => void;
 };
 
-/** 'YYYY-MM-DD' + 'HH:MM' → 엔진 입력. 형식이 깨지면 null. */
-export function toBirthInput(date: string, time: string | null): BirthInput | null {
-  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
-  if (!m) return null;
-  const year = Number(m[1]);
-  const month = Number(m[2]);
-  const day = Number(m[3]);
-  if (month < 1 || month > 12 || day < 1 || day > 31) return null;
-  // 달력에 없는 날(2월 30일 등)은 받지 않는다 — 조용히 다른 날로 넘어가면 남의 사주가 된다.
-  const probe = new Date(Date.UTC(year, month - 1, day));
-  if (probe.getUTCMonth() !== month - 1 || probe.getUTCDate() !== day) return null;
-
-  if (time === null) return { year, month, day, hour: null };
-  const t = /^(\d{2}):(\d{2})$/.exec(time);
-  if (!t) return null;
-  const hour = Number(t[1]);
-  const minute = Number(t[2]);
-  if (hour > 23 || minute > 59) return null;
-  return { year, month, day, hour, minute };
-}
 
 const TODAY = new Date();
 const MAX_DATE = `${TODAY.getFullYear()}-${String(TODAY.getMonth() + 1).padStart(2, '0')}-${String(TODAY.getDate()).padStart(2, '0')}`;
@@ -42,7 +23,7 @@ export function BirthScreen({ initial, onSave, onBack }: Props) {
   const [unknownTime, setUnknownTime] = useState(initial ? initial.time === null : false);
 
   const input = useMemo(
-    () => (date ? toBirthInput(date, unknownTime ? null : time || null) : null),
+    () => (date ? parseBirth(date, unknownTime ? null : time || null) : null),
     [date, time, unknownTime],
   );
   // 입력하는 동안 결과를 미리 보여준다 — 다 채우기 전에 "오, 이게 나오는구나"가 와야 한다.
