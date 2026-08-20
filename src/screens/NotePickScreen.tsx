@@ -40,7 +40,7 @@ export function NotePickScreen({
   const teasers = pickTeasers(`${todayKey()}|${fortuneLabel}`);
 
   return (
-    <AppLayout onBack={busy ? undefined : onBack} step={2} totalSteps={2}>
+    <AppLayout onBack={busy ? undefined : onBack} step={3} totalSteps={3}>
       {fortuneLabel ? <span className="eyebrow">{fortuneLabel}</span> : null}
       <h2 className="h2" style={{ whiteSpace: 'pre-line' }}>
         {NOTE_PICK.title}

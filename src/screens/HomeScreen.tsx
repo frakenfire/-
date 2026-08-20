@@ -1,7 +1,6 @@
 import { AppLayout } from '../components/AppLayout.tsx';
-import { FortuneTypeButton } from '../components/FortuneTypeButton.tsx';
 import { Mascot } from '../components/Mascot.tsx';
-import { FORTUNE_TYPES, FORTUNE_LABEL } from '../data/fortuneTypes.ts';
+import { FORTUNE_LABEL } from '../data/fortuneTypes.ts';
 import { findNote } from '../data/notes.ts';
 import { GREETINGS } from '../data/copy.ts';
 import { useMemo, useState } from 'react';
@@ -13,7 +12,6 @@ import { computeWeekAhead, buildWeekShareText, type WeekDay } from '../lib/weekA
 import { findZodiac, ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac.ts';
 import { ZODIAC_TRAIT } from '../data/traits.ts';
 import type { StoredResult, TodayReading, RarityCounts } from '../lib/storage.ts';
-import type { FortuneType } from '../types/fortune.ts';
 
 function todayLabel(): string {
   const d = new Date();
@@ -39,7 +37,8 @@ type Props = {
   onZodiac: (id: ZodiacId) => void;
   onReopen: () => void;
   onCompat: () => void;
-  onSelect: (t: FortuneType) => void;
+  /** 쪽지 뽑기 시작 — 주제 고르기(1단계)로 간다 */
+  onStart: () => void;
   onReset: () => void;
   /** 주간 캘린더 — 스트릭 3일 이상이면 무료, 아니면 광고로 연다 */
   weekUnlocked: boolean;
@@ -65,7 +64,7 @@ export function HomeScreen({
   onZodiac,
   onReopen,
   onCompat,
-  onSelect,
+  onStart,
   onReset,
 }: Props) {
   const yNote = yesterdayRecord ? findNote(yesterdayRecord.noteId) : null;
@@ -139,7 +138,7 @@ export function HomeScreen({
           사주 일진(日辰) 기반: 오늘 일진과 내 띠의 전통 관계(삼합·육합·상충 등)로
           '오늘 기운'을 결정적으로 계산해 개인화. 띠 미설정 시 일진+오늘 기운만 노출.
           잠긴 결과(?점·?)로 궁금증/FOMO 유발 → 뽑아야 전부 열림 */}
-      <button type="button" className="today-hook" onClick={() => onSelect('tomorrow')}>
+      <button type="button" className="today-hook" onClick={onStart}>
         <span className="today-hook__kw">
           🔮 오늘의 일진 · {iljin.kor}({iljin.hanja})일
         </span>
@@ -431,14 +430,6 @@ export function HomeScreen({
           </div>
         </div>
       ) : null}
-
-      {/* 특정 주제로 보고 싶다면 (보조) */}
-      <p className="menu-heading">특정 주제로 볼래요?</p>
-      <div className="menu-list">
-        {FORTUNE_TYPES.filter((m) => m.key !== 'tomorrow').map((meta) => (
-          <FortuneTypeButton key={meta.key} meta={meta} onClick={() => onSelect(meta.key)} />
-        ))}
-      </div>
 
       {yesterdayRecord && yNote ? (
         <div className="recap-card">

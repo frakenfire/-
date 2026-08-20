@@ -43,10 +43,11 @@ import { CompatScreen } from './screens/CompatScreen.tsx';
 import { BirthScreen } from './screens/BirthScreen.tsx';
 import { parseBirth } from './lib/birth.ts';
 import { MySajuScreen } from './screens/MySajuScreen.tsx';
+import { TopicScreen } from './screens/TopicScreen.tsx';
 import { computeFourPillars } from './lib/fourPillars.ts';
 import { DAY_MASTER_BY_INDEX } from './data/dayMaster.ts';
 
-type ScreenName = 'home' | 'mood' | 'pick' | 'reveal' | 'result' | 'detail' | 'compat' | 'birth' | 'saju';
+type ScreenName = 'home' | 'mood' | 'pick' | 'reveal' | 'result' | 'detail' | 'compat' | 'birth' | 'saju' | 'topic';
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -147,8 +148,11 @@ export default function App() {
   function goBack() {
     if (busyRef.current) return;
     switch (screenRef.current) {
-      case 'mood':
+      case 'topic':
         setScreen('home');
+        break;
+      case 'mood':
+        setScreen('topic');
         break;
       case 'pick':
         setScreen('mood');
@@ -561,11 +565,19 @@ export default function App() {
           onCompat={() => setScreen('compat')}
           sajuBadge={sajuBadge}
           onSaju={() => setScreen(birth ? 'saju' : 'birth')}
-          onSelect={handleType}
+          onStart={() => setScreen('topic')}
           onReset={handleReset}
           weekUnlocked={weekUnlocked}
           onUnlockWeek={handleUnlockWeek}
           onShareWeek={handleShareWeek}
+        />
+      )}
+
+      {screen === 'topic' && (
+        <TopicScreen
+          sajuBadge={sajuBadge}
+          onSelect={handleType}
+          onBack={() => setScreen('home')}
         />
       )}
 
@@ -578,7 +590,7 @@ export default function App() {
           onPickStar={handleSaveMyStarSign}
           onSelect={handleMood}
           hasBirth={birthInput !== null}
-          onBack={() => setScreen('home')}
+          onBack={() => setScreen('topic')}
         />
       )}
 
@@ -632,7 +644,7 @@ export default function App() {
           onEdit={() => setScreen('birth')}
           onShare={handleShareSaju}
           onDeleteBirth={handleDeleteBirth}
-          onDraw={() => handleType('tomorrow')}
+          onDraw={() => setScreen('topic')}
         />
       )}
 

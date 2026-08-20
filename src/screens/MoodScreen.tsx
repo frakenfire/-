@@ -32,7 +32,7 @@ export function MoodScreen({
   const [open, setOpen] = useState<'zodiac' | 'star' | null>(null);
 
   return (
-    <AppLayout onBack={onBack} step={1} totalSteps={2}>
+    <AppLayout onBack={onBack} step={2} totalSteps={3}>
       {fortuneLabel ? <span className="eyebrow">{fortuneLabel}</span> : null}
       <h2 className="h2">쪽지를 쓰기 전에, 지금 나는?</h2>
       <p className="lead">

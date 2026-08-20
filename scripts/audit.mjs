@@ -88,8 +88,10 @@ async function drawTo(page, { zodiac = '🐶 개띠', mood = '그냥 그래요',
   await page.goto(URL_BASE, { waitUntil: 'networkidle' });
   await wait(page, 400);
   if (zodiac) await setZodiac(page, zodiac);
-  if (topic) await page.getByText(topic, { exact: false }).first().click();
-  else await page.getByText('쪽지 뽑기 시작하기').first().click();
+  // 1단계: 알고 싶은 것(주제) → 2단계: 기분 → 3단계: 쪽지
+  await page.getByText('쪽지 뽑기 시작하기').first().click();
+  await wait(page, 500);
+  await page.getByText(topic || '오늘의 나', { exact: false }).first().click();
   await wait(page, 500);
   await page.locator('button', { hasText: mood }).first().click();
   await wait(page, 600);
@@ -236,19 +238,30 @@ async function run(browser) {
   // 2. 홈의 모든 컨트롤이 어딘가로 간다
   {
     const TARGETS = [
-      ['시작하기', '쪽지 뽑기 시작하기', '지금 기분은'],
+      ['시작하기', '쪽지 뽑기 시작하기', '뭐가 제일 궁금해요'],
       ['띠 서열 공유', '단톡방에 던지기', '오늘의 띠 서열'],
-      ['내 띠 고르기', '내 띠 고르면', '쥐띠'],
       ['4위부터 보기', '4위부터 꼴찌까지 보기', '오늘의 띠 서열'],
       ['궁합 배너', '오늘 우리 궁합', '친구 궁합'],
-      ['이번 달의 나', '이번 달의 나', '지금 기분은'],
-      ['연애운', '연애운', '지금 기분은'],
-      ['금전운', '금전운', '지금 기분은'],
-      ['직장운', '직장운', '지금 기분은'],
-      ['조심할 것', '조심할 것', '지금 기분은'],
-      ['행운 포인트', '행운 포인트', '지금 기분은'],
       ['데이터 삭제', '내 데이터 전체 삭제', '네, 전부 지울게요'],
     ];
+    // 주제(알고 싶은 것)는 홈이 아니라 뽑기 1단계에 있다.
+    // 홈 맨 아래 '보조' 목록으로 두면 같은 행동이 두 곳에 생기고 흐름이 흐려진다.
+    for (const topic of ['이번 달의 나', '연애운', '금전운', '직장운', '조심할 것', '행운 포인트']) {
+      const page = await newPage(browser);
+      await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+      await wait(page, 500);
+      try {
+        await page.getByText('쪽지 뽑기 시작하기').first().click();
+        await wait(page, 600);
+        await page.getByText(topic, { exact: false }).first().click();
+        await wait(page, 800);
+        check((await bodyText(page)).includes('지금 기분은'), `[뽑기1단계→${topic}] 이동`);
+      } catch (e) {
+        bad(`[뽑기1단계→${topic}] 이동`, e.message.split('\n')[0]);
+      }
+      await page.context().close();
+    }
+
     for (const [name, needle, expect] of TARGETS) {
       const page = await newPage(browser);
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
@@ -416,6 +429,11 @@ async function run(browser) {
       await wait(page, 500);
       await page.getByText('쪽지 뽑기 시작하기').first().click();
       await wait(page, 600);
+      const topicText = await bodyText(page);
+      check(topicText.includes('뭐가 제일 궁금해요'), '[흐름] 1단계는 알고 싶은 것 고르기');
+      check(topicText.includes('내 사주는 이미 반영돼 있어요'), '[흐름] 사주가 이미 깔려 있음을 알림');
+      await page.getByText('오늘의 나', { exact: false }).first().click();
+      await wait(page, 600);
       const moodText = await bodyText(page);
       check(!moodText.includes('내 별자리'), '[사주] 사주가 있으면 기분 화면에서 띠·별자리를 안 물음');
       check(moodText.includes('내 사주는 이미 반영돼 있어요'), '[사주] 이미 반영됐음을 알려줌');
@@ -440,6 +458,8 @@ async function run(browser) {
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
       await page.getByText('쪽지 뽑기 시작하기').first().click();
+      await wait(page, 500);
+      await page.getByText('오늘의 나', { exact: false }).first().click();
       await wait(page, 500);
       await page.locator('button', { hasText: '그냥 그래요' }).first().click();
       await wait(page, 600);
@@ -734,8 +754,9 @@ async function run(browser) {
   // 13. 화면별 뒤로가기
   {
     const BACKS = [
-      ['오늘의 나', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('쪽지 뽑기 시작하기').first().click(); }, '오늘의 띠 서열'],
-      ['쪽지 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('쪽지 뽑기 시작하기').first().click(); await wait(p, 500); await p.locator('button', { hasText: '그냥 그래요' }).first().click(); }, '지금 기분은'],
+      ['주제 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('쪽지 뽑기 시작하기').first().click(); }, '오늘의 띠 서열'],
+      ['기분 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('쪽지 뽑기 시작하기').first().click(); await wait(p, 500); await p.getByText('오늘의 나', { exact: false }).first().click(); }, '뭐가 제일 궁금해요'],
+      ['쪽지 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('쪽지 뽑기 시작하기').first().click(); await wait(p, 500); await p.getByText('오늘의 나', { exact: false }).first().click(); await wait(p, 500); await p.locator('button', { hasText: '그냥 그래요' }).first().click(); }, '지금 기분은'],
       ['결과', async (p) => { await drawTo(p); }, '오늘의 띠 서열'],
       ['궁합', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 우리 궁합', { exact: false }).first().click(); }, '오늘의 띠 서열'],
     ];
