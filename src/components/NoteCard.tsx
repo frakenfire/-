@@ -32,7 +32,7 @@ export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, on
       aria-label={faceDown ? '쪽지 뽑기' : `${note.name} 쪽지`}
     >
       <span className="note__seal" aria-hidden>
-        {opening ? '💌' : faceDown ? '✉️' : note.icon}
+        {opening ?'' : faceDown ?'' : note.icon}
       </span>
       <span className="note__hint">
         {opening ? '두근두근' : faceDown ? (teaser ?? '쪽지') : note.name}

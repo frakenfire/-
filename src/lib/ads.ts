@@ -13,12 +13,12 @@ export { isRewarded, isUnsupportedFreePass, adResultMessage } from './adResult.t
 export type { AdResult } from './adResult.ts';
 
 // 광고 지점별 adGroupId.
-// ⚠️ TODO(콘솔): 앱인토스 콘솔에서 발급받은 실제 adGroupId 로 교체해야 운영 노출됨.
+//  TODO(콘솔): 앱인토스 콘솔에서 발급받은 실제 adGroupId 로 교체해야 운영 노출됨.
 // 'REPLACE_' 접두사가 남아 있으면 CI 가드가 빌드를 실패시킨다.
 export const AD_GROUPS = {
   detail: 'REPLACE_REWARD_DETAIL',
   // saveImage 는 현재 게이트로 쓰지 않는다(예비) — 카드 저장은 무료로 풀어
-  // 저장→스토리 공유→유입 성장 루프에 마찰을 없앤다. 나중에 유료화하려면
+  // 저장스토리 공유유입 성장 루프에 마찰을 없앤다. 나중에 유료화하려면
   // App.tsx handleSave 를 runRewardGate('saveImage', ...) 로 감싸면 된다.
   saveImage: 'REPLACE_REWARD_SAVE',
   retry: 'REPLACE_REWARD_RETRY',
@@ -38,7 +38,7 @@ function realAdSupported(): boolean {
 }
 
 // 로컬 개발 서버(npm run dev)에서만 mock. 운영/프리뷰 빌드는 실 SDK 경로를 타고,
-// 토스 밖(프리뷰)·구버전 토스에서는 isSupported()===false → 'unsupported'.
+// 토스 밖(프리뷰)·구버전 토스에서는 isSupported()===false  'unsupported'.
 // (import.meta.env.DEV 는 운영 빌드에서 정적으로 false 라 mock 코드가 트리셰이킹됨)
 const USE_MOCK = import.meta.env.DEV;
 

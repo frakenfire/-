@@ -34,7 +34,7 @@ const EL_HUE: Record<Element, string> = {
 
 // 내 사주 한 장 — 여덟 글자, 오행 저울, 기운의 방향.
 // 사주는 낯선 한자 덩어리라 그냥 보여주면 아무것도 전달되지 않는다.
-// 그래서 순서를 '나는 누구인가(일간) → 근거(팔자) → 저울(오행) → 쓰는 법' 으로 뒀다.
+// 그래서 순서를'나는 누구인가(일간)  근거(팔자)  저울(오행)  쓰는 법'으로 뒀다.
 export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, onDraw }: Props) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const pillars = useMemo(() => computeFourPillars(birth), [birth]);
@@ -62,7 +62,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
         `사주 ${pillars.year.hanja} ${pillars.month.hanja} ${pillars.day.hanja}${pillars.hour ? ` ${pillars.hour.hanja}` : ''}`,
         `${strength.label} · ${group.keyword} 중심`,
         ``,
-        `너는 무슨 일간인지 봐봐 👇`,
+        `너는 무슨 일간인지 봐봐 `,
       ].join('\n'),
     );
   }
@@ -189,7 +189,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
           {strength.label} · {strength.short}
         </p>
         <p className="reading-card__body">{strength.body}</p>
-        <p className="reading-card__tip">💡 {strength.tip}</p>
+        <p className="reading-card__tip"> {strength.tip}</p>
       </div>
 
       <div className="reading-card reading-card--group">
@@ -217,10 +217,10 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
 
       {/* 사주는 목적이 아니라 쪽지를 맞추기 위한 근거다. 마지막엔 쪽지로 돌려보낸다. */}
       <button type="button" className="btn btn--primary" onClick={onDraw}>
-        이 사주로 오늘 쪽지 뽑기 💌
+        이 사주로 오늘 쪽지 뽑기 
       </button>
       <button type="button" className="btn btn--secondary" onClick={share}>
-        내 일간 자랑하기 💬
+        내 일간 자랑하기 
       </button>
       {/* 개인정보를 받았으니 지우는 길도 같은 화면에 둔다 — 설정 깊숙이 숨기지 않는다 */}
       <div className="privacy-note">

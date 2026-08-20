@@ -14,7 +14,7 @@ export function LuckySetGrid({
   return (
     <div className="lucky">
       <div className="lucky__mission">
-        <span className="lucky__mission-k">🎯 오늘의 행운 미션</span>
+        <span className="lucky__mission-k">오늘의 행운 미션</span>
         <p className="lucky__mission-v">{mission}</p>
       </div>
 

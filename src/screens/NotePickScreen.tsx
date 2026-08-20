@@ -40,7 +40,7 @@ export function NotePickScreen({
   const teasers = pickTeasers(`${todayKey()}|${fortuneLabel}`);
 
   return (
-    <AppLayout onBack={busy ? undefined : onBack} step={3} totalSteps={3}>
+    <AppLayout onBack={busy ? undefined : onBack} step={4} totalSteps={4}>
       {fortuneLabel ? <span className="eyebrow">{fortuneLabel}</span> : null}
       <h2 className="h2" style={{ whiteSpace: 'pre-line' }}>
         {NOTE_PICK.title}
@@ -49,7 +49,7 @@ export function NotePickScreen({
       {/* 생년월일을 받아놓고 쪽지 후보에 안 쓰면 "그래서 뭐가 달라졌지" 가 된다.
           반영됐다는 사실을 이 자리에서 밝힌다. */}
       {personal ? (
-        <p className="pick-basis">🔮 오늘 기운에 맞춰 <b>내 사주로 고른</b> 세 장이에요</p>
+        <p className="pick-basis">오늘 기운에 맞춰<b>내 사주로 고른</b>세 장이에요</p>
       ) : null}
 
       <div className="note-row">
@@ -77,7 +77,7 @@ export function NotePickScreen({
       </div>
 
       <p className="note-hint note-hint--foot">
-        {busy ? '쪽지 펼치는 중이에요…' : '딱 끌리는 쪽지 하나만 콕 🙂'}
+        {busy ?'쪽지 펼치는 중이에요…' : '딱 끌리는 쪽지 하나만 콕'}
       </p>
     </AppLayout>
   );

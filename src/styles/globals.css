@@ -415,22 +415,23 @@ a:focus-visible {
   color: var(--color-text-secondary);
 }
 
-/* 쪽지 4색 — 서로 또렷이 구분되는 파스텔 (허옇게 뭉개지지 않게) */
+/* 쪽지 4색 — TDS 100/200 단계. 초록·파랑·노랑·빨강 네 계열이라 서로 확실히 구분되고,
+   팔레트 밖으로 나가지 않는다. */
 .note--green {
-  background: #e6f7ee;
-  border-color: #bfe6d2;
+  background: #aeefd5;
+  border-color: #76e4b8;
 }
 .note--cream {
-  background: #fff3da;
-  border-color: #f4e0b0;
+  background: #c9e2ff;
+  border-color: #90c2ff;
 }
 .note--yellow {
-  background: #fff0c2;
-  border-color: #f3dd93;
+  background: #ffefbf;
+  border-color: #ffe69b;
 }
 .note--pink {
-  background: #ffe4ee;
-  border-color: #f6c4d6;
+  background: #ffd4d6;
+  border-color: #feafb4;
 }
 
 /* ── 상세 섹션 ── */
@@ -4180,20 +4181,20 @@ a:focus-visible {
   overflow: hidden;
 }
 .drawn--softGreen {
-  background: #e6f7ee;
-  border-color: #bfe6d2;
+  background: #aeefd5;
+  border-color: #76e4b8;
 }
 .drawn--cream {
-  background: #fff3da;
-  border-color: #f4e0b0;
+  background: #c9e2ff;
+  border-color: #90c2ff;
 }
 .drawn--softYellow {
-  background: #fff0c2;
-  border-color: #f3dd93;
+  background: #ffefbf;
+  border-color: #ffe69b;
 }
 .drawn--softPink {
-  background: #ffe4ee;
-  border-color: #f6c4d6;
+  background: #ffd4d6;
+  border-color: #feafb4;
 }
 /* 종이에 꽂힌 핀 — 쪽지라는 사물감을 주는 최소한의 장치 */
 .drawn__pin {

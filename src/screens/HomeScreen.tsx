@@ -68,7 +68,7 @@ export function HomeScreen({
   onReset,
 }: Props) {
   const yNote = yesterdayRecord ? findNote(yesterdayRecord.noteId) : null;
-  // 오늘 이미 뽑았으면 그 결과를 히어로 카드에도 반영한다(잠긴 ? → 실제 값).
+  // 오늘 이미 뽑았으면 그 결과를 히어로 카드에도 반영한다(잠긴 ?  실제 값).
   const drawn = todayReading?.result ?? null;
   // 주간 캘린더는 띠가 있어야 계산된다. 잠금 상태에서도 미리 계산해두면
   // 해금 순간 바로 그려져 '열었는데 빈 화면' 이 없다.
@@ -117,14 +117,14 @@ export function HomeScreen({
         <div className="pill-row">
           <span className="date-pill">{todayLabel()}</span>
           {streak >= 7 ? (
-            <span className="streak-pill streak-pill--crown">👑 {streak}일째!</span>
+            <span className="streak-pill streak-pill--crown"> {streak}일째!</span>
           ) : streak >= 2 ? (
-            <span className="streak-pill">🔥 {streak}일째 쪽지</span>
+            <span className="streak-pill"> {streak}일째 쪽지</span>
           ) : (
             // 오늘 이미 뽑았는데 '오늘의 첫 쪽지'가 그대로 붙어 있으면
-            // 아직 안 뽑은 것처럼 읽힌다. 뽑은 뒤엔 위의 🔥 N일째와 같은 말투로.
+            // 아직 안 뽑은 것처럼 읽힌다. 뽑은 뒤엔 위의  N일째와 같은 말투로.
             <span className="streak-pill streak-pill--new">
-              {todayReading ? '🌱 1일째 쪽지' : '🌱 오늘의 첫 쪽지'}
+              {todayReading ?' 1일째 쪽지' : '오늘의 첫 쪽지'}
             </span>
           )}
         </div>
@@ -134,13 +134,13 @@ export function HomeScreen({
         </div>
       </div>
 
-      {/* ★ 메인 focal — '오늘의 나' 훅 카드
+      {/*  메인 focal — '오늘의 나'훅 카드
           사주 일진(日辰) 기반: 오늘 일진과 내 띠의 전통 관계(삼합·육합·상충 등)로
           '오늘 기운'을 결정적으로 계산해 개인화. 띠 미설정 시 일진+오늘 기운만 노출.
-          잠긴 결과(?점·?)로 궁금증/FOMO 유발 → 뽑아야 전부 열림 */}
+          잠긴 결과(?점·?)로 궁금증/FOMO 유발 뽑아야 전부 열림 */}
       <button type="button" className="today-hook" onClick={onStart}>
         <span className="today-hook__kw">
-          🔮 오늘의 일진 · {iljin.kor}({iljin.hanja})일
+           오늘의 일진 · {iljin.kor}({iljin.hanja})일
         </span>
         {zodiac && saju ? (
           <>
@@ -214,7 +214,7 @@ export function HomeScreen({
         </button>
       ) : (
         <button type="button" className="saju-entry" onClick={onSaju}>
-          <span className="saju-entry__icon" aria-hidden>🔮</span>
+          <span className="saju-entry__icon" aria-hidden></span>
           <span className="saju-entry__text">
             <span className="saju-entry__k">지금은 모두에게 같은 쪽지예요</span>
             <strong className="saju-entry__v">생년월일 넣고 나만의 쪽지 받기</strong>
@@ -229,14 +229,14 @@ export function HomeScreen({
       {zodiac ? (
         <div className="week-card">
           <div className="week-card__head">
-            <p className="week-card__title">🗓️ 이번 주 내 운세</p>
+            <p className="week-card__title">이번 주 내 운세</p>
             {weekUnlocked ? (
               <button
                 type="button"
                 className="week-card__share"
                 onClick={() => onShareWeek(buildWeekShareText(week!, zodiac.label, zodiac.emoji))}
               >
-                공유 💬
+                공유 
               </button>
             ) : null}
           </div>
@@ -264,7 +264,7 @@ export function HomeScreen({
               </ol>
               {week.caution ? (
                 <p className="week-card__foot">
-                  ⚠️ {week.caution.isToday ? '오늘' : `${week.caution.weekday}요일`}은 한 박자 천천히 가면 좋아요
+                   {week.caution.isToday ?'오늘' : `${week.caution.weekday}요일`}은 한 박자 천천히 가면 좋아요
                 </p>
               ) : null}
             </>
@@ -278,10 +278,10 @@ export function HomeScreen({
               <span className="week-lock__title">앞으로 7일, 언제가 좋은 날일까요?</span>
               <span className="week-lock__desc">
                 {streak >= 3
-                  ? `${streak}일 연속 달성! 이번 주 캘린더가 무료로 열려요 🎁`
-                  : `${3 - streak}일만 더 연속 뽑으면 무료로 열려요 · 지금 보려면 광고 ▷`}
+                  ? `${streak}일 연속 달성! 이번 주 캘린더가 무료로 열려요 `
+                  : `${3 - streak}일만 더 연속 뽑으면 무료로 열려요 · 지금 보려면 광고 `}
               </span>
-              <span className="week-lock__cta">{streak >= 3 ? '무료로 열기 🎁' : '이번 주 미리보기'}</span>
+              <span className="week-lock__cta">{streak >= 3 ?'무료로 열기' : '이번 주 미리보기'}</span>
             </button>
           )}
         </div>
@@ -290,9 +290,9 @@ export function HomeScreen({
       {/* 오늘의 12띠 서열 — 사주(일진) 기반 매일 갈리는 랭킹. 단톡방 도발 공유의 핵 */}
       <div className="rank-card">
         <div className="rank-card__head">
-          <p className="rank-card__title">🏆 오늘의 띠 서열</p>
+          <p className="rank-card__title">오늘의 띠 서열</p>
           <button type="button" className="rank-card__share" onClick={shareRanking}>
-            {shared ? '복사됨 ✓' : '단톡방에 던지기 💬'}
+            {shared ?'복사됨' : '단톡방에 던지기'}
           </button>
         </div>
 
@@ -325,7 +325,7 @@ export function HomeScreen({
               <span className="me-rank__title">내 {zodiac.label}, 오늘</span>
               <span className="me-rank__sub">
                 {myRank.rank === 1
-                  ? '1위! 단톡방 자랑각이에요 👑'
+                  ?'1위! 단톡방 자랑각이에요'
                   : myRank.rank <= 3
                     ? '포디움에 올랐어요 · 기분 좋게 시작해요'
                     : `${myRank.relationKo}(${myRank.relationGloss}) · 기운 ${myRank.toneWord}`}
@@ -341,7 +341,7 @@ export function HomeScreen({
             className="lucky-today__set"
             onClick={() => setPick((v) => (v === 'zodiac' ? null : 'zodiac'))}
           >
-            내 띠 고르면 오늘 몇 위인지 바로 나와요 {pick === 'zodiac' ? '▴' : '▾'}
+            내 띠 고르면 오늘 몇 위인지 바로 나와요 {pick === 'zodiac' ?'' : ''}
           </button>
         )}
         {!zodiac && pick === 'zodiac' ? (
@@ -366,7 +366,7 @@ export function HomeScreen({
         ) : null}
 
         <button type="button" className="rank-card__more" onClick={() => setRankOpen((v) => !v)}>
-          {rankOpen ? '접기 ▴' : '4위부터 꼴찌까지 보기 ▾'}
+          {rankOpen ?'접기' : '4위부터 꼴찌까지 보기'}
         </button>
         {rankOpen ? (
           <ol className="rank-list">
@@ -390,7 +390,7 @@ export function HomeScreen({
 
       {/* 친구 궁합 — 바이럴 훅 */}
       <button type="button" className="compat-banner" onClick={onCompat}>
-        <span className="compat-banner__icon" aria-hidden>💗</span>
+        <span className="compat-banner__icon" aria-hidden></span>
         <span className="compat-banner__body">
           <span className="compat-banner__title">오늘 우리 궁합, 몇 점일까?</span>
           <span className="compat-banner__desc">띠 또는 별자리만 고르면 바로 나와요</span>
@@ -402,7 +402,7 @@ export function HomeScreen({
       {todayReading ? (
         <button type="button" className="reopen-card" onClick={onReopen}>
           <span className="reopen-card__icon" aria-hidden>
-            {todayReading.result.rarity?.emoji ?? '📖'}
+            {todayReading.result.rarity?.emoji ??''}
           </span>
           <span className="reopen-card__body">
             <span className="reopen-card__label">오늘 받은 편지</span>
@@ -416,16 +416,16 @@ export function HomeScreen({
 
       {rarityCounts.legendary + rarityCounts.epic + rarityCounts.rare > 0 ? (
         <div className="collection">
-          <span className="collection__title">✨ 이번 달 뽑은 쪽지</span>
+          <span className="collection__title">이번 달 뽑은 쪽지</span>
           <div className="collection__items">
             {rarityCounts.legendary > 0 ? (
-              <span className="collection__item collection__item--leg">👑 전설 {rarityCounts.legendary}</span>
+              <span className="collection__item collection__item--leg">전설 {rarityCounts.legendary}</span>
             ) : null}
             {rarityCounts.epic > 0 ? (
-              <span className="collection__item collection__item--epic">💜 에픽 {rarityCounts.epic}</span>
+              <span className="collection__item collection__item--epic">에픽 {rarityCounts.epic}</span>
             ) : null}
             {rarityCounts.rare > 0 ? (
-              <span className="collection__item">✨ 레어 {rarityCounts.rare}</span>
+              <span className="collection__item">레어 {rarityCounts.rare}</span>
             ) : null}
           </div>
         </div>

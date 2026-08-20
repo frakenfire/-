@@ -32,7 +32,7 @@ export function DetailResultScreen({
       title="심층 리포트"
       bottom={
         <button type="button" className="btn btn--primary" disabled={busy} onClick={onShare}>
-          이 리포트, 친구한테 보내주기 💌
+          이 리포트, 친구한테 보내주기 
         </button>
       }
     >
@@ -45,18 +45,18 @@ export function DetailResultScreen({
       </div>
 
       <div className="card fade-in">
-        <p className="section-title">📊 항목별 운세 순위</p>
+        <p className="section-title">항목별 운세 순위</p>
         <CategoryScores ranked={detail.ranked} />
       </div>
 
       <div className="card fade-in">
-        <p className="section-title">🍀 행운 세트</p>
+        <p className="section-title">행운 세트</p>
         <LuckySetGrid luck={luck} mission={detail.mission} numberUse={detail.numberUse} />
       </div>
 
       {/* 오늘 잘 맞는 띠 — 상세 리포트의 자동 궁합(친구 궁합과 구분) */}
       <div className="card fade-in">
-        <p className="section-title">🤝 오늘 잘 맞는 띠</p>
+        <p className="section-title">오늘 잘 맞는 띠</p>
         <div className="match">
           <div className="match__cell match__cell--good">
             <span className="match__badge">잘 맞아요</span>
@@ -75,7 +75,7 @@ export function DetailResultScreen({
 
       {/* 오늘의 부적 — 스크린샷하고 싶은 한 줄 */}
       <div className="charm">
-        <span className="charm__label">🔖 오늘의 부적</span>
+        <span className="charm__label">오늘의 부적</span>
         <p className="charm__text">“{detail.charm}”</p>
         <span className="charm__sub">화면 캡처해서 오늘 하루 곁에 둬보세요</span>
       </div>
@@ -85,7 +85,7 @@ export function DetailResultScreen({
           부적 문장만 복사할래요
         </button>
         <button type="button" className="btn btn--ghost" disabled={busy} onClick={onSave}>
-          결과 카드 저장하기 📸
+          결과 카드 저장하기 
         </button>
       </div>
 

@@ -90,7 +90,7 @@ export async function saveCompatCard(input: CompatCardInput): Promise<boolean> {
     // 상단 배지
     ctx.fillStyle = style.accent;
     ctx.font = `bold 40px ${CARD_FONT}`;
-    ctx.fillText(`💗 오늘의 ${modeLabel} 궁합`, cx, cardY + 110);
+    ctx.fillText(`오늘의 ${modeLabel} 궁합`, cx, cardY + 110);
 
     // 나 × 상대 (이모지 크게)
     const emojiY = cardY + 300;
@@ -172,7 +172,7 @@ export async function saveCompatCard(input: CompatCardInput): Promise<boolean> {
     // 워터마크 + 초대 문구
     ctx.fillStyle = style.accent;
     ctx.font = `bold 40px ${CARD_FONT}`;
-    ctx.fillText('너도 우리 궁합 봐봐 👀', cx, cardY + cardH - 120);
+    ctx.fillText('너도 우리 궁합 봐봐', cx, cardY + cardH - 120);
     ctx.fillStyle = '#8b95a1';
     ctx.font = `bold 34px ${CARD_FONT}`;
     ctx.fillText('오늘쪽지 뽑기 · 친구 궁합', cx, cardY + cardH - 60);

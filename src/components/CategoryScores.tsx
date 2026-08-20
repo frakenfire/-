@@ -14,7 +14,7 @@ export function CategoryScores({ ranked }: { ranked: RankedCat[] }) {
     <div className="cat-wrap">
       <div className="cat-top">
         <div className="cat-top__head">
-          <span className="cat-top__crown" aria-hidden>👑</span>
+          <span className="cat-top__crown" aria-hidden></span>
           <span className="cat-top__label">오늘의 원픽</span>
         </div>
         <div className="cat-top__row">

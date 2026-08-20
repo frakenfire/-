@@ -6,7 +6,7 @@
 //    (2) 내 '띠' = 태어난 해의 지지(地支). 12띠가 곧 12지지다.
 //  - 그래서 '오늘 일진의 지지'와 '내 띠(지지)'의 전통 관계(삼합·육합·상충·형·해·비화)와
 //    '일간(천간)의 오행'과 '내 띠 오행'의 생극(生剋) 관계를 계산해, 사주식 '오늘의 기운'을 낸다.
-//  - 모든 값은 (날짜, 띠)의 순수 함수 → 하루 동안 고정, 같은 조건이면 항상 같은 결과.
+//  - 모든 값은 (날짜, 띠)의 순수 함수 하루 동안 고정, 같은 조건이면 항상 같은 결과.
 //
 // 정확도: 일진 계산은 (JDN + 49) % 60, 甲子=0 (표준 만세력과 일치. 1970-01-01=辛巳, 2000-01-01=戊午 검증).
 // 주의: 오락용이며 절기 기준 월주/시주는 다루지 않는다(일진·띠 관계에 집중).
@@ -37,11 +37,11 @@ export const ELEMENT_KO: Record<Element, string> = {
   water: '수(水)',
 };
 export const ELEMENT_EMOJI: Record<Element, string> = {
-  wood: '🌱',
-  fire: '🔥',
-  earth: '⛰️',
-  metal: '⚙️',
-  water: '💧',
+  wood: '',
+  fire: '',
+  earth: '',
+  metal: '',
+  water: '',
 };
 
 // 오행별 개운(開運) 컬러 — 전통 오방색을 토스 팔레트로 톤다운한 색들.
@@ -123,15 +123,15 @@ export function toJDN(y: number, m: number, d: number): number {
   );
 }
 
-// dateKey 'YYYY-MM-DD' → 60갑자 인덱스(0=甲子)
+// dateKey 'YYYY-MM-DD'  60갑자 인덱스(0=甲子)
 export function ganzhiIndexFromDateKey(dateKey: string): number {
   const [y, m, d] = dateKey.split('-').map((n) => parseInt(n, 10));
   const jdn = toJDN(y, m, d);
   return (((jdn + 49) % 60) + 60) % 60;
 }
 
-// ── 지지 관계(전통) ──
-// 삼합(三合): 지지 인덱스가 mod 4로 같음 (申子辰=0·4·8 등) → 최고의 조화
+//  지지 관계(전통) 
+// 삼합(三合): 지지 인덱스가 mod 4로 같음 (申子辰=0·4·8 등)  최고의 조화
 // 육합/상충/형·해는 쌍으로 정의
 const UNION = new Set(['0-1', '2-11', '3-10', '4-9', '5-8', '6-7']); // 육합
 const HARM = new Set(['0-7', '1-6', '2-9', '3-8', '4-11', '5-10']); // 원진/해
@@ -181,8 +181,8 @@ export function elementOfZodiac(id: ZodiacId): Element {
   return BRANCHES[BRANCH_OF_ANIMAL[id]].el;
 }
 
-// ── 오행 생극(生剋) ──
-// 상생: 목→화→토→금→수→목 / 상극: 목→토→수→화→금→목
+//  오행 생극(生剋) 
+// 상생: 목화토금수목 / 상극: 목토수화금목
 const GEN_NEXT: Record<Element, Element> = {
   wood: 'fire',
   fire: 'earth',
@@ -241,7 +241,7 @@ export function pairElementFlow(a: ZodiacId, b: ZodiacId): PairElementFlow {
 
 export type SajuTone = 'great' | 'good' | 'steady' | 'caution';
 
-// 지지 관계 + 오행 생극 → 종합 톤 점수(0~4). 관계가 주(主), 오행이 보조.
+// 지지 관계 + 오행 생극 종합 톤 점수(0~4). 관계가 주(主), 오행이 보조.
 function toneScore(rel: BranchRelation, flow: ElementFlow): number {
   let s = 2;
   if (rel === 'trine') s += 2;
@@ -427,9 +427,9 @@ export type SajuToday = {
   tip: string;
 };
 
-// ── 오늘의 12띠 서열 ──
+//  오늘의 12띠 서열 
 // 그날의 일진(지지 관계 + 오행 생극)으로 12띠 전체 점수를 매겨 순위를 낸다.
-// 동점은 날짜·띠 seed 로 결정적 타이브레이크 → 하루 동안 고정, 매일 갈림.
+// 동점은 날짜·띠 seed 로 결정적 타이브레이크 하루 동안 고정, 매일 갈림.
 // 단톡방에 던지는 '오늘 띠 서열표'의 데이터 소스.
 
 export type ZodiacRank = {

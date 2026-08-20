@@ -257,7 +257,7 @@ test('띠 서열 공유 문구 — 순위·기운·훅·내 순위가 전부 담
     last: { label: '쥐띠', emoji: '🐭', toneWord: '조심' },
     me: { label: '개띠', emoji: '🐶', rank: 5, gloss: '짝꿍 조합' },
   });
-  for (const must of ['🥇', '크게 트임', '12위', '조심', '개띠', '5위', '짝꿍 조합', '몇 위게']) {
+  for (const must of ['1위', '크게 트임', '12위', '조심', '개띠', '5위', '짝꿍 조합', '몇 위게']) {
     assert.ok(t.includes(must), `공유 문구에 "${must}" 누락:\n${t}`);
   }
   assert.ok(t.split('\n').length <= 11, '단톡방용 문구가 너무 길다');

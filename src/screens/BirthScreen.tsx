@@ -9,6 +9,9 @@ type Props = {
   initial: StoredBirth | null;
   onSave: (b: StoredBirth) => void;
   onBack: () => void;
+  /** 뽑기 흐름 중이면 건너뛰기를 제공하고 단계 표시를 붙인다 */
+  inFlow?: boolean;
+  onSkip?: () => void;
 };
 
 
@@ -17,7 +20,7 @@ const MAX_DATE = `${TODAY.getFullYear()}-${String(TODAY.getMonth() + 1).padStart
 
 // 생년월일시를 받아 사주를 세운다. 입력이 무거우면 아무도 안 하므로
 // 네이티브 날짜·시간 피커 두 개로 끝낸다(탭 두 번). 시각은 몰라도 넘어갈 수 있다.
-export function BirthScreen({ initial, onSave, onBack }: Props) {
+export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }: Props) {
   const [date, setDate] = useState(initial?.date ?? '');
   const [time, setTime] = useState(initial?.time ?? '');
   const [unknownTime, setUnknownTime] = useState(initial ? initial.time === null : false);
@@ -34,8 +37,8 @@ export function BirthScreen({ initial, onSave, onBack }: Props) {
   const ready = date !== '' && (unknownTime || time !== '');
 
   return (
-    <AppLayout onBack={onBack}>
-      <span className="eyebrow">쪽지를 나에게 맞추기</span>
+    <AppLayout onBack={onBack} step={inFlow ? 1 : undefined} totalSteps={inFlow ? 4 : undefined}>
+      <span className="eyebrow">{inFlow ? '쪽지 뽑기' : '쪽지를 나에게 맞추기'}</span>
       <h2 className="h2">언제 태어났어요?</h2>
       <p className="lead">
         태어난 <b>순간</b>으로 사주를 세우면, 오늘 쪽지가 나만의 것이 돼요.
@@ -73,7 +76,7 @@ export function BirthScreen({ initial, onSave, onBack }: Props) {
           aria-pressed={unknownTime}
         >
           <span className="birth-unknown__box" aria-hidden>
-            {unknownTime ? '✓' : ''}
+            {unknownTime ?'' : ''}
           </span>
           태어난 시각을 몰라요
         </button>
@@ -99,7 +102,7 @@ export function BirthScreen({ initial, onSave, onBack }: Props) {
         </div>
       ) : null}
 
-      {notice ? <p className="birth-warn">⚠️ {notice}</p> : null}
+      {notice ?<p className="birth-warn"> {notice}</p> : null}
 
       {preview?.zodiacDiffersFromCalendarYear ? (
         <p className="birth-warn birth-warn--info">
@@ -113,8 +116,14 @@ export function BirthScreen({ initial, onSave, onBack }: Props) {
         disabled={!ready || !input}
         onClick={() => input && onSave({ date, time: unknownTime ? null : time })}
       >
-        {ready ? '내 사주 보기' : '생년월일을 입력해 주세요'}
+        {ready ? (inFlow ? '이 사주로 쪽지 뽑기' : '내 사주 보기') : '생년월일을 입력해 주세요'}
       </button>
+      {/* 생년월일 없이 그냥 뽑고 싶은 사람도 있다. 막지 않되, 뭐가 빠지는지는 알려준다. */}
+      {inFlow && onSkip ? (
+        <button type="button" className="btn btn--ghost" onClick={onSkip}>
+          지금은 건너뛸게요 (쪽지가 덜 정확해져요)
+        </button>
+      ) : null}
     </AppLayout>
   );
 }

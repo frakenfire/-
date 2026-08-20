@@ -3,7 +3,7 @@ import { LUCKY_FOODS, type LuckyFood } from '../data/luckyFood.ts';
 
 // 입소문 요소: 총운 점수 + 카테고리별 점수 + 행운 세트.
 // 인기 '오늘의 운세' 앱(포스텔러/펭귄도사/운세도사)의 공통 히트 요소를 반영.
-// seed 로부터 결정적으로 계산 → 같은 뽑기는 항상 같은 결과(공유 안정),
+// seed 로부터 결정적으로 계산 같은 뽑기는 항상 같은 결과(공유 안정),
 // 다른 뽑기는 조합 폭발로 사실상 매번 다른 결과(입소문).
 
 export type LuckColor = { name: string; hex: string };
@@ -57,10 +57,10 @@ const ITEMS = [
 const TAGS = ['정리', '연결', '회복', '기회', '여유', '집중', '다정', '도전', '안정', '설렘'];
 
 const CATEGORY_META = [
-  { key: 'love', label: '애정운', emoji: '💗' },
-  { key: 'money', label: '재물운', emoji: '🪙' },
-  { key: 'work', label: '직장운', emoji: '💼' },
-  { key: 'health', label: '건강운', emoji: '🌿' },
+  { key: 'love', label: '애정운', emoji: '' },
+  { key: 'money', label: '재물운', emoji: '' },
+  { key: 'work', label: '직장운', emoji: '' },
+  { key: 'health', label: '건강운', emoji: '' },
 ];
 
 function pick<T>(arr: T[], r: () => number): T {
@@ -75,7 +75,7 @@ function grade(total: number): string {
   return '평';
 }
 
-// 사주 톤 → 총운이 놓일 수 있는 구간.
+// 사주 톤 총운이 놓일 수 있는 구간.
 // 결과 화면은 '총운 96점 · 대길'(숫자)과 '내 띠와 상충 · 조심'(사주 해석)을 같은 화면에
 // 나란히 보여준다. 예전엔 둘이 ±6 보정으로만 느슨하게 묶여 있어서, 상충인 날에 대길이
 // 뜨는 정면 모순이 실제로 6% 넘게 나왔다(12띠 × 20일 × 전 조합 측정).
@@ -104,7 +104,7 @@ export function computeLuck(seed: number, band?: [number, number]): LuckSet {
   // 항목별 점수는 총운을 기준으로 흩뿌린다.
   // 예전엔 총운과 완전히 독립된 난수라 '총운 98점(대길)인데 네 항목이 71~91점'
   // 같은 모순이 생겼다. 이제 총운이 천장 역할을 하고, 항목은 그 아래로 벌어진다.
-  // (-16 ~ +1 편차 → 최고 항목이 총운과 비슷하고, 최저 항목이 '오늘 조심'이 된다)
+  // (-16 ~ +1 편차 최고 항목이 총운과 비슷하고, 최저 항목이'오늘 조심'이 된다)
   const categories: CategoryScore[] = CATEGORY_META.map((c) => ({
     ...c,
     score: Math.max(50, Math.min(99, total - 16 + Math.floor(r() * 18))),
@@ -128,7 +128,7 @@ export function computeLuck(seed: number, band?: [number, number]): LuckSet {
   return { total, grade: grade(total), categories, color, number, numbers6, direction, time, item, tag, food, luckyWeek };
 }
 
-// 총운 → "상위 N%" 자랑 배지.
+// 총운  "상위 N%" 자랑 배지.
 // 사주 톤이 총운 구간을 정하면서 점수 분포가 균등에서 종 모양으로 바뀌었다.
 // 예전의 (100-total)/35 균등 가정을 그대로 두면 '88점 · 길'인데 배지는 '평범한 하루'로
 // 뜨는 식으로 등급과 배지가 서로 다른 말을 한다.
@@ -158,7 +158,7 @@ export function luckPercentile(total: number): { pct: number; label: string; isB
   // 라벨 경계 = 등급 경계. 배지와 '총운 88점 · 길'이 같은 이야기를 하게 된다.
   const label =
     clamped >= 95 ? '역대급 행운' : clamped >= 88 ? '상위권' : clamped >= 80 ? '괜찮은 편' : '평범한 하루';
-  // 🏆 배지는 자랑거리일 때만 띄운다. '상위 90%'를 트로피와 함께 보여주면
+  //  배지는 자랑거리일 때만 띄운다.'상위 90%'를 트로피와 함께 보여주면
   // 자랑 배지가 오히려 김을 빼고, 공유할 마음도 사라진다.
   // (길 이상 = 상위 30% 이내, 대략 사흘에 한 번꼴로 떠서 희소성이 산다)
   return { pct, label, isBrag: clamped >= 88 };

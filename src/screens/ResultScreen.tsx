@@ -53,9 +53,9 @@ export function ResultScreen({
   const { luck, rarity, dayPlan } = result;
   const [letterOpen, setLetterOpen] = useState(false);
   const brag = luckPercentile(luck.total);
-  const vibe = todayVibe(todayKey()); // 홈과 같은 '오늘의 기운' — 홈→결과 연결
+  const vibe = todayVibe(todayKey()); // 홈과 같은'오늘의 기운' — 홈결과 연결
 
-  // 총운 카운트업 리빌 — 0→N 으로 차오르며 점수가 '뽑힌' 느낌을 준다.
+  // 총운 카운트업 리빌 — 0N 으로 차오르며 점수가'뽑힌'느낌을 준다.
   // prefers-reduced-motion 이면 즉시 최종값.
   const [shownTotal, setShownTotal] = useState(0);
   useEffect(() => {
@@ -105,8 +105,8 @@ export function ResultScreen({
   const tomorrowBetter =
     tomorrowSaju && result.saju ? TONE_RANK[tomorrowSaju.tone] > TONE_RANK[result.saju.tone] : false;
   const rl = isMonth
-    ? { title: '이번 달 풀이', desc: '초반부터 월말까지 이번 달을 그려봤어요', m: '🌱 이번 달 초반', a: '📈 중순', e: '🏁 월말' }
-    : { title: '오늘의 풀이', desc: '시간대별로 하루를 미리 그려봤어요', m: '🌅 오전', a: '☀️ 오후', e: '🌙 저녁' };
+    ? { title: '이번 달 풀이', desc: '초반부터 월말까지 이번 달을 그려봤어요', m: '이번 달 초반', a: '중순', e: '월말' }
+    : { title: '오늘의 풀이', desc: '시간대별로 하루를 미리 그려봤어요', m: '오전', a: '오후', e: '저녁' };
 
   return (
     <AppLayout
@@ -116,7 +116,7 @@ export function ResultScreen({
         // 가장 중요한 단일 액션(공유)을 화면 하단에 고정 — 실제 토스 BottomCTA 패턴.
         // 광고 없이, 스크롤과 무관하게 항상 누를 수 있게 둔다.
         <button type="button" className="btn btn--primary" disabled={busy} onClick={onShare}>
-          이 쪽지, 친구한테 보내주기 💌
+          이 쪽지, 친구한테 보내주기 
         </button>
       }
     >
@@ -141,7 +141,7 @@ export function ResultScreen({
       >
         {luck.total >= 88 || rarity.special || milestone ? (
           <div className="confetti" aria-hidden>
-            {['🎉', '✨', '⭐', '💙', '✨', '🎊', '⭐', '✨'].map((e, i) => (
+            {['', '', '', '', '', '', '', ''].map((e, i) => (
               <span
                 key={i}
                 className="confetti__bit"
@@ -172,18 +172,18 @@ export function ResultScreen({
 
         {brag.isBrag ? (
           <div className="brag" aria-label={`${isMonth ? '이번 달' : '오늘'} 상위 ${brag.pct}퍼센트`}>
-            <span className="brag__pct">🏆 {isMonth ? '이번 달' : '오늘'} 총운 상위 {brag.pct}%</span>
+            <span className="brag__pct"> {isMonth ?'이번 달' : '오늘'} 총운 상위 {brag.pct}%</span>
             <span className="brag__label">· {brag.label}</span>
           </div>
         ) : null}
 
         {milestone ? (
           <p className="streak-hit">
-            🔥 {streak}일 연속 쪽지 달성! 꾸준함이 운을 키운대요
+             {streak}일 연속 쪽지 달성! 꾸준함이 운을 키운대요
           </p>
         ) : null}
 
-        {result.persona ? <p className="briefing__persona">💌 {result.persona}</p> : null}
+        {result.persona ?<p className="briefing__persona"> {result.persona}</p> : null}
         <p className="briefing__headline">{dayPlan.headline}</p>
         <p className="briefing__vibe">{dayPlan.vibe}</p>
 
@@ -206,7 +206,7 @@ export function ResultScreen({
 
         {/* 행운 보고서 — day: 타이밍·색·음식 / month: 행운의 주·이달의 색·키워드 */}
         <div className="report">
-          <p className="report__head">🍀 {isMonth ? '이번 달 행운 보고서' : '오늘의 행운 보고서'}</p>
+          <p className="report__head"> {isMonth ?'이번 달 행운 보고서' : '오늘의 행운 보고서'}</p>
           <div className="report__grid">
             <div className="report__cell">
               <span className="report__k">{isMonth ? '행운의 주' : '타이밍'}</span>
@@ -268,7 +268,7 @@ export function ResultScreen({
               개운 컬러 <b>{result.saju.luckyColor.name}</b>
               <small>({ELEMENT_KO[result.saju.boostElement]} 보충)</small>
             </span>
-            <span className="iljin__boost-tip">💡 {result.saju.tip}</span>
+            <span className="iljin__boost-tip"> {result.saju.tip}</span>
           </div>
         </div>
       ) : null}
@@ -307,7 +307,7 @@ export function ResultScreen({
           <p className="card-head__desc">{rl.desc}</p>
         </div>
         <div className="section">
-          <p className="section__label">🔎 전체 풀이</p>
+          <p className="section__label">전체 풀이</p>
           <p className="section__lead">{result.pinpoint}</p>
           <p className="section__text">{result.reading.overall}</p>
         </div>
@@ -324,11 +324,11 @@ export function ResultScreen({
           <p className="section__text">{result.reading.evening}</p>
         </div>
         <div className="section">
-          <p className="section__label">🤝 사람과의 사이</p>
+          <p className="section__label">사람과의 사이</p>
           <p className="section__text">{result.reading.people}</p>
         </div>
         <div className="section">
-          <p className="section__label">🫧 마음 관리</p>
+          <p className="section__label">마음 관리</p>
           <p className="section__text">{result.reading.mind}</p>
         </div>
       </div>
@@ -338,7 +338,7 @@ export function ResultScreen({
         className="btn btn--secondary"
         onClick={() => setLetterOpen((v) => !v)}
       >
-        {letterOpen ? '요정의 편지 접기' : '요정이 쓴 편지도 읽기 💌'}
+        {letterOpen ?'요정의 편지 접기' : '요정이 쓴 편지도 읽기'}
       </button>
 
       {letterOpen ? (
@@ -350,7 +350,7 @@ export function ResultScreen({
       <div className="btn-stack" style={{ marginTop: 'var(--space-3)' }}>
         <button type="button" className="btn btn--unlock" disabled={busy} onClick={onDetail}>
           <span className="btn-unlock__top">
-            <span className="btn-unlock__main">🔓 오늘의 심층 리포트 열기</span>
+            <span className="btn-unlock__main">오늘의 심층 리포트 열기</span>
             <AdBadge label="광고" />
           </span>
           <span className="btn-unlock__sub">운세 원픽 · 잘 맞는 띠 · 행운 미션 · 부적</span>
@@ -358,7 +358,7 @@ export function ResultScreen({
 
         <button type="button" className="btn btn--secondary" disabled={busy} onClick={onSave}>
           {/* 두 동작처럼 보이면 안 된다 — 실제 동작은 '저장' 하나고, 스토리는 그 다음 안내다. */}
-          카드 저장하고 스토리에 올리기 📸
+          카드 저장하고 스토리에 올리기 
         </button>
 
         <button type="button" className="btn btn--ghost" disabled={busy} onClick={onRetry}>
@@ -372,7 +372,7 @@ export function ResultScreen({
         style={{ marginTop: 'var(--space-4)' }}
         onClick={onCompat}
       >
-        <span className="compat-banner__icon" aria-hidden>💗</span>
+        <span className="compat-banner__icon" aria-hidden></span>
         <span className="compat-banner__body">
           <span className="compat-banner__title">이 사람이랑 오늘 궁합은?</span>
           <span className="compat-banner__desc">띠 또는 별자리만 고르면 바로 나와요</span>
@@ -383,7 +383,7 @@ export function ResultScreen({
       {/* 내일 예고 — 리텐션 훅: 내일 일진과 내 띠 관계를 티저로 */}
       {tomorrowSaju ? (
         <div className="tmr-tease">
-          <span className="tmr-tease__moon" aria-hidden>🌙</span>
+          <span className="tmr-tease__moon" aria-hidden></span>
           <span className="tmr-tease__body">
             <span className="tmr-tease__k">내일 예고 · {tomorrowSaju.iljin.kor}일</span>
             <span className="tmr-tease__v">
@@ -401,7 +401,7 @@ export function ResultScreen({
           한 번 답하면(동의/거절) 다시 조르지 않는다. */}
       {showNotiCard && onAskNoti ? (
         <button type="button" className="noti-card" onClick={onAskNoti} disabled={busy}>
-          <span className="noti-card__icon" aria-hidden>🔔</span>
+          <span className="noti-card__icon" aria-hidden></span>
           <span className="noti-card__body">
             <span className="noti-card__title">내일 아침, 오늘의 쪽지 알림 받기</span>
             <span className="noti-card__desc">눈 뜨자마자 하루 기운부터 확인해요</span>

@@ -32,7 +32,7 @@ type Props = {
   onToast: (msg: string) => void;
 };
 
-const BAND_EMOJI = { best: '💗', good: '🧡', ok: '🤝' } as const;
+const BAND_EMOJI = { best: '', good: '', ok: '' } as const;
 
 // 친구 궁합 — 로그인 없이 되는 바이럴 훅. 띠/별자리 두 방식 지원(광고/공유로 잠금 해제).
 export function CompatScreen({
@@ -102,7 +102,7 @@ export function CompatScreen({
     const { list, saved, duplicate } = addSavedPerson({ mode, value: friend, relation });
     setSavedPeople(list);
     if (duplicate) onToast('이미 저장돼 있어요');
-    else if (saved) onToast('내 사람으로 저장했어요 ⭐ 다음엔 바로 확인할 수 있어요');
+    else if (saved) onToast('내 사람으로 저장했어요 다음엔 바로 확인할 수 있어요');
     else onToast('앗, 저장 공간이 부족해 저장을 못 했어요');
   }
 
@@ -152,11 +152,11 @@ export function CompatScreen({
     if (busy || !myLabel || !friendLabel) return;
     setBusy(true);
     try {
-      const invite = `${myLabel.emoji}${myLabel.label} × ${friendLabel.emoji}${friendLabel.label}\n오늘 우리 ${modeLabel} 궁합 얼마나 맞을까? 나 방금 봤어 👀\n[오늘쪽지] 친구 궁합에서 너도 확인해봐 💌`;
+      const invite = `${myLabel.emoji}${myLabel.label} × ${friendLabel.emoji}${friendLabel.label}\n오늘 우리 ${modeLabel} 궁합 얼마나 맞을까? 나 방금 봤어 \n[오늘쪽지] 친구 궁합에서 너도 확인해봐 `;
       const ok = await onShare(invite);
       if (ok) {
         setUnlocked(true);
-        onToast('공유했어요! 결과를 열었어요 💌');
+        onToast('공유했어요! 결과를 열었어요');
       }
       // 취소/실패 시엔 잠금 유지 (보상 위장 금지) — 별도 안내 없이 조용히.
     } catch {
@@ -171,9 +171,9 @@ export function CompatScreen({
     const ohaeng = result.elements
       ? `\n${result.elements.aKo} × ${result.elements.bKo} = ${result.elements.flowKo} 조합`
       : '';
-    const text = `[오늘쪽지] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 · ${result.archetype} 💗\n${myLabel.emoji}${myLabel.label} × ${friendLabel.emoji}${friendLabel.label}${ohaeng}\n"${result.headline}"\n너도 누구랑 몇 점인지 봐봐 👀`;
+    const text = `[오늘쪽지] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 · ${result.archetype} \n${myLabel.emoji}${myLabel.label} × ${friendLabel.emoji}${friendLabel.label}${ohaeng}\n"${result.headline}"\n너도 누구랑 몇 점인지 봐봐 `;
     const ok = await onShare(text);
-    onToast(ok ? '궁합 자랑 완료! 💌' : '앗, 공유를 못 했어요');
+    onToast(ok ?'궁합 자랑 완료!' : '앗, 공유를 못 했어요');
   }
 
   // 스토리에 올리는 바이럴 카드 — 광고 없이(확산 우선) 바로 이미지 저장.
@@ -182,7 +182,7 @@ export function CompatScreen({
     setBusy(true);
     try {
       const ok = await saveCompatCard({ modeLabel, me: myLabel, friend: friendLabel, result });
-      onToast(ok ? '궁합 카드 저장 완료! 📸 스토리에 올려봐요' : '앗, 저장을 못 했어요');
+      onToast(ok ?'궁합 카드 저장 완료!  스토리에 올려봐요' : '앗, 저장을 못 했어요');
     } catch {
       onToast('앗, 저장 중 문제가 생겼어요');
     } finally {
@@ -206,14 +206,14 @@ export function CompatScreen({
               className={mode === 'zodiac' ? 'seg-tab seg-tab--on' : 'seg-tab'}
               onClick={() => setMode('zodiac')}
             >
-              🐭 띠 궁합
+               띠 궁합
             </button>
             <button
               type="button"
               className={mode === 'star' ? 'seg-tab seg-tab--on' : 'seg-tab'}
               onClick={() => setMode('star')}
             >
-              ⭐ 별자리 궁합
+               별자리 궁합
             </button>
           </div>
         ) : null}
@@ -231,7 +231,7 @@ export function CompatScreen({
           ))}
         </div>
         <p className="pick-foot">
-          <span className="pick-foot__lock" aria-hidden>🔒</span>
+          <span className="pick-foot__lock" aria-hidden></span>
           이름·생년월일 없이 {modeLabel}만으로 봐요
         </p>
       </AppLayout>
@@ -246,14 +246,14 @@ export function CompatScreen({
           className={mode === 'zodiac' ? 'seg-tab seg-tab--on' : 'seg-tab'}
           onClick={() => switchMode('zodiac')}
         >
-          🐭 띠 궁합
+           띠 궁합
         </button>
         <button
           type="button"
           className={mode === 'star' ? 'seg-tab seg-tab--on' : 'seg-tab'}
           onClick={() => switchMode('star')}
         >
-          ⭐ 별자리 궁합
+           별자리 궁합
         </button>
       </div>
 
@@ -276,7 +276,7 @@ export function CompatScreen({
 
       {savedRanked.length > 0 ? (
         <div className="saved-people">
-          <p className="saved-people__title">💌 내 사람들 · 오늘의 랭킹</p>
+          <p className="saved-people__title">내 사람들 · 오늘의 랭킹</p>
           {savedRanked.map(({ person, label, score }) => {
             const rel = relationMeta(person.relation);
             return (
@@ -298,7 +298,7 @@ export function CompatScreen({
                   aria-label="내 사람 목록에서 지우기"
                   onClick={() => forgetPerson(person.id)}
                 >
-                  ✕
+                  
                 </button>
               </div>
             );
@@ -317,11 +317,11 @@ export function CompatScreen({
           </p>
           <div className="btn-stack">
             <button type="button" className="btn btn--primary" disabled={busy} onClick={unlockByShare}>
-              공유하고 결과 열기 💌
+              공유하고 결과 열기 
             </button>
             <button type="button" className="btn btn--unlock" disabled={busy} onClick={unlockByAd}>
               <span className="btn-unlock__top">
-                <span className="btn-unlock__main">🔓 광고 보고 결과 열기</span>
+                <span className="btn-unlock__main">광고 보고 결과 열기</span>
                 <AdBadge label="광고" />
               </span>
             </button>
@@ -351,7 +351,7 @@ export function CompatScreen({
               ))}
             </div>
 
-            <p className="compat-result__reason">🔮 {result.reason}</p>
+            <p className="compat-result__reason"> {result.reason}</p>
 
             {/* 오행은 '속 기운' 보조 정보 — 라벨과 쉬운 말을 붙여, 높은 점수 옆의
                 '상극' 이 모순처럼 읽히지 않게 한다 */}
@@ -386,10 +386,10 @@ export function CompatScreen({
           </div>
           <div className="btn-stack">
             <button type="button" className="btn btn--primary" onClick={brag}>
-              이 궁합 친구한테 자랑하기 💌
+              이 궁합 친구한테 자랑하기 
             </button>
             <button type="button" className="btn btn--secondary" disabled={busy} onClick={saveCard}>
-              궁합 카드 이미지로 저장하기 📸
+              궁합 카드 이미지로 저장하기 
             </button>
             <button
               type="button"

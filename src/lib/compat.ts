@@ -67,7 +67,7 @@ function tagOf(a: ZodiacId, b: ZodiacId): Tag {
   return rel === 'self' ? 'same' : rel === 'none' ? 'neutral' : rel;
 }
 
-// 오행 상성 → 궁합 점수 미세 보정(상생 +3 / 비화 +1 / 상극 -3). 로직 일관성.
+// 오행 상성 궁합 점수 미세 보정(상생 +3 / 비화 +1 / 상극 -3). 로직 일관성.
 function elementBias(flow: PairElementFlow): number {
   return { generate: 3, same: 1, control: -3 }[flow];
 }
@@ -265,9 +265,9 @@ const TIP = [
 ];
 
 const CATEGORY_META = [
-  { key: 'chem', label: '케미', emoji: '✨' },
-  { key: 'talk', label: '대화', emoji: '💬' },
-  { key: 'conflict', label: '갈등 관리', emoji: '🤝' },
+  { key: 'chem', label: '케미', emoji: '' },
+  { key: 'talk', label: '대화', emoji: '' },
+  { key: 'conflict', label: '갈등 관리', emoji: '' },
 ];
 
 function pickR<T>(arr: T[], r: () => number): T {

@@ -32,7 +32,7 @@ export function MoodScreen({
   const [open, setOpen] = useState<'zodiac' | 'star' | null>(null);
 
   return (
-    <AppLayout onBack={onBack} step={2} totalSteps={3}>
+    <AppLayout onBack={onBack} step={3} totalSteps={4}>
       {fortuneLabel ? <span className="eyebrow">{fortuneLabel}</span> : null}
       <h2 className="h2">쪽지를 쓰기 전에, 지금 나는?</h2>
       <p className="lead">
@@ -54,7 +54,7 @@ export function MoodScreen({
           <span className="me-pick__k">내 띠</span>
           <span className="me-pick__v">
             {zodiac ? `${zodiac.emoji} ${zodiac.label}` : '고르기'}
-            <span className="me-pick__chev" aria-hidden> ▾</span>
+            <span className="me-pick__chev" aria-hidden> </span>
           </span>
         </button>
         <button
@@ -65,7 +65,7 @@ export function MoodScreen({
           <span className="me-pick__k">내 별자리</span>
           <span className="me-pick__v">
             {star ? `${star.emoji} ${star.label}` : '고르기'}
-            <span className="me-pick__chev" aria-hidden> ▾</span>
+            <span className="me-pick__chev" aria-hidden> </span>
           </span>
         </button>
       </div>

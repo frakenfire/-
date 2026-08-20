@@ -393,14 +393,14 @@ export default function App() {
       headline: result.dayPlan.headline,
       doItem: result.dayPlan.steps[0].text,
       dontItem: result.dayPlan.holdOff,
-      // 자랑거리일 때만 공유 문구에 넣는다 — "상위 90% 🏆" 를 친구에게 보내는 건
+      // 자랑거리일 때만 공유 문구에 넣는다 — "상위 90% " 를 친구에게 보내는 건
       // 자랑이 아니라 김빠지는 일이라, 그런 날엔 점수만 담아 보낸다.
       brag: brag.isBrag ? `상위 ${brag.pct}%` : undefined,
       pinpoint: result.pinpoint,
     });
     logEvent('share', { outcome: r });
-    if (r === 'shared') flash('친구에게 공유했어요 💌');
-    else if (r === 'copied') flash('공유 문구 복사 완료! 💌');
+    if (r === 'shared') flash('친구에게 공유했어요');
+    else if (r === 'copied') flash('공유 문구 복사 완료!');
     else if (r === 'cancelled') return; // 취소 — 아무 안내 없이 조용히
     else flash('앗, 공유를 못 했어요');
   }
@@ -408,7 +408,7 @@ export default function App() {
   async function handleCopyLine() {
     if (!result) return;
     const ok = await copyText(result.detail.charm);
-    flash(ok ? '부적 문장 복사 완료! 🔖' : '앗, 복사를 못 했어요');
+    flash(ok ?'부적 문장 복사 완료!' : '앗, 복사를 못 했어요');
   }
 
   // 결과 카드 저장 = 바이럴 공유 자산이라 광고 게이팅 없이 무료로(확산 우선).
@@ -422,34 +422,46 @@ export default function App() {
       unlockWeek(dateKey);
       setWeekUnlocked(true);
       logEvent('week_unlock', { via: 'streak', streak });
-      flash(`${streak}일 연속 보상! 이번 주 캘린더가 열렸어요 🎁`);
+      flash(`${streak}일 연속 보상! 이번 주 캘린더가 열렸어요 `);
       return;
     }
     await runRewardGate('retry', () => {
       unlockWeek(dateKey);
       setWeekUnlocked(true);
       logEvent('week_unlock', { via: 'ad', streak });
-      flash('이번 주 캘린더가 열렸어요 🗓️');
+      flash('이번 주 캘린더가 열렸어요');
     });
   }
 
   async function handleShareWeek(text: string) {
     const r = await shareMessage(text);
     logEvent('share_week', { outcome: r });
-    if (r === 'shared') flash('이번 주 운세를 공유했어요 💌');
-    else if (r === 'copied') flash('공유 문구 복사 완료! 💌');
+    if (r === 'shared') flash('이번 주 운세를 공유했어요');
+    else if (r === 'copied') flash('공유 문구 복사 완료!');
     else if (r === 'failed') flash('앗, 공유를 못 했어요');
   }
 
-  // ── 내 사주 ──
+  //  내 사주 
   // 띠(1/12)로는 '나를 위한 결과'가 안 나온다. 생년월일시를 받아 사주 여덟 글자를 세운다.
   // 저장은 이 기기 localStorage 뿐이고 서버로 나가지 않는다.
+
+  // 뽑기 흐름 중에 생년월일을 받았으면 흐름을 이어간다(주제 고르기로).
+  // 홈에서 직접 들어왔으면 세운 사주를 보여준다.
+  const [birthFromFlow, setBirthFromFlow] = useState(false);
 
   function handleSaveBirth(b: StoredBirth) {
     setBirth(b);
     saveBirth(b);
-    logEvent('birth_saved', { hasTime: b.time !== null });
-    setScreen('saju');
+    logEvent('birth_saved', { hasTime: b.time !== null, viaFlow: birthFromFlow });
+    setScreen(birthFromFlow ? 'topic' : 'saju');
+    setBirthFromFlow(false);
+  }
+
+  // 생년월일 없이 그냥 뽑고 싶은 사람도 있다. 막지 않는다.
+  function handleSkipBirth() {
+    logEvent('birth_skipped', {});
+    setScreen('topic');
+    setBirthFromFlow(false);
   }
 
   // 홈에 보여줄 일간 배지 — 사주를 세운 사람에게는 '내 것'이 홈에서 바로 보여야 한다.
@@ -481,8 +493,8 @@ export default function App() {
   async function handleShareSaju(text: string) {
     const r = await shareMessage(text);
     logEvent('share_saju', { outcome: r });
-    if (r === 'shared') flash('내 일간을 공유했어요 💌');
-    else if (r === 'copied') flash('공유 문구 복사 완료! 💌');
+    if (r === 'shared') flash('내 일간을 공유했어요');
+    else if (r === 'copied') flash('공유 문구 복사 완료!');
     else if (r === 'failed') flash('앗, 공유를 못 했어요');
   }
 
@@ -500,7 +512,7 @@ export default function App() {
       if (r === 'newAgreement' || r === 'alreadyAgreed') {
         setNotiAskState('agreed');
         setNotiCardVisible(false);
-        flash('내일 아침에 쪽지로 찾아갈게요 🔔');
+        flash('내일 아침에 쪽지로 찾아갈게요');
       } else if (r === 'agreementRejected') {
         setNotiAskState('rejected'); // 거절했으면 다시 조르지 않는다
         setNotiCardVisible(false);
@@ -528,7 +540,7 @@ export default function App() {
           : null,
       });
       logEvent('save_card', { ok });
-      flash(ok ? '결과 카드 저장 완료! 📸 스토리에 올려봐요' : '앗, 저장을 못 했어요');
+      flash(ok ?'결과 카드 저장 완료!  스토리에 올려봐요' : '앗, 저장을 못 했어요');
     } catch (e) {
       reportError('handleSave', e);
       flash('앗, 저장 중 문제가 생겼어요');
@@ -565,7 +577,14 @@ export default function App() {
           onCompat={() => setScreen('compat')}
           sajuBadge={sajuBadge}
           onSaju={() => setScreen(birth ? 'saju' : 'birth')}
-          onStart={() => setScreen('topic')}
+          onStart={() => {
+            if (birthInput) {
+              setScreen('topic');
+            } else {
+              setBirthFromFlow(true);
+              setScreen('birth');
+            }
+          }}
           onReset={handleReset}
           weekUnlocked={weekUnlocked}
           onUnlockWeek={handleUnlockWeek}
@@ -632,7 +651,9 @@ export default function App() {
       {screen === 'birth' && (
         <BirthScreen
           initial={birth}
+          inFlow={birthFromFlow}
           onSave={handleSaveBirth}
+          onSkip={handleSkipBirth}
           onBack={() => setScreen(birth ? 'saju' : 'home')}
         />
       )}

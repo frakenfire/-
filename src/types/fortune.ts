@@ -27,7 +27,7 @@ export type FortuneResult = {
   engineVersion?: number;
   title: string;
   subtitle: string;
-  /** 띠×별자리 조합 개인화 한 줄 ("직진하는 🐯범띠 × 화려한 ♌사자자리인 당신에게") */
+  /** 띠×별자리 조합 개인화 한 줄 ("직진하는 범띠 × 화려한 사자자리인 당신에게") */
   persona?: string;
   /** 오늘 일진×내 띠 사주 (띠 설정 시에만). 결과 화면 '오늘의 사주 한 컷'용 */
   saju?: import('../lib/saju').SajuToday | null;
@@ -46,9 +46,9 @@ export type FortuneResult = {
   /** 쪽지 등급 (가챠 희귀도) */
   rarity: import('../lib/rarity').Rarity;
   /** 오늘의 행동 처방 — 결과의 주인공 */
-  dos: string[]; // ✅ 하면 좋은 것
-  dont: string; // 🚫 피할 것
-  luckyHint: string; // 🍀 행운 타이밍·색 (행동 제외 부분)
+  dos: string[]; // 하면 좋은 것
+  dont: string; // 피할 것
+  luckyHint: string; // 행운 타이밍·색 (행동 제외 부분)
   /** 하루 풀이 — 매일 볼 만한 분량의 해석 */
   reading: DailyReading;
   /** 기분에 맞춘 하루 설계 — 결과의 새 주인공 (/goal) */

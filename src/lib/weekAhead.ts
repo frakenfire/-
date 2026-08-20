@@ -2,7 +2,7 @@
 //
 // 이 기능이 이 앱에 맞는 이유:
 //  - 서버가 필요 없다. 사주 엔진이 날짜만 있으면 미래도 똑같이 계산한다.
-//  - 광고 수익을 깎지 않는다. 오히려 "목요일이 제일 좋대" → 그날 다시 오게 만든다.
+//  - 광고 수익을 깎지 않는다. 오히려 "목요일이 제일 좋대"  그날 다시 오게 만든다.
 //  - 스트릭에 줄 보상이 된다. 3일 연속이면 무료로 열리고, 아니면 광고로 연다.
 //    (습관 있는 유저는 보상으로, 없는 유저는 수익으로 — 양쪽 다 남는다)
 import { sajuToday, type SajuTone } from './saju.ts';
@@ -12,7 +12,7 @@ export type WeekDay = {
   dateKey: string;
   /** '월'~'일' */
   weekday: string;
-  /** 8월 14일 → '8/14' */
+  /** 8월 14일'8/14' */
   short: string;
   isToday: boolean;
   iljinKor: string;
@@ -82,13 +82,13 @@ export function computeWeekAhead(todayKey: string, zodiac: ZodiacId): WeekAhead 
 
 /** 주간 캘린더 공유 문구 — 링크는 shareMessage 가 붙인다. */
 export function buildWeekShareText(week: WeekAhead, zodiacLabel: string, zodiacEmoji: string): string {
-  const mark: Record<SajuTone, string> = { great: '◎', good: '○', steady: '△', caution: '▲' };
+  const mark: Record<SajuTone, string> = { great: '', good: '', steady: '', caution: '' };
   return [
-    `🗓️ ${zodiacEmoji}${zodiacLabel} 이번 주 운세`,
+    ` ${zodiacEmoji}${zodiacLabel} 이번 주 운세`,
     ``,
     ...week.days.map((d) => `${mark[d.tone]} ${d.weekday} ${d.short} · ${d.toneWord}`),
     ``,
-    `👑 ${week.headline}`,
-    `네 띠는 이번 주 어떤지 봐봐 👇`,
+    ` ${week.headline}`,
+    `네 띠는 이번 주 어떤지 봐봐 `,
   ].join('\n');
 }

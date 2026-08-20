@@ -19,20 +19,20 @@ export type ShareOutcome = 'shared' | 'copied' | 'cancelled' | 'failed';
 
 export function buildShareText(b: ShareBriefing): string {
   const head = b.brag
-    ? `💌 오늘쪽지 · ${b.title} · 총운 ${b.score}점 (${b.brag}) 🏆`
-    : `💌 오늘쪽지 · ${b.title} (총운 ${b.score}점)`;
+    ? `오늘쪽지 · ${b.title} · 총운 ${b.score}점 (${b.brag}) `
+    : `오늘쪽지 · ${b.title} (총운 ${b.score}점)`;
   // 콕집기(콜드리딩)를 첫 인용으로 — 받는 사람이 '어떻게 알았지'를 먼저 느끼게.
   const hook = b.pinpoint
-    ? [`"${b.pinpoint}"`, `↑ 이거 완전 내 얘기라 소름. 진짜 잘 맞아`, ``]
+    ? [`"${b.pinpoint}"`, `이거 완전 내 얘기라 소름. 진짜 잘 맞아`, ``]
     : [`"${b.headline}"`, ``];
   return [
     head,
     ``,
     ...hook,
-    `✅ 이렇게 보내요: ${b.doItem}`,
-    `🌙 오늘은 접어둬요: ${b.dontItem}`,
+    `이렇게 보내요: ${b.doItem}`,
+    `오늘은 접어둬요: ${b.dontItem}`,
     ``,
-    `너한테는 뭐라고 하는지 봐봐 👀`,
+    `너한테는 뭐라고 하는지 봐봐 `,
   ].join('\n');
 }
 
@@ -53,7 +53,7 @@ async function appendTossLink(text: string, path: string): Promise<string> {
     if (getTossShareLink && (getTossShareLink as { isSupported?: () => boolean }).isSupported?.() !== false) {
       const deepPath = `intoss://${INTOSS_APP_SLUG}${path === '/' ? '' : path}`;
       const link = await getTossShareLink(deepPath);
-      if (link) return `${text}\n\n👉 ${link}`;
+      if (link) return `${text}\n\n ${link}`;
     }
   } catch {
     /* 딥링크 실패 시 링크 없이 공유 */
@@ -103,7 +103,7 @@ export async function shareMessage(text: string, path = '/'): Promise<ShareOutco
       return 'shared';
     } catch (e) {
       if (isAbort(e)) return 'cancelled';
-      // 토스 공유 실패 → 아래 웹 표준으로 폴백
+      // 토스 공유 실패 아래 웹 표준으로 폴백
     }
   }
 
@@ -116,12 +116,12 @@ export async function shareMessage(text: string, path = '/'): Promise<ShareOutco
       await nav.share({ title: '오늘쪽지 뽑기', text });
       return 'shared';
     } catch (e) {
-      if (isAbort(e)) return 'cancelled'; // 사용자가 취소 → 복사로 넘어가지 않는다
+      if (isAbort(e)) return 'cancelled'; // 사용자가 취소 복사로 넘어가지 않는다
       // 미지원/기타 오류만 복사로 폴백
     }
   }
 
-  // 3) 공유 자체가 불가능한 환경 → 문구 복사
+  // 3) 공유 자체가 불가능한 환경 문구 복사
   return (await copyText(text)) ? 'copied' : 'failed';
 }
 
@@ -140,7 +140,7 @@ export async function shareBriefing(b: ShareBriefing, path = '/'): Promise<Share
 }
 
 
-// ── 띠 서열 공유 문구 ────────────────────────────────────────
+//  띠 서열 공유 문구 
 // 단톡방에 던져지는 앱의 얼굴. 순위마다 기운 한 단어를 붙여 '내용'이 있게 하고,
 // 받은 사람이 자기 순위를 확인하러 들어오게 훅으로 닫는다. (링크는 shareMessage 가 붙임)
 export type RankingShareRow = { label: string; emoji: string; toneWord: string };
@@ -151,20 +151,20 @@ export function buildRankingShareText(args: {
   last: RankingShareRow;
   me?: { label: string; emoji: string; rank: number; gloss: string } | null;
 }): string {
-  const medal = ['🥇', '🥈', '🥉'];
+  // 메달 이모지 대신 숫자 — 토스는 이모지를 나란히 붙이지 않고, 순위는 숫자가 더 정확하다.
   const lines = [
-    `🏆 오늘의 띠 서열 · ${args.dateLabel}`,
+    `오늘의 띠 서열 · ${args.dateLabel}`,
     ``,
-    ...args.top3.map((r, i) => `${medal[i]} ${r.emoji} ${r.label} · ${r.toneWord}`),
+    ...args.top3.map((r, i) => `${i + 1}위 ${r.emoji}${r.label} · ${r.toneWord}`),
     `⋯`,
-    `😇 12위 ${args.last.emoji} ${args.last.label} · ${args.last.toneWord}`,
+    `12위 ${args.last.emoji}${args.last.label} · ${args.last.toneWord}`,
     ``,
   ];
   if (args.me) {
     lines.push(`나(${args.me.emoji}${args.me.label})는 오늘 ${args.me.rank}위 — ${args.me.gloss}`);
-    lines.push(`네 띠는 몇 위게? 3초면 나와 👇`);
+    lines.push(`네 띠는 몇 위게? 3초면 나와`);
   } else {
-    lines.push(`네 띠는 몇 위인지 3초면 나와 👇`);
+    lines.push(`네 띠는 몇 위인지 3초면 나와`);
   }
   return lines.join('\n');
 }

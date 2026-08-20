@@ -23,7 +23,7 @@ export class ErrorBoundary extends Component<Props, State> {
         <div className="app">
           <div className="center-hero" style={{ minHeight: '100dvh', padding: 24 }}>
             <div style={{ fontSize: 56 }} aria-hidden>
-              💌
+              
             </div>
             <h1 className="h2" style={{ textAlign: 'center' }}>
               앗, 쪽지가 바람에 날아갔어요
