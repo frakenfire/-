@@ -71,7 +71,7 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     shadow: '기분이 그대로 새어나가서 주변이 같이 출렁일 때가 있어요.',
     shines: '가라앉은 자리에 들어가 공기를 바꿔놓을 때',
     hue: '#f57800',
-    hueText: '#bc1b2a',
+    hueText: '#e45600',
   },
   jeong: {
     id: 'jeong', hanja: '丁', kor: '정화', icon: '🕯️', name: '촛불',
@@ -81,8 +81,8 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     strengths: ['집중력', '눈치', '깊이'],
     shadow: '너무 잘 알아채서 혼자 마음을 앓을 때가 많아요.',
     shines: '아무도 못 본 디테일을 짚어낼 때',
-    hue: '#f66570',
-    hueText: '#bc1b2a',
+    hue: '#ffa927',
+    hueText: '#e45600',
   },
   mu: {
     id: 'mu', hanja: '戊', kor: '무토', icon: '⛰️', name: '큰 산',

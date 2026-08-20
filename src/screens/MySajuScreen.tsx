@@ -22,21 +22,14 @@ type Props = {
 };
 
 const EL_ORDER: Element[] = ['wood', 'fire', 'earth', 'metal', 'water'];
-// 막대·채움용(밝은 값)과 글자용(AA 통과하는 어두운 값)을 나눈다.
-// 같은 색을 둘 다 쓰면 노랑·초록이 흰 배경에서 2점대로 떨어져 글자가 안 읽힌다.
+// 오행 색은 점·막대 같은 장식에만 쓴다. 글자에 얹으면 대비가 떨어지고,
+// 특히 화(火)의 붉은색은 토스에서 '오류' 로 읽혀 멀쩡한 사주가 경고처럼 보인다.
 const EL_HUE: Record<Element, string> = {
   wood: 'var(--el-wood)',
   fire: 'var(--el-fire)',
   earth: 'var(--el-earth)',
   metal: 'var(--el-metal)',
   water: 'var(--el-water)',
-};
-const EL_TEXT: Record<Element, string> = {
-  wood: 'var(--el-wood-text)',
-  fire: 'var(--el-fire-text)',
-  earth: 'var(--el-earth-text)',
-  metal: 'var(--el-metal-text)',
-  water: 'var(--el-water-text)',
 };
 
 // 내 사주 한 장 — 여덟 글자, 오행 저울, 기운의 방향.
@@ -121,13 +114,14 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
               <span className="pcol__label">{c.label}</span>
               {c.pillar ? (
                 <>
-                  <span className="pcol__stem" style={{ color: EL_TEXT[stemEl(c.pillar.stem)] }}>
-                    {c.pillar.hanja[0]}
-                  </span>
-                  <span className="pcol__branch" style={{ color: EL_TEXT[branchEl(c.pillar.branch)] }}>
-                    {c.pillar.hanja[1]}
-                  </span>
+                  <span className="pcol__stem">{c.pillar.hanja[0]}</span>
+                  <span className="pcol__branch">{c.pillar.hanja[1]}</span>
                   <span className="pcol__kor">{c.pillar.kor}</span>
+                  {/* 오행은 글자색이 아니라 점으로 — 한자 넷이 제각각 색이면 산만하다 */}
+                  <span className="pcol__els" aria-hidden>
+                    <i style={{ background: EL_HUE[stemEl(c.pillar.stem)] }} />
+                    <i style={{ background: EL_HUE[branchEl(c.pillar.branch)] }} />
+                  </span>
                 </>
               ) : (
                 <>
@@ -160,7 +154,8 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
             const pct = Math.round(profile.balance[e] * 100);
             return (
               <li key={e} className="elbal-row">
-                <span className="elbal-row__k" style={{ color: EL_TEXT[e] }}>
+                <span className="elbal-row__k">
+                  <i className="elbal-row__dot" style={{ background: EL_HUE[e] }} aria-hidden />
                   {ELEMENT_SHORT[e]}
                 </span>
                 <span className="elbal-row__bar">

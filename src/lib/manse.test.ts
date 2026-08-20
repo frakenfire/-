@@ -17,6 +17,8 @@ import { dailyForMe, needFit, asSajuToday } from './dailySaju.ts';
 import { generateFortune } from './generateFortune.ts';
 import { NOTES } from '../data/notes.ts';
 import { saveBirth, loadBirth, clearAllData } from './storage.ts';
+import { pickNotesFor } from './pickNotes.ts';
+import { NOTE_DIRECTION } from '../data/noteDirection.ts';
 
 // ── 천문 계산 ──────────────────────────────────────────────────────────────
 
@@ -536,4 +538,63 @@ test('한 화면에 같은 문장이 두 번 찍히지 않는다', () => {
       assert.notEqual(s.title, s.headline, `${y}/${dateKey}: 제목과 헤드라인이 같다`);
     }
   }
+});
+
+test('생년월일이 쪽지 후보 자체를 바꾼다 (받아놓고 안 쓰면 의미가 없다)', () => {
+  const base = { dateKey: '2026-08-19', fortuneType: 'tomorrow', mood: 'soso', nonce: 0 };
+  const combos = new Set<string>();
+  for (let y = 1960; y <= 2010; y += 1) {
+    for (const h of [3, 9, 15, 21]) {
+      const r = pickNotesFor(NOTES, 3, {
+        ...base,
+        birth: { year: y, month: (y % 12) + 1, day: 15, hour: h },
+      });
+      assert.equal(r.notes.length, 3);
+      assert.equal(new Set(r.notes.map((n) => n.id)).size, 3, '같은 쪽지가 두 번 놓였다');
+      assert.equal(r.personal, true);
+      combos.add(r.notes.map((n) => n.id).sort().join(','));
+    }
+  }
+  // 같은 날·같은 기분이어도 사람마다 다른 세 장이 놓여야 한다
+  assert.ok(combos.size > 120, `204명이 ${combos.size}가지 조합밖에 못 받는다`);
+});
+
+test('오늘 기운이 넘치면 쉬어가는 쪽지가, 모자라면 나서는 쪽지가 더 자주 놓인다', () => {
+  // 확률만 기울일 뿐 막지는 않는다 — 뽑기의 우연을 없애면 그건 더 이상 뽑는 게 아니다.
+  let pushWhenNeeded = 0;
+  let holdWhenExcess = 0;
+  let needed = 0;
+  let excess = 0;
+  for (let y = 1960; y <= 2010; y += 1) {
+    const birth = { year: y, month: (y % 12) + 1, day: 15, hour: 9 };
+    for (let i = 0; i < 8; i += 1) {
+      const dateKey = addDaysKey('2026-01-01', i * 7);
+      const r = pickNotesFor(NOTES, 3, { dateKey, fortuneType: 'tomorrow', mood: 'soso', nonce: 0, birth });
+      const dirs = r.notes.map((n) => NOTE_DIRECTION[n.id] ?? 'any');
+      if (r.leaning === 'push') {
+        needed += 1;
+        pushWhenNeeded += dirs.filter((d) => d === 'push').length;
+      }
+      if (r.leaning === 'hold') {
+        excess += 1;
+        holdWhenExcess += dirs.filter((d) => d === 'hold').length;
+      }
+    }
+  }
+  // 기울이지 않았다면 방향이 맞는 쪽지는 3장 중 평균 1장 남짓이다. 그보다 확실히 많아야 한다.
+  assert.ok(needed > 0 && excess > 0, '두 방향 표본이 모두 있어야 한다');
+  assert.ok(pushWhenNeeded / needed > 1.2, `모자랄 때 나서는 쪽지 평균 ${(pushWhenNeeded / needed).toFixed(2)}장`);
+  assert.ok(holdWhenExcess / excess > 1.2, `넘칠 때 쉬어가는 쪽지 평균 ${(holdWhenExcess / excess).toFixed(2)}장`);
+});
+
+test('사주가 없어도 쪽지는 정상적으로 세 장 놓인다', () => {
+  const r = pickNotesFor(NOTES, 3, {
+    dateKey: '2026-08-19',
+    fortuneType: 'tomorrow',
+    mood: 'soso',
+    nonce: 0,
+  });
+  assert.equal(r.notes.length, 3);
+  assert.equal(r.personal, false);
+  assert.equal(r.leaning, null);
 });

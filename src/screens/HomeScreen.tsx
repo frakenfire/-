@@ -218,8 +218,8 @@ export function HomeScreen({
           <span className="saju-entry__icon" aria-hidden>🔮</span>
           <span className="saju-entry__text">
             <span className="saju-entry__k">지금은 모두에게 같은 쪽지예요</span>
-            <strong className="saju-entry__v">쪽지를 나에게 맞추기</strong>
-            <span className="saju-entry__sub">생년월일을 넣으면 오늘 쪽지가 나만의 것이 돼요</span>
+            <strong className="saju-entry__v">생년월일 넣고 나만의 쪽지 받기</strong>
+            <span className="saju-entry__sub">태어난 날짜와 시각으로 오늘 뽑히는 쪽지가 달라져요</span>
           </span>
           <span className="saju-entry__chev" aria-hidden>›</span>
         </button>

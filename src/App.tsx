@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { FortuneResult, FortuneType, Mood, Note } from './types/fortune.ts';
 import { NOTES } from './data/notes.ts';
 import { FORTUNE_LABEL } from './data/fortuneTypes.ts';
-import { hashSeed, pickBySeed, todayKey } from './lib/dateSeed.ts';
+import { todayKey } from './lib/dateSeed.ts';
+import { pickNotesFor } from './lib/pickNotes.ts';
 import { generateFortune } from './lib/generateFortune.ts';
 import { luckPercentile } from './lib/luck.ts';
 import { showRewardAd, isRewarded, isUnsupportedFreePass, adResultMessage } from './lib/ads.ts';
@@ -94,12 +95,28 @@ export default function App() {
 
   const yesterdayRecord = useMemo(() => getRecordForDate(yesterdayKey), [yesterdayKey]);
 
-  // 쪽지 후보 3장은 날짜뿐 아니라 운세 종류·기분까지 반영해, 같은 날
-  // 연애운/금전운/직장운에서 똑같은 세 장이 나오지 않게 한다.
-  const shownNotes = useMemo(() => {
-    const seed = hashSeed(`${dateKey}#${fortuneType ?? ''}#${mood ?? ''}#${drawNonce}`);
-    return pickBySeed(NOTES, 3, seed);
-  }, [dateKey, fortuneType, mood, drawNonce]);
+  // 내 사주 — 띠(1/12)로는 '나를 위한 결과'가 안 나온다.
+  // 저장은 이 기기 localStorage 뿐이고 서버로 나가지 않는다.
+  const [birth, setBirth] = useState<StoredBirth | null>(() => loadBirth());
+  const birthInput = useMemo(
+    () => (birth ? parseBirth(birth.date, birth.time) : null),
+    [birth],
+  );
+
+  // 오늘 내 앞에 놓이는 쪽지 세 장 — 날짜·운세종류·기분에 더해 생년월일까지 반영한다.
+  // 사주를 넣었으면 오늘 기운이 모자란/넘치는 쪽에 따라 후보가 기운다.
+  const notePick = useMemo(
+    () =>
+      pickNotesFor(NOTES, 3, {
+        dateKey,
+        fortuneType: fortuneType ?? '',
+        mood: mood ?? '',
+        nonce: drawNonce,
+        birth: birthInput,
+      }),
+    [dateKey, fortuneType, mood, drawNonce, birthInput],
+  );
+  const shownNotes = notePick.notes;
 
   // 결과는 뽑는 순간 한 번만 생성 (편지 조합의 직전 회피 로직이 재계산에 영향받지 않도록)
   const [result, setResult] = useState<FortuneResult | null>(null);
@@ -423,11 +440,6 @@ export default function App() {
   // ── 내 사주 ──
   // 띠(1/12)로는 '나를 위한 결과'가 안 나온다. 생년월일시를 받아 사주 여덟 글자를 세운다.
   // 저장은 이 기기 localStorage 뿐이고 서버로 나가지 않는다.
-  const [birth, setBirth] = useState<StoredBirth | null>(() => loadBirth());
-  const birthInput = useMemo(
-    () => (birth ? parseBirth(birth.date, birth.time) : null),
-    [birth],
-  );
 
   function handleSaveBirth(b: StoredBirth) {
     setBirth(b);
@@ -580,6 +592,7 @@ export default function App() {
           busy={busy}
           openingId={busy ? note?.id : undefined}
           fortuneLabel={fortuneType ? FORTUNE_LABEL[fortuneType] : ''}
+          personal={notePick.personal}
           onPick={handlePick}
           onBack={() => setScreen('mood')}
         />

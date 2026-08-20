@@ -325,12 +325,13 @@ async function run(browser) {
 
       // 사주를 아직 안 만든 사람에게 진입점이 보이고, 이유가 함께 있어야 한다
       const home = await bodyText(page);
-      check(home.includes('쪽지를 나에게 맞추기'), '[사주] 홈에 진입점 노출');
+      check(home.includes('생년월일 넣고 나만의 쪽지 받기'), '[사주] 홈에 진입점 노출');
+      check(home.includes('생년월일'), '[사주] 무엇을 넣는지가 홈에서 바로 보임');
       check(home.includes('모두에게 같은 쪽지'), '[사주] 왜 필요한지 이유가 함께 보임');
       // 사주는 별도 기능이 아니라 쪽지를 맞추기 위한 것 — 문구가 쪽지에 봉사해야 한다
-      check(/오늘 쪽지가 나만의 것이 돼요/.test(home), '[사주] 진입 문구가 쪽지에 봉사함');
+      check(/오늘 뽑히는 쪽지가 달라져요/.test(home), '[사주] 진입 문구가 쪽지에 봉사함');
 
-      await page.getByText('쪽지를 나에게 맞추기', { exact: false }).first().click();
+      await page.getByText('생년월일 넣고 나만의 쪽지 받기', { exact: false }).first().click();
       await wait(page, 800);
       check((await bodyText(page)).includes('언제 태어났어요'), '[사주입력] 화면 진입');
       // 개인정보를 받는 화면이므로 어디에 저장되는지 먼저 말해야 한다
@@ -442,6 +443,9 @@ async function run(browser) {
       await wait(page, 500);
       await page.locator('button', { hasText: '그냥 그래요' }).first().click();
       await wait(page, 600);
+      // 생년월일을 받아놓고 정작 뽑는 쪽지에 안 쓰면 "그래서 뭐가 달라졌지" 가 된다
+      check((await page.locator('.pick-basis').count()) === 1,
+        '[사주] 쪽지 후보에 사주가 쓰였음을 밝힘');
       await page.locator('[class*="note"]').first().click();
       await wait(page, 4300);
 
@@ -474,7 +478,7 @@ async function run(browser) {
       await wait(page, 900);
       check((await page.locator('.saju-entry--done').count()) === 0,
         '[사주] 삭제 후 홈 배지가 사라짐');
-      check((await bodyText(page)).includes('쪽지를 나에게 맞추기'),
+      check((await bodyText(page)).includes('생년월일 넣고'),
         '[사주] 삭제 후 다시 만들기로 되돌아감');
       const gone = await page.evaluate(() => window.localStorage.getItem('tomorrowNoteBirth'));
       check(gone === null, '[사주] 삭제 후 저장소에 생년월일이 남지 않음', String(gone));

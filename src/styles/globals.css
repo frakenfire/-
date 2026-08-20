@@ -3412,6 +3412,23 @@ a:focus-visible {
 .saju-entry:active {
   transform: scale(0.98);
 }
+/* 아직 안 넣은 사람에게는 '할 일' 로 보여야 한다. 흰 카드면 목록의 한 줄처럼 지나친다. */
+.saju-entry:not(.saju-entry--done) {
+  background: var(--brand-soft);
+  border-color: #c9e2ff;
+}
+.saju-entry:not(.saju-entry--done) .saju-entry__icon {
+  background: var(--white);
+}
+.saju-entry:not(.saju-entry--done) .saju-entry__v {
+  color: var(--brand-strong);
+}
+/* 파란 배경에선 gray-600 이 4.11:1 로 AA 미달 — 보조 문구도 한 단계 진하게 */
+.saju-entry:not(.saju-entry--done) .saju-entry__k,
+.saju-entry:not(.saju-entry--done) .saju-entry__sub {
+  color: var(--gray-700);
+}
+
 /* 사주를 세운 사람에겐 자기 일간 색을 띠처럼 둘러준다 — '내 것'이라는 신호 */
 .saju-entry--done {
   border-left: 4px solid var(--saju-hue, var(--brand));
@@ -3772,11 +3789,23 @@ a:focus-visible {
   font-weight: 800;
   color: var(--gray-700);
 }
+ /* 한자는 검정. 오행은 아래 점으로 알린다 — 글자마다 색이 다르면 산만하고, 화(火)의 붉은색은 경고처럼 보인다 */
 .pcol__stem,
 .pcol__branch {
   font-size: 26px;
   font-weight: 800;
   line-height: 1.15;
+  color: var(--gray-900);
+}
+.pcol__els {
+  display: flex;
+  gap: 3px;
+  margin-top: 4px;
+}
+.pcol__els i {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
 }
 .pcol__stem--none,
 .pcol__branch--none {
@@ -3840,8 +3869,18 @@ a:focus-visible {
   gap: 10px;
 }
 .elbal-row__k {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   font-size: 13px;
   font-weight: 800;
+  color: var(--gray-700);
+}
+.elbal-row__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  flex: 0 0 auto;
 }
 .elbal-row__bar {
   display: block;
@@ -4231,4 +4270,19 @@ a:focus-visible {
 .mygod__why b {
   font-weight: 800;
   color: var(--gray-800);
+}
+
+/* 쪽지 후보의 근거 한 줄 — 생년월일이 실제로 쓰였다는 걸 뽑기 직전에 알린다 */
+.pick-basis {
+  margin: var(--space-3) 0 0;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: var(--brand-soft);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--brand-strong);
+  text-align: center;
+}
+.pick-basis b {
+  font-weight: 800;
 }

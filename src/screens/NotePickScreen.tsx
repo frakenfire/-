@@ -23,6 +23,8 @@ type Props = {
   fortuneLabel: string;
   onPick: (note: Note) => void;
   onBack: () => void;
+  /** 사주가 후보 선정에 반영됐는지 — 근거를 화면에서 밝힌다 */
+  personal?: boolean;
 };
 
 // PRD §5.3 — 접힌 쪽지 3장 중 1장 선택. 선택 시 해당 쪽지가 펼쳐지는 모션.
@@ -33,6 +35,7 @@ export function NotePickScreen({
   fortuneLabel,
   onPick,
   onBack,
+  personal = false,
 }: Props) {
   const teasers = pickTeasers(`${todayKey()}|${fortuneLabel}`);
 
@@ -43,6 +46,11 @@ export function NotePickScreen({
         {NOTE_PICK.title}
       </h2>
       <p className="lead">{NOTE_PICK.lead}</p>
+      {/* 생년월일을 받아놓고 쪽지 후보에 안 쓰면 "그래서 뭐가 달라졌지" 가 된다.
+          반영됐다는 사실을 이 자리에서 밝힌다. */}
+      {personal ? (
+        <p className="pick-basis">🔮 오늘 기운에 맞춰 <b>내 사주로 고른</b> 세 장이에요</p>
+      ) : null}
 
       <div className="note-row">
         {notes.map((note, i) => (
