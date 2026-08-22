@@ -34,7 +34,26 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
   const notice = useMemo(() => (input ? boundaryNotice(input) : null), [input]);
   const dm = preview ? DAY_MASTER_BY_INDEX[preview.dayStem] : null;
 
-  const ready = date !== '' && (unknownTime || time !== '');
+  const [nudge, setNudge] = useState<string | null>(null);
+
+  // 버튼을 비활성으로 두지 않는다. 누르면 뭐가 모자란지 말해주는 편이
+  // '왜 안 눌리지' 로 멈추는 것보다 낫다.
+  function handleSubmit() {
+    if (!date) {
+      setNudge('생년월일을 먼저 골라 주세요.');
+      return;
+    }
+    if (!unknownTime && !time) {
+      setNudge('태어난 시각을 고르거나, 모르면 아래를 체크해 주세요.');
+      return;
+    }
+    if (!input) {
+      setNudge('날짜를 다시 확인해 주세요.');
+      return;
+    }
+    setNudge(null);
+    onSave({ date, time: unknownTime ? null : time });
+  }
 
   return (
     <AppLayout onBack={onBack} step={inFlow ? 1 : undefined} totalSteps={inFlow ? 4 : undefined}>
@@ -55,6 +74,8 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
             max={MAX_DATE}
             min="1900-01-01"
             onChange={(e) => setDate(e.target.value)}
+            onInput={(e) => setDate((e.target as HTMLInputElement).value)}
+            onBlur={(e) => setDate(e.target.value)}
           />
         </label>
 
@@ -66,6 +87,8 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
             value={time}
             disabled={unknownTime}
             onChange={(e) => setTime(e.target.value)}
+            onInput={(e) => setTime((e.target as HTMLInputElement).value)}
+            onBlur={(e) => setTime(e.target.value)}
           />
         </label>
 
@@ -95,10 +118,13 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
             {dm.icon}
           </span>
           <strong className="birth-peek__name">
-            {dm.hanja} {dm.name}
+            {dm.name}
           </strong>
           <span className="birth-peek__tag">{dm.tagline}</span>
-          <span className="birth-peek__pillars">{preview.year.hanja} {preview.month.hanja} {preview.day.hanja}{preview.hour ? ` ${preview.hour.hanja}` : ''}</span>
+          <span className="birth-peek__pillars">
+            {preview.year.kor} {preview.month.kor} {preview.day.kor}
+            {preview.hour ? ` ${preview.hour.kor}` : ''}
+          </span>
         </div>
       ) : null}
 
@@ -110,13 +136,9 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
         </p>
       ) : null}
 
-      <button
-        type="button"
-        className="btn btn--primary"
-        disabled={!ready || !input}
-        onClick={() => input && onSave({ date, time: unknownTime ? null : time })}
-      >
-        {ready ? (inFlow ? '이 사주로 쪽지 뽑기' : '내 사주 보기') : '생년월일을 입력해 주세요'}
+      {nudge ? <p className="birth-nudge">{nudge}</p> : null}
+      <button type="button" className="btn btn--primary" onClick={handleSubmit}>
+        {inFlow ? '이 사주로 쪽지 뽑기' : '내 사주 보기'}
       </button>
       {/* 생년월일 없이 그냥 뽑고 싶은 사람도 있다. 막지 않되, 뭐가 빠지는지는 알려준다. */}
       {inFlow && onSkip ? (

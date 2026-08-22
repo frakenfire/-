@@ -239,7 +239,7 @@ export function ResultScreen({
       {result.saju ? (
         <div className="iljin fade-in">
           <div className="iljin__row">
-            <span className="iljin__seal" aria-hidden>{result.saju.iljin.hanja}</span>
+            <span className="iljin__seal" aria-hidden>{result.saju.iljin.kor}</span>
             <div className="iljin__flow">
               <span className="iljin__date">오늘의 일진 · {result.saju.iljin.kor}일</span>
               {/* 사주를 넣은 사람에겐 '내 띠' 가 아니라 '내 일간' 기준으로 말한다.
@@ -294,8 +294,8 @@ export function ResultScreen({
           </ul>
           {/* 사주 용어는 헤드라인이 아니라 근거 자리에 둔다 — 정확함은 지키되 앞세우지 않는다 */}
           <p className="mygod__why">
-            근거 · 내 일간 <b>{result.daily.myStemHanja}</b> × 오늘 일진{' '}
-            <b>{result.daily.iljin.hanja}</b> = <b>{TEN_GOD_KO[result.daily.dayGod]}</b>
+            근거 · 내 일간 <b>{result.daily.myStemKor}</b> × 오늘 <b>{result.daily.iljin.kor}</b>일 ={' '}
+            <b>{TEN_GOD_KO[result.daily.dayGod]}</b>
           </p>
         </div>
       ) : null}

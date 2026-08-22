@@ -38,6 +38,8 @@ export type DailyMe = {
   /** 내 일간 — 오행만으로는 특정할 수 없다(甲/乙 둘 다 목). 인덱스와 한자를 직접 싣는다. */
   myStem: number;
   myStemHanja: string;
+  /** 화면에는 한자 대신 한글을 쓴다 */
+  myStemKor: string;
   iljin: { hanja: string; kor: string; stemEl: Element; branchEl: Element };
   /** 오늘 일간이 내 일간에게 무슨 십신인가 — 오늘의 주제 */
   dayGod: TenGod;
@@ -173,6 +175,7 @@ export function dailyForMe(dateKey: string, pillars: FourPillars, profile: SajuP
     personal: true,
     myStem: pillars.dayStem,
     myStemHanja: pillars.dayMaster.hanja,
+    myStemKor: pillars.dayMaster.kor,
     iljin,
     dayGod,
     dayGodGroup,

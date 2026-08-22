@@ -56,10 +56,10 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
   function share() {
     onShare(
       [
-        `${dm.icon} 내 일간은 ${dm.hanja} ${dm.name}`,
+        `내 일간은 ${dm.name}(${dm.kor})`,
         `"${dm.tagline}"`,
         ``,
-        `사주 ${pillars.year.hanja} ${pillars.month.hanja} ${pillars.day.hanja}${pillars.hour ? ` ${pillars.hour.hanja}` : ''}`,
+        `사주 ${pillars.year.kor} ${pillars.month.kor} ${pillars.day.kor}${pillars.hour ? ` ${pillars.hour.kor}` : ''}`,
         `${strength.label} · ${group.keyword} 중심`,
         ``,
         `너는 무슨 일간인지 봐봐 `,
@@ -76,8 +76,9 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
           {dm.icon}
         </span>
         <h2 className="dm-hero__name">
-          <b>{dm.hanja}</b> {dm.name}
+          {dm.name}
         </h2>
+        <p className="dm-hero__kor">{dm.kor}</p>
         <p className="dm-hero__tag">{dm.tagline}</p>
         <p className="dm-hero__nature">{dm.nature}</p>
         <ul className="dm-chips">
@@ -114,9 +115,9 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
               <span className="pcol__label">{c.label}</span>
               {c.pillar ? (
                 <>
-                  <span className="pcol__stem">{c.pillar.hanja[0]}</span>
-                  <span className="pcol__branch">{c.pillar.hanja[1]}</span>
-                  <span className="pcol__kor">{c.pillar.kor}</span>
+                  {/* 한자는 읽을 수 있는 사람이 드물다. 한글로 보여주고 한자는 아예 뺀다. */}
+                  <span className="pcol__stem">{c.pillar.kor[0]}</span>
+                  <span className="pcol__branch">{c.pillar.kor[1]}</span>
                   {/* 오행은 글자색이 아니라 점으로 — 한자 넷이 제각각 색이면 산만하다 */}
                   <span className="pcol__els" aria-hidden>
                     <i style={{ background: EL_HUE[stemEl(c.pillar.stem)] }} />
@@ -127,14 +128,13 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
                 <>
                   <span className="pcol__stem pcol__stem--none">?</span>
                   <span className="pcol__branch pcol__branch--none">?</span>
-                  <span className="pcol__kor">시각 모름</span>
                 </>
               )}
             </div>
           ))}
         </div>
         <p className="pillars-card__foot">
-          가운데 <b>일간({pillars.dayMaster.hanja})</b>이 '나'예요. 나머지 글자는 전부 나와의
+          가운데 <b>일간({pillars.dayMaster.kor})</b>이 '나'예요. 나머지 글자는 전부 나와의
           관계로 읽어요.
         </p>
         {pillars.corrections.notes.length > 0 ? (

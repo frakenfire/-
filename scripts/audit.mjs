@@ -358,9 +358,14 @@ async function run(browser) {
         '[사주입력] 저장 위치를 먼저 고지');
       await diagnose(page, '사주입력');
 
-      // 아무것도 안 넣었을 때 CTA 가 눌리면 안 된다
-      const ctaDisabled = await page.locator('.btn--primary').first().isDisabled();
-      check(ctaDisabled, '[사주입력] 미입력 상태에서 진행 차단');
+      // 버튼을 잠그지 않는다 — 네이티브 피커 값이 안 들어오면 '왜 안 눌리지' 로 멈춘다.
+      // 대신 누르면 뭐가 모자란지 알려줘야 한다.
+      check(!(await page.locator('.btn--primary').first().isDisabled()),
+        '[사주입력] 버튼을 비활성으로 잠그지 않음');
+      await page.locator('.btn--primary').first().click();
+      await wait(page, 400);
+      check((await bodyText(page)).includes('생년월일을 먼저 골라 주세요'),
+        '[사주입력] 미입력으로 누르면 뭐가 빠졌는지 알려줌');
 
       // 입춘 경계(2024-02-04 10:00) — 달력 띠와 사주 띠가 갈리는 날
       await page.locator('input[type="date"]').fill('2024-02-04');

@@ -140,7 +140,7 @@ export function HomeScreen({
           잠긴 결과(?점·?)로 궁금증/FOMO 유발 뽑아야 전부 열림 */}
       <button type="button" className="today-hook" onClick={onStart}>
         <span className="today-hook__kw">
-           오늘의 일진 · {iljin.kor}({iljin.hanja})일
+           오늘의 일진 · {iljin.kor}일
         </span>
         {zodiac && saju ? (
           <>
