@@ -77,6 +77,24 @@ async function newPage(browser, opts = {}) {
 const bodyText = (page) => page.locator('body').innerText();
 const wait = (page, ms) => page.waitForTimeout(ms);
 
+// 휠 피커에서 생년월일시를 고른다 (보이는 항목을 눌러 선택)
+async function pickBirth(page, { year, month, day, ampm, hour, minute }) {
+  const tap = async (label, text) => {
+    const wheel = page.locator('.wheel').filter({ has: page.getByRole('listbox', { name: label }) });
+    await wheel.getByRole('option', { name: text, exact: true }).first().click();
+    await wait(page, 250);
+  };
+  await tap('태어난 해', String(year));
+  await tap('태어난 달', `${month}월`);
+  await tap('태어난 날', `${day}일`);
+  if (ampm) {
+    await tap('오전 오후', ampm);
+    await tap('시', `${hour}시`);
+    await tap('분', `${minute}분`);
+  }
+  await wait(page, 400);
+}
+
 async function setZodiac(page, label = '🐶 개띠') {
   await page.getByText('내 띠 고르면', { exact: false }).first().click();
   await wait(page, 250);
@@ -362,15 +380,13 @@ async function run(browser) {
       // 대신 누르면 뭐가 모자란지 알려줘야 한다.
       check(!(await page.locator('.btn--primary').first().isDisabled()),
         '[사주입력] 버튼을 비활성으로 잠그지 않음');
-      await page.locator('.btn--primary').first().click();
-      await wait(page, 400);
-      check((await bodyText(page)).includes('생년월일을 먼저 골라 주세요'),
-        '[사주입력] 미입력으로 누르면 뭐가 빠졌는지 알려줌');
+      // 휠은 늘 값을 갖고 있어 '미입력' 상태가 없다 — 대신 기본값으로도 바로 진행되는지 본다
+      check((await page.locator('.wheel').count()) === 6, '[사주입력] 생년월일·시각 휠 6개');
+      check((await page.locator('.birth-peek').count()) === 1, '[사주입력] 기본값에서도 미리보기가 뜬다');
 
       // 입춘 경계(2024-02-04 10:00) — 달력 띠와 사주 띠가 갈리는 날
-      await page.locator('input[type="date"]').fill('2024-02-04');
-      await page.locator('input[type="time"]').fill('10:00');
-      await wait(page, 600);
+      // 휠은 굴려도 되고 눌러도 된다 — 자동화는 누르는 쪽으로 확인한다
+      await pickBirth(page, { year: 2024, month: 2, day: 4, ampm: '오전', hour: 10, minute: '00' });
       const peek = await bodyText(page);
       check(/당신의 일간/.test(peek), '[사주입력] 입력 도중 미리보기 노출');
       check(peek.includes('앞 해의 띠'), '[사주입력] 입춘 경계 안내가 뜬다');
@@ -380,8 +396,8 @@ async function run(browser) {
       // 시각 모름 경로도 살아 있어야 한다 (모르는 사람이 많다)
       await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
       await wait(page, 500);
-      check((await page.locator('input[type="time"]').isDisabled()),
-        '[사주입력] 시각 모름 선택 시 시간 입력 비활성');
+      check((await page.locator('.wheel--off').count()) === 3,
+        '[사주입력] 시각 모름 선택 시 시각 휠 세 개가 비활성');
       check((await bodyText(page)).includes('세 기둥'), '[사주입력] 시각 없이도 되는 이유 설명');
       await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
       await wait(page, 400);
@@ -424,8 +440,7 @@ async function run(browser) {
       await wait(page, 800);
       check((await bodyText(page)).includes('언제 태어났어요'), '[사주] 수정 버튼 → 입력 화면');
       // 수정 화면엔 기존 값이 채워져 있어야 한다 (처음부터 다시 입력시키면 안 된다)
-      check((await page.locator('input[type="date"]').inputValue()) === '2024-02-04',
-        '[사주] 수정 시 기존 값 유지');
+      check((await bodyText(page)).includes('2024년 2월 4일'), '[사주] 수정 시 기존 값 유지');
 
       // 새로고침해도 사주가 남고, 홈 진입점이 내 일간으로 바뀌어야 한다
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });

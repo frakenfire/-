@@ -3561,6 +3561,16 @@ a:focus-visible {
 }
 .birth-unknown--on .birth-unknown__box {
   border-color: var(--brand);
+  background: var(--brand);
+}
+/* 체크는 이모지 대신 CSS 로 그린다 (토스 규칙: 이모지는 항목 아이콘 자리에만) */
+.birth-unknown--on .birth-unknown__box::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border: solid var(--white);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
 }
 .birth-hint {
   margin: 0;
@@ -3591,7 +3601,7 @@ a:focus-visible {
 .birth-peek__label {
   font-size: 11.5px;
   font-weight: 700;
-  color: var(--gray-600);
+  color: var(--gray-700);
 }
 .birth-peek__icon {
   font-size: 40px;
@@ -3612,7 +3622,7 @@ a:focus-visible {
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.14em;
-  color: var(--gray-600);
+  color: var(--gray-700);
 }
 .birth-warn {
   margin: 0 0 var(--space-4);
@@ -4356,4 +4366,92 @@ a:focus-visible {
   font-size: 12px;
   font-weight: 700;
   color: var(--gray-700);
+}
+
+/* ── 돌려서 고르는 피커 ──
+   네이티브 date/time 입력은 로케일을 따라가 '03/15/1994' 로 뜨고, 고른 값이
+   앱으로 안 넘어오는 경우가 있다. 직접 굴리고 눌러서 고르게 만든다. */
+.wheel {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 132px; /* 44 × 3칸 */
+}
+.wheel--off {
+  opacity: 0.4;
+  pointer-events: none;
+}
+/* 가운데 선택 띠 — 지금 무엇이 골라져 있는지 한눈에 */
+.wheel__band {
+  position: absolute;
+  top: 44px;
+  left: 0;
+  right: 0;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--brand-soft);
+  pointer-events: none;
+}
+.wheel__scroll {
+  position: relative;
+  height: 100%;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  /* 첫·마지막 항목도 가운데로 올 수 있게 위아래를 한 칸씩 비운다 */
+  padding: 44px 0;
+}
+.wheel__scroll::-webkit-scrollbar {
+  display: none;
+}
+.wheel__scroll:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 12px;
+}
+.wheel__item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 44px;
+  scroll-snap-align: center;
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gray-700); /* gray-500 은 흰 배경에서 3.04:1 로 AA 미달 */
+  background: none;
+}
+.wheel__item--on {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--brand-strong);
+}
+
+.wheel-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.wheel-group {
+  padding: var(--space-3) var(--space-3) var(--space-2);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+}
+.wheel-group__k {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-700);
+}
+.wheel-group__v {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--gray-900);
 }
