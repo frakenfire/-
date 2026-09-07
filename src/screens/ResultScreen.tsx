@@ -126,7 +126,9 @@ export function ResultScreen({
           (실제로 그동안 쪽지 이름이 결과 어디에도 안 나왔다) */}
       <div className={`drawn drawn--${note.color} fade-in`}>
         <span className="drawn__pin" aria-hidden />
-        <span className="drawn__icon" aria-hidden>{note.icon}</span>
+        <span className="drawn__icon" aria-hidden>
+          <Icon name={note.icon} size={26} />
+        </span>
         <span className="drawn__text">
           <span className="drawn__k">내가 뽑은 쪽지</span>
           <strong className="drawn__name">{note.name}</strong>
@@ -156,7 +158,7 @@ export function ResultScreen({
 
         <div className="briefing__chips">
           <span className="chip chip--type">
-            {note.icon} {result.title}
+            <Icon name={note.icon} size={15} /> {result.title}
           </span>
           <span className="chip chip--score">
             총운 <b className="num">{shownTotal}점</b> · {luck.grade}

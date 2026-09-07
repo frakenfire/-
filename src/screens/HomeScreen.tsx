@@ -454,7 +454,7 @@ export function HomeScreen({
       {yesterdayRecord && yNote ? (
         <div className="recap-card">
           <span className="recap-card__icon" aria-hidden>
-            {yNote.icon}
+            <Icon name={yNote.icon} size={22} />
           </span>
           <span className="recap-card__body">
             <span className="recap-card__label">어제 뽑은 쪽지</span>

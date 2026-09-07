@@ -1,3 +1,4 @@
+import type { IconName } from '../components/Icon.tsx';
 // PRD §11 — 데이터 구조
 
 export type FortuneType =
@@ -16,7 +17,7 @@ export type Note = {
   id: string;
   name: string;
   keyword: string;
-  icon: string; // 이모지
+  icon: IconName; // 선 아이콘 이름 (이모지 안 씀)
   color: NoteColor;
 };
 

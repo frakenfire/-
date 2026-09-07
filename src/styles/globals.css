@@ -380,9 +380,14 @@ a:focus-visible {
     opacity 0.3s ease,
     transform 0.3s ease;
 }
+/* 쪽지 위의 아이콘 — 종이 색 위에 얹히므로 진한 회색으로 그린다.
+   색 위에 색을 얹으면 둘 다 안 보인다. */
 .note__seal {
-  font-size: 30px;
-  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  color: var(--gray-800);
 }
 .note__hint {
   font-size: 11px;
@@ -392,6 +397,11 @@ a:focus-visible {
 }
 /* 쪽지 4색 — TDS 100/200 단계. 초록·파랑·노랑·빨강 네 계열이라 서로 확실히 구분되고,
    팔레트 밖으로 나가지 않는다. */
+/* 접힌 쪽지의 종이색 — 셋이 같아야 '무엇이 나올지 모른다'가 성립한다 */
+.note--paper {
+  background: var(--white);
+  border-color: var(--gray-200);
+}
 .note--green {
   background: #aeefd5;
   border-color: #76e4b8;
@@ -862,8 +872,15 @@ a:focus-visible {
   margin-top: var(--space-4);
 }
 .recap-card__icon {
-  font-size: 22px;
-  line-height: 31px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--gray-100);
+  color: var(--gray-800);
 }
 .recap-card__body {
   display: flex;
@@ -1020,6 +1037,9 @@ a:focus-visible {
   border-radius: 999px;
 }
 .chip--type {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   background: var(--gray-100);
   color: var(--gray-800);
 }
@@ -4173,9 +4193,14 @@ a:focus-visible {
 }
 .drawn__icon {
   flex: 0 0 auto;
-  margin-top: 6px;
-  font-size: 30px;
-  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--white);
+  color: var(--gray-800);
 }
 .drawn__text {
   display: flex;

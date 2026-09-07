@@ -205,7 +205,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
 
       <div className="reading-card reading-card--group">
         <p className="reading-card__badge">
-          {group.icon} {group.title}
+          {group.title}
         </p>
         <p className="reading-card__body">{group.body}</p>
         <ul className="god-chips">

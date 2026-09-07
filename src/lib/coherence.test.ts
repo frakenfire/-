@@ -228,7 +228,7 @@ test('재현성 — 같은 입력이면 몇 번을 호출해도 같은 결과다
   // localStorage 없는 테스트 환경 = pickFresh 회피 없이 순수 seed 경로.
   const input = {
     fortuneType: 'tomorrow' as const,
-    note: { id: 'n1', name: '테스트', keyword: 'k', icon: '✉️', color: 'softGreen' as const },
+    note: { id: 'n1', name: '테스트', keyword: 'k', icon: 'chat' as const, color: 'softGreen' as const },
     mood: 'soso' as const,
     dateKey: '2026-08-12',
     zodiac: 'dog' as const,

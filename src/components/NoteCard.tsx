@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { Icon } from './Icon.tsx';
 import type { Note } from '../types/fortune.ts';
 import { NOTE_COLOR_CLASS } from '../data/notes.ts';
 
@@ -21,7 +22,9 @@ export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, on
   return (
     <button
       type="button"
-      className={`note ${NOTE_COLOR_CLASS[note.color]}${faceDown ? ' note--facedown' : ''} note--${state}`}
+      /* 접힌 쪽지는 셋 다 같은 종이여야 한다. 색이 다르면 뒤집기 전부터
+         서로 다른 것이 보여서, 고르는 게 아니라 색을 고르는 일이 된다. */
+      className={`note ${faceDown ? 'note--paper note--facedown' : NOTE_COLOR_CLASS[note.color]} note--${state}`}
       style={
         {
           '--tilt': `${tilt}deg`,
@@ -32,7 +35,7 @@ export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, on
       aria-label={faceDown ? '쪽지 뽑기' : `${note.name} 쪽지`}
     >
       <span className="note__seal" aria-hidden>
-        {opening ?'' : faceDown ?'' : note.icon}
+        {opening || faceDown ? null : <Icon name={note.icon} size={26} />}
       </span>
       <span className="note__hint">
         {opening ? '두근두근' : faceDown ? (teaser ?? '쪽지') : note.name}
