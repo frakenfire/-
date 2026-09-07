@@ -214,7 +214,13 @@ export function HomeScreen({
         </button>
       ) : (
         <button type="button" className="saju-entry" onClick={onSaju}>
-          <span className="saju-entry__icon" aria-hidden></span>
+          <span className="saju-entry__icon" aria-hidden>
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
+              strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="5" width="18" height="16" rx="4" />
+              <path d="M3 10h18M8 3v4M16 3v4" />
+            </svg>
+          </span>
           <span className="saju-entry__text">
             <span className="saju-entry__k">지금은 모두에게 같은 쪽지예요</span>
             <strong className="saju-entry__v">생년월일 넣고 나만의 쪽지 받기</strong>

@@ -4,7 +4,6 @@
   box-sizing: border-box;
   -webkit-tap-highlight-color: transparent;
 }
-
 html,
 body,
 #root {
@@ -12,7 +11,6 @@ body,
   margin: 0;
   padding: 0;
 }
-
 body {
   font-family: var(--font-body);
   background: var(--color-cream);
@@ -23,26 +21,22 @@ body {
   letter-spacing: -0.01em;
   word-break: keep-all; /* 한글 단어 단위 줄바꿈 — 어색한 끊김 방지 */
 }
-
 .lucky-cell__v {
   font-family: var(--font-num);
   font-feature-settings: var(--fnum);
 }
-
 /* 숫자 강조 공통 — 고정폭 숫자(tnum)로 카운트업/순위 떨림 방지 */
 .num {
   font-family: var(--font-num);
   font-feature-settings: var(--fnum);
   font-variant-numeric: tabular-nums;
 }
-
 button {
   font-family: inherit;
   cursor: pointer;
   border: none;
   background: none;
 }
-
 /* 키보드 포커스 링 — 접근성 필수(마우스/터치엔 안 뜨고 키보드 탐색 시에만) */
 :focus-visible {
   outline: 2px solid var(--brand);
@@ -54,7 +48,6 @@ a:focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 3px;
 }
-
 /* ── AppLayout ── 375px 기준, 360~430px 대응 */
 .app {
   position: relative;
@@ -66,7 +59,6 @@ a:focus-visible {
   margin: 0 auto;
   background: var(--color-cream);
 }
-
 .app__nav {
   display: flex;
   align-items: center;
@@ -80,7 +72,6 @@ a:focus-visible {
   padding-right: var(--space-4);
   flex-shrink: 0;
 }
-
 .app__nav-back {
   width: 44px;
   height: 44px;
@@ -89,24 +80,24 @@ a:focus-visible {
   align-items: center;
   justify-content: center;
   font-size: 22px;
+  line-height: 31px;
   color: var(--color-dark-gray);
   border-radius: 999px;
 }
-
 .app__nav-title {
   font-size: 15px;
+  line-height: 22.5px;
   font-weight: 700;
   color: var(--color-dark-gray);
 }
-
 .app__body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: var(--space-4) var(--space-5) var(--space-6);
+  /* TDS 스크린 마진 — 좌우 24px. 20px 은 콘텐츠가 가장자리에 붙어 답답해 보인다 */
+  padding: var(--space-5) var(--space-6) var(--space-8);
   overflow-y: auto;
 }
-
 /* 헤더는 상단에 고정하고, 선택 콘텐츠(그리드·카드)만 남은 공간을
    꽉 채워 세로 중앙에 오게 한다. center(전체 중앙정렬)와 달리 제목이
    화면 중앙에 붕 뜨는 빈 공간을 없앤다. */
@@ -119,7 +110,6 @@ a:focus-visible {
   min-height: 0;
   padding: var(--space-4) 0;
 }
-
 /* 선택 그리드는 헤더 바로 아래 자연스럽게 두고(위로 쏠림 없음),
    하단엔 안내 푸터를 margin-top:auto 로 바닥에 고정해 화면 위아래
    구조를 잡는다. mood 화면과 같은, 빈 느낌이 안 드는 패턴. */
@@ -130,17 +120,18 @@ a:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   color: var(--gray-600);
 }
 .pick-foot__lock {
   font-size: 14px;
+  line-height: 21px;
 }
 .picker-grid .zodiac-chip {
   min-height: 52px;
 }
-
 .app__bottom {
   position: sticky;
   bottom: 0;
@@ -152,34 +143,34 @@ a:focus-visible {
   background: var(--color-cream);
   border-top: 1px solid var(--gray-100);
 }
-
 /* ── 타이포 ── */
 .h1 {
   font-size: 27px;
+  line-height: 36px;
   font-weight: 800;
   letter-spacing: -0.02em;
   margin: 0 0 var(--space-3);
   color: var(--color-dark-gray);
 }
-
 .h2 {
-  font-size: 21px;
+  font-size: 24px;
+  line-height: 33px;
   font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0 0 var(--space-4);
   color: var(--color-dark-gray);
 }
-
 .lead {
   font-size: 16px;
+  line-height: 24px;
   color: var(--color-text-secondary);
-  margin: 0 0 var(--space-2);
+  margin: 0 0 var(--space-5);
   white-space: pre-line;
 }
-
 .eyebrow {
   display: inline-block;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--brand-strong); /* 연파랑 배경 위 AA */
   background: var(--color-soft-green);
@@ -187,13 +178,13 @@ a:focus-visible {
   border-radius: 999px;
   margin-bottom: var(--space-4);
 }
-
 /* ── CTA 버튼 ── */
 .btn {
   width: 100%;
   min-height: 54px;
   border-radius: var(--radius-md);
   font-size: 16px;
+  line-height: 24px;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -203,11 +194,9 @@ a:focus-visible {
     transform 0.06s ease,
     opacity 0.15s ease;
 }
-
 .btn:active {
   transform: scale(0.985);
 }
-
  /* 비활성은 투명도로 흐리게 하지 않는다. 흐린 파란 버튼은 '고장난 버튼'으로 보인다.
    회색으로 분명히 구분해, 눌리는 버튼과 헷갈리지 않게 한다. */
 .btn:disabled {
@@ -216,44 +205,38 @@ a:focus-visible {
   box-shadow: none;
   pointer-events: none;
 }
-
 .btn--primary {
   background: var(--color-signature-green);
   color: var(--color-white);
   box-shadow: var(--shadow-cta);
 }
-
 .btn--secondary {
   background: var(--color-soft-green);
   color: var(--brand-strong); /* Blue500 은 연파랑 위에서 3.31:1 → Blue700 로 4.82:1 */
 }
-
 .btn--ghost {
   background: var(--color-white);
   color: var(--color-dark-gray);
   border: 1px solid var(--color-border);
 }
-
 .btn-stack {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
 }
-
 /* ── 홈 운세 메뉴 리스트 ── */
 .menu-heading {
   font-size: 15px;
+  line-height: 22.5px;
   font-weight: 800;
   color: var(--gray-900);
   margin: 0 0 var(--space-3);
 }
-
 .menu-list {
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
 }
-
 .menu-row {
   display: flex;
   align-items: center;
@@ -267,16 +250,13 @@ a:focus-visible {
     border-color 0.12s ease,
     transform 0.2s var(--ease-spring);
 }
-
 .menu-row:active {
   transform: scale(0.975);
 }
-
 .menu-row--selected {
   border-color: var(--color-signature-green);
   background: var(--color-soft-green);
 }
-
 .menu-row__icon {
   width: 44px;
   height: 44px;
@@ -285,36 +265,35 @@ a:focus-visible {
   align-items: center;
   justify-content: center;
   font-size: 24px;
+  line-height: 33px;
   border-radius: 14px;
   background: var(--gray-100);
 }
-
 .menu-row__body {
   flex: 1;
   min-width: 0;
 }
-
 .menu-row__title {
   display: block;
   font-size: 16px;
+  line-height: 24px;
   font-weight: 700;
   color: var(--color-dark-gray);
 }
-
 .menu-row__desc {
   display: block;
   margin-top: 2px;
   font-size: 13px;
+  line-height: 19.5px;
   color: var(--color-text-secondary);
 }
-
 .menu-row__chevron {
   font-size: 20px;
+  line-height: 29px;
   font-weight: 700;
   color: var(--gray-500); /* 20px 큰 글씨 3:1 확보 */
   flex-shrink: 0;
 }
-
 /* ── 쪽지 (접힌 카드) ── */
  /* 부채꼴로 펼쳐 놓은 느낌 — 나란히 세워두면 카드 선택지지 '뽑는' 행위가 아니다 */
 .note-row > *:nth-child(1) {
@@ -336,7 +315,6 @@ a:focus-visible {
   margin-top: var(--space-6);
   padding-top: 10px; /* 가운데 카드를 올려둔 만큼 위가 잘리지 않게 */
 }
-
 .note {
   flex: 1 1 0;
   max-width: 132px; /* 이 화면의 주인공. 작게 두면 아래가 텅 비고 '뽑는' 맛이 안 산다 */
@@ -356,7 +334,6 @@ a:focus-visible {
     transform 0.14s ease,
     box-shadow 0.14s ease;
 }
-
 .note::before {
   /* 접은 자국 */
   content: '';
@@ -367,15 +344,12 @@ a:focus-visible {
   height: 1px;
   background: var(--color-border);
 }
-
 .note {
   transform: rotate(var(--tilt, 0deg));
 }
-
 .note:active {
   transform: translateY(-6px) rotate(var(--tilt, 0deg)) scale(1.03);
 }
-
 /* 선택돼 펼쳐지는 쪽지 */
 .note--opening {
   animation: note-open 0.5s ease both !important;
@@ -383,7 +357,6 @@ a:focus-visible {
   box-shadow: 0 12px 28px rgba(49, 130, 246, 0.28);
   z-index: 2;
 }
-
 @keyframes note-open {
   0% {
     transform: rotate(var(--tilt, 0deg)) scale(1);
@@ -398,7 +371,6 @@ a:focus-visible {
     transform: rotate(0deg) scale(1.14) rotateY(360deg);
   }
 }
-
 /* 선택 안 된 다른 쪽지는 살짝 물러남 */
 .note--dim {
   opacity: 0.35;
@@ -407,18 +379,16 @@ a:focus-visible {
     opacity 0.3s ease,
     transform 0.3s ease;
 }
-
 .note__seal {
   font-size: 30px;
   line-height: 1;
 }
-
 .note__hint {
   font-size: 11px;
+  line-height: 16.5px;
   font-weight: 700;
   color: var(--color-text-secondary);
 }
-
 /* 쪽지 4색 — TDS 100/200 단계. 초록·파랑·노랑·빨강 네 계열이라 서로 확실히 구분되고,
    팔레트 밖으로 나가지 않는다. */
 .note--green {
@@ -437,47 +407,44 @@ a:focus-visible {
   background: #ffd4d6;
   border-color: #feafb4;
 }
-
 /* ── 상세 섹션 ── */
 .section {
   padding: var(--space-4) 0;
   border-top: 1px solid var(--color-border);
 }
-
 .section:first-of-type {
   border-top: none;
   padding-top: 0;
 }
-
 .section__label {
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--brand-strong);
   margin: 0 0 var(--space-1);
 }
-
 .section__text {
   font-size: 16px;
+  line-height: 24px;
   color: var(--color-dark-gray);
   margin: 0;
   white-space: pre-line;
 }
-
 /* ── 고지 / 광고 ── */
 .disclaimer {
   font-size: 12px;
   color: var(--color-text-secondary);
-  line-height: 1.5;
+  line-height: 18px;
   text-align: center;
   padding: var(--space-4) var(--space-2) var(--space-2);
   white-space: pre-line;
 }
-
 .ad-notice {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   font-size: 11px;
+  line-height: 16.5px;
   font-weight: 700;
   color: var(--color-text-secondary);
   background: var(--color-white);
@@ -485,7 +452,6 @@ a:focus-visible {
   border-radius: 999px;
   padding: 3px 9px;
 }
-
 .ad-banner {
   height: 64px;
   border-radius: var(--radius-md);
@@ -495,28 +461,25 @@ a:focus-visible {
   align-items: center;
   justify-content: center;
   font-size: 12px;
+  line-height: 18px;
   color: var(--color-text-secondary);
   margin-top: var(--space-2);
 }
-
 /* ── 진행 표시 ── */
 .progress {
   display: flex;
   gap: 6px;
   margin-bottom: var(--space-5);
 }
-
 .progress__dot {
   height: 4px;
   flex: 1;
   border-radius: 999px;
   background: var(--color-border);
 }
-
 .progress__dot--active {
   background: var(--color-signature-green);
 }
-
 /* ── 토스트 ── */
 .toast {
   position: fixed;
@@ -526,13 +489,13 @@ a:focus-visible {
   background: rgba(51, 51, 51, 0.94);
   color: var(--color-white);
   font-size: 14px;
+  line-height: 21px;
   font-weight: 600;
   padding: 10px 18px;
   border-radius: 999px;
   z-index: 50;
   animation: toast-in 0.18s ease;
 }
-
 @keyframes toast-in {
   from {
     transform: translate(-50%, 8px);
@@ -541,11 +504,9 @@ a:focus-visible {
     transform: translate(-50%, 0);
   }
 }
-
 .fade-in {
   animation: fade-in 0.22s ease;
 }
-
 /* 등장 애니메이션은 투명도를 건드리지 않고 위치만 움직인다.
    투명도로 등장시키면 두 가지가 문제가 된다.
    (1) 0 에서 시작하면, 웹뷰가 애니메이션을 멈췄을 때(저전력 모드·백그라운드 등)
@@ -561,7 +522,6 @@ a:focus-visible {
     transform: translateY(0);
   }
 }
-
 .center-hero {
   flex: 1;
   display: flex;
@@ -571,12 +531,10 @@ a:focus-visible {
   text-align: center;
   gap: var(--space-2);
 }
-
 /* ── 홈 히어로 ── */
 .home-hero {
   padding: var(--space-3) 0 var(--space-6);
 }
-
 /* 인사말과 마스코트를 한 줄에 — 인사가 길어지면 두 줄까지 자연스럽게 흐른다 */
 .home-hero__top {
   display: flex;
@@ -584,7 +542,6 @@ a:focus-visible {
   justify-content: space-between;
   gap: var(--space-4);
 }
-
 .home-hero__top .h1 {
   margin-bottom: 0;
   flex: 1;
@@ -592,10 +549,10 @@ a:focus-visible {
   word-break: keep-all;
   text-wrap: balance;
 }
-
 .date-pill {
   display: inline-block;
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-700);
   background: var(--gray-100);
@@ -603,18 +560,15 @@ a:focus-visible {
   border-radius: 999px;
   margin-bottom: var(--space-4);
 }
-
 .home-hero .h1 {
   margin-bottom: 0;
   font-size: 24px;
-  line-height: 1.375;
+  line-height: 33px;
 }
-
-
-
 .note-hint {
   text-align: center;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 600;
   color: var(--gray-600);
   margin-top: var(--space-5);
@@ -624,12 +578,10 @@ a:focus-visible {
   margin-top: auto;
   padding-top: var(--space-6);
 }
-
 /* 쪽지 등장 애니메이션 */
 .note {
   animation: note-in 0.34s ease both;
 }
-
 @keyframes note-in {
   from {
     transform: translateY(12px) rotate(var(--tilt, 0deg));
@@ -638,13 +590,11 @@ a:focus-visible {
     transform: rotate(var(--tilt, 0deg));
   }
 }
-
 /* ── 몽글 로딩(리빌) 연출 ── */
 .reveal-mascot {
   animation: reveal-bounce 1.1s ease-in-out infinite;
   margin-bottom: var(--space-4);
 }
-
 @keyframes reveal-bounce {
   0%,
   100% {
@@ -654,21 +604,19 @@ a:focus-visible {
     transform: translateY(-10px) rotate(2deg);
   }
 }
-
 .reveal-msg {
   font-size: 17px;
+  line-height: 25.5px;
   font-weight: 700;
   color: var(--gray-800);
   margin: 0 0 var(--space-4);
   animation: fade-in 0.3s ease;
   min-height: 26px;
 }
-
 .reveal-dots {
   display: flex;
   gap: 8px;
 }
-
 .reveal-dot {
   width: 8px;
   height: 8px;
@@ -676,12 +624,10 @@ a:focus-visible {
   background: var(--gray-200);
   transition: background 0.3s ease, transform 0.3s ease;
 }
-
 .reveal-dot--on {
   background: var(--brand);
   transform: scale(1.2);
 }
-
 /* ── 스트릭 배지 ── */
 .pill-row {
   display: flex;
@@ -689,40 +635,36 @@ a:focus-visible {
   flex-wrap: wrap;
   margin-bottom: var(--space-3);
 }
-
 .pill-row .date-pill {
   margin-bottom: 0;
 }
-
 .streak-pill {
   display: inline-block;
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--brand-strong);
   background: var(--brand-soft);
   padding: 5px 11px;
   border-radius: 999px;
 }
-
 .streak-pill--new {
   color: var(--brand-strong);
   background: var(--brand-soft);
 }
-
 .streak-pill--crown {
   color: var(--brand-strong);
   background: var(--brand-soft);
 }
-
 .zodiac-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 6px;
   margin: 4px 0 10px;
 }
-
 .zodiac-chip {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: #fff;
   background: rgba(255, 255, 255, 0.14);
@@ -731,11 +673,9 @@ a:focus-visible {
   padding: 8px 4px;
   text-align: center;
 }
-
 .zodiac-chip:active {
   background: rgba(255, 255, 255, 0.3);
 }
-
 /* 흰 배경 위(친구 궁합 화면 등)에서 쓸 때 — 위 .zodiac-chip은 파란 히어로 카드 전용이라
    흰 배경에서는 흰 글자가 안 보이는 문제가 있었음. 라이트 배경용 대비 색으로 재정의. */
 .zodiac-grid--full .zodiac-chip {
@@ -747,12 +687,10 @@ a:focus-visible {
   background: var(--gray-50);
   border: 1px solid var(--gray-200);
 }
-
 .zodiac-grid--full .zodiac-chip:active {
   background: var(--brand-soft);
   border-color: var(--brand);
 }
-
 /* ── 오늘 받은 편지 다시 읽기 ── */
 .reopen-card {
   width: 100%;
@@ -767,15 +705,13 @@ a:focus-visible {
   text-align: left;
   margin-bottom: var(--space-4);
 }
-
 .reopen-card:active {
   transform: scale(0.99);
 }
-
 .reopen-card__icon {
   font-size: 26px;
+  line-height: 35px;
 }
-
 .reopen-card__body {
   flex: 1;
   min-width: 0;
@@ -783,26 +719,25 @@ a:focus-visible {
   flex-direction: column;
   gap: 2px;
 }
-
 .reopen-card__label {
   font-size: 11px;
+  line-height: 16.5px;
   font-weight: 700;
   color: var(--gray-500);
 }
-
 .reopen-card__text {
   font-size: 15px;
+  line-height: 22.5px;
   font-weight: 800;
   color: var(--gray-900);
 }
-
 .reopen-card__cta {
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--brand);
   flex-shrink: 0;
 }
-
 /* ── 어제의 쪽지 돌아보기 ── */
 .recap-card {
   display: flex;
@@ -813,29 +748,27 @@ a:focus-visible {
   background: var(--gray-50);
   margin-top: var(--space-4);
 }
-
 .recap-card__icon {
   font-size: 22px;
+  line-height: 31px;
 }
-
 .recap-card__body {
   display: flex;
   flex-direction: column;
   gap: 1px;
 }
-
 .recap-card__label {
   font-size: 11px;
+  line-height: 16.5px;
   font-weight: 700;
   color: var(--gray-500);
 }
-
 .recap-card__text {
   font-size: 14px;
+  line-height: 21px;
   font-weight: 700;
   color: var(--gray-800);
 }
-
 /* ── 고득점 축하 (색종이) ── */
 .confetti {
   position: absolute;
@@ -843,14 +776,13 @@ a:focus-visible {
   pointer-events: none;
   z-index: 1;
 }
-
 .confetti__bit {
   position: absolute;
   top: -24px;
   font-size: 18px;
+  line-height: 27px;
   animation: confetti-fall 1.8s ease-in forwards;
 }
-
 @keyframes confetti-fall {
   0% {
     transform: translateY(0) rotate(0deg);
@@ -864,7 +796,6 @@ a:focus-visible {
     opacity: 0;
   }
 }
-
 @keyframes grade-pop {
   0% {
     transform: scale(0.6);
@@ -876,7 +807,6 @@ a:focus-visible {
     transform: scale(1);
   }
 }
-
 @keyframes bob {
   0%,
   100% {
@@ -886,18 +816,12 @@ a:focus-visible {
     transform: translateY(-5px);
   }
 }
-
-
-
-
-
 /* ── 행운 세트 그리드 ── */
 .lucky-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-2);
 }
-
 .lucky-cell {
   background: var(--gray-50);
   border-radius: var(--radius-md);
@@ -906,39 +830,36 @@ a:focus-visible {
   flex-direction: column;
   gap: 4px;
 }
-
 .lucky-cell__k {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-700);
 }
-
 .lucky-cell__v {
   font-size: 16px;
+  line-height: 24px;
   font-weight: 800;
   color: var(--gray-900);
   display: flex;
   align-items: center;
   gap: 6px;
 }
-
 .lucky-dot {
   width: 14px;
   height: 14px;
   border-radius: 999px;
   border: 1px solid rgba(0, 0, 0, 0.08);
 }
-
 /* ── 오늘의 처방 브리핑 ── */
 .briefing {
   background: var(--white);
   border: 1px solid var(--gray-100);
   border-radius: var(--radius-xl);
   padding: var(--space-5);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
   box-shadow: var(--shadow-card);
 }
-
 .briefing__chips {
   display: flex;
   gap: 6px;
@@ -946,7 +867,6 @@ a:focus-visible {
   align-items: center;
   margin-bottom: var(--space-4);
 }
-
 /* 등급 스탬프 리빌 — 점수 카운트업이 끝날 즈음 등급 배지가 도장처럼 찍힌다 */
 @keyframes stamp-in {
   0% {
@@ -967,28 +887,24 @@ a:focus-visible {
     animation: none;
   }
 }
-
 .chip {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   padding: 5px 10px;
   border-radius: 999px;
 }
-
 .chip--type {
   background: var(--gray-100);
   color: var(--gray-800);
 }
-
 .chip--score {
   background: var(--brand-soft);
   color: var(--brand-strong);
 }
-
 .chip--score b {
   font-weight: 800;
 }
-
 /* 오늘의 행운 보고서 — 타이밍·색·음식 (하루 설계 훅) */
 .report {
   margin-top: var(--space-5);
@@ -996,21 +912,19 @@ a:focus-visible {
   border-radius: var(--radius-md);
   padding: var(--space-4);
 }
-
 .report__head {
   margin: 0 0 var(--space-3);
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-800);
   letter-spacing: -0.01em;
 }
-
 .report__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-2);
 }
-
 .report__cell {
   background: var(--white);
   border-radius: 12px;
@@ -1020,13 +934,12 @@ a:focus-visible {
   gap: 5px;
   min-width: 0;
 }
-
 .report__k {
   font-size: 11px;
+  line-height: 16.5px;
   font-weight: 700;
   color: var(--gray-600);
 }
-
 .report__v {
   font-size: 14px;
   font-weight: 800;
@@ -1035,9 +948,8 @@ a:focus-visible {
   align-items: center;
   gap: 5px;
   word-break: keep-all;
-  line-height: 1.5;
+  line-height: 21px;
 }
-
 .report__dot {
   width: 11px;
   height: 11px;
@@ -1045,70 +957,65 @@ a:focus-visible {
   flex: none;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
-
 .report__why {
   margin: var(--space-3) 0 0;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--gray-700);
-  line-height: 1.5;
+  line-height: 19.5px;
   word-break: keep-all;
 }
-
 /* 카드 헤더 — 제목이 홀로 뜨지 않게 부제와 묶는다 */
 .card-head {
   margin-bottom: var(--space-4);
 }
-
 .card-head__title {
   margin: 0;
   font-size: 17px;
+  line-height: 25.5px;
   font-weight: 800;
   color: var(--gray-900);
   letter-spacing: -0.02em;
 }
-
 .card-head__desc {
   margin: 4px 0 0;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 600;
   color: var(--gray-600);
 }
-
 /* ── 결과 히어로: 기분에 맞춘 하루 설계 ── */
 .briefing__headline {
   margin: 0 0 var(--space-2);
   font-size: 21px;
   font-weight: 800;
-  line-height: 1.429;
+  line-height: 30px;
   letter-spacing: -0.02em;
   color: var(--gray-900);
   word-break: keep-all;
 }
-
 .briefing__vibe {
   margin: 0 0 var(--space-5);
   font-size: 14px;
+  line-height: 21px;
   font-weight: 600;
   color: var(--gray-600);
   word-break: keep-all;
 }
-
 /* 하루 설계 카드 — 토스식 뉴트럴 서피스, 색 채움 없이 */
 .plan {
   background: var(--gray-50);
   border-radius: var(--radius-md);
   padding: var(--space-4);
 }
-
 .plan__title {
   margin: 0 0 var(--space-3);
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-800);
   letter-spacing: -0.01em;
 }
-
 .plan__steps {
   list-style: none;
   margin: 0;
@@ -1117,13 +1024,11 @@ a:focus-visible {
   flex-direction: column;
   gap: var(--space-3);
 }
-
 .plan__step {
   display: flex;
   gap: 10px;
   align-items: flex-start;
 }
-
 .plan__when {
   flex: none;
   min-width: 40px;
@@ -1133,21 +1038,20 @@ a:focus-visible {
   background: var(--brand-soft);
   color: var(--brand-strong);
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   margin-top: 2px;
 }
-
 .plan__text {
   font-size: 15px;
   font-weight: 600;
-  line-height: 1.5;
+  line-height: 22.5px;
   color: var(--gray-900);
   word-break: keep-all;
 }
-
 .plan__hold {
   margin-top: var(--space-4);
   padding-top: var(--space-3);
@@ -1157,41 +1061,40 @@ a:focus-visible {
   align-items: baseline;
   flex-wrap: wrap;
 }
-
 .plan__hold-k {
   flex: none;
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--gray-700);
 }
-
 .plan__hold-v {
   font-size: 14px;
+  line-height: 21px;
   font-weight: 700;
   color: var(--gray-700);
   word-break: keep-all;
 }
-
 /* 풀이 리드 — 콕 집은 한마디를 풀이 도입부로 */
 .section__lead {
   margin: 0 0 var(--space-2);
   font-size: 15px;
   font-weight: 700;
   color: var(--brand-strong);
-  line-height: 1.5;
+  line-height: 22.5px;
   word-break: keep-all;
 }
-
 /* ── 심층 리포트 (상세화면) ── */
 .report-hero {
   background: var(--brand-soft);
   border-radius: var(--radius-xl);
   padding: var(--space-6) var(--space-5);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
   box-shadow: var(--shadow-card);
 }
 .report-hero__eyebrow {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--brand-strong);
   letter-spacing: 0.02em;
@@ -1200,7 +1103,7 @@ a:focus-visible {
   margin: 8px 0 6px;
   font-size: 21px;
   font-weight: 800;
-  line-height: 1.429;
+  line-height: 30px;
   color: var(--gray-900);
   letter-spacing: -0.02em;
   word-break: keep-all;
@@ -1217,28 +1120,26 @@ a:focus-visible {
   font-size: 14px;
   font-weight: 600;
   color: var(--gray-800);
-  line-height: 1.5;
+  line-height: 21px;
   word-break: keep-all;
   position: relative;
 }
-
 .section-title {
   display: flex;
   align-items: center;
   gap: 8px;
   font-size: 15px;
+  line-height: 22.5px;
   font-weight: 800;
   color: var(--gray-900);
   margin: var(--space-2) 0 var(--space-3);
 }
-
 /* 항목별 운세 순위 — 1위는 인사이트 카드로 압도, 2~4위는 상대 비교 리스트 */
 .cat-wrap {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
 }
-
 .cat-top {
   padding: var(--space-4);
   border-radius: var(--radius-md);
@@ -1252,9 +1153,11 @@ a:focus-visible {
 }
 .cat-top__crown {
   font-size: 16px;
+  line-height: 24px;
 }
 .cat-top__label {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   letter-spacing: 0.02em;
   color: var(--brand-strong);
@@ -1272,6 +1175,7 @@ a:focus-visible {
 }
 .cat-top__name {
   font-size: 20px;
+  line-height: 29px;
   font-weight: 800;
   color: var(--gray-900);
   letter-spacing: -0.02em;
@@ -1301,11 +1205,10 @@ a:focus-visible {
   font-size: 14px;
   font-weight: 600;
   color: var(--gray-800);
-  line-height: 1.5;
+  line-height: 21px;
   word-break: keep-all;
   position: relative;
 }
-
 .cat-rank {
   display: flex;
   flex-direction: column;
@@ -1324,17 +1227,20 @@ a:focus-visible {
   flex: none;
   width: 30px;
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-600);
 }
 .cat-rank__emoji {
   flex: none;
   font-size: 15px;
+  line-height: 22.5px;
 }
 .cat-rank__name {
   flex: none;
   width: 46px;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   color: var(--gray-700);
 }
@@ -1356,10 +1262,10 @@ a:focus-visible {
   flex: none;
   width: 28px;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   text-align: right;
 }
-
 /* 행운 세트 — 미션 + 세트 + 숫자 활용 */
 .lucky {
   display: flex;
@@ -1373,6 +1279,7 @@ a:focus-visible {
 }
 .lucky__mission-k {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--brand-strong);
 }
@@ -1381,7 +1288,7 @@ a:focus-visible {
   font-size: 15px;
   font-weight: 700;
   color: var(--gray-900);
-  line-height: 1.5;
+  line-height: 22.5px;
   word-break: keep-all;
 }
 .lucky__num {
@@ -1400,18 +1307,18 @@ a:focus-visible {
   background: var(--brand-strong); /* 18px 는 일반 텍스트 기준(4.5:1) */
   color: #fff;
   font-size: 18px;
+  line-height: 27px;
   font-weight: 800;
   display: grid;
   place-items: center;
 }
 .lucky__num-text {
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--gray-700);
-  line-height: 1.5;
+  line-height: 21px;
   word-break: keep-all;
 }
-
 /* 오늘의 궁합 */
 .match {
   display: grid;
@@ -1433,6 +1340,7 @@ a:focus-visible {
 }
 .match__badge {
   font-size: 11px;
+  line-height: 16.5px;
   font-weight: 800;
   color: var(--brand-strong);
 }
@@ -1446,27 +1354,28 @@ a:focus-visible {
 }
 .match__label {
   font-size: 15px;
+  line-height: 22.5px;
   font-weight: 800;
   color: var(--gray-900);
 }
 .match__hint {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--gray-700);
-  line-height: 1.5;
+  line-height: 18px;
   word-break: keep-all;
 }
-
 /* 오늘의 부적 — 캡처하고 싶은 다크 카드 */
 .charm {
   text-align: center;
   background: var(--gray-900);
   border-radius: var(--radius-xl);
   padding: var(--space-6) var(--space-5);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 .charm__label {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: #90c2ff;
 }
@@ -1475,16 +1384,16 @@ a:focus-visible {
   font-size: 18px;
   font-weight: 800;
   color: #ffffff;
-  line-height: 1.5;
+  line-height: 27px;
   letter-spacing: -0.02em;
   word-break: keep-all;
 }
 .charm__sub {
-  font-size: 11.5px;
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 600;
   color: var(--gray-400);
 }
-
 /* 심층 리포트 잠금 해제 버튼 — 눌러서 보고 싶게 */
 .btn--unlock {
   display: flex;
@@ -1503,15 +1412,16 @@ a:focus-visible {
 }
 .btn-unlock__main {
   font-size: 15px;
+  line-height: 22.5px;
   font-weight: 800;
 }
 .btn-unlock__sub {
-  font-size: 11.5px;
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 600;
   color: var(--brand-strong); /* 연파랑 배경 위 AA 확보 (4.82:1) */
   opacity: 0.9;
 }
-
 /* ── 상위 % 자랑 배지 ── */
 .brag {
   display: inline-flex;
@@ -1524,21 +1434,21 @@ a:focus-visible {
 }
 .brag__pct {
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-900);
 }
 .brag__label {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-700);
 }
-
 /* 오늘의 기운 — 홈과 결과를 잇는 키워드 */
 .chip--vibe {
   background: var(--gray-100);
   color: var(--gray-800);
 }
-
 /* ── 친구 궁합 배너 (홈·결과) ── */
 .compat-banner {
   width: 100%;
@@ -1566,6 +1476,7 @@ a:focus-visible {
 }
 .compat-banner__icon {
   font-size: 26px;
+  line-height: 35px;
   flex: none;
 }
 .compat-banner__body {
@@ -1575,11 +1486,13 @@ a:focus-visible {
 }
 .compat-banner__title {
   font-size: 15px;
+  line-height: 22.5px;
   font-weight: 800;
   color: var(--gray-900);
 }
 .compat-banner__desc {
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 600;
   color: var(--gray-700); /* 틴트 배경 위 AA 확보 */
   margin-top: 2px;
@@ -1588,10 +1501,10 @@ a:focus-visible {
   margin-left: auto;
   flex: none;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--brand-strong);
 }
-
 /* ── 친구 궁합 화면 ── */
 /* 띠/별자리 모드 전환 탭 */
 .seg-tabs {
@@ -1600,13 +1513,14 @@ a:focus-visible {
   background: var(--gray-100);
   padding: 4px;
   border-radius: 12px;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 .seg-tab {
   flex: 1;
   min-height: 44px;
   border-radius: 9px;
   font-size: 14px;
+  line-height: 21px;
   font-weight: 700;
   color: var(--gray-700); /* gray-100 위 AA */
 }
@@ -1615,7 +1529,6 @@ a:focus-visible {
   color: var(--gray-900);
   box-shadow: var(--shadow-card);
 }
-
 .zodiac-grid--full {
   margin-top: var(--space-4);
 }
@@ -1627,6 +1540,7 @@ a:focus-visible {
 }
 .compat-pair__x {
   font-size: 22px;
+  line-height: 31px;
   font-weight: 800;
   color: var(--gray-600); /* 큰 글자 AA(3:1) */
   flex: none;
@@ -1645,6 +1559,7 @@ a:focus-visible {
 }
 .compat-pick__k {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--brand-strong);
 }
@@ -1654,12 +1569,14 @@ a:focus-visible {
 }
 .compat-pick__label {
   font-size: 14px;
+  line-height: 21px;
   font-weight: 700;
   color: var(--gray-800);
 }
 .compat-hint {
   text-align: center;
-  font-size: 13.5px;
+  font-size: 14px;
+  line-height: 21px;
   font-weight: 600;
   color: var(--gray-500);
   margin: var(--space-6) 0;
@@ -1684,15 +1601,16 @@ a:focus-visible {
 }
 .compat-lock__title {
   font-size: 16px;
+  line-height: 24px;
   font-weight: 800;
   color: var(--gray-900);
   margin: 0 0 var(--space-2);
 }
 .compat-lock__teaser {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--gray-600);
-  line-height: 1.5;
+  line-height: 19.5px;
   word-break: keep-all;
   margin: 0 0 var(--space-4);
 }
@@ -1700,7 +1618,7 @@ a:focus-visible {
   text-align: center;
   border-radius: var(--radius-xl);
   padding: var(--space-6) var(--space-5);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
   background: var(--gray-50);
 }
 .compat-result--twin {
@@ -1714,6 +1632,7 @@ a:focus-visible {
 }
 .compat-result__badge {
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-700);
 }
@@ -1727,6 +1646,7 @@ a:focus-visible {
 }
 .compat-result__score small {
   font-size: 20px;
+  line-height: 29px;
   font-weight: 700;
   color: var(--gray-700);
   margin-left: 2px;
@@ -1734,6 +1654,7 @@ a:focus-visible {
 .compat-result__archetype {
   display: inline-block;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--brand-strong);
   background: rgba(255, 255, 255, 0.7);
@@ -1743,6 +1664,7 @@ a:focus-visible {
 }
 .compat-result__head {
   font-size: 17px;
+  line-height: 25.5px;
   font-weight: 800;
   color: var(--gray-900);
   margin: 0 0 var(--space-4);
@@ -1752,7 +1674,7 @@ a:focus-visible {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-2);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 .compat-cat {
   display: flex;
@@ -1770,11 +1692,13 @@ a:focus-visible {
 }
 .compat-cat__label {
   font-size: 11px;
+  line-height: 16.5px;
   font-weight: 700;
   color: var(--gray-600);
 }
 .compat-cat__score {
   font-size: 17px;
+  line-height: 25.5px;
   font-weight: 800;
   color: var(--gray-900);
 }
@@ -1792,14 +1716,14 @@ a:focus-visible {
   border-radius: 999px;
 }
 .compat-result__reason {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--gray-700);
   background: rgba(255, 255, 255, 0.7);
   border-radius: 12px;
   padding: 10px 12px;
   margin: 0 0 var(--space-3);
-  line-height: 1.5;
+  line-height: 19.5px;
   word-break: keep-all;
   text-align: left;
 }
@@ -1814,6 +1738,7 @@ a:focus-visible {
 }
 .compat-ohaeng__label {
   font-size: 11px;
+  line-height: 16.5px;
   font-weight: 800;
   color: var(--gray-700);
   background: rgba(255, 255, 255, 0.7);
@@ -1825,6 +1750,7 @@ a:focus-visible {
   align-items: center;
   gap: 4px;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-800);
 }
@@ -1834,7 +1760,8 @@ a:focus-visible {
   margin: 0 2px;
 }
 .compat-ohaeng__flow {
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   border-radius: 999px;
   padding: 4px 12px;
@@ -1857,7 +1784,6 @@ a:focus-visible {
   gap: var(--space-2);
   text-align: left;
 }
-
 /* 내 사람들 — 저장해둔 상대와의 오늘 궁합 랭킹 */
 .saved-people {
   margin: 0 0 var(--space-4);
@@ -1867,6 +1793,7 @@ a:focus-visible {
 }
 .saved-people__title {
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-700);
   margin: 0;
@@ -1891,6 +1818,7 @@ a:focus-visible {
 .saved-row__relation {
   flex: none;
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-700);
   background: var(--white);
@@ -1900,7 +1828,8 @@ a:focus-visible {
 .saved-row__who {
   flex: 1;
   min-width: 0;
-  font-size: 13.5px;
+  font-size: 14px;
+  line-height: 21px;
   font-weight: 700;
   color: var(--gray-900);
   white-space: nowrap;
@@ -1910,11 +1839,13 @@ a:focus-visible {
 .saved-row__score {
   flex: none;
   font-size: 15px;
+  line-height: 22.5px;
   font-weight: 800;
 }
 .saved-row__hint {
   flex: none;
   font-size: 11px;
+  line-height: 16.5px;
   font-weight: 600;
   color: var(--gray-600);
   text-align: right;
@@ -1926,11 +1857,11 @@ a:focus-visible {
   display: grid;
   place-items: center;
   font-size: 13px;
+  line-height: 19.5px;
   color: var(--gray-400);
   border-radius: 12px;
   background: var(--gray-50);
 }
-
 /* 이 사람 저장하기 — 관계만 선택(자유 입력 금지, PRD §14) */
 .save-person {
   margin-top: var(--space-4);
@@ -1939,12 +1870,14 @@ a:focus-visible {
 }
 .save-person__title {
   font-size: 14px;
+  line-height: 21px;
   font-weight: 800;
   color: var(--gray-900);
   margin: 0 0 2px;
 }
 .save-person__desc {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 600;
   color: var(--gray-600);
   margin: 0 0 var(--space-3);
@@ -1961,6 +1894,7 @@ a:focus-visible {
   background: var(--gray-50);
   border: 1px solid var(--gray-200);
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   color: var(--gray-800);
 }
@@ -1976,17 +1910,17 @@ a:focus-visible {
   flex: none;
   min-width: 60px;
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--brand-strong);
 }
 .compat-line__v {
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--gray-800);
-  line-height: 1.5;
+  line-height: 21px;
   word-break: keep-all;
 }
-
 /* 등급별 브리핑 테두리 */
 .briefing--rare {
   border-color: #c9e2ff;
@@ -1999,66 +1933,59 @@ a:focus-visible {
   border: 2px solid #ffd158;
   box-shadow: 0 8px 28px rgba(197, 152, 32, 0.22);
 }
-
 /* ── 쪽지 요정의 편지 (토스식 위계) ── */
 .letter {
   background: var(--white);
   border: 1px solid var(--gray-100);
   border-radius: var(--radius-xl);
   padding: var(--space-6) var(--space-5) var(--space-5);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
   box-shadow: var(--shadow-card);
 }
-
 .letter__head {
   display: flex;
   align-items: center;
   gap: var(--space-2);
   margin-bottom: var(--space-5);
 }
-
 .letter__from {
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   color: var(--gray-600);
 }
-
 /* 인사+공감: 작게, 조용하게 */
 .letter__intro {
   margin: 0 0 var(--space-4);
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 21px;
   color: var(--gray-600);
   word-break: keep-all;
   white-space: pre-line;
 }
-
 /* 콕 집은 한마디: 화면에서 제일 크게, 형광 강조 */
 .letter__highlight {
   margin: 0 0 var(--space-5);
   font-size: 21px;
   font-weight: 800;
-  line-height: 1.429;
+  line-height: 30px;
   letter-spacing: -0.02em;
   color: var(--gray-900);
   word-break: keep-all;
 }
-
 .letter__highlight mark {
   background: linear-gradient(transparent 62%, var(--brand-soft) 62%);
   color: inherit;
   padding: 0 2px;
 }
-
 .letter__body-text {
   margin: 0 0 var(--space-5);
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 24px;
   color: var(--gray-800);
   word-break: keep-all;
   white-space: pre-line;
 }
-
 /* 오늘의 부적: 파란 박스로 또렷하게 */
 .letter__keep {
   background: var(--brand-soft);
@@ -2066,57 +1993,54 @@ a:focus-visible {
   padding: var(--space-4);
   margin-bottom: var(--space-5);
 }
-
 .letter__keep-label {
   display: block;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--brand-strong);
   margin-bottom: 6px;
 }
-
 .letter__keep-lucky {
   margin: 0 0 4px;
   font-size: 16px;
+  line-height: 24px;
   font-weight: 800;
   color: var(--gray-900);
 }
-
 .letter__keep-caution {
   margin: 0;
   font-size: 13px;
+  line-height: 19.5px;
   color: var(--gray-700); /* 편지 배경(연회색) 위 AA 확보 */
   word-break: keep-all;
 }
-
 .letter__special {
   margin: 0 0 var(--space-5);
   font-size: 15px;
   font-weight: 700;
-  line-height: 1.5;
+  line-height: 22.5px;
   color: var(--brand-strong);
   background: var(--brand-soft);
   border-radius: var(--radius-md);
   padding: var(--space-3) var(--space-4);
   word-break: keep-all;
 }
-
 .letter__closing {
   margin: 0;
   font-size: 15px;
-  line-height: 1.5;
+  line-height: 22.5px;
   color: var(--gray-700);
   word-break: keep-all;
 }
-
 .letter__sign {
   margin: var(--space-3) 0 0;
   text-align: right;
   font-size: 14px;
+  line-height: 21px;
   font-weight: 700;
   color: var(--gray-700); /* 편지 배경 위 AA 확보 */
 }
-
 /* ── 등급별 편지지 ── */
 .letter--rare {
   border-color: #c9e2ff;
@@ -2125,7 +2049,6 @@ a:focus-visible {
 .letter--rare .letter__from {
   color: #1b64da; /* TDS adaptiveBlue700 — 4.61:1 */
 }
-
 .letter--epic {
   border-color: #edccf8;
   box-shadow: 0 2px 14px rgba(123, 63, 212, 0.14);
@@ -2136,7 +2059,6 @@ a:focus-visible {
 .letter--epic .letter__highlight mark {
   background: linear-gradient(transparent 62%, #f9f0fc 62%);
 }
-
 .letter--legendary {
   border: 2px solid #ffd158;
   box-shadow: 0 8px 28px rgba(197, 152, 32, 0.22);
@@ -2169,11 +2091,11 @@ a:focus-visible {
 .letter--legendary .letter__highlight mark {
   background: linear-gradient(transparent 62%, #ffefbf 62%);
 }
-
 /* ── 등급 뱃지 ── */
 .rarity-badge {
   margin-left: auto;
   font-size: 11px;
+  line-height: 16.5px;
   font-weight: 800;
   padding: 4px 9px;
   border-radius: 999px;
@@ -2200,8 +2122,6 @@ a:focus-visible {
   color: #9c5d00;
   box-shadow: 0 0 0 1px #ffd158 inset;
 }
-
-
 /* ── 기분 입력 ── */
 .mood-grid {
   display: flex;
@@ -2209,7 +2129,6 @@ a:focus-visible {
   gap: var(--space-3);
   margin-top: var(--space-5);
 }
-
 .mood-btn {
   display: flex;
   align-items: center;
@@ -2224,24 +2143,21 @@ a:focus-visible {
     background 0.12s ease,
     transform 0.06s ease;
 }
-
 .mood-btn:active {
   transform: scale(0.98);
   border-color: var(--brand);
   background: var(--brand-soft);
 }
-
 .mood-btn__emoji {
   font-size: 28px;
+  line-height: 37px;
 }
-
 .mood-btn__label {
   font-size: 16px;
+  line-height: 24px;
   font-weight: 700;
   color: var(--gray-900);
 }
-
-
 /* ── 콕 집은 한마디 (핀포인트 훅) ── */
 .pinpoint {
   background: var(--brand);
@@ -2250,7 +2166,6 @@ a:focus-visible {
   margin-bottom: var(--space-4);
   box-shadow: var(--shadow-card);
 }
-
 /* ── 결과 카드 (토스식 화이트 카드) ── */
 .card {
   background: var(--white);
@@ -2258,12 +2173,12 @@ a:focus-visible {
   padding: var(--space-6) var(--space-5);
   box-shadow: var(--shadow-card);
   border: 1px solid var(--gray-100);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
 }
-
 @media (max-width: 360px) {
   .h1 {
     font-size: 24px;
+  line-height: 33px;
   }
   .app__body {
     padding-left: var(--space-4);
@@ -2277,7 +2192,6 @@ a:focus-visible {
     height: 152px;
   }
 }
-
 /* 접근성 — 모션 최소화 설정 사용자에겐 무한/과한 애니메이션을 끈다. */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -2294,7 +2208,6 @@ a:focus-visible {
     animation: none !important;
   }
 }
-
 /* 내 데이터 삭제 링크 — 홈 하단, 눈에 안 띄지만 접근 가능 */
 .reset-link {
   display: flex;
@@ -2304,15 +2217,15 @@ a:focus-visible {
   margin: var(--space-6) auto var(--space-2);
   padding: 0 12px;
   font-size: 12px;
+  line-height: 18px;
   font-weight: 600;
   color: var(--gray-600);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-
 /* 이번 달 등급 수집 — 레어 뽑기 자랑/재방문 유도 스트립 */
 .collection {
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
   padding: var(--space-4);
   border-radius: var(--radius-md);
   background: var(--gray-50);
@@ -2321,6 +2234,7 @@ a:focus-visible {
 .collection__title {
   display: block;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-800);
   margin-bottom: var(--space-3);
@@ -2332,6 +2246,7 @@ a:focus-visible {
 }
 .collection__item {
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-800);
   background: var(--white);
@@ -2349,7 +2264,6 @@ a:focus-visible {
   background: #f9f0fc;
   border-color: #da9bef;
 }
-
 /* 오늘의 나 — 기분 + 띠 + 별자리 조합 입력 */
 .me-picks {
   display: flex;
@@ -2376,11 +2290,13 @@ a:focus-visible {
 }
 .me-pick__k {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-600);
 }
 .me-pick__v {
   font-size: 15px;
+  line-height: 22.5px;
   font-weight: 800;
   color: var(--gray-900);
 }
@@ -2395,13 +2311,15 @@ a:focus-visible {
 }
 .mood-heading {
   font-size: 15px;
+  line-height: 22.5px;
   font-weight: 800;
   color: var(--gray-900);
   margin: var(--space-4) 0 var(--space-3);
 }
 .mood-foot {
   text-align: center;
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 600;
   color: var(--gray-600);
   margin: var(--space-4) 0 0;
@@ -2409,12 +2327,12 @@ a:focus-visible {
 /* 결과 브리핑의 개인화 한 줄 — 흰 카드 위 (예전 파란 카드용 연한색은 안 보였음) */
 .briefing__persona {
   margin: 0 0 var(--space-2);
-  font-size: 13.5px;
+  font-size: 14px;
+  line-height: 21px;
   font-weight: 700;
   color: var(--brand-strong);
   word-break: keep-all;
 }
-
 /* 쪽지 선택 화면 마스코트 — 카드와 하단 힌트 사이 빈 공간을 채운다 */
 .note-mascot {
   flex: 1;
@@ -2425,7 +2343,6 @@ a:focus-visible {
   margin-top: var(--space-4); /* 화면이 좁아 flex 여백이 0 이 돼도 최소 간격 보장 */
   opacity: 0.95;
 }
-
 /* 인트로 티저 — 오늘 운 좋은 띠 (궁금증 유발) */
 .lucky-today__set {
   display: block;
@@ -2435,6 +2352,7 @@ a:focus-visible {
   min-height: 44px;
   text-align: left;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-700);
   background: var(--gray-50);
@@ -2444,7 +2362,6 @@ a:focus-visible {
 .lucky-today__set:active {
   background: var(--white);
 }
-
 /* ── 이번 주 운세 캘린더 ── 스트릭 보상(3일 연속) 또는 광고로 열리는 7일 미리보기.
    좋은 날을 미리 알려 "그날 다시 오게" 만드는 리텐션 장치라 서열 카드 위에 둔다. */
 .week-card {
@@ -2466,6 +2383,7 @@ a:focus-visible {
 .week-card__title {
   margin: 0;
   font-size: 14px;
+  line-height: 21px;
   font-weight: 800;
   color: var(--gray-900);
 }
@@ -2474,6 +2392,7 @@ a:focus-visible {
   position: relative;
   min-height: 34px;
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--white);
   background: var(--gray-800);
@@ -2491,7 +2410,8 @@ a:focus-visible {
 }
 .week-card__headline {
   margin: 0 0 var(--space-3);
-  font-size: 13.5px;
+  font-size: 14px;
+  line-height: 21px;
   font-weight: 800;
   color: var(--brand-strong);
   background: var(--brand-soft);
@@ -2541,12 +2461,14 @@ a:focus-visible {
   align-items: baseline;
   gap: 3px;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-900);
 }
 .week-row__day i {
   font-style: normal;
-  font-size: 9.5px;
+  font-size: 11px;
+  line-height: 16.5px;
   font-weight: 800;
   color: var(--brand-strong);
 }
@@ -2554,11 +2476,13 @@ a:focus-visible {
   font-family: var(--font-num);
   font-variant-numeric: tabular-nums;
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-700);
 }
 .week-row__rel {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 600;
   color: var(--gray-700);
   overflow: hidden;
@@ -2567,6 +2491,7 @@ a:focus-visible {
 }
 .week-row__tone {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--gray-800);
   white-space: nowrap;
@@ -2585,9 +2510,8 @@ a:focus-visible {
   font-size: 12px;
   font-weight: 600;
   color: var(--gray-600);
-  line-height: 1.5;
+  line-height: 18px;
 }
-
 /* 잠금 상태 — 무엇이 열리는지 먼저 보여주고(요일 프리뷰), 조건을 숫자로 말한다.
    "3일만 더" 처럼 남은 개수를 보여줘야 스트릭이 목표가 된다. */
 .week-lock {
@@ -2617,6 +2541,7 @@ a:focus-visible {
 .week-lock__peek i {
   font-style: normal;
   font-size: 11px;
+  line-height: 16.5px;
   font-weight: 800;
   /* 회색 칩 위 회색 글자는 AA 를 못 넘긴다 — gray-700 로 (7.4:1) */
   color: var(--gray-700);
@@ -2626,6 +2551,7 @@ a:focus-visible {
 }
 .week-lock__title {
   font-size: 14px;
+  line-height: 21px;
   font-weight: 800;
   color: var(--gray-900);
 }
@@ -2633,11 +2559,12 @@ a:focus-visible {
   font-size: 12px;
   font-weight: 600;
   color: var(--gray-700);
-  line-height: 1.5;
+  line-height: 18px;
 }
 .week-lock__cta {
   margin-top: 4px;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--white);
   /* 13px 흰 글자는 blue500(3.71:1) 위에서 AA 미달 — blue700 로 (5.41:1) */
@@ -2645,7 +2572,6 @@ a:focus-visible {
   border-radius: 999px;
   padding: 10px 18px;
 }
-
 /* ── 오늘의 띠 서열 ── 리더보드. 매일 갈리는 12띠 랭킹(사주 일진 기반) */
 .rank-card {
   margin-bottom: var(--space-6);
@@ -2665,6 +2591,7 @@ a:focus-visible {
 .rank-card__title {
   margin: 0;
   font-size: 14px;
+  line-height: 21px;
   font-weight: 800;
   color: var(--gray-900);
 }
@@ -2672,6 +2599,7 @@ a:focus-visible {
   position: relative;
   min-height: 34px;
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--white);
   background: var(--gray-800);
@@ -2691,7 +2619,8 @@ a:focus-visible {
 }
 .rank-card__copied {
   margin: 0 0 var(--space-3);
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   color: var(--brand-strong);
   background: var(--brand-soft);
@@ -2769,6 +2698,7 @@ a:focus-visible {
 }
 .podium__name {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--gray-800);
 }
@@ -2793,6 +2723,7 @@ a:focus-visible {
   display: grid;
   place-items: center;
   font-size: 24px;
+  line-height: 33px;
   background: var(--white);
   border-radius: 999px;
 }
@@ -2805,11 +2736,13 @@ a:focus-visible {
 }
 .me-rank__title {
   font-size: 14px;
+  line-height: 21px;
   font-weight: 800;
   color: var(--gray-900);
 }
 .me-rank__sub {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-700);
 }
@@ -2819,17 +2752,20 @@ a:focus-visible {
   align-items: baseline;
   gap: 1px;
   font-size: 14px;
+  line-height: 21px;
   font-weight: 800;
   color: var(--brand-strong);
 }
 .me-rank__rank b {
   font-size: 26px;
+  line-height: 35px;
   font-weight: 800;
   letter-spacing: -0.02em;
 }
 .me-rank__rank i {
   font-style: normal;
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-700);
   margin-left: 2px;
@@ -2844,6 +2780,7 @@ a:focus-visible {
 .rank-card__me {
   margin: var(--space-3) 0 0;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-800);
   background: rgba(255, 255, 255, 0.75);
@@ -2859,7 +2796,8 @@ a:focus-visible {
   width: 100%;
   min-height: 44px; /* 최소 터치 영역 */
   margin-top: var(--space-3);
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   color: var(--brand-strong);
   text-align: center;
@@ -2889,17 +2827,20 @@ a:focus-visible {
   width: 20px;
   text-align: right;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-600); /* 흰 배경 위 AA */
 }
 .rank-row__name {
   flex: 1;
-  font-size: 13.5px;
+  font-size: 14px;
+  line-height: 21px;
   font-weight: 700;
   color: var(--gray-800);
 }
 .rank-row__tone {
-  font-size: 11.5px;
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   border-radius: 999px;
   padding: 3px 9px;
@@ -2920,7 +2861,6 @@ a:focus-visible {
   color: #d22030;
   background: #ffeeee;
 }
-
 /* ── 메인 focal ── '오늘의 나' 훅 카드
    즉시성(오늘 기운 노출) + 개인화 공감 한 줄 + 잠긴 결과(?)로 뽑을 이유 제공 */
 .today-hook {
@@ -2947,7 +2887,8 @@ a:focus-visible {
 }
 .today-hook__kw {
   display: inline-block;
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: #e8f3ff;
   background: rgba(255, 255, 255, 0.16);
@@ -2957,6 +2898,7 @@ a:focus-visible {
 .today-hook__persona {
   margin: 22px 0 6px;
   font-size: 14px;
+  line-height: 21px;
   font-weight: 700;
   color: #e8f3ff;
 }
@@ -2970,7 +2912,7 @@ a:focus-visible {
   margin: 0;
   font-size: 21px;
   font-weight: 800;
-  line-height: 1.429;
+  line-height: 30px;
   letter-spacing: -0.02em;
   color: #fff;
   word-break: keep-all;
@@ -2984,7 +2926,7 @@ a:focus-visible {
   margin: 10px 0 0;
   font-size: 13px;
   font-weight: 600;
-  line-height: 1.5;
+  line-height: 19.5px;
   color: #e8f3ff;
   word-break: keep-all;
 }
@@ -2993,6 +2935,7 @@ a:focus-visible {
   margin: var(--space-2) 0 var(--space-3);
   padding: 9px 14px;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--brand-strong);
   background: var(--brand-soft);
@@ -3000,7 +2943,6 @@ a:focus-visible {
   border-radius: 999px;
   display: inline-block;
 }
-
 /* 내일 예고 — 결과 하단 리텐션 훅 (달 카드) */
 .tmr-tease {
   display: flex;
@@ -3014,6 +2956,7 @@ a:focus-visible {
 .tmr-tease__moon {
   flex: none;
   font-size: 22px;
+  line-height: 31px;
 }
 .tmr-tease__body {
   display: flex;
@@ -3022,18 +2965,18 @@ a:focus-visible {
   min-width: 0;
 }
 .tmr-tease__k {
-  font-size: 11.5px;
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: #b0b8c1;
 }
 .tmr-tease__v {
   font-size: 13px;
   font-weight: 700;
-  line-height: 1.5;
+  line-height: 19.5px;
   color: #f9fafb;
   word-break: keep-all;
 }
-
 /* 결과 화면 '오늘의 일진' 스탬프 스트립 — 행운 보고서(3칸 그리드)와 겹치지 않는
    가로 흐름 레이아웃: 한자 도장 + 관계 설명 + 기운 배지 → 근거 한 줄 → 개운 포인트 */
 .iljin {
@@ -3061,6 +3004,7 @@ a:focus-visible {
   width: 52px;
   height: 52px;
   font-size: 21px;
+  line-height: 30px;
   font-weight: 800;
   letter-spacing: 1px;
   color: #bc1b2a;
@@ -3077,11 +3021,13 @@ a:focus-visible {
 }
 .iljin__date {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-700); /* 틴트 배경 위 AA 확보 */
 }
 .iljin__rel {
   font-size: 14px;
+  line-height: 21px;
   font-weight: 700;
   color: var(--gray-800);
   word-break: keep-all;
@@ -3092,6 +3038,7 @@ a:focus-visible {
 .iljin__tone {
   flex: none;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   border-radius: 999px;
   padding: 6px 13px;
@@ -3114,9 +3061,9 @@ a:focus-visible {
 }
 .iljin__line {
   margin: var(--space-4) 0 0;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
-  line-height: 1.5;
+  line-height: 21px;
   color: var(--gray-800);
   word-break: keep-all;
 }
@@ -3133,6 +3080,7 @@ a:focus-visible {
   align-items: center;
   gap: 6px;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   color: var(--gray-800);
 }
@@ -3140,17 +3088,18 @@ a:focus-visible {
   color: var(--brand-strong);
 }
 .iljin__boost-color small {
-  font-size: 11.5px;
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 600;
   color: var(--gray-700); /* 틴트 배경 위 AA 확보 */
 }
 .iljin__boost-tip {
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   color: var(--brand-strong);
   word-break: keep-all;
 }
-
 /* 사주 근거 칩 — 일진×내 띠 관계를 가볍게(한자 없이) 보여줌 */
 .today-hook__saju {
   display: flex;
@@ -3159,7 +3108,8 @@ a:focus-visible {
   margin-top: 14px;
 }
 .saju-chip {
-  font-size: 11.5px;
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: #e8f3ff;
   background: rgba(255, 255, 255, 0.14);
@@ -3175,6 +3125,7 @@ a:focus-visible {
 .today-hook__preview-k {
   margin: 28px 0 10px;
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: #e8f3ff;
 }
@@ -3196,6 +3147,7 @@ a:focus-visible {
 }
 .th-cell__k {
   font-size: 11px;
+  line-height: 16.5px;
   font-weight: 700;
   color: #e8f3ff;
 }
@@ -3209,6 +3161,7 @@ a:focus-visible {
 .th-cell__v i {
   font-family: var(--font-body);
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   font-style: normal;
   margin-left: 1px;
@@ -3223,6 +3176,7 @@ a:focus-visible {
   gap: 8px;
   padding: 13px 18px;
   font-size: 15px;
+  line-height: 22.5px;
   font-weight: 800;
   color: var(--brand-strong);
   background: #fff;
@@ -3255,7 +3209,6 @@ a:focus-visible {
     transform: none;
   }
 }
-
 /* 결과/심층 데이터가 없을 때의 안전망 — 빈 화면 대신 돌아갈 길을 준다 */
 .empty-state {
   display: flex;
@@ -3268,19 +3221,19 @@ a:focus-visible {
 .empty-state__title {
   margin: 0;
   font-size: 17px;
+  line-height: 25.5px;
   font-weight: 800;
   color: var(--gray-900);
 }
 .empty-state__desc {
   margin: 0 0 var(--space-3);
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 21px;
   color: var(--gray-700);
 }
 .empty-state .btn {
   width: 100%;
 }
-
 /* 데이터 삭제 확인 — 네이티브 모달 대신 앱 안에서 두 번 눌러 확인 */
 .reset-confirm {
   margin-top: var(--space-6);
@@ -3293,7 +3246,7 @@ a:focus-visible {
   margin: 0 0 var(--space-3);
   font-size: 13px;
   font-weight: 700;
-  line-height: 1.5;
+  line-height: 19.5px;
   color: var(--gray-800);
   text-align: center;
   word-break: keep-all;
@@ -3307,7 +3260,8 @@ a:focus-visible {
   flex: 1;
   min-height: 44px;
   border-radius: var(--radius-md);
-  font-size: 13.5px;
+  font-size: 14px;
+  line-height: 21px;
   font-weight: 800;
 }
 .reset-confirm__no {
@@ -3319,7 +3273,6 @@ a:focus-visible {
   color: var(--white);
   background: #d22030; /* TDS adaptiveRed700 — 되돌릴 수 없는 동작 */
 }
-
 /* 접힌 쪽지 — 각자 제 종이색을 쓴다.
    전에는 3장을 전부 흰색으로 뒀다. "색으로 고르게 된다"는 이유였는데,
    색으로 고르는 게 바로 '끌리는 쪽지'다. 흰 카드 3장은 고를 이유를 주지 않는다.
@@ -3338,9 +3291,8 @@ a:focus-visible {
   font-weight: 700;
   text-align: center;
   word-break: keep-all;
-  line-height: 1.35;
+  line-height: 18px;
 }
-
 /* ── 아침 알림 옵트인 카드 (결과 화면, 내일 예고 아래) ──
    내일 예고가 만든 궁금증을 알림 동의로 잇는 리텐션 장치.
    콘솔 알림 템플릿이 없으면 렌더 자체가 되지 않는다. */
@@ -3363,6 +3315,7 @@ a:focus-visible {
 }
 .noti-card__icon {
   font-size: 22px;
+  line-height: 31px;
 }
 .noti-card__body {
   display: flex;
@@ -3372,27 +3325,27 @@ a:focus-visible {
   min-width: 0;
 }
 .noti-card__title {
-  font-size: 14.5px;
+  font-size: 15px;
   font-weight: 800;
   color: var(--gray-900);
-  line-height: 1.4;
+  line-height: 22.5px;
 }
 .noti-card__desc {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 500;
   color: var(--gray-700); /* 흰 배경 계열 위 AA */
-  line-height: 1.5;
+  line-height: 19.5px;
 }
 .noti-card__cta {
   flex: none;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--white);
   background: var(--brand);
   border-radius: 999px;
   padding: 8px 14px;
 }
-
 /* ══ 내 사주 ══════════════════════════════════════════════════════════════
    띠(1/12)에서 사주(사실상 1인 1결과)로 넘어가는 화면들.
    낯선 한자를 다루므로 색과 여백으로 위계를 만들어야 벽처럼 보이지 않는다. */
@@ -3424,6 +3377,7 @@ a:focus-visible {
 }
 .saju-entry:not(.saju-entry--done) .saju-entry__icon {
   background: var(--white);
+  color: var(--brand-strong);
 }
 .saju-entry:not(.saju-entry--done) .saju-entry__v {
   color: var(--brand-strong);
@@ -3433,7 +3387,6 @@ a:focus-visible {
 .saju-entry:not(.saju-entry--done) .saju-entry__sub {
   color: var(--gray-700);
 }
-
 /* 사주를 세운 사람에겐 자기 일간 색을 띠처럼 둘러준다 — '내 것'이라는 신호 */
 .saju-entry--done {
   border-left: 4px solid var(--brand);
@@ -3461,30 +3414,32 @@ a:focus-visible {
   flex: 1 1 auto;
 }
 .saju-entry__k {
-  font-size: 11.5px;
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-600);
 }
 .saju-entry__v {
   font-size: 15px;
+  line-height: 22.5px;
   font-weight: 800;
   color: var(--gray-900);
 }
 .saju-entry__sub {
   margin-top: 2px;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--gray-600);
-  line-height: 1.45;
+  line-height: 18px;
 }
 /* 셰브런도 정보다 — gray-400 은 흰 배경에서 2.01:1 로 AA 미달이라 한 단계 올린다 */
 .saju-entry__chev {
   flex: 0 0 auto;
   font-size: 20px;
+  line-height: 29px;
   font-weight: 700;
   color: var(--gray-600);
 }
-
 /* ── 생년월일시 입력 ── */
 .birth-form {
   display: flex;
@@ -3506,6 +3461,7 @@ a:focus-visible {
 }
 .birth-field__k {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-700);
 }
@@ -3519,6 +3475,7 @@ a:focus-visible {
   font-family: var(--font-num);
   font-variant-numeric: tabular-nums;
   font-size: 19px;
+  line-height: 28px;
   font-weight: 800;
   color: var(--gray-900);
 }
@@ -3535,7 +3492,8 @@ a:focus-visible {
   border-radius: var(--radius-md);
   background: var(--white);
   border: 1px solid var(--gray-200);
-  font-size: 13.5px;
+  font-size: 14px;
+  line-height: 21px;
   font-weight: 700;
   color: var(--gray-700);
   text-align: left;
@@ -3556,6 +3514,7 @@ a:focus-visible {
   border: 1.5px solid var(--gray-300);
   background: var(--white);
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 900;
   color: var(--brand-strong);
 }
@@ -3577,20 +3536,19 @@ a:focus-visible {
   font-size: 12px;
   font-weight: 600;
   color: var(--gray-600);
-  line-height: 1.5;
+  line-height: 18px;
 }
 .birth-hint--center {
   margin-top: var(--space-3);
   text-align: center;
 }
-
 /* 입력 도중 미리보기 — 다 채우기 전에 '이게 나오는구나'가 와야 이탈이 준다 */
 .birth-peek {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
   padding: var(--space-5) var(--space-4);
   border-radius: var(--radius-lg);
   background: var(--gray-50);
@@ -3599,7 +3557,8 @@ a:focus-visible {
   overflow: hidden;
 }
 .birth-peek__label {
-  font-size: 11.5px;
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-700);
 }
@@ -3609,17 +3568,20 @@ a:focus-visible {
 }
 .birth-peek__name {
   font-size: 20px;
+  line-height: 29px;
   font-weight: 800;
   color: var(--gray-900);
 }
 .birth-peek__tag {
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   color: var(--gray-700);
 }
 .birth-peek__pillars {
   margin-top: 6px;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   letter-spacing: 0.14em;
   color: var(--gray-700);
@@ -3630,24 +3592,23 @@ a:focus-visible {
   border-radius: 12px;
   background: #fff9e7;
   border: 1px solid #ffe69b;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--score-low-text);
-  line-height: 1.55;
+  line-height: 19.5px;
 }
 .birth-warn--info {
   background: var(--brand-soft);
   border-color: #c9e2ff;
   color: var(--brand-strong);
 }
-
 /* ── 일간 히어로 ── 이 화면에서 "이게 나야"가 오는 자리 ── */
 .dm-hero {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
   padding: var(--space-6) var(--space-4) var(--space-5);
   border-radius: var(--radius-xl);
   background: var(--brand-soft);
@@ -3657,7 +3618,8 @@ a:focus-visible {
 }
  /* 파란 배경(brand-soft) 위에선 gray-600 이 4.11:1 로 AA 미달 */
 .dm-hero__label {
-  font-size: 11.5px;
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--gray-700);
 }
@@ -3668,6 +3630,7 @@ a:focus-visible {
 .dm-hero__name {
   margin: 0;
   font-size: 25px;
+  line-height: 34px;
   font-weight: 800;
   color: var(--gray-900);
 }
@@ -3675,16 +3638,17 @@ a:focus-visible {
 
 .dm-hero__tag {
   margin: 0;
-  font-size: 14.5px;
+  font-size: 15px;
+  line-height: 22.5px;
   font-weight: 700;
   color: var(--gray-800);
 }
 .dm-hero__nature {
   margin: var(--space-3) 0 0;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--gray-700);
-  line-height: 1.65;
+  line-height: 21px;
   text-align: left;
 }
 .dm-chips {
@@ -3702,10 +3666,10 @@ a:focus-visible {
   background: var(--white);
   border: 1px solid var(--gray-200);
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--gray-800);
 }
-
 .dm-two {
   display: grid;
   grid-template-columns: 1fr;
@@ -3725,18 +3689,18 @@ a:focus-visible {
 .dm-note__k {
   display: block;
   margin-bottom: 6px;
-  font-size: 11.5px;
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--gray-700);
 }
 .dm-note__v {
   margin: 0;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--gray-800);
-  line-height: 1.6;
+  line-height: 21px;
 }
-
 /* ── 여덟 글자 ── */
 .pillars-card {
   margin-bottom: var(--space-6);
@@ -3757,6 +3721,7 @@ a:focus-visible {
 .pillars-card__title {
   margin: 0;
   font-size: 14px;
+  line-height: 21px;
   font-weight: 800;
   color: var(--gray-900);
 }
@@ -3767,6 +3732,7 @@ a:focus-visible {
   border-radius: 999px;
   background: var(--gray-100);
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--gray-700);
 }
@@ -3795,7 +3761,8 @@ a:focus-visible {
   box-shadow: inset 0 0 0 1.5px var(--brand);
 }
 .pcol__label {
-  font-size: 10.5px;
+  font-size: 11px;
+  line-height: 16.5px;
   font-weight: 800;
   color: var(--gray-700);
 }
@@ -3823,7 +3790,8 @@ a:focus-visible {
 }
 .pcol__kor {
   margin-top: 2px;
-  font-size: 10.5px;
+  font-size: 11px;
+  line-height: 16.5px;
   font-weight: 700;
   color: var(--gray-700);
 }
@@ -3832,7 +3800,7 @@ a:focus-visible {
   font-size: 12px;
   font-weight: 600;
   color: var(--gray-700);
-  line-height: 1.55;
+  line-height: 18px;
 }
 /* 적용된 보정을 숨기지 않는다 — 왜 이 값이 나왔는지 확인할 수 있어야 신뢰가 생긴다 */
 .pillars-corr {
@@ -3843,12 +3811,11 @@ a:focus-visible {
   background: var(--gray-50);
 }
 .pillars-corr li {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--gray-700);
-  line-height: 1.6;
+  line-height: 18px;
 }
-
 /* ── 오행 저울 ── */
 .elbal-card {
   margin-bottom: var(--space-6);
@@ -3861,6 +3828,7 @@ a:focus-visible {
 .elbal-card__title {
   margin: 0 0 var(--space-3);
   font-size: 14px;
+  line-height: 21px;
   font-weight: 800;
   color: var(--gray-900);
 }
@@ -3883,6 +3851,7 @@ a:focus-visible {
   align-items: center;
   gap: 5px;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-700);
 }
@@ -3906,31 +3875,31 @@ a:focus-visible {
 }
 .elbal-row__v {
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--gray-700);
   text-align: right;
 }
 .elbal-card__foot {
   margin: var(--space-3) 0 0;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--gray-700);
-  line-height: 1.55;
+  line-height: 19.5px;
 }
 .elbal-missing {
   margin: var(--space-2) 0 0;
   padding: 10px 12px;
   border-radius: 10px;
   background: var(--gray-50);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--gray-700);
-  line-height: 1.6;
+  line-height: 19.5px;
 }
-
 /* ── 해석 카드 ── */
 .reading-card {
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   background: var(--white);
@@ -3943,7 +3912,8 @@ a:focus-visible {
   padding: 6px 12px;
   border-radius: 999px;
   background: var(--brand-soft);
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--brand-strong);
 }
@@ -3953,20 +3923,20 @@ a:focus-visible {
 }
 .reading-card__body {
   margin: 0;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--gray-800);
-  line-height: 1.65;
+  line-height: 21px;
 }
 .reading-card__tip {
   margin: var(--space-3) 0 0;
   padding: 10px 12px;
   border-radius: 10px;
   background: var(--gray-50);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--gray-700);
-  line-height: 1.6;
+  line-height: 19.5px;
 }
 .god-chips {
   display: flex;
@@ -3984,16 +3954,17 @@ a:focus-visible {
   border-radius: 8px;
   background: var(--gray-50);
   border: 1px solid var(--gray-200);
-  font-size: 11.5px;
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--gray-800);
 }
 .god-chip__pos {
-  font-size: 9.5px;
+  font-size: 11px;
+  line-height: 16.5px;
   font-weight: 800;
   color: var(--gray-700);
 }
-
 .useful-card {
   margin-bottom: var(--space-6);
   padding: var(--space-4);
@@ -4004,30 +3975,30 @@ a:focus-visible {
 .useful-card__title {
   margin: 0 0 4px;
   font-size: 14px;
+  line-height: 21px;
   font-weight: 800;
   color: var(--brand-strong);
 }
 .useful-card__what {
   margin: 0;
   font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   color: var(--gray-800);
 }
 .useful-card__how {
   margin: 6px 0 0;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--gray-700);
-  line-height: 1.6;
+  line-height: 19.5px;
 }
-
 /* 화면이 넓어지면 두 칸으로 — 375px 에서는 세로가 읽기 편하다 */
 @media (min-width: 400px) {
   .dm-two {
     grid-template-columns: 1fr 1fr;
   }
 }
-
 /* ── 오늘, 나에게 ── 십신 카드. 띠 운세와 갈리는 핵심이라 결과에서 가장 눈에 띄어야 한다 */
 .mygod {
   margin-bottom: var(--space-6);
@@ -4053,6 +4024,7 @@ a:focus-visible {
   border-radius: 999px;
   background: var(--brand-strong);
   font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--white);
 }
@@ -4060,24 +4032,25 @@ a:focus-visible {
   margin: 0;
   min-width: 0;
   font-size: 16px;
+  line-height: 24px;
   font-weight: 800;
   color: var(--gray-900);
 }
 .mygod__body {
   margin: 0;
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--gray-800);
-  line-height: 1.65;
+  line-height: 21px;
 }
 /* 같은 십신도 신강/신약에 따라 약이 되고 독이 된다 — 그 판정을 색으로 구분한다 */
 .mygod__fit {
   margin: var(--space-3) 0 0;
   padding: 9px 12px;
   border-radius: 10px;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
-  line-height: 1.6;
+  line-height: 19.5px;
   background: var(--gray-50);
   color: var(--gray-700);
 }
@@ -4103,7 +4076,7 @@ a:focus-visible {
   font-size: 13px;
   font-weight: 700;
   color: var(--gray-800);
-  line-height: 1.55;
+  line-height: 19.5px;
 }
 .mygod__act--do {
   background: var(--brand-soft);
@@ -4115,10 +4088,10 @@ a:focus-visible {
   display: block;
   margin-bottom: 3px;
   font-size: 11px;
+  line-height: 16.5px;
   font-weight: 800;
   color: var(--gray-700);
 }
-
 /* ── 개인정보 안내 ── 받았으면 지우는 길도 같은 화면에 둔다 */
 .privacy-note {
   margin-top: var(--space-4);
@@ -4133,7 +4106,7 @@ a:focus-visible {
   font-size: 12px;
   font-weight: 600;
   color: var(--gray-700);
-  line-height: 1.6;
+  line-height: 18px;
 }
 .privacy-note__del {
   min-height: 44px;
@@ -4141,7 +4114,8 @@ a:focus-visible {
   border-radius: 999px;
   background: var(--white);
   border: 1px solid var(--gray-300);
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-700);
 }
@@ -4149,7 +4123,8 @@ a:focus-visible {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   color: var(--gray-800);
 }
@@ -4164,7 +4139,8 @@ a:focus-visible {
   border-radius: 12px;
   background: var(--white);
   border: 1px solid var(--gray-300);
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 800;
   color: var(--gray-800);
 }
@@ -4173,7 +4149,6 @@ a:focus-visible {
   border-color: #feafb4;
   color: #bc1b2a; /* 흰 배경 5.9:1 */
 }
-
 /* ── 내가 뽑은 쪽지 ── 결과 맨 위. 방금 한 선택의 보상이자 이 앱의 정체성.
    색은 뽑기 화면에서 고른 그 쪽지의 색을 그대로 쓴다 — 초록 쪽지를 뽑았으면 결과도 초록.
    같은 종이가 넘어온 것처럼 보여야 '내가 뽑은 것'이라는 감각이 이어진다. */
@@ -4182,7 +4157,7 @@ a:focus-visible {
   display: flex;
   align-items: flex-start;
   gap: var(--space-3);
-  margin-bottom: var(--space-4);
+  margin-bottom: var(--space-6);
   padding: var(--space-4) var(--space-4) var(--space-4);
   border-radius: var(--radius-md);
   border: 1px solid var(--gray-200);
@@ -4232,20 +4207,22 @@ a:focus-visible {
 }
 .drawn__k {
   font-size: 11px;
+  line-height: 16.5px;
   font-weight: 800;
   color: var(--gray-700);
 }
 .drawn__name {
   font-size: 18px;
+  line-height: 27px;
   font-weight: 800;
   color: var(--gray-900);
 }
 .drawn__lead {
   margin-top: 3px;
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--gray-800);
-  line-height: 1.55;
+  line-height: 19.5px;
 }
 .drawn__kw {
   flex: 0 0 auto;
@@ -4254,17 +4231,18 @@ a:focus-visible {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.75);
   border: 1px solid rgba(0, 0, 0, 0.06);
-  font-size: 11.5px;
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--gray-800);
   white-space: nowrap;
 }
-
 /* 십신 카드 — 용어를 헤드라인에서 내리고 근거 자리로 */
 .mygod__eyebrow {
   display: block;
   margin-bottom: 4px;
-  font-size: 11.5px;
+  font-size: 12px;
+  line-height: 18px;
   font-weight: 800;
   color: var(--brand-strong);
 }
@@ -4272,23 +4250,23 @@ a:focus-visible {
   margin: var(--space-3) 0 0;
   padding-top: var(--space-3);
   border-top: 1px solid var(--gray-100);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--gray-700);
-  line-height: 1.6;
+  line-height: 18px;
 }
 .mygod__why b {
   font-weight: 800;
   color: var(--gray-800);
 }
-
 /* 쪽지 후보의 근거 한 줄 — 생년월일이 실제로 쓰였다는 걸 뽑기 직전에 알린다 */
 .pick-basis {
   margin: var(--space-3) 0 0;
   padding: 9px 12px;
   border-radius: 10px;
   background: var(--brand-soft);
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   color: var(--brand-strong);
   text-align: center;
@@ -4296,14 +4274,14 @@ a:focus-visible {
 .pick-basis b {
   font-weight: 800;
 }
-
 /* ── 뽑기 1단계 · 알고 싶은 것 ── 주제를 고르는 자리. 이게 흐름의 시작이다 */
 .topic-basis {
   margin: var(--space-4) 0 0;
   padding: 9px 12px;
   border-radius: 10px;
   background: var(--brand-soft);
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   color: var(--brand-strong);
   text-align: center;
@@ -4338,16 +4316,16 @@ a:focus-visible {
 }
 .topic-btn__label {
   font-size: 15px;
+  line-height: 22.5px;
   font-weight: 800;
   color: var(--gray-900);
 }
 .topic-btn__desc {
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--gray-700);
-  line-height: 1.45;
+  line-height: 18px;
 }
-
 /* 입력이 모자랄 때의 안내 — 버튼을 잠그는 대신 눌렀을 때 뭐가 빠졌는지 말해준다 */
 .birth-nudge {
   margin: 0 0 var(--space-3);
@@ -4355,7 +4333,8 @@ a:focus-visible {
   border-radius: 10px;
   background: #fff9e7;
   border: 1px solid #ffe69b;
-  font-size: 12.5px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 700;
   color: #9c5d00;
   text-align: center;
@@ -4364,10 +4343,10 @@ a:focus-visible {
 .dm-hero__kor {
   margin: 2px 0 0;
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-700);
 }
-
 /* ── 돌려서 고르는 피커 ──
    네이티브 date/time 입력은 로케일을 따라가 '03/15/1994' 로 뜨고, 고른 값이
    앱으로 안 넘어오는 경우가 있다. 직접 굴리고 눌러서 고르게 만든다. */
@@ -4420,16 +4399,17 @@ a:focus-visible {
   font-family: var(--font-num);
   font-variant-numeric: tabular-nums;
   font-size: 17px;
+  line-height: 25.5px;
   font-weight: 700;
   color: var(--gray-700); /* gray-500 은 흰 배경에서 3.04:1 로 AA 미달 */
   background: none;
 }
 .wheel__item--on {
   font-size: 19px;
+  line-height: 28px;
   font-weight: 800;
   color: var(--brand-strong);
 }
-
 .wheel-row {
   display: flex;
   align-items: center;
@@ -4445,6 +4425,7 @@ a:focus-visible {
   display: block;
   margin-bottom: 2px;
   font-size: 12px;
+  line-height: 18px;
   font-weight: 700;
   color: var(--gray-700);
 }
@@ -4452,6 +4433,7 @@ a:focus-visible {
   display: block;
   margin-bottom: var(--space-2);
   font-size: 17px;
+  line-height: 25.5px;
   font-weight: 800;
   color: var(--gray-900);
 }
