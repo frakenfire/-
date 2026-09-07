@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Icon } from '../components/Icon.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { WheelPicker, type WheelItem } from '../components/WheelPicker.tsx';
 import { computeFourPillars, boundaryNotice } from '../lib/fourPillars.ts';
@@ -147,7 +148,7 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
         <div className="birth-peek">
           <span className="birth-peek__label">당신의 일간</span>
           <span className="birth-peek__icon" aria-hidden>
-            {dm.icon}
+            <Icon name={dm.icon} size={34} />
           </span>
           <strong className="birth-peek__name">{dm.name}</strong>
           <span className="birth-peek__tag">{dm.tagline}</span>

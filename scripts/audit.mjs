@@ -435,7 +435,7 @@ async function run(browser) {
       await wait(page, 1200);
       check(/공유|복사/.test(await bodyText(page)), '[사주] 내 일간 자랑하기 동작');
 
-      await page.locator('.pillars-card__edit').first().click();
+      await page.getByText('수정', { exact: true }).first().click();
       await wait(page, 800);
       check((await bodyText(page)).includes('언제 태어났어요'), '[사주] 수정 버튼 → 입력 화면');
       // 수정 화면엔 기존 값이 채워져 있어야 한다 (처음부터 다시 입력시키면 안 된다)

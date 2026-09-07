@@ -1,3 +1,4 @@
+import type { IconName } from '../components/Icon.tsx';
 // 일간(日干) 10종 — 사주에서 '나' 그 자체.
 //
 // 명리를 모르는 사람에게 "당신은 壬水입니다" 는 아무 말도 아니다.
@@ -19,7 +20,7 @@ export type DayMasterInfo = {
   hanja: string;
   kor: string;
   /** 상(象) — 이 일간을 한 장면으로 */
-  icon: string;
+  icon: IconName;
   /** 별명. 공유될 때 이 이름이 돌아다닌다 */
   name: string;
   /** 한 줄 요약 — 카드 맨 위에 크게 */
@@ -41,7 +42,7 @@ export type DayMasterInfo = {
 
 export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
   gap: {
-    id: 'gap', hanja: '甲', kor: '갑목', icon: '🌳', name: '큰 나무',
+    id: 'gap', hanja: '甲', kor: '갑목', icon: 'tree', name: '큰 나무',
     tagline: '휘지 않고 위로 자라는 사람',
     nature:
       '한번 방향을 정하면 곧게 밀고 올라가요. 눈치보다 원칙이 먼저고, 그래서 믿음직하다는 말을 자주 들어요. 대신 한번 정한 길을 바꾸는 건 남들보다 오래 걸려요.',
@@ -52,7 +53,7 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     hueText: '#027648',
   },
   eul: {
-    id: 'eul', hanja: '乙', kor: '을목', icon: '🌿', name: '풀과 덩굴',
+    id: 'eul', hanja: '乙', kor: '을목', icon: 'leaf', name: '풀과 덩굴',
     tagline: '부러지지 않고 감아 오르는 사람',
     nature:
       '정면으로 부딪히기보다 돌아가는 길을 잘 찾아요. 상황이 바뀌어도 금방 적응하고, 어디에 놓아도 결국 자리를 잡아요. 유연한 게 약해 보일 뿐, 실은 제일 오래 버티는 쪽이에요.',
@@ -63,7 +64,7 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     hueText: '#027648',
   },
   byeong: {
-    id: 'byeong', hanja: '丙', kor: '병화', icon: '☀️', name: '한낮의 해',
+    id: 'byeong', hanja: '丙', kor: '병화', icon: 'sun', name: '한낮의 해',
     tagline: '있으면 티가 나는 사람',
     nature:
       '숨기는 게 잘 안 돼요. 좋으면 좋다고, 아니면 아니라고 얼굴에 다 나와요. 그 솔직함이 사람을 끌어당기고, 있는 자리를 환하게 만들어요.',
@@ -74,7 +75,7 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     hueText: '#e45600',
   },
   jeong: {
-    id: 'jeong', hanja: '丁', kor: '정화', icon: '🕯️', name: '촛불',
+    id: 'jeong', hanja: '丁', kor: '정화', icon: 'candle', name: '촛불',
     tagline: '조용히, 그러나 오래 밝히는 사람',
     nature:
       '크게 떠들지 않지만 필요한 자리에 정확히 빛을 둬요. 사람의 표정 변화나 말끝을 잘 알아채고, 한 가지에 깊게 파고드는 힘이 있어요.',
@@ -85,7 +86,7 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     hueText: '#e45600',
   },
   mu: {
-    id: 'mu', hanja: '戊', kor: '무토', icon: '⛰️', name: '큰 산',
+    id: 'mu', hanja: '戊', kor: '무토', icon: 'mountain', name: '큰 산',
     tagline: '흔들려도 자리를 지키는 사람',
     nature:
       '급하게 움직이지 않아요. 대신 한번 맡으면 끝까지 있고, 사람들이 기대 쉬어가는 자리가 돼요. 판단은 느려 보여도 웬만해선 틀리지 않아요.',
@@ -96,7 +97,7 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     hueText: '#9c5d00',
   },
   gi: {
-    id: 'gi', hanja: '己', kor: '기토', icon: '🌾', name: '기름진 밭',
+    id: 'gi', hanja: '己', kor: '기토', icon: 'field', name: '기름진 밭',
     tagline: '남을 자라게 하는 사람',
     nature:
       '드러나기보다 받쳐주는 쪽이 편해요. 챙길 걸 먼저 챙기고, 사람이든 일이든 손이 닿으면 확실히 나아져요. 실속 있는 판단을 해요.',
@@ -107,7 +108,7 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     hueText: '#9c5d00',
   },
   gyeong: {
-    id: 'gyeong', hanja: '庚', kor: '경금', icon: '⚔️', name: '벼려진 쇠',
+    id: 'gyeong', hanja: '庚', kor: '경금', icon: 'blade', name: '벼려진 쇠',
     tagline: '끊을 때 끊는 사람',
     nature:
       '애매한 걸 오래 못 견뎌요. 맞다 아니다를 빨리 정하고, 정하면 뒤도 안 봐요. 의리가 있고, 약속한 건 지켜요.',
@@ -118,7 +119,7 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     hueText: '#4e5968',
   },
   sin: {
-    id: 'sin', hanja: '辛', kor: '신금', icon: '💎', name: '보석',
+    id: 'sin', hanja: '辛', kor: '신금', icon: 'gem', name: '보석',
     tagline: '기준이 높은 사람',
     nature:
       '대충이 잘 안 돼요. 눈이 예민해서 남들이 넘기는 차이를 봐요. 그만큼 자기 것에 자부심이 있고, 다듬을수록 빛나요.',
@@ -129,7 +130,7 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     hueText: '#4e5968',
   },
   im: {
-    id: 'im', hanja: '壬', kor: '임수', icon: '🌊', name: '큰 물',
+    id: 'im', hanja: '壬', kor: '임수', icon: 'wave', name: '큰 물',
     tagline: '넓게 받아들이는 사람',
     nature:
       '경계가 넓어요. 다른 생각도 일단 들어보고, 사람도 가리지 않아요. 머리가 빨리 돌아가서 판이 어떻게 흘러갈지 먼저 읽어요.',
@@ -140,7 +141,7 @@ export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     hueText: '#1b64da',
   },
   gye: {
-    id: 'gye', hanja: '癸', kor: '계수', icon: '💧', name: '이슬비',
+    id: 'gye', hanja: '癸', kor: '계수', icon: 'drop', name: '이슬비',
     tagline: '스며들어 바꾸는 사람',
     nature:
       '큰 소리를 내지 않아요. 그런데 지나간 자리는 달라져 있어요. 감정을 잘 읽고, 말하지 않은 것까지 알아채요.',

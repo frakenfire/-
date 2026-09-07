@@ -266,10 +266,9 @@ a:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
-  line-height: 33px;
   border-radius: 14px;
-  background: var(--gray-100);
+  background: var(--brand-soft);
+  color: var(--brand-strong);
 }
 .menu-row__body {
   flex: 1;
@@ -3565,8 +3564,14 @@ a:focus-visible {
   color: var(--gray-700);
 }
 .birth-peek__icon {
-  font-size: 40px;
-  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  background: var(--white);
+  color: var(--brand-strong);
 }
 .birth-peek__name {
   font-size: 20px;
@@ -3625,9 +3630,16 @@ a:focus-visible {
   font-weight: 700;
   color: var(--gray-700);
 }
+/* 일간 히어로만은 자기 오행 색을 쓴다 — 이 화면의 주인공이라서 */
 .dm-hero__icon {
-  font-size: 52px;
-  line-height: 1.15;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  background: var(--white);
+  color: var(--dm-hue-text);
 }
 .dm-hero__name {
   margin: 0;
@@ -3711,22 +3723,6 @@ a:focus-visible {
   border: 1px solid var(--gray-100);
   box-shadow: var(--shadow-card);
   overflow: hidden;
-}
-.pillars-card__edit {
-  position: relative;
-  min-height: 32px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(--gray-100);
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--gray-700);
-}
-.pillars-card__edit::after {
-  content: '';
-  position: absolute;
-  inset: -6px 0; /* 보이는 칩은 작게, 탭 영역만 44px */
 }
 .pillars-grid {
   display: grid;
@@ -4259,16 +4255,21 @@ a:focus-visible {
   font-weight: 700;
 }
 /* ── 뽑기 1단계 · 알고 싶은 것 ── 주제를 고르는 자리. 이게 흐름의 시작이다 */
+/* 무엇을 근거로 뽑는지 알리는 한 줄. 화면 폭을 다 쓰는 띠가 아니라
+   왼쪽에 붙는 작은 칩이다 — 읽고 지나가는 값이 제목만큼 커지면 안 된다. */
 .topic-basis {
+  display: inline-flex;
+  align-self: flex-start;
+  align-items: center;
+  gap: 5px;
   margin: var(--space-4) 0 0;
-  padding: 9px 12px;
-  border-radius: 10px;
+  padding: 6px 12px;
+  border-radius: 999px;
   background: var(--brand-soft);
   font-size: 13px;
   line-height: 19.5px;
   font-weight: 600;
   color: var(--brand-strong);
-  text-align: center;
 }
 .topic-grid {
   display: grid;
@@ -4293,10 +4294,18 @@ a:focus-visible {
 .topic-btn:active {
   transform: scale(0.97);
 }
+/* 아이콘 타일 하나로 앱 전체를 통일한다 — 연파랑 사각 + 진한 파랑 선.
+   주제마다 다른 색을 쓰면 일곱 칸이 각자 소리를 내서 무엇도 안 보인다. */
 .topic-btn__icon {
-  font-size: 24px;
-  line-height: 1.2;
-  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  background: var(--brand-soft);
+  color: var(--brand-strong);
 }
 .topic-btn__label {
   font-size: 15px;

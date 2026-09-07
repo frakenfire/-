@@ -1,5 +1,5 @@
 import { AppLayout } from '../components/AppLayout.tsx';
-import { Icon } from '../components/Icon.tsx';
+import { Icon, type IconName } from '../components/Icon.tsx';
 import { Mascot } from '../components/Mascot.tsx';
 import { FORTUNE_LABEL } from '../data/fortuneTypes.ts';
 import { findNote } from '../data/notes.ts';
@@ -44,7 +44,7 @@ type Props = {
   /** 주간 캘린더 — 스트릭 3일 이상이면 무료, 아니면 광고로 연다 */
   weekUnlocked: boolean;
   /** 사주를 이미 세웠으면 일간 배지, 아니면 null */
-  sajuBadge: { icon: string; name: string; hue: string } | null;
+  sajuBadge: { icon: IconName; name: string; hue: string } | null;
   onSaju: () => void;
   onUnlockWeek: () => void;
   onShareWeek: (text: string) => void;
@@ -203,7 +203,9 @@ export function HomeScreen({
           style={{ ['--saju-hue' as string]: sajuBadge.hue }}
           onClick={onSaju}
         >
-          <span className="saju-entry__icon" aria-hidden>{sajuBadge.icon}</span>
+          <span className="saju-entry__icon" aria-hidden>
+            <Icon name={sajuBadge.icon} size={22} />
+          </span>
           <span className="saju-entry__text">
             <span className="saju-entry__k">내 사주</span>
             <strong className="saju-entry__v">{sajuBadge.name}</strong>

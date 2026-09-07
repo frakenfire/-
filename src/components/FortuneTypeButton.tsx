@@ -1,4 +1,5 @@
 import type { FortuneTypeMeta } from '../data/fortuneTypes.ts';
+import { Icon } from './Icon.tsx';
 
 type Props = {
   meta: FortuneTypeMeta;
@@ -16,7 +17,7 @@ export function FortuneTypeButton({ meta, selected, onClick }: Props) {
       onClick={onClick}
     >
       <span className="menu-row__icon" aria-hidden>
-        {meta.icon}
+        <Icon name={meta.icon} size={22} />
       </span>
       <span className="menu-row__body">
         <span className="menu-row__title">{meta.label}</span>

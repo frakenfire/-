@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Icon } from '../components/Icon.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { computeFourPillars, type BirthInput } from '../lib/fourPillars.ts';
 import { analyzeSaju, balanceShape, TEN_GOD_KO } from '../lib/tenGods.ts';
@@ -73,7 +74,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
       <div className="dm-hero" style={{ ['--dm-hue' as string]: dm.hue, ['--dm-hue-text' as string]: dm.hueText }}>
         <span className="dm-hero__label">내 일간 · 사주 속의 나</span>
         <span className="dm-hero__icon" aria-hidden>
-          {dm.icon}
+          <Icon name={dm.icon} size={40} />
         </span>
         <h2 className="dm-hero__name">
           {dm.name}
@@ -105,7 +106,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
       <section className="sec">
         <div className="sec__head">
           <h2 className="sec__title">내 사주 여덟 글자</h2>
-          <button type="button" className="sec__action pillars-card__edit" onClick={onEdit}>
+          <button type="button" className="sec__action" onClick={onEdit}>
             수정
           </button>
         </div>

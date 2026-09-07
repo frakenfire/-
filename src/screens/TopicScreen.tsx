@@ -1,10 +1,11 @@
 import { AppLayout } from '../components/AppLayout.tsx';
+import { Icon, type IconName } from '../components/Icon.tsx';
 import { FORTUNE_TYPES } from '../data/fortuneTypes.ts';
 import type { FortuneType } from '../types/fortune.ts';
 
 type Props = {
   /** 세워둔 사주 — 무엇을 근거로 뽑는지 한 줄로 */
-  sajuBadge: { icon: string; name: string } | null;
+  sajuBadge: { icon: IconName; name: string } | null;
   onSelect: (t: FortuneType) => void;
   onBack: () => void;
 };
@@ -24,7 +25,7 @@ export function TopicScreen({ sajuBadge, onSelect, onBack }: Props) {
 
       {sajuBadge ? (
         <p className="topic-basis">
-          <span aria-hidden>{sajuBadge.icon}</span> 내 사주 · {sajuBadge.name}
+          <Icon name={sajuBadge.icon} size={16} /> 내 사주 · {sajuBadge.name}
         </p>
       ) : null}
 
@@ -37,7 +38,7 @@ export function TopicScreen({ sajuBadge, onSelect, onBack }: Props) {
             onClick={() => onSelect(meta.key)}
           >
             <span className="topic-btn__icon" aria-hidden>
-              {meta.icon}
+              <Icon name={meta.icon} size={24} />
             </span>
             <span className="topic-btn__label">{meta.label}</span>
             <span className="topic-btn__desc">{meta.desc}</span>
