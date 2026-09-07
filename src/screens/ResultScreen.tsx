@@ -229,7 +229,13 @@ export function ResultScreen({
             <div className="report__cell">
               <span className="report__k">{isMonth ? '이달의 키워드' : '행운 음식'}</span>
               <span className="report__v">
-                {isMonth ? luck.tag : `${luck.food.emoji} ${luck.food.name}`}
+                {isMonth ? (
+                  luck.tag
+                ) : (
+                  <>
+                    <Icon name="bowl" size={15} /> {luck.food.name}
+                  </>
+                )}
               </span>
             </div>
           </div>

@@ -1925,6 +1925,9 @@ a:focus-visible {
 }
 .saved-row__relation {
   flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   font-size: 12px;
   line-height: 18px;
   font-weight: 600;
@@ -1996,6 +1999,10 @@ a:focus-visible {
   gap: 8px;
 }
 .save-person__chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   min-height: 44px;
   padding: 0 14px;
   border-radius: 999px;
@@ -2213,34 +2220,43 @@ a:focus-visible {
   box-shadow: 0 0 0 1px #ffd158 inset;
 }
 /* ── 기분 입력 ── */
+/* 다섯 개는 목록이지 카드 다섯 장이 아니다. 상자 하나 안에서
+   얇은 선으로만 나눈다 — 홈·결과의 목록과 같은 규칙. */
 .mood-grid {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  margin-top: var(--space-5);
+  margin-top: var(--space-3);
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
 .mood-btn {
   display: flex;
   align-items: center;
   gap: var(--space-4);
   min-height: 62px;
-  padding: var(--space-3) var(--space-5);
-  border-radius: var(--radius-md);
-  background: var(--white);
-  border: 1.5px solid var(--gray-200);
-  transition:
-    border-color 0.12s ease,
-    background 0.12s ease,
-    transform 0.06s ease;
+  padding: var(--space-3) var(--space-4);
+  background: none;
+  text-align: left;
+  transition: background 0.12s ease;
+}
+.mood-btn + .mood-btn {
+  border-top: 1px solid var(--gray-100);
 }
 .mood-btn:active {
-  transform: scale(0.98);
-  border-color: var(--brand);
-  background: var(--brand-soft);
+  background: var(--gray-50);
 }
+/* 기분 얼굴 — 연파랑 타일 안 진한 파랑 선. 앱 전체와 같은 아이콘 규격 */
 .mood-btn__emoji {
-  font-size: 28px;
-  line-height: 37px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: var(--brand-soft);
+  color: var(--brand-strong);
 }
 .mood-btn__label {
   font-size: 16px;
@@ -2399,11 +2415,12 @@ a:focus-visible {
   margin: var(--space-3) 0 var(--space-3);
 }
 .mood-heading {
-  font-size: 15px;
-  line-height: 22.5px;
+  font-size: 17px;
+  line-height: 25.5px;
   font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--gray-900);
-  margin: var(--space-4) 0 var(--space-3);
+  margin: var(--space-6) 0 var(--space-3);
 }
 .mood-foot {
   text-align: center;

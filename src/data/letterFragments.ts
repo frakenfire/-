@@ -1,3 +1,4 @@
+import type { IconName } from '../components/Icon.tsx';
 import type { Mood } from '../types/fortune.ts';
 
 // 쪽지 요정의 편지 조각 데이터베이스.
@@ -7,12 +8,12 @@ import type { Mood } from '../types/fortune.ts';
 
 export type TimeSlot = 'morning' | 'afternoon' | 'evening' | 'night';
 
-export const MOODS: { key: Mood; emoji: string; label: string }[] = [
-  { key: 'good', emoji: '😊', label: '기분 좋아요' },
-  { key: 'soso', emoji: '😐', label: '그냥 그래요' },
-  { key: 'tired', emoji: '😮‍💨', label: '좀 지쳤어요' },
-  { key: 'anxious', emoji: '😰', label: '불안해요' },
-  { key: 'lonely', emoji: '🥲', label: '외로워요' },
+export const MOODS: { key: Mood; icon: IconName; label: string }[] = [
+  { key: 'good', icon: 'faceGood', label: '기분 좋아요' },
+  { key: 'soso', icon: 'faceSoso', label: '그냥 그래요' },
+  { key: 'tired', icon: 'faceTired', label: '좀 지쳤어요' },
+  { key: 'anxious', icon: 'faceAnxious', label: '불안해요' },
+  { key: 'lonely', icon: 'faceLonely', label: '외로워요' },
 ];
 
 // ── 인사 (시간대별) ──

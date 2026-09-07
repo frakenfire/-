@@ -1,4 +1,5 @@
 import type { LuckSet } from '../lib/luck.ts';
+import { Icon } from './Icon.tsx';
 
 // 행운 세트 — 숫자 나열 대신 '오늘의 행운 미션' 하나로 묶어 실제로 하게 만든다.
 // 색/시간/방향/음식은 코디·동선처럼 쓸 수 있는 것만, 숫자는 활용법과 함께.
@@ -37,7 +38,7 @@ export function LuckySetGrid({
         <div className="lucky-cell">
           <span className="lucky-cell__k">행운 음식</span>
           <span className="lucky-cell__v">
-            {luck.food.emoji} {luck.food.name}
+            <Icon name="bowl" size={15} /> {luck.food.name}
           </span>
         </div>
       </div>

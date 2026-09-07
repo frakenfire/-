@@ -283,7 +283,7 @@ export function CompatScreen({
             return (
               <div className="saved-row" key={person.id}>
                 <button type="button" className="saved-row__main" onClick={() => pickSaved(person)}>
-                  <span className="saved-row__relation">{rel.emoji} {rel.label}</span>
+                  <span className="saved-row__relation"><Icon name={rel.icon} size={14} /> {rel.label}</span>
                   <span className="saved-row__who">{label!.emoji} {label!.label}</span>
                   {score !== null ? (
                     <span className="saved-row__score num" style={{ color: scoreTextColor(score) }}>
@@ -417,7 +417,7 @@ export function CompatScreen({
                   key={r.key}
                   onClick={() => saveCurrentFriend(r.key)}
                 >
-                  {r.emoji} {r.label}
+                  <Icon name={r.icon} size={15} /> {r.label}
                 </button>
               ))}
             </div>

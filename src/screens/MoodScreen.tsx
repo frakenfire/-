@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Icon } from '../components/Icon.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { MOODS } from '../data/letterFragments.ts';
 import { ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac.ts';
@@ -112,7 +113,7 @@ export function MoodScreen({
         {MOODS.map((m) => (
           <button key={m.key} type="button" className="mood-btn" onClick={() => onSelect(m.key)}>
             <span className="mood-btn__emoji" aria-hidden>
-              {m.emoji}
+              <Icon name={m.icon} size={26} />
             </span>
             <span className="mood-btn__label">{m.label}</span>
           </button>

@@ -677,7 +677,7 @@ async function run(browser) {
       } catch { /* 토스트 없음 */ }
       check(toast.includes(expect), `[궁합] ${label}`, toast);
     }
-    await page.locator('button', { hasText: '💘 썸' }).first().click();
+    await page.locator('.save-person__chip', { hasText: '썸' }).first().click();
     await wait(page, 1400);
     check(true, '[궁합] 관계 저장 동작');
     await page.context().close();

@@ -192,12 +192,12 @@ export function markVisit(dateKey: string): void {
 // 벤치마킹. 단, PRD §14(개인정보/자유입력 저장 금지)에 따라 이름 대신
 // 관계(가족/베프/썸 등) 선택형 값으로만 사람을 구분한다.
 export const RELATIONS = [
-  { key: 'bestie', emoji: '👯', label: '베프' },
-  { key: 'crush', emoji: '💘', label: '썸' },
-  { key: 'partner', emoji: '💑', label: '연인' },
-  { key: 'family', emoji: '👪', label: '가족' },
-  { key: 'coworker', emoji: '💼', label: '동료' },
-  { key: 'oneside', emoji: '🌸', label: '짝사랑' },
+  { key: 'bestie', icon: 'users', label: '베프' },
+  { key: 'crush', icon: 'heartSpark', label: '썸' },
+  { key: 'partner', icon: 'heartPair', label: '연인' },
+  { key: 'family', icon: 'home', label: '가족' },
+  { key: 'coworker', icon: 'briefcase', label: '동료' },
+  { key: 'oneside', icon: 'flower', label: '짝사랑' },
 ] as const;
 export type RelationKey = (typeof RELATIONS)[number]['key'];
 
