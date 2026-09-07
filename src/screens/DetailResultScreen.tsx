@@ -1,4 +1,5 @@
 import { AppLayout } from '../components/AppLayout.tsx';
+import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { CategoryScores } from '../components/CategoryScores.tsx';
 import { LuckySetGrid } from '../components/LuckySet.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
@@ -39,7 +40,7 @@ export function DetailResultScreen({
       <div className="report-hero">
         <span className="report-hero__eyebrow">오늘의 심층 리포트</span>
         <h2 className="report-hero__title">
-          오늘 밀어야 할 운은 <b>{topPick.emoji} {topPick.label}</b>
+          오늘 밀어야 할 운은 <b>{topPick.label}</b>
         </h2>
         <p className="report-hero__summary">{detail.summary}</p>
       </div>
@@ -60,13 +61,13 @@ export function DetailResultScreen({
         <div className="match">
           <div className="match__cell match__cell--good">
             <span className="match__badge">잘 맞아요</span>
-            <span className="match__emoji" aria-hidden>{match.good.emoji}</span>
+            <ZodiacBadge zodiac={match.good} size={40} tone="brand" />
             <span className="match__label">{match.good.label}</span>
             <span className="match__hint">{match.goodReason}</span>
           </div>
           <div className="match__cell match__cell--bad">
             <span className="match__badge match__badge--bad">살짝 조심</span>
-            <span className="match__emoji" aria-hidden>{match.caution.emoji}</span>
+            <ZodiacBadge zodiac={match.caution} size={40} />
             <span className="match__label">{match.caution.label}</span>
             <span className="match__hint">{match.cautionReason}</span>
           </div>

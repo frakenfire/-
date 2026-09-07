@@ -14,11 +14,9 @@ export function CategoryScores({ ranked }: { ranked: RankedCat[] }) {
     <div className="cat-wrap">
       <div className="cat-top">
         <div className="cat-top__head">
-          <span className="cat-top__crown" aria-hidden></span>
           <span className="cat-top__label">오늘의 원픽</span>
         </div>
         <div className="cat-top__row">
-          <span className="cat-top__emoji" aria-hidden>{top.emoji}</span>
           <span className="cat-top__name">{top.label}</span>
           <span className="cat-top__score num" style={{ color: scoreTextColor(top.score) }}>
             {top.score}
@@ -34,7 +32,6 @@ export function CategoryScores({ ranked }: { ranked: RankedCat[] }) {
         {rest.map((c, i) => (
           <div className="cat-rank__row" key={c.key}>
             <span className="cat-rank__no">{RANK_BADGE[i + 1]}</span>
-            <span className="cat-rank__emoji" aria-hidden>{c.emoji}</span>
             <span className="cat-rank__name">{c.label}</span>
             <span className="cat-rank__bar">
               <span

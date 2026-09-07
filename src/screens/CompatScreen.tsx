@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { Icon } from '../components/Icon.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { AdBadge } from '../components/AdNotice.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
-import { ZODIACS, findZodiac, type ZodiacId } from '../data/zodiac.ts';
+import { ZODIACS, findZodiac, type ZodiacId, type Zodiac } from '../data/zodiac.ts';
 import { STAR_SIGNS, findStarSign, type StarSignId } from '../data/starSign.ts';
 import { computeCompat, type CompatResult } from '../lib/compat.ts';
 import { computeStarCompat } from '../lib/starCompat.ts';
@@ -36,6 +37,18 @@ type Props = {
 const BAND_EMOJI = { best: '', good: '', ok: '' } as const;
 
 // 친구 궁합 — 로그인 없이 되는 바이럴 훅. 띠/별자리 두 방식 지원(광고/공유로 잠금 해제).
+
+// 띠는 글자 배지로, 별자리는 기호 그대로 그린다.
+// ♈~♓ 는 색이 없는 활자 기호라 그림 이모지와 성격이 다르다 —
+// 어느 기기에서나 같은 모양으로 그려지고, 열두 개가 서로 확실히 갈린다.
+// 반면 띠 이모지(🐭🐮🐯)는 기기마다 그림이 달라진다.
+function PickMark({ item, size = 24 }: { item: { emoji: string; label: string }; size?: number }) {
+  if (item.label.endsWith('띠')) {
+    return <ZodiacBadge zodiac={item as Zodiac} size={size} />;
+  }
+  return <span className="pick-mark" style={{ fontSize: Math.round(size * 0.9) }} aria-hidden>{item.emoji}</span>;
+}
+
 export function CompatScreen({
   dateKey,
   initialMyZodiac,
@@ -227,7 +240,7 @@ export function CompatScreen({
         <div className="zodiac-grid zodiac-grid--full picker-grid">
           {options.map((z) => (
             <button key={z.id} type="button" className="zodiac-chip" onClick={() => choose(z.id)}>
-              {z.emoji} {z.label}
+              {z.label}
             </button>
           ))}
         </div>
@@ -264,13 +277,17 @@ export function CompatScreen({
       <div className="compat-pair">
         <button type="button" className="compat-pick" onClick={() => setPicking('my')}>
           <span className="compat-pick__k">나</span>
-          <span className="compat-pick__emoji">{myLabel ? myLabel.emoji : '＋'}</span>
+          <span className="compat-pick__emoji">
+            {myLabel ? <PickMark item={myLabel} size={44} /> : '＋'}
+          </span>
           <span className="compat-pick__label">{myLabel ? myLabel.label : `${modeLabel} 고르기`}</span>
         </button>
         <span className="compat-pair__x">×</span>
         <button type="button" className="compat-pick" onClick={() => setPicking('friend')}>
           <span className="compat-pick__k">상대</span>
-          <span className="compat-pick__emoji">{friendLabel ? friendLabel.emoji : '＋'}</span>
+          <span className="compat-pick__emoji">
+            {friendLabel ? <PickMark item={friendLabel} size={44} /> : '＋'}
+          </span>
           <span className="compat-pick__label">{friendLabel ? friendLabel.label : `${modeLabel} 고르기`}</span>
         </button>
       </div>
@@ -284,7 +301,7 @@ export function CompatScreen({
               <div className="saved-row" key={person.id}>
                 <button type="button" className="saved-row__main" onClick={() => pickSaved(person)}>
                   <span className="saved-row__relation"><Icon name={rel.icon} size={14} /> {rel.label}</span>
-                  <span className="saved-row__who">{label!.emoji} {label!.label}</span>
+                  <span className="saved-row__who"><PickMark item={label!} size={20} /> {label!.label}</span>
                   {score !== null ? (
                     <span className="saved-row__score num" style={{ color: scoreTextColor(score) }}>
                       {score}점
@@ -339,7 +356,6 @@ export function CompatScreen({
             <div className="compat-cats">
               {result.categories.map((c) => (
                 <div className="compat-cat" key={c.key}>
-                  <span className="compat-cat__emoji" aria-hidden>{c.emoji}</span>
                   <span className="compat-cat__label">{c.label}</span>
                   <span className="compat-cat__score num">{c.score}</span>
                   <span className="compat-cat__bar">

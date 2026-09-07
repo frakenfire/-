@@ -8,16 +8,15 @@ export type RarityTier = 'common' | 'rare' | 'epic' | 'legendary';
 export type Rarity = {
   tier: RarityTier;
   label: string;
-  emoji: string;
   pct: string; // 뱃지용 희귀도 표기
   special: boolean; // epic 이상 = 특별 연출
 };
 
 const TABLE: Record<RarityTier, Omit<Rarity, 'tier'>> = {
-  legendary: { label: '전설의 쪽지', emoji: '', pct: '상위 3%', special: true },
-  epic: { label: '에픽 쪽지', emoji: '', pct: '상위 15%', special: true },
-  rare: { label: '레어 쪽지', emoji: '', pct: '상위 40%', special: false },
-  common: { label: '일반 쪽지', emoji: '', pct: '', special: false },
+  legendary: { label: '전설의 쪽지', pct: '상위 3%', special: true },
+  epic: { label: '에픽 쪽지', pct: '상위 15%', special: true },
+  rare: { label: '레어 쪽지', pct: '상위 40%', special: false },
+  common: { label: '일반 쪽지', pct: '', special: false },
 };
 
 // 확률: 전설 3% · 에픽 12% · 레어 25% · 일반 60%

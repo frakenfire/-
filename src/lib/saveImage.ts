@@ -174,7 +174,7 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
 
     // 등급 뱃지 (에픽 이상)
     if (input.rarity.special) {
-      const label = `${input.rarity.emoji} ${input.rarity.label} · ${input.rarity.pct}`;
+      const label = `${input.rarity.label} · ${input.rarity.pct}`;
       ctx.font = 'bold 24px ' + CARD_FONT;
       const w = ctx.measureText(label).width + 44;
       ctx.fillStyle = tier.accent;

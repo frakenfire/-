@@ -164,7 +164,7 @@ export function ResultScreen({
             총운 <b className="num">{shownTotal}점</b> · {luck.grade}
           </span>
           <span className={`rarity-badge rarity-badge--${rarity.tier}`}>
-            {rarity.emoji} {rarity.label}
+            {rarity.label}
           </span>
         </div>
 

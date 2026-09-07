@@ -21,7 +21,7 @@ export type CompatBand = 'best' | 'good' | 'ok';
 // twin: 완전히 같은 띠 / harmony: 삼합·육합(전통 찰떡궁합) / spark: 상충·원진(전통 애증궁합) / steady: 특별한 관계 없음
 export type CompatVibe = 'twin' | 'harmony' | 'steady' | 'spark';
 
-export type CompatCategory = { key: string; label: string; emoji: string; score: number };
+export type CompatCategory = { key: string; label: string; score: number };
 
 export type CompatResult = {
   score: number; // 세 카테고리 평균 (55~99, 긍정 스큐)
@@ -265,9 +265,9 @@ const TIP = [
 ];
 
 const CATEGORY_META = [
-  { key: 'chem', label: '케미', emoji: '' },
-  { key: 'talk', label: '대화', emoji: '' },
-  { key: 'conflict', label: '갈등 관리', emoji: '' },
+  { key: 'chem', label: '케미' },
+  { key: 'talk', label: '대화' },
+  { key: 'conflict', label: '갈등 관리' },
 ];
 
 function pickR<T>(arr: T[], r: () => number): T {

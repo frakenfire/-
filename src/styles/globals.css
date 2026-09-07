@@ -131,6 +131,10 @@ a:focus-visible {
   vertical-align: -3px;
 }
 .picker-grid .zodiac-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   min-height: 52px;
 }
 .app__bottom {
@@ -644,6 +648,26 @@ a:focus-visible {
 .rowlist > * + * {
   border-top: 1px solid var(--gray-100);
 }
+/* 띠 배지 — 글자 하나를 담은 원. 크기는 쓰는 자리에서 정한다. */
+.zbadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border-radius: 999px;
+  background: var(--gray-100);
+  color: var(--gray-800);
+  font-weight: 700;
+  line-height: 1;
+}
+.pick-mark {
+  line-height: 1;
+  color: var(--gray-800);
+}
+.zbadge--brand {
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+}
 /* 섹션이 아래 여백을 갖는다. 그 안의 마지막 카드까지 자기 여백을 들고 있으면
    섹션 사이가 두 배로 벌어져 화면이 성기게 보인다. */
 .sec > *:last-child {
@@ -786,6 +810,10 @@ a:focus-visible {
   margin: 4px 0 10px;
 }
 .zodiac-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   font-size: 12px;
   line-height: 18px;
   font-weight: 600;
@@ -802,6 +830,10 @@ a:focus-visible {
 /* 흰 배경 위(친구 궁합 화면 등)에서 쓸 때 — 위 .zodiac-chip은 파란 히어로 카드 전용이라
    흰 배경에서는 흰 글자가 안 보이는 문제가 있었음. 라이트 배경용 대비 색으로 재정의. */
 .zodiac-grid--full .zodiac-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
   min-height: 44px;
   display: flex;
   align-items: center;
@@ -1278,10 +1310,6 @@ a:focus-visible {
   gap: 6px;
   margin-bottom: var(--space-2);
 }
-.cat-top__crown {
-  font-size: 16px;
-  line-height: 24px;
-}
 .cat-top__label {
   font-size: 12px;
   line-height: 18px;
@@ -1295,10 +1323,6 @@ a:focus-visible {
   align-items: baseline;
   gap: 8px;
   margin-bottom: var(--space-3);
-}
-.cat-top__emoji {
-  font-size: 26px;
-  line-height: 1;
 }
 .cat-top__name {
   font-size: 20px;
@@ -1357,11 +1381,6 @@ a:focus-visible {
   line-height: 18px;
   font-weight: 600;
   color: var(--gray-600);
-}
-.cat-rank__emoji {
-  flex: none;
-  font-size: 15px;
-  line-height: 22.5px;
 }
 .cat-rank__name {
   flex: none;
@@ -1473,11 +1492,6 @@ a:focus-visible {
 }
 .match__badge--bad {
   color: var(--gray-700);
-}
-.match__emoji {
-  font-size: 40px;
-  line-height: 1.1;
-  margin: 2px 0;
 }
 .match__label {
   font-size: 15px;
@@ -1672,8 +1686,13 @@ a:focus-visible {
   color: var(--brand-strong);
 }
 .compat-pick__emoji {
-  font-size: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  font-size: 34px;
   line-height: 1.1;
+  color: var(--gray-700);
 }
 .compat-pick__label {
   font-size: 14px;
@@ -1793,10 +1812,6 @@ a:focus-visible {
   border-radius: 12px;
   padding: var(--space-3) 6px;
   min-width: 0;
-}
-.compat-cat__emoji {
-  font-size: 15px;
-  line-height: 1;
 }
 .compat-cat__label {
   font-size: 11px;
@@ -1937,6 +1952,9 @@ a:focus-visible {
   padding: 4px 9px;
 }
 .saved-row__who {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   flex: 1;
   min-width: 0;
   font-size: 14px;
@@ -2721,14 +2739,7 @@ a:focus-visible {
   background: #fff3e0;
   color: #9c5d00;
 }
-.podium__emoji {
-  font-size: 26px;
-  line-height: 1.25;
-}
-.podium--1 .podium__emoji {
-  font-size: 34px;
-}
-.podium__name {
+.podium--1 .podium__name {
   font-size: 12px;
   line-height: 18px;
   font-weight: 700;
@@ -2747,17 +2758,6 @@ a:focus-visible {
   border-radius: 14px;
   background: var(--brand-soft);
   border: 1px solid #c9e2ff;
-}
-.me-rank__emoji {
-  flex: none;
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  font-size: 24px;
-  line-height: 33px;
-  background: var(--white);
-  border-radius: 999px;
 }
 .me-rank__body {
   flex: 1;
@@ -2864,6 +2864,9 @@ a:focus-visible {
   color: var(--gray-600); /* 흰 배경 위 AA */
 }
 .rank-row__name {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   flex: 1;
   font-size: 14px;
   line-height: 21px;

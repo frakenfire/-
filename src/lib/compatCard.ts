@@ -163,7 +163,7 @@ export async function saveCompatCard(input: CompatCardInput): Promise<boolean> {
       const x = catStartX + i * catW;
       ctx.fillStyle = '#6b7684';
       ctx.font = `bold 34px ${CARD_FONT}`;
-      ctx.fillText(`${c.emoji} ${c.label}`, x, catY);
+      ctx.fillText(c.label, x, catY);
       ctx.fillStyle = scoreHex(c.score);
       ctx.font = `bold 60px ${CARD_FONT}`;
       ctx.fillText(String(c.score), x, catY + 74);

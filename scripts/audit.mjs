@@ -95,14 +95,14 @@ async function pickBirth(page, { year, month, day, ampm, hour, minute }) {
   await wait(page, 400);
 }
 
-async function setZodiac(page, label = '🐶 개띠') {
+async function setZodiac(page, label = '개띠') {
   await page.getByText('내 띠 고르면', { exact: false }).first().click();
   await wait(page, 250);
   await page.locator('button', { hasText: label }).first().click();
   await wait(page, 300);
 }
 
-async function drawTo(page, { zodiac = '🐶 개띠', mood = '그냥 그래요', topic = null } = {}) {
+async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topic = null } = {}) {
   await page.goto(URL_BASE, { waitUntil: 'networkidle' });
   await wait(page, 400);
   if (zodiac) await setZodiac(page, zodiac);
@@ -309,7 +309,7 @@ async function run(browser) {
     await page.goto(URL_BASE, { waitUntil: 'networkidle' });
     await wait(page, 500);
     try {
-      await setZodiac(page, '🐭 쥐띠');
+      await setZodiac(page, '쥐띠');
       await wait(page, 700);
 
       const locked = await bodyText(page);
@@ -659,8 +659,8 @@ async function run(browser) {
     await wait(page, 700);
     check((await bodyText(page)).includes('별자리 궁합'), '[궁합] 첫 화면에서 별자리로 전환 가능');
 
-    await page.locator('button', { hasText: '🐶 개띠' }).first().click(); await wait(page, 500);
-    await page.locator('button', { hasText: '🐯 범띠' }).first().click(); await wait(page, 1200);
+    await page.locator('.zodiac-chip', { hasText: '개띠' }).first().click(); await wait(page, 500);
+    await page.locator('.zodiac-chip', { hasText: '범띠' }).first().click(); await wait(page, 1200);
     await page.getByText('광고 보고 결과 열기', { exact: false }).first().click();
     await wait(page, 3200);
     const c = await bodyText(page);

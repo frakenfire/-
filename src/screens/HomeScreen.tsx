@@ -1,4 +1,5 @@
 import { AppLayout } from '../components/AppLayout.tsx';
+import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { Icon, type IconName } from '../components/Icon.tsx';
 import { Mascot } from '../components/Mascot.tsx';
 import { FORTUNE_LABEL } from '../data/fortuneTypes.ts';
@@ -146,8 +147,7 @@ export function HomeScreen({
         {zodiac && saju ? (
           <>
             <p className="today-hook__persona">
-              {ZODIAC_TRAIT[zodiac.id]} {zodiac.emoji}
-              {zodiac.label}인 당신,
+              {ZODIAC_TRAIT[zodiac.id]} {zodiac.label}인 당신,
             </p>
             <p className="today-hook__line">{saju.title}</p>
             <div className="today-hook__saju" aria-hidden>
@@ -315,7 +315,6 @@ export function HomeScreen({
                 {/* 메달 이모지는 iOS 에서 글리프가 라인박스를 넘쳐 카드 테두리를 뚫는다.
                     텍스트 배지는 어느 플랫폼에서든 같은 크기로 그려진다. */}
                 <span className="podium__rank">{i + 1}위</span>
-                <span className="podium__emoji" aria-hidden>{z?.emoji}</span>
                 <span className="podium__name">{z?.label}{me ? ' (나!)' : ''}</span>
               </div>
             );
@@ -326,7 +325,7 @@ export function HomeScreen({
           /* 누른 직후 '내 것'이 한눈에 보여야 한다 — 이모지 + 큰 순위 숫자 카드.
              예전엔 회색 한 줄 텍스트라 방금 고른 결과가 어디 있는지 안 보였다. */
           <div className={`me-rank${myRank.rank <= 3 ? ' me-rank--top' : ''}`}>
-            <span className="me-rank__emoji" aria-hidden>{zodiac.emoji}</span>
+            <ZodiacBadge zodiac={zodiac} size={44} tone="brand" />
             <span className="me-rank__body">
               <span className="me-rank__title">내 {zodiac.label}, 오늘</span>
               <span className="me-rank__sub">
@@ -365,7 +364,7 @@ export function HomeScreen({
                   if (mine && mine.rank > 3) setRankOpen(true);
                 }}
               >
-                {z.emoji} {z.label}
+{z.label}
               </button>
             ))}
           </div>
@@ -383,7 +382,7 @@ export function HomeScreen({
                 <li key={r.animal} className={me ? 'rank-row rank-row--me' : 'rank-row'}>
                   <span className="rank-row__no num">{r.rank}</span>
                   <span className="rank-row__name">
-                    {z?.emoji} {z?.label}
+                    {z?.label}
                     {me ? ' (나)' : ''}
                   </span>
                   <span className={`rank-row__tone rank-row__tone--${r.tone}`}>{r.toneWord}</span>
@@ -415,7 +414,7 @@ export function HomeScreen({
       {todayReading ? (
         <button type="button" className="reopen-card" onClick={onReopen}>
           <span className="reopen-card__icon" aria-hidden>
-            {todayReading.result.rarity?.emoji ??''}
+            <Icon name="feather" size={22} />
           </span>
           <span className="reopen-card__body">
             <span className="reopen-card__label">오늘 받은 편지</span>
