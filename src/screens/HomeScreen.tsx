@@ -128,10 +128,7 @@ export function HomeScreen({
             </span>
           )}
         </div>
-        <div className="home-hero__top">
-          <h1 className="h1">{greeting(todayKey())}</h1>
-          <Mascot size={72} score={streak >= 3 ? 90 : 80} />
-        </div>
+        <h1 className="h1">{greeting(todayKey())}</h1>
       </div>
 
       {/*  메인 focal — '오늘의 나'훅 카드
@@ -139,6 +136,9 @@ export function HomeScreen({
           '오늘 기운'을 결정적으로 계산해 개인화. 띠 미설정 시 일진+오늘 기운만 노출.
           잠긴 결과(?점·?)로 궁금증/FOMO 유발 뽑아야 전부 열림 */}
       <button type="button" className="today-hook" onClick={onStart}>
+        <span className="today-hook__art" aria-hidden>
+          <Mascot size={56} score={streak >= 3 ? 90 : 80} />
+        </span>
         <span className="today-hook__kw">
            오늘의 일진 · {iljin.kor}일
         </span>
@@ -223,7 +223,7 @@ export function HomeScreen({
           <span className="saju-entry__text">
             <span className="saju-entry__k">지금은 모두에게 같은 쪽지예요</span>
             <strong className="saju-entry__v">생년월일 넣고 나만의 쪽지 받기</strong>
-            <span className="saju-entry__sub">태어난 날짜와 시각으로 오늘 뽑히는 쪽지가 달라져요</span>
+            <span className="saju-entry__sub">태어난 날짜·시각으로 오늘 뽑히는 쪽지가 달라져요</span>
           </span>
           <span className="saju-entry__chev" aria-hidden>›</span>
         </button>
@@ -232,20 +232,20 @@ export function HomeScreen({
       {/* 이번 주 운세 캘린더 — 스트릭에 줄 보상이자, 좋은 날을 미리 알려
           그날 다시 오게 만드는 리텐션 장치. 잠금 해제는 스트릭(무료) 또는 광고. */}
       {zodiac ? (
-        <div className="week-card">
-          <div className="week-card__head">
-            <p className="week-card__title">이번 주 내 운세</p>
+        <section className="sec">
+          <div className="sec__head">
+            <h2 className="sec__title">이번 주 내 운세</h2>
             {weekUnlocked ? (
               <button
                 type="button"
-                className="week-card__share"
+                className="sec__action"
                 onClick={() => onShareWeek(buildWeekShareText(week!, zodiac.label, zodiac.emoji))}
               >
-                공유 
+                공유
               </button>
             ) : null}
           </div>
-
+          <div className="week-card">
           {weekUnlocked && week ? (
             <>
               <p className="week-card__headline">{week.headline}</p>
@@ -289,18 +289,19 @@ export function HomeScreen({
               <span className="week-lock__cta">{streak >= 3 ?'무료로 열기' : '이번 주 미리보기'}</span>
             </button>
           )}
-        </div>
+          </div>
+        </section>
       ) : null}
 
       {/* 오늘의 12띠 서열 — 사주(일진) 기반 매일 갈리는 랭킹. 단톡방 도발 공유의 핵 */}
-      <div className="rank-card">
-        <div className="rank-card__head">
-          <p className="rank-card__title">오늘의 띠 서열</p>
-          <button type="button" className="rank-card__share" onClick={shareRanking}>
+      <section className="sec">
+        <div className="sec__head">
+          <h2 className="sec__title">오늘의 띠 서열</h2>
+          <button type="button" className="sec__action sec__action--go" onClick={shareRanking}>
             {shared ?'복사됨' : '단톡방에 던지기'}
           </button>
         </div>
-
+        <div className="rank-card">
         {shared ? (
           <p className="rank-card__copied">서열표 복사 완료! 단톡방에 붙여넣기만 하면 돼요</p>
         ) : null}
@@ -391,9 +392,16 @@ export function HomeScreen({
             })}
           </ol>
         ) : null}
-      </div>
+        </div>
+      </section>
 
-      {/* 친구 궁합 — 바이럴 훅 */}
+      {/* 더 해보기 — 성격이 같은 '이동' 줄들은 한 덩어리로 묶는다.
+          따로 떨어진 카드 두 장은 '더미'로, 묶인 목록은 '메뉴'로 읽힌다. */}
+      <section className="sec">
+        <div className="sec__head">
+          <h2 className="sec__title">더 해보기</h2>
+        </div>
+        <div className="rowlist">
       <button type="button" className="compat-banner" onClick={onCompat}>
         <span className="compat-banner__icon" aria-hidden></span>
         <span className="compat-banner__body">
@@ -418,7 +426,14 @@ export function HomeScreen({
           <span className="reopen-card__cta">다시 읽기 ›</span>
         </button>
       ) : null}
+        </div>
+      </section>
 
+      {rarityCounts.legendary + rarityCounts.epic + rarityCounts.rare > 0 || (yesterdayRecord && yNote) ? (
+        <section className="sec">
+          <div className="sec__head">
+            <h2 className="sec__title">내 기록</h2>
+          </div>
       {rarityCounts.legendary + rarityCounts.epic + rarityCounts.rare > 0 ? (
         <div className="collection">
           <span className="collection__title">이번 달 뽑은 쪽지</span>
@@ -448,6 +463,8 @@ export function HomeScreen({
             </span>
           </span>
         </div>
+      ) : null}
+        </section>
       ) : null}
 
       {/* 삭제 확인 — window.confirm 은 웹뷰·샌드박스 iframe 에서 조용히 false 를

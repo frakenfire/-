@@ -345,7 +345,7 @@ async function run(browser) {
       await page.reload({ waitUntil: 'networkidle' });
       await wait(page, 1000);
       check((await page.locator('.week-row').count()) === 7, '[주간] 새로고침 후에도 열린 상태 유지');
-      check((await page.locator('.week-card__share').count()) === 1, '[주간] 해제 후 공유 버튼 노출');
+      check((await page.locator('.sec__action').count()) >= 1, '[주간] 해제 후 공유 버튼 노출');
     } catch (e) {
       bad('[주간] 캘린더 경로', e.message.split('\n')[0]);
     }

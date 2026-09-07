@@ -533,21 +533,7 @@ a:focus-visible {
 }
 /* ── 홈 히어로 ── */
 .home-hero {
-  padding: var(--space-3) 0 var(--space-6);
-}
-/* 인사말과 마스코트를 한 줄에 — 인사가 길어지면 두 줄까지 자연스럽게 흐른다 */
-.home-hero__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-4);
-}
-.home-hero__top .h1 {
-  margin-bottom: 0;
-  flex: 1;
-  min-width: 0;
-  word-break: keep-all;
-  text-wrap: balance;
+  padding: var(--space-3) 0 var(--space-5);
 }
 .date-pill {
   display: inline-block;
@@ -564,6 +550,79 @@ a:focus-visible {
   margin-bottom: 0;
   font-size: 24px;
   line-height: 33px;
+  word-break: keep-all;
+  text-wrap: balance;
+}
+
+/* ── 섹션 ── 토스 홈은 카드를 그냥 쌓지 않는다. 바탕 위에 섹션 제목을 놓고
+   그 아래에 내용을 붙인다. 제목이 카드 안에 갇혀 있으면 화면이 '블록 더미'로 읽힌다. */
+.sec {
+  margin-bottom: var(--space-8);
+}
+.sec__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-height: 28px;
+  margin-bottom: var(--space-3);
+}
+.sec__title {
+  margin: 0;
+  font-size: 17px;
+  line-height: 25.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--gray-900);
+}
+/* 섹션 오른쪽 보조 동작 — 토스는 여기에 '더보기'처럼 담백한 글자 버튼을 둔다.
+   바탕이 흰색이 아니라 gray-50 이라 gray-600 은 4.42:1 로 AA 미달, 한 단계 진하게. */
+.sec__action {
+  position: relative;
+  flex: none;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+  padding: 4px 0 4px 8px;
+}
+.sec__action::after {
+  content: '';
+  position: absolute;
+  inset: -12px -8px;
+}
+.sec__action:active {
+  color: var(--gray-900);
+}
+/* 눌러주길 바라는 동작은 색으로만 구분한다 — 제목 옆에 검은 알약을 놓으면
+   섹션 제목보다 버튼이 먼저 읽혀 화면의 위계가 뒤집힌다. */
+.sec__action--go {
+  color: var(--brand-strong);
+  font-weight: 700;
+}
+.sec__action--go:active {
+  color: var(--brand-strong);
+  opacity: 0.7;
+}
+/* 목록 묶음 — 같은 성격의 줄은 한 상자 안에서 얇은 선으로만 나눈다.
+   상자 하나당 그림자 하나가 아니라, 상자 하나에 줄 여럿. */
+.rowlist {
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.rowlist > .compat-banner,
+.rowlist > .reopen-card,
+.rowlist > .recap-card {
+  margin-bottom: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  background: transparent;
+}
+.rowlist > * + * {
+  border-top: 1px solid var(--gray-100);
 }
 .note-hint {
   text-align: center;
@@ -2365,48 +2424,12 @@ a:focus-visible {
 /* ── 이번 주 운세 캘린더 ── 스트릭 보상(3일 연속) 또는 광고로 열리는 7일 미리보기.
    좋은 날을 미리 알려 "그날 다시 오게" 만드는 리텐션 장치라 서열 카드 위에 둔다. */
 .week-card {
-  margin-bottom: var(--space-6);
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   background: var(--white);
   border: 1px solid var(--gray-100);
   box-shadow: var(--shadow-card);
   overflow: hidden; /* 이모지·배지가 라운드 밖으로 삐져나오지 않게 */
-}
-.week-card__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: var(--space-3);
-}
-.week-card__title {
-  margin: 0;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-/* 서열 카드 공유 칩과 동일 규격 — 같은 성격의 버튼은 같은 모양이어야 헷갈리지 않는다 */
-.week-card__share {
-  position: relative;
-  min-height: 34px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--white);
-  background: var(--gray-800);
-  border-radius: 999px;
-  padding: 7px 13px;
-  transition: transform 0.2s var(--ease-spring);
-}
-.week-card__share::after {
-  content: '';
-  position: absolute;
-  inset: -5px 0; /* 보이는 크기는 두고 탭 영역만 44px 로 */
-}
-.week-card__share:active {
-  transform: scale(0.95);
 }
 .week-card__headline {
   margin: 0 0 var(--space-3);
@@ -2574,48 +2597,11 @@ a:focus-visible {
 }
 /* ── 오늘의 띠 서열 ── 리더보드. 매일 갈리는 12띠 랭킹(사주 일진 기반) */
 .rank-card {
-  margin-bottom: var(--space-6);
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   background: var(--white);
   border: 1px solid var(--gray-100);
   box-shadow: var(--shadow-card);
-}
-.rank-card__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: var(--space-3);
-}
-.rank-card__title {
-  margin: 0;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.rank-card__share {
-  position: relative;
-  min-height: 34px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--white);
-  background: var(--gray-800);
-  border-radius: 999px;
-  padding: 7px 13px;
-  transition: transform 0.2s var(--ease-spring);
-}
-/* 알약 모양은 34px 그대로 두고 탭 영역만 44px 로 넓힌다 (최소 터치 영역).
-   카드 제목 옆에 붙는 칩이라 눈에 보이는 크기를 키우면 제목을 눌러버린다. */
-.rank-card__share::after {
-  content: '';
-  position: absolute;
-  inset: -5px 0;
-}
-.rank-card__share:active {
-  transform: scale(0.95);
 }
 .rank-card__copied {
   margin: 0 0 var(--space-3);
@@ -2868,8 +2854,8 @@ a:focus-visible {
   text-align: left;
   position: relative;
   overflow: hidden;
-  margin-bottom: var(--space-6);
-  padding: var(--space-6);
+  margin-bottom: var(--space-8);
+  padding: var(--space-5);
   border-radius: var(--radius-xl);
   /* Blue500(#3182f6) 위에서는 순백색조차 3.71:1 이라 작은 글씨가 AA 를 못 넘긴다.
      TDS 램프에서 한 단계 어두운 Blue700 → Blue900 으로 낮춰 본문·보조 텍스트가
@@ -2882,6 +2868,17 @@ a:focus-visible {
 .today-hook:active {
   transform: scale(0.975);
 }
+/* 삽화는 오른쪽 위 — 토스의 색 카드는 글이 왼쪽, 그림이 오른쪽에 온다.
+   인사 줄에 떠 있던 걸 카드 안으로 들여 '카드 하나'로 읽히게 했다. */
+.today-hook__art {
+  position: absolute;
+  /* 배지 줄(왼쪽) 옆 빈자리에 얹는다. 아래로는 64px 까지만 내려와
+     헤드라인 첫 줄(67px)과 겹치지 않으므로, 글줄을 좁힐 필요가 없다. */
+  top: 8px;
+  right: 12px;
+  display: block;
+  line-height: 0;
+}
 .today-hook__kw {
   display: inline-block;
   font-size: 13px;
@@ -2893,7 +2890,7 @@ a:focus-visible {
   padding: 6px 14px;
 }
 .today-hook__persona {
-  margin: 22px 0 6px;
+  margin: 16px 0 6px;
   font-size: 14px;
   line-height: 21px;
   font-weight: 600;
@@ -2903,7 +2900,7 @@ a:focus-visible {
    갖고 있다. 띠 미설정이면 그 줄이 없어 헤드라인이 배지에 그대로 붙으므로,
    배지 바로 뒤에 올 때만 같은 22px 를 직접 준다. */
 .today-hook__kw + .today-hook__line {
-  margin-top: 22px;
+  margin-top: 16px;
 }
 .today-hook__line {
   margin: 0;
@@ -2920,7 +2917,7 @@ a:focus-visible {
   color: #fff;
 }
 .today-hook__hint {
-  margin: 10px 0 0;
+  margin: 8px 0 0;
   font-size: 13px;
   font-weight: 500;
   line-height: 19.5px;
@@ -3102,7 +3099,7 @@ a:focus-visible {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-top: 14px;
+  margin-top: 12px;
 }
 .saju-chip {
   font-size: 12px;
@@ -3119,7 +3116,7 @@ a:focus-visible {
   border-color: #fff;
 }
 .today-hook__preview-k {
-  margin: 28px 0 10px;
+  margin: 20px 0 8px;
   font-size: 12px;
   line-height: 18px;
   font-weight: 600;
@@ -3129,7 +3126,7 @@ a:focus-visible {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  margin: 0 0 var(--space-5);
+  margin: 0 0 var(--space-4);
 }
 .th-cell {
   flex: 1 1 0;
@@ -3355,7 +3352,7 @@ a:focus-visible {
   gap: var(--space-3);
   width: 100%;
   min-height: 44px;
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-8);
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   background: var(--white);
@@ -3424,7 +3421,7 @@ a:focus-visible {
   color: var(--gray-900);
 }
 .saju-entry__sub {
-  margin-top: 2px;
+  margin-top: 1px;
   font-size: 12px;
   font-weight: 500;
   color: var(--gray-600);
