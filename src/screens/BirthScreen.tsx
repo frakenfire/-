@@ -81,10 +81,7 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
     <AppLayout onBack={onBack} step={inFlow ? 1 : undefined} totalSteps={inFlow ? 4 : undefined}>
       <span className="eyebrow">{inFlow ? '쪽지 뽑기' : '쪽지를 나에게 맞추기'}</span>
       <h2 className="h2">언제 태어났어요?</h2>
-      <p className="lead">
-        태어난 <b>순간</b>으로 사주를 세우면, 오늘 쪽지가 나만의 것이 돼요. 이 기기에만 저장되고
-        어디에도 보내지 않아요.
-      </p>
+      <p className="lead">이 기기에만 저장돼요. 어디에도 보내지 않아요.</p>
 
       <div className="birth-form">
         <div className="wheel-group">

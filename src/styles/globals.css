@@ -3168,18 +3168,11 @@ a:focus-visible {
   background: #fff;
   border-color: #fff;
 }
-.today-hook__preview-k {
-  margin: 20px 0 8px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: #e8f3ff;
-}
 .today-hook__reveal {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
-  margin: 0 0 var(--space-4);
+  margin: var(--space-5) 0 var(--space-4);
 }
 .th-cell {
   flex: 1 1 0;

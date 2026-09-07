@@ -3,7 +3,7 @@ import { FORTUNE_TYPES } from '../data/fortuneTypes.ts';
 import type { FortuneType } from '../types/fortune.ts';
 
 type Props = {
-  /** 사주를 넣었으면 그 사실을 알려 '이미 반영돼 있다'를 보여준다 */
+  /** 세워둔 사주 — 무엇을 근거로 뽑는지 한 줄로 */
   sajuBadge: { icon: string; name: string } | null;
   onSelect: (t: FortuneType) => void;
   onBack: () => void;
@@ -22,10 +22,9 @@ export function TopicScreen({ sajuBadge, onSelect, onBack }: Props) {
       <h2 className="h2">오늘, 뭐가 제일 궁금해요?</h2>
       <p className="lead">고른 주제로 오늘의 쪽지를 뽑아요.</p>
 
-      {/* 사주가 이미 깔려 있다는 걸 여기서 한 번 확인시킨다 — 매번 다시 묻지 않는 이유이기도 하다 */}
       {sajuBadge ? (
         <p className="topic-basis">
-          <span aria-hidden>{sajuBadge.icon}</span> {sajuBadge.name} · 내 사주는 이미 반영돼 있어요
+          <span aria-hidden>{sajuBadge.icon}</span> 내 사주 · {sajuBadge.name}
         </p>
       ) : null}
 

@@ -168,10 +168,8 @@ export function HomeScreen({
         )}
 
         {/* 아직 안 뽑았으면 잠긴 ?로 궁금증을, 이미 뽑았으면 오늘 나온 값을 그대로 보여준다.
-            (이미 88점을 본 사람에게 '?점'을 다시 내미는 건 뒷걸음질이다) */}
-        <p className="today-hook__preview-k">
-          {drawn ? '오늘 쪽지에서 나온 거예요' : '쪽지를 뽑으면 이런 걸 볼 수 있어요'}
-        </p>
+            (이미 88점을 본 사람에게 '?점'을 다시 내미는 건 뒷걸음질이다)
+            물음표 세 칸이 이미 '뽑으면 열린다'를 말한다 — 같은 말을 글로 또 쓰지 않는다. */}
         <div className="today-hook__reveal" aria-hidden>
           <div className="th-cell">
             <span className="th-cell__k">오늘 총운</span>
@@ -207,7 +205,7 @@ export function HomeScreen({
         >
           <span className="saju-entry__icon" aria-hidden>{sajuBadge.icon}</span>
           <span className="saju-entry__text">
-            <span className="saju-entry__k">쪽지가 맞춰진 기준 · 내 사주</span>
+            <span className="saju-entry__k">내 사주</span>
             <strong className="saju-entry__v">{sajuBadge.name}</strong>
           </span>
           <span className="saju-entry__chev" aria-hidden>›</span>
@@ -222,9 +220,8 @@ export function HomeScreen({
             </svg>
           </span>
           <span className="saju-entry__text">
-            <span className="saju-entry__k">지금은 모두에게 같은 쪽지예요</span>
-            <strong className="saju-entry__v">생년월일 넣고 나만의 쪽지 받기</strong>
-            <span className="saju-entry__sub">태어난 날짜·시각으로 오늘 뽑히는 쪽지가 달라져요</span>
+            <strong className="saju-entry__v">생년월일 입력하기</strong>
+            <span className="saju-entry__sub">태어난 날짜와 시각</span>
           </span>
           <span className="saju-entry__chev" aria-hidden>›</span>
         </button>

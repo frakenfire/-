@@ -37,7 +37,7 @@ export function MoodScreen({
       <h2 className="h2">쪽지를 쓰기 전에, 지금 나는?</h2>
       <p className="lead">
         {hasBirth
-          ? '내 사주는 이미 반영돼 있어요. 지금 기분만 알려주세요.'
+          ? '지금 기분만 알려주세요.'
           : '기분 · 띠 · 별자리를 고르면 나에게 딱 맞는 쪽지가 나와요.'}
       </p>
 

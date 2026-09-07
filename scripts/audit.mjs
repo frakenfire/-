@@ -360,15 +360,14 @@ async function run(browser) {
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 600);
 
-      // 사주를 아직 안 만든 사람에게 진입점이 보이고, 이유가 함께 있어야 한다
+      // 진입점은 '무엇을 넣는지' 만 말하면 된다. 왜 필요한지를 설득하는 문장은
+      // 넣지 않는다 — 누르기 전에 읽어야 할 글이 늘어날 뿐이다.
       const home = await bodyText(page);
-      check(home.includes('생년월일 넣고 나만의 쪽지 받기'), '[사주] 홈에 진입점 노출');
-      check(home.includes('생년월일'), '[사주] 무엇을 넣는지가 홈에서 바로 보임');
-      check(home.includes('모두에게 같은 쪽지'), '[사주] 왜 필요한지 이유가 함께 보임');
-      // 사주는 별도 기능이 아니라 쪽지를 맞추기 위한 것 — 문구가 쪽지에 봉사해야 한다
-      check(/오늘 뽑히는 쪽지가 달라져요/.test(home), '[사주] 진입 문구가 쪽지에 봉사함');
+      check(home.includes('생년월일 입력하기'), '[사주] 홈에 진입점 노출');
+      check(home.includes('태어난 날짜와 시각'), '[사주] 무엇을 넣는지가 홈에서 바로 보임');
+      check(!/모두에게 같은 쪽지|쪽지가 달라져요/.test(home), '[사주] 설득 문구 없음');
 
-      await page.getByText('생년월일 넣고 나만의 쪽지 받기', { exact: false }).first().click();
+      await page.getByText('생년월일 입력하기', { exact: false }).first().click();
       await wait(page, 800);
       check((await bodyText(page)).includes('언제 태어났어요'), '[사주입력] 화면 진입');
       // 개인정보를 받는 화면이므로 어디에 저장되는지 먼저 말해야 한다
@@ -457,12 +456,12 @@ async function run(browser) {
       await wait(page, 600);
       const topicText = await bodyText(page);
       check(topicText.includes('뭐가 제일 궁금해요'), '[흐름] 1단계는 알고 싶은 것 고르기');
-      check(topicText.includes('내 사주는 이미 반영돼 있어요'), '[흐름] 사주가 이미 깔려 있음을 알림');
+      check(/내 사주 · /.test(topicText), '[흐름] 무엇을 근거로 뽑는지 한 줄로 보임');
       await page.getByText('오늘의 나', { exact: false }).first().click();
       await wait(page, 600);
       const moodText = await bodyText(page);
       check(!moodText.includes('내 별자리'), '[사주] 사주가 있으면 기분 화면에서 띠·별자리를 안 물음');
-      check(moodText.includes('내 사주는 이미 반영돼 있어요'), '[사주] 이미 반영됐음을 알려줌');
+      check(moodText.includes('지금 기분만 알려주세요'), '[사주] 사주가 있으면 기분만 묻는다');
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
 
@@ -524,7 +523,7 @@ async function run(browser) {
       await wait(page, 900);
       check((await page.locator('.saju-entry--done').count()) === 0,
         '[사주] 삭제 후 홈 배지가 사라짐');
-      check((await bodyText(page)).includes('생년월일 넣고'),
+      check((await bodyText(page)).includes('생년월일 입력하기'),
         '[사주] 삭제 후 다시 만들기로 되돌아감');
       const gone = await page.evaluate(() => window.localStorage.getItem('tomorrowNoteBirth'));
       check(gone === null, '[사주] 삭제 후 저장소에 생년월일이 남지 않음', String(gone));
