@@ -468,7 +468,8 @@ export default function App() {
   const sajuBadge = useMemo(() => {
     if (!birthInput) return null;
     const dm = DAY_MASTER_BY_INDEX[computeFourPillars(birthInput).dayStem];
-    return { icon: dm.icon, name: `${dm.hanja} ${dm.name}`, hue: dm.hue };
+    // 한자는 붙이지 않는다. '壬 큰 물' 은 읽는 사람 대부분에게 앞 글자가 장벽이다.
+    return { icon: dm.icon, name: dm.name, hue: dm.hue };
   }, [birthInput]);
 
   // 사주를 세우면 띠는 이미 정해진다(그것도 입춘 기준이라 더 정확하다).

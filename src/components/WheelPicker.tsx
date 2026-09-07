@@ -53,7 +53,6 @@ export function WheelPicker({ items, value, onChange, label, disabled = false }:
 
   return (
     <div className={disabled ? 'wheel wheel--off' : 'wheel'}>
-      <span className="wheel__band" aria-hidden />
       <div
         ref={ref}
         className="wheel__scroll"

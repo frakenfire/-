@@ -169,11 +169,12 @@ a:focus-visible {
 }
 .eyebrow {
   display: inline-block;
+  align-self: flex-start; /* 본문이 stretch 라 알약이 화면 폭만큼 늘어나 있었다 */
   font-size: 13px;
   line-height: 19.5px;
   font-weight: 700;
   color: var(--brand-strong); /* 연파랑 배경 위 AA */
-  background: var(--color-soft-green);
+  background: var(--brand-soft);
   padding: 4px 10px;
   border-radius: 999px;
   margin-bottom: var(--space-4);
@@ -211,7 +212,7 @@ a:focus-visible {
   box-shadow: var(--shadow-cta);
 }
 .btn--secondary {
-  background: var(--color-soft-green);
+  background: var(--brand-soft);
   color: var(--brand-strong); /* Blue500 은 연파랑 위에서 3.31:1 → Blue700 로 4.82:1 */
 }
 .btn--ghost {
@@ -255,7 +256,7 @@ a:focus-visible {
 }
 .menu-row--selected {
   border-color: var(--color-signature-green);
-  background: var(--color-soft-green);
+  background: var(--brand-soft);
 }
 .menu-row__icon {
   width: 44px;
@@ -4355,15 +4356,20 @@ a:focus-visible {
   opacity: 0.4;
   pointer-events: none;
 }
-/* 가운데 선택 띠 — 지금 무엇이 골라져 있는지 한눈에 */
-.wheel__band {
+/* 가운데 선택 띠 — 칸마다 따로 깔면 파란 알약 세 개가 나란히 선 '버튼 줄'로
+   보인다. 실제 휠은 줄 전체를 가로지르는 회색 띠 하나 위에서 숫자가 굴러간다. */
+.wheel-row {
+  position: relative;
+}
+.wheel-row::before {
+  content: '';
   position: absolute;
   top: 44px;
   left: 0;
   right: 0;
   height: 44px;
   border-radius: 10px;
-  background: var(--brand-soft);
+  background: var(--gray-100);
   pointer-events: none;
 }
 .wheel__scroll {
@@ -4395,15 +4401,17 @@ a:focus-visible {
   font-variant-numeric: tabular-nums;
   font-size: 17px;
   line-height: 25.5px;
-  font-weight: 600;
-  color: var(--gray-700); /* gray-500 은 흰 배경에서 3.04:1 로 AA 미달 */
+  font-weight: 500;
+  color: var(--gray-600); /* gray-500 은 흰 배경에서 3.04:1 로 AA 미달 */
   background: none;
 }
+/* 고른 값은 색이 아니라 굵기와 크기로 구분한다 — 띠 위의 파란 글씨는
+   '지금 눌린 버튼' 처럼 읽혀 굴릴 수 있다는 걸 가린다. */
 .wheel__item--on {
   font-size: 19px;
   line-height: 28px;
   font-weight: 700;
-  color: var(--brand-strong);
+  color: var(--gray-900);
 }
 .wheel-row {
   display: flex;

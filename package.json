@@ -17,14 +17,15 @@
     "typecheck": "tsc -b --noEmit",
     "test": "node --experimental-strip-types --test 'src/**/*.test.ts'",
     "check:release": "node scripts/check-release-ready.mjs",
-    "verify": "npm run typecheck && npm run test && npm run build:web && npm run check:no-mock && npm run check:policy && npm run check:palette && npm run check:emoji && npm run check:type && npm run check:weight",
+    "verify": "npm run typecheck && npm run test && npm run build:web && npm run check:no-mock && npm run check:policy && npm run check:palette && npm run check:emoji && npm run check:type && npm run check:weight && npm run check:hanja",
     "audit": "node scripts/audit.mjs",
     "check:no-mock": "node scripts/check-no-mock.mjs",
     "check:policy": "node scripts/check-bundle-policy.mjs",
     "check:palette": "node scripts/check-palette.mjs",
     "check:emoji": "node scripts/check-emoji.mjs",
     "check:type": "node scripts/check-typography.mjs",
-    "check:weight": "node scripts/check-weight.mjs"
+    "check:weight": "node scripts/check-weight.mjs",
+    "check:hanja": "node scripts/check-hanja.mjs"
   },
   "dependencies": {
     "@apps-in-toss/web-framework": "^2.10.5",
