@@ -102,13 +102,14 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
       </div>
 
       {/* 2. 근거 — 여덟 글자. 한자만 두면 벽이라 아래 한글을 붙인다 */}
-      <div className="pillars-card">
-        <div className="pillars-card__head">
-          <p className="pillars-card__title">내 사주 여덟 글자</p>
-          <button type="button" className="pillars-card__edit" onClick={onEdit}>
+      <section className="sec">
+        <div className="sec__head">
+          <h2 className="sec__title">내 사주 여덟 글자</h2>
+          <button type="button" className="sec__action pillars-card__edit" onClick={onEdit}>
             수정
           </button>
         </div>
+        <div className="pillars-card">
         <div className="pillars-grid">
           {cols.map((c) => (
             <div key={c.label} className={c.label === '일' ? 'pcol pcol--me' : 'pcol'}>
@@ -144,11 +145,15 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
             ))}
           </ul>
         ) : null}
-      </div>
+        </div>
+      </section>
 
       {/* 3. 오행 저울 — 숫자를 그림으로. 지장간까지 풀어 센 값이다 */}
-      <div className="elbal-card">
-        <p className="elbal-card__title">내 안의 오행</p>
+      <section className="sec">
+        <div className="sec__head">
+          <h2 className="sec__title">내 안의 오행</h2>
+        </div>
+        <div className="elbal-card">
         <ul className="elbal-list">
           {EL_ORDER.map((e) => {
             const pct = Math.round(profile.balance[e] * 100);
@@ -181,9 +186,14 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
         {shape.kind !== 'even' ? (
           <p className="elbal-missing">{MISSING_READING[shape.el]}</p>
         ) : null}
-      </div>
+        </div>
+      </section>
 
-      {/* 4. 어떻게 쓰는가 */}
+      {/* 4. 어떻게 쓰는가 — 성격이 같은 풀이 셋을 한 덩어리로 묶는다 */}
+      <section className="sec">
+        <div className="sec__head">
+          <h2 className="sec__title">이 사주를 어떻게 쓰나요</h2>
+        </div>
       <div className="reading-card">
         <p className="reading-card__badge">
           {strength.label} · {strength.short}
@@ -214,6 +224,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
         <p className="useful-card__what">{useful.what}이 필요해요</p>
         <p className="useful-card__how">{useful.how}</p>
       </div>
+      </section>
 
       {/* 사주는 목적이 아니라 쪽지를 맞추기 위한 근거다. 마지막엔 쪽지로 돌려보낸다. */}
       <button type="button" className="btn btn--primary" onClick={onDraw}>

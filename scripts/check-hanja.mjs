@@ -28,7 +28,6 @@ function walk(dir) {
 
 const bad = [];
 for (const file of walk('src')) {
-  if (DATA_FILES.has(file)) continue;
   const src = readFileSync(file, 'utf8');
   // 주석은 통과 — 근거를 한자로 적어두는 편이 정확하다.
   // 줄 수를 보존해야 줄 번호가 어긋나지 않으므로, 지우는 대신 줄바꿈만 남긴다.
@@ -37,6 +36,9 @@ for (const file of walk('src')) {
     .replace(/\/\/[^\n]*/g, (m) => ' '.repeat(m.length));
   const lines = src.split('\n');
   stripped.split('\n').forEach((code, i) => {
+    // 계산용 파일에서도 한자를 들고 있어도 되는 건 hanja 필드 하나뿐이다.
+    // 그 외의 문자열(예: ELEMENT_KO 의 '목(木)')은 그대로 화면에 나간다.
+    if (DATA_FILES.has(file) && /\bhanja:/.test(code)) return;
     if (HANJA.test(code)) bad.push(`${file}:${i + 1}  ${lines[i].trim().slice(0, 90)}`);
   });
 }

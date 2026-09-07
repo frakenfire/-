@@ -30,11 +30,11 @@ function pickOne<T>(items: T[], seed: number): T {
 export type Element = 'wood' | 'fire' | 'earth' | 'metal' | 'water';
 
 export const ELEMENT_KO: Record<Element, string> = {
-  wood: '목(木)',
-  fire: '화(火)',
-  earth: '토(土)',
-  metal: '금(金)',
-  water: '수(水)',
+  wood: '목',
+  fire: '화',
+  earth: '토',
+  metal: '금',
+  water: '수',
 };
 export const ELEMENT_EMOJI: Record<Element, string> = {
   wood: '',

@@ -626,6 +626,11 @@ a:focus-visible {
 .rowlist > * + * {
   border-top: 1px solid var(--gray-100);
 }
+/* 섹션이 아래 여백을 갖는다. 그 안의 마지막 카드까지 자기 여백을 들고 있으면
+   섹션 사이가 두 배로 벌어져 화면이 성기게 보인다. */
+.sec > *:last-child {
+  margin-bottom: 0;
+}
 /* 목록 안의 동작 한 줄 — 옅은 파랑 버튼을 세로로 쌓는 대신,
    같은 무게의 동작은 같은 줄 모양으로 눕힌다. */
 .act-row {
@@ -3748,27 +3753,12 @@ a:focus-visible {
 }
 /* ── 여덟 글자 ── */
 .pillars-card {
-  margin-bottom: var(--space-6);
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   background: var(--white);
   border: 1px solid var(--gray-100);
   box-shadow: var(--shadow-card);
   overflow: hidden;
-}
-.pillars-card__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: var(--space-3);
-}
-.pillars-card__title {
-  margin: 0;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 700;
-  color: var(--gray-900);
 }
 .pillars-card__edit {
   position: relative;
@@ -3863,19 +3853,11 @@ a:focus-visible {
 }
 /* ── 오행 저울 ── */
 .elbal-card {
-  margin-bottom: var(--space-6);
   padding: var(--space-4);
   border-radius: var(--radius-lg);
   background: var(--white);
   border: 1px solid var(--gray-100);
   box-shadow: var(--shadow-card);
-}
-.elbal-card__title {
-  margin: 0 0 var(--space-3);
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 700;
-  color: var(--gray-900);
 }
 .elbal-list {
   display: flex;
