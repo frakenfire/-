@@ -1879,7 +1879,7 @@ a:focus-visible {
   font-size: 12px;
   line-height: 18px;
   font-weight: 600;
-  color: var(--gray-600);
+  color: var(--gray-700);
   margin: 0 0 var(--space-3);
 }
 .save-person__chips {
@@ -2219,7 +2219,7 @@ a:focus-visible {
   font-size: 12px;
   line-height: 18px;
   font-weight: 600;
-  color: var(--gray-600);
+  color: var(--gray-700);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
@@ -2652,7 +2652,6 @@ a:focus-visible {
   padding-bottom: 12px;
   background: var(--brand-soft);
   border-color: #c9e2ff;
-  box-shadow: 0 4px 12px rgba(49, 130, 246, 0.14);
 }
 .podium--2 {
   order: 1;
@@ -2875,11 +2874,9 @@ a:focus-visible {
   /* Blue500(#3182f6) 위에서는 순백색조차 3.71:1 이라 작은 글씨가 AA 를 못 넘긴다.
      TDS 램프에서 한 단계 어두운 Blue700 → Blue900 으로 낮춰 본문·보조 텍스트가
      모두 4.5:1 이상 확보되게 한다. 하이라이트도 Blue500 까지만 밝힌다. */
-  background: linear-gradient(160deg, #1b64da 0%, #194aa6 100%);
-  /* 상단 안쪽 하이라이트(빛 반사) + 은은한 컬러 섀도우 → 기계 가공된 카드 질감 */
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.22),
-    0 8px 22px rgba(27, 100, 218, 0.28);
+  /* 단색 면. 전에는 그라데이션 + 안쪽 하이라이트 + 컬러 그림자를 세 겹으로 얹었는데,
+     셋 다 토스에 없는 처리다. 토스의 색 카드는 평평한 한 가지 색이다. */
+  background: var(--brand-strong);
   transition: transform 0.24s var(--ease-spring);
 }
 .today-hook:active {
@@ -2951,7 +2948,7 @@ a:focus-visible {
   margin-top: var(--space-4);
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-md);
-  background: linear-gradient(150deg, #191f28, #333d4b);
+  background: var(--gray-900);
 }
 .tmr-tease__moon {
   flex: none;
@@ -3181,7 +3178,6 @@ a:focus-visible {
   color: var(--brand-strong);
   background: #fff;
   border-radius: 14px;
-  box-shadow: 0 4px 12px rgba(27, 100, 218, 0.16);
 }
 /* button-in-button — 화살표를 자체 원형 칩에 담아 프리미엄 디테일 (taste) */
 .today-hook__cta-arrow {
@@ -3535,7 +3531,7 @@ a:focus-visible {
   margin: 0;
   font-size: 12px;
   font-weight: 600;
-  color: var(--gray-600);
+  color: var(--gray-700);
   line-height: 18px;
 }
 .birth-hint--center {
