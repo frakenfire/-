@@ -126,8 +126,9 @@ a:focus-visible {
   color: var(--gray-600);
 }
 .pick-foot__lock {
-  font-size: 14px;
-  line-height: 21px;
+  display: inline-flex;
+  align-items: center;
+  vertical-align: -3px;
 }
 .picker-grid .zodiac-chip {
   min-height: 52px;
@@ -624,6 +625,45 @@ a:focus-visible {
 }
 .rowlist > * + * {
   border-top: 1px solid var(--gray-100);
+}
+/* 목록 안의 동작 한 줄 — 옅은 파랑 버튼을 세로로 쌓는 대신,
+   같은 무게의 동작은 같은 줄 모양으로 눕힌다. */
+.act-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 54px;
+  padding: 15px 16px;
+  text-align: left;
+  background: none;
+  transition: background 0.15s ease;
+}
+.act-row:active {
+  background: var(--gray-50);
+}
+.act-row:disabled {
+  color: var(--gray-500);
+}
+.act-row__t {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 600;
+  color: var(--gray-900);
+}
+.act-row__c {
+  flex: none;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+/* 펼쳐진 편지는 줄 밑에 그대로 이어 붙인다 */
+.act-row__panel {
+  padding: var(--space-4);
+  background: var(--gray-50);
 }
 .note-hint {
   text-align: center;
@@ -1535,9 +1575,15 @@ a:focus-visible {
   }
 }
 .compat-banner__icon {
-  font-size: 26px;
-  line-height: 35px;
   flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: var(--brand-soft);
+  color: var(--brand-strong);
 }
 .compat-banner__body {
   display: flex;
@@ -2950,8 +2996,9 @@ a:focus-visible {
 }
 .tmr-tease__moon {
   flex: none;
-  font-size: 22px;
-  line-height: 31px;
+  display: flex;
+  align-items: center;
+  color: #d1d6db; /* 어두운 회색 카드 위 — 선 아이콘이 묻히지 않게 */
 }
 .tmr-tease__body {
   display: flex;
@@ -3310,8 +3357,10 @@ a:focus-visible {
   transform: scale(0.98);
 }
 .noti-card__icon {
-  font-size: 22px;
-  line-height: 31px;
+  flex: none;
+  display: flex;
+  align-items: center;
+  color: var(--brand-strong);
 }
 .noti-card__body {
   display: flex;

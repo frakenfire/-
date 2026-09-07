@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Icon } from '../components/Icon.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { AdBadge } from '../components/AdNotice.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
@@ -231,7 +232,7 @@ export function CompatScreen({
           ))}
         </div>
         <p className="pick-foot">
-          <span className="pick-foot__lock" aria-hidden></span>
+          <span className="pick-foot__lock" aria-hidden><Icon name="lock" size={18} /></span>
           이름·생년월일 없이 {modeLabel}만으로 봐요
         </p>
       </AppLayout>

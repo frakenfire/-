@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Icon } from '../components/Icon.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { LetterCard } from '../components/LetterCard.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
@@ -333,57 +334,61 @@ export function ResultScreen({
         </div>
       </div>
 
-      <button
-        type="button"
-        className="btn btn--secondary"
-        onClick={() => setLetterOpen((v) => !v)}
-      >
-        {letterOpen ?'요정의 편지 접기' : '요정이 쓴 편지도 읽기'}
-      </button>
-
-      {letterOpen ? (
-        <div style={{ marginTop: 'var(--space-4)' }}>
-          <LetterCard letter={result.letter} score={luck.total} rarity={rarity} />
-        </div>
-      ) : null}
-
-      <div className="btn-stack" style={{ marginTop: 'var(--space-3)' }}>
-        <button type="button" className="btn btn--unlock" disabled={busy} onClick={onDetail}>
-          <span className="btn-unlock__top">
-            <span className="btn-unlock__main">오늘의 심층 리포트 열기</span>
-            <AdBadge label="광고" />
-          </span>
-          <span className="btn-unlock__sub">운세 원픽 · 잘 맞는 띠 · 행운 미션 · 부적</span>
-        </button>
-
-        <button type="button" className="btn btn--secondary" disabled={busy} onClick={onSave}>
-          {/* 두 동작처럼 보이면 안 된다 — 실제 동작은 '저장' 하나고, 스토리는 그 다음 안내다. */}
-          카드 저장하고 스토리에 올리기 
-        </button>
-
-        <button type="button" className="btn btn--ghost" disabled={busy} onClick={onRetry}>
-          다른 쪽지도 뽑아볼래요 <AdBadge label="광고" />
-        </button>
-      </div>
-
-      <button
-        type="button"
-        className="compat-banner"
-        style={{ marginTop: 'var(--space-4)' }}
-        onClick={onCompat}
-      >
-        <span className="compat-banner__icon" aria-hidden></span>
-        <span className="compat-banner__body">
-          <span className="compat-banner__title">이 사람이랑 오늘 궁합은?</span>
-          <span className="compat-banner__desc">띠 또는 별자리만 고르면 바로 나와요</span>
+      {/* 보상 하나만 블록으로 남긴다. 전에는 옅은 파랑 덩어리 네 개가 아래로
+          줄줄이 쌓여서, 무엇이 중요한 동작인지 화면이 말해주지 못했다. */}
+      <button type="button" className="btn btn--unlock" disabled={busy} onClick={onDetail}>
+        <span className="btn-unlock__top">
+          <span className="btn-unlock__main">오늘의 심층 리포트 열기</span>
+          <AdBadge label="광고" />
         </span>
-        <span className="compat-banner__cta">보러가기 ›</span>
+        <span className="btn-unlock__sub">운세 원픽 · 잘 맞는 띠 · 행운 미션 · 부적</span>
       </button>
+
+      <section className="sec" style={{ marginTop: 'var(--space-8)' }}>
+        <div className="sec__head">
+          <h2 className="sec__title">더 보기</h2>
+        </div>
+        <div className="rowlist">
+          <button type="button" className="act-row" onClick={() => setLetterOpen((v) => !v)}>
+            <span className="act-row__t">
+              {letterOpen ?'요정의 편지 접기' : '요정이 쓴 편지도 읽기'}
+            </span>
+            <span className="act-row__c" aria-hidden>{letterOpen ?'⌃' : '⌄'}</span>
+          </button>
+
+          {letterOpen ? (
+            <div className="act-row__panel">
+              <LetterCard letter={result.letter} score={luck.total} rarity={rarity} />
+            </div>
+          ) : null}
+
+          <button type="button" className="act-row" disabled={busy} onClick={onSave}>
+            {/* 두 동작처럼 보이면 안 된다 — 실제 동작은 '저장' 하나고, 스토리는 그 다음 안내다. */}
+            <span className="act-row__t">카드 저장하고 스토리에 올리기</span>
+            <span className="act-row__c" aria-hidden>›</span>
+          </button>
+
+          <button type="button" className="act-row" disabled={busy} onClick={onRetry}>
+            <span className="act-row__t">다른 쪽지도 뽑아볼래요</span>
+            <AdBadge label="광고" />
+            <span className="act-row__c" aria-hidden>›</span>
+          </button>
+
+          <button type="button" className="compat-banner" onClick={onCompat}>
+            <span className="compat-banner__icon" aria-hidden><Icon name="heart" /></span>
+            <span className="compat-banner__body">
+              <span className="compat-banner__title">이 사람이랑 오늘 궁합은?</span>
+              <span className="compat-banner__desc">띠 또는 별자리만 고르면 바로 나와요</span>
+            </span>
+            <span className="compat-banner__cta">보러가기 ›</span>
+          </button>
+        </div>
+      </section>
 
       {/* 내일 예고 — 리텐션 훅: 내일 일진과 내 띠 관계를 티저로 */}
       {tomorrowSaju ? (
         <div className="tmr-tease">
-          <span className="tmr-tease__moon" aria-hidden></span>
+          <span className="tmr-tease__moon" aria-hidden><Icon name="moon" /></span>
           <span className="tmr-tease__body">
             <span className="tmr-tease__k">내일 예고 · {tomorrowSaju.iljin.kor}일</span>
             <span className="tmr-tease__v">
@@ -401,7 +406,7 @@ export function ResultScreen({
           한 번 답하면(동의/거절) 다시 조르지 않는다. */}
       {showNotiCard && onAskNoti ? (
         <button type="button" className="noti-card" onClick={onAskNoti} disabled={busy}>
-          <span className="noti-card__icon" aria-hidden></span>
+          <span className="noti-card__icon" aria-hidden><Icon name="bell" /></span>
           <span className="noti-card__body">
             <span className="noti-card__title">내일 아침, 오늘의 쪽지 알림 받기</span>
             <span className="noti-card__desc">눈 뜨자마자 하루 기운부터 확인해요</span>

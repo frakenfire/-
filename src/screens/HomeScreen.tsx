@@ -1,4 +1,5 @@
 import { AppLayout } from '../components/AppLayout.tsx';
+import { Icon } from '../components/Icon.tsx';
 import { Mascot } from '../components/Mascot.tsx';
 import { FORTUNE_LABEL } from '../data/fortuneTypes.ts';
 import { findNote } from '../data/notes.ts';
@@ -403,7 +404,7 @@ export function HomeScreen({
         </div>
         <div className="rowlist">
       <button type="button" className="compat-banner" onClick={onCompat}>
-        <span className="compat-banner__icon" aria-hidden></span>
+        <span className="compat-banner__icon" aria-hidden><Icon name="heart" /></span>
         <span className="compat-banner__body">
           <span className="compat-banner__title">오늘 우리 궁합, 몇 점일까?</span>
           <span className="compat-banner__desc">띠 또는 별자리만 고르면 바로 나와요</span>
