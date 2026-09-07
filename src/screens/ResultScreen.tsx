@@ -249,6 +249,10 @@ export function ResultScreen({
 
       {/* 오늘의 사주 — 일진 도장(스탬프) 스트립. 행운 보고서 그리드와 다른 시각 언어로,
           일진×내 띠 관계·기운·개운 컬러(행운 색의 근거)를 한 줄 흐름으로 보여준다 */}
+      <section className="sec">
+        <div className="sec__head">
+          <h2 className="sec__title">오늘 내 사주</h2>
+        </div>
       {result.saju ? (
         <div className="iljin fade-in">
           <div className="iljin__row">
@@ -274,7 +278,9 @@ export function ResultScreen({
               {result.saju.toneWord}
             </span>
           </div>
-          <p className="iljin__line">{result.saju.headline}</p>
+          {/* 사주를 넣은 사람에게는 바로 아래 '이 쪽지가 닿은 자리' 제목이 같은
+              문장을 다시 말한다. 두 카드를 한 섹션으로 합치고 나서야 드러난 중복이다. */}
+          {result.daily ? null : <p className="iljin__line">{result.saju.headline}</p>}
           <div className="iljin__boost">
             <span className="iljin__boost-color">
               <i className="report__dot" style={{ background: result.saju.luckyColor.hex }} aria-hidden />
@@ -312,6 +318,7 @@ export function ResultScreen({
           </p>
         </div>
       ) : null}
+      </section>
 
       {/* 하루 풀이 — 매일 볼 만한 해석 */}
       <section className="sec">

@@ -56,7 +56,7 @@
   --color-signature-green: var(--brand);
   --color-signature-green-strong: var(--brand-strong);
   --color-signature-orange: var(--orange);
-  --color-cream: var(--gray-50); /* 페이지 바탕은 회색, 카드는 흰색 — 토스의 기본 면 구성 */
+  --color-cream: var(--white); /* 바탕이 흰색이고, 구획은 섹션 사이 회색 띠가 나눈다 */
   --color-soft-yellow: #ffefbf;
   --color-soft-pink: #ffeeee;
   --color-border: var(--gray-200);

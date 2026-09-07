@@ -77,9 +77,51 @@ function collect() {
     out.weights.push({ cls, w: Number(cs.fontWeight) });
     out.sizes.push({ cls, size: parseFloat(cs.fontSize), lh: cs.lineHeight });
   }
-  // 구조: 섹션 제목이 있는가 (목록이 두 덩어리 이상인 화면에서)
-  out.sections = document.querySelectorAll('.sec__title').length;
-  out.cardsTopLevel = document.querySelectorAll('.app__body > .card, .app__body > [class$="-card"]').length;
+  // ── 'AI 가 만든 티' 로 흔히 꼽히는 모양들 ──
+  // '면'은 내용을 담는 블록만 센다. 알약(완전 라운드)·버튼·작은 칩은 물건이지
+  // 카드가 아니다 — 처음엔 이것들까지 세느라 멀쩡한 화면을 실패로 신고했다.
+  const isSurface = (el) => {
+    const cs = getComputedStyle(el);
+    const r = el.getBoundingClientRect();
+    if (r.width < 80 || r.height < 56) return false;
+    if (el.tagName === 'BUTTON' && !el.className.includes('card')) return false;
+    const rad = parseFloat(cs.borderRadius) || 0;
+    if (rad >= r.height / 2) return false; // 알약
+    const bg = cs.backgroundColor;
+    return bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent' && rad >= 6;
+  };
+  out.oneSided = [];   // 한쪽만 두꺼운 색 테두리
+  out.tintTiles = [];  // 아이콘을 담은 틴트 사각형
+  out.dashed = [];     // 점선 테두리
+  out.depth = 0;
+  for (const el of document.querySelectorAll('body *')) {
+    const cs = getComputedStyle(el);
+    const cls = (typeof el.className === 'string' ? el.className : '').split(' ')[0];
+    const bw = ['Top', 'Right', 'Bottom', 'Left'].map((k) => parseFloat(cs['border' + k + 'Width']) || 0);
+    // 사방 1px 위에 한쪽만 4px 를 얹은 경우가 실제로 있었다 — '두꺼운 변이 있는지'가
+    // 아니라 '한 변이 나머지보다 유독 두꺼운지'를 봐야 잡힌다.
+    const maxW = Math.max(...bw);
+    const others = bw.filter((x) => x !== maxW);
+    if (maxW >= 3 && others.every((x) => x <= maxW / 3)) out.oneSided.push(`${cls}[${bw.join('/')}]`);
+    if (['Top', 'Right', 'Bottom', 'Left'].some((k) => cs['border' + k + 'Style'] === 'dashed')) out.dashed.push(cls);
+    const r = el.getBoundingClientRect();
+    const rad = parseFloat(cs.borderRadius) || 0;
+    if (Math.abs(r.width - r.height) < 6 && r.width >= 28 && r.width <= 56 && rad >= 6 && rad < r.width / 2
+        && cs.backgroundColor !== 'rgba(0, 0, 0, 0)' && el.querySelector(':scope > svg')) out.tintTiles.push(cls);
+    if (isSurface(el)) {
+      let d = 0, cur = el;
+      while (cur && cur !== document.body) { if (isSurface(cur)) d++; cur = cur.parentElement; }
+      if (d > out.depth) out.depth = d;
+    }
+  }
+  out.oneSided = [...new Set(out.oneSided)];
+  out.tintTiles = [...new Set(out.tintTiles)];
+  out.dashed = [...new Set(out.dashed)];
+  // 최상위에 떠 있는 면의 수
+  const body = document.querySelector('.app__body');
+  out.floatingList = body ? [...body.children].filter(isSurface)
+    .map((e) => (typeof e.className === 'string' ? e.className : '').split(' ')[0] || e.tagName) : [];
+  out.floating = out.floatingList.length;
   return out;
 }
 
@@ -111,6 +153,19 @@ function auditScreen(name, data) {
   const offScale = data.sizes.filter((s) => s.size && !TDS_SIZES.has(Math.round(s.size)));
   check(offScale.length === 0, `[${name}] 크기 TDS 스케일`,
     [...new Set(offScale.map((s) => `${s.cls}:${s.size}px`))].slice(0, 4).join(' / '));
+
+  // ── 아래 넷은 'AI 가 만든 화면' 의 표시로 흔히 꼽히는 모양들이다 ──
+  // 6) 한쪽만 두꺼운 색 테두리 — 가장 알아보기 쉬운 표시
+  check(data.oneSided.length === 0, `[${name}] 한쪽 두꺼운 테두리 없음`, data.oneSided.slice(0, 3).join(' / '));
+  // 7) 아이콘을 비슷한 색조의 작은 상자에 담기
+  check(data.tintTiles.length === 0, `[${name}] 아이콘 틴트 상자 없음`, data.tintTiles.slice(0, 3).join(' / '));
+  // 8) 점선 테두리 — 목업 광고 자리만 예외
+  const dashed = data.dashed.filter((c) => c && !c.includes('ad-banner'));
+  check(dashed.length === 0, `[${name}] 점선 테두리 없음`, dashed.slice(0, 3).join(' / '));
+  // 9) 면 중첩 — 카드 안의 카드 안의 카드
+  check(data.depth <= 2, `[${name}] 면 중첩 2겹 이하`, `${data.depth}겹`);
+  // 10) 떠 있는 면이 세 장을 넘으면 '카드 더미' 로 읽힌다
+  check(data.floating <= 3, `[${name}] 떠 있는 면 3장 이하`, `${data.floating}장: ${data.floatingList.join(' ')}`);
 }
 
 async function run() {
