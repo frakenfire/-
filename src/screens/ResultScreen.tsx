@@ -164,19 +164,7 @@ export function ResultScreen({
           <span className={`rarity-badge rarity-badge--${rarity.tier}`}>
             {rarity.emoji} {rarity.label}
           </span>
-          {/* 기운 칩 — 띠가 있으면 아래 일진 스트립이 사주 기운을 보여주므로,
-              날짜 기운(dayVibe)은 띠 미설정 사용자에게만 (기운 표기 이원화 방지) */}
-          {!isMonth && !result.saju && (
-            <span className="chip chip--vibe">{vibe.emoji} 오늘의 기운 · {vibe.word}</span>
-          )}
         </div>
-
-        {brag.isBrag ? (
-          <div className="brag" aria-label={`${isMonth ? '이번 달' : '오늘'} 상위 ${brag.pct}퍼센트`}>
-            <span className="brag__pct"> {isMonth ?'이번 달' : '오늘'} 총운 상위 {brag.pct}%</span>
-            <span className="brag__label">· {brag.label}</span>
-          </div>
-        ) : null}
 
         {milestone ? (
           <p className="streak-hit">
@@ -187,6 +175,22 @@ export function ResultScreen({
         {result.persona ?<p className="briefing__persona"> {result.persona}</p> : null}
         <p className="briefing__headline">{dayPlan.headline}</p>
         <p className="briefing__vibe">{dayPlan.vibe}</p>
+
+        {/* 알약을 다섯 개 세워두면 무엇도 눈에 안 들어온다. 등수·기운처럼
+            '읽고 지나가는' 값은 칩에서 빼서 헤드라인 밑 한 줄로 눕혔다.
+            기운은 사주가 없는 사람에게만 — 있으면 아래 일진 줄이 같은 말을 한다. */}
+        {brag.isBrag || (!isMonth && !result.saju) ? (
+          <p
+            className="briefing__meta"
+            aria-label={brag.isBrag ? `${isMonth ? '이번 달' : '오늘'} 상위 ${brag.pct}퍼센트` : undefined}
+          >
+            {brag.isBrag ? (
+              <b>{isMonth ?'이번 달' : '오늘'} 총운 상위 {brag.pct}% · {brag.label}</b>
+            ) : null}
+            {brag.isBrag && !isMonth && !result.saju ?' · ' : null}
+            {!isMonth && !result.saju ? <>오늘의 기운 · {vibe.word}</> : null}
+          </p>
+        ) : null}
 
         {/* 기분에 맞춘 하루 설계 — 결과의 주인공 */}
         <div className="plan">
@@ -302,11 +306,14 @@ export function ResultScreen({
       ) : null}
 
       {/* 하루 풀이 — 매일 볼 만한 해석 */}
-      <div className="card fade-in">
-        <div className="card-head">
-          <p className="card-head__title">{rl.title}</p>
-          <p className="card-head__desc">{rl.desc}</p>
+      <section className="sec">
+        <div className="sec__head">
+          <div>
+            <h2 className="sec__title">{rl.title}</h2>
+            <p className="sec__desc">{rl.desc}</p>
+          </div>
         </div>
+      <div className="card fade-in">
         <div className="section">
           <p className="section__label">전체 풀이</p>
           <p className="section__lead">{result.pinpoint}</p>
@@ -333,6 +340,7 @@ export function ResultScreen({
           <p className="section__text">{result.reading.mind}</p>
         </div>
       </div>
+      </section>
 
       {/* 보상 하나만 블록으로 남긴다. 전에는 옅은 파랑 덩어리 네 개가 아래로
           줄줄이 쌓여서, 무엇이 중요한 동작인지 화면이 말해주지 못했다. */}

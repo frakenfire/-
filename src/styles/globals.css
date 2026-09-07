@@ -537,15 +537,16 @@ a:focus-visible {
 .home-hero {
   padding: var(--space-3) 0 var(--space-5);
 }
+/* 날짜는 알약이 아니라 그냥 글이다. 인사 위에 알약 두 개가 나란히 서면
+   읽을 것도 아닌 칩이 화면 맨 위를 차지한다. 알약은 '연속 며칠' 하나만. */
 .date-pill {
   display: inline-block;
-  font-size: 12px;
-  line-height: 18px;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 600;
+  /* 바탕이 흰색이 아니라 gray-50 이라 gray-600 은 4.42:1 로 AA 미달 */
   color: var(--gray-700);
-  background: var(--gray-100);
-  padding: 5px 11px;
-  border-radius: 999px;
+  padding: 5px 0;
   margin-bottom: var(--space-4);
 }
 .home-hero .h1 {
@@ -579,6 +580,14 @@ a:focus-visible {
 }
 /* 섹션 오른쪽 보조 동작 — 토스는 여기에 '더보기'처럼 담백한 글자 버튼을 둔다.
    바탕이 흰색이 아니라 gray-50 이라 gray-600 은 4.42:1 로 AA 미달, 한 단계 진하게. */
+.sec__desc {
+  margin: 2px 0 0;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  /* 카드 밖 바탕(gray-50) 위 — gray-600 은 4.42:1 로 AA 미달 */
+  color: var(--gray-700);
+}
 .sec__action {
   position: relative;
   flex: none;
@@ -965,6 +974,18 @@ a:focus-visible {
   margin-bottom: var(--space-6);
   box-shadow: var(--shadow-card);
 }
+.briefing__meta {
+  margin: 10px 0 0;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
+.briefing__meta b {
+  font-weight: 700;
+  color: var(--gray-900);
+}
 .briefing__chips {
   display: flex;
   gap: 6px;
@@ -1071,24 +1092,6 @@ a:focus-visible {
   word-break: keep-all;
 }
 /* 카드 헤더 — 제목이 홀로 뜨지 않게 부제와 묶는다 */
-.card-head {
-  margin-bottom: var(--space-4);
-}
-.card-head__title {
-  margin: 0;
-  font-size: 17px;
-  line-height: 25.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-  letter-spacing: -0.02em;
-}
-.card-head__desc {
-  margin: 4px 0 0;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-600);
-}
 /* ── 결과 히어로: 기분에 맞춘 하루 설계 ── */
 .briefing__headline {
   margin: 0 0 var(--space-2);
@@ -1528,32 +1531,7 @@ a:focus-visible {
   opacity: 0.9;
 }
 /* ── 상위 % 자랑 배지 ── */
-.brag {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 5px;
-  margin: 0 0 var(--space-4);
-  padding: 7px 12px;
-  border-radius: 999px;
-  background: var(--gray-100);
-}
-.brag__pct {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.brag__label {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-700);
-}
 /* 오늘의 기운 — 홈과 결과를 잇는 키워드 */
-.chip--vibe {
-  background: var(--gray-100);
-  color: var(--gray-800);
-}
 /* ── 친구 궁합 배너 (홈·결과) ── */
 .compat-banner {
   width: 100%;
@@ -2176,26 +2154,8 @@ a:focus-visible {
   position: relative;
   overflow: hidden;
 }
-.letter--legendary::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -60%;
-  width: 60%;
-  height: 100%;
-  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
-  animation: shimmer 2.8s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes shimmer {
-  0% {
-    left: -60%;
-  }
-  60%,
-  100% {
-    left: 130%;
-  }
-}
+/* 예전엔 여기에 흰 빛이 카드를 가로지르는 스윕 애니메이션이 있었다.
+   토스 어디에도 없는 처리이고, 가만히 있어야 할 화면에서 계속 움직였다. */
 .letter--legendary .letter__from {
   color: #9c5d00;
 }
@@ -2314,7 +2274,6 @@ a:focus-visible {
     scroll-behavior: auto !important;
   }
   .confetti,
-  .shimmer,
   .rarity-badge--legendary {
     animation: none !important;
   }
@@ -4184,21 +4143,26 @@ a:focus-visible {
   background: var(--white);
   overflow: hidden;
 }
+/* 뽑은 쪽지의 색은 지키되 한 단계 낮춘다.
+   TDS 는 색마다 50 과 100 두 단계의 옅은 톤을 갖는데, 100(#aeefd5·#ffd4d6)은
+   칩·배지 크기에 쓰라고 만든 채도다. 카드 한 장을 통째로 칠하면 화면에서
+   가장 큰 면이 가장 센 색이 되어, 그 위의 글씨보다 배경이 먼저 읽힌다.
+   면에는 50, 테두리에 100 — 같은 색인데 소리만 줄어든다. */
 .drawn--softGreen {
-  background: #aeefd5;
-  border-color: #76e4b8;
+  background: #f0faf6;
+  border-color: #aeefd5;
 }
 .drawn--cream {
-  background: #c9e2ff;
-  border-color: #90c2ff;
+  background: #e8f3ff;
+  border-color: #c9e2ff;
 }
 .drawn--softYellow {
-  background: #ffefbf;
-  border-color: #ffe69b;
+  background: #fff9e7;
+  border-color: #ffefbf;
 }
 .drawn--softPink {
-  background: #ffd4d6;
-  border-color: #feafb4;
+  background: #ffeeee;
+  border-color: #ffd4d6;
 }
 /* 종이에 꽂힌 핀 — 쪽지라는 사물감을 주는 최소한의 장치 */
 .drawn__pin {
