@@ -192,7 +192,6 @@ export function HomeScreen({
 
         <span className="today-hook__cta">
           {drawn ? '다른 기분으로 하나 더 뽑기' : '쪽지 뽑기 시작하기'}
-          <i className="today-hook__cta-arrow" aria-hidden>›</i>
         </span>
       </button>
 

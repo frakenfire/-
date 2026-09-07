@@ -87,7 +87,7 @@ a:focus-visible {
 .app__nav-title {
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-dark-gray);
 }
 .app__body {
@@ -122,7 +122,7 @@ a:focus-visible {
   gap: 6px;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-600);
 }
 .pick-foot__lock {
@@ -147,7 +147,7 @@ a:focus-visible {
 .h1 {
   font-size: 27px;
   line-height: 36px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
   margin: 0 0 var(--space-3);
   color: var(--color-dark-gray);
@@ -155,7 +155,7 @@ a:focus-visible {
 .h2 {
   font-size: 24px;
   line-height: 33px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: -0.02em;
   margin: 0 0 var(--space-4);
   color: var(--color-dark-gray);
@@ -171,7 +171,7 @@ a:focus-visible {
   display: inline-block;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong); /* 연파랑 배경 위 AA */
   background: var(--color-soft-green);
   padding: 4px 10px;
@@ -185,7 +185,7 @@ a:focus-visible {
   border-radius: var(--radius-md);
   font-size: 16px;
   line-height: 24px;
-  font-weight: 700;
+  font-weight: 600;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -228,7 +228,7 @@ a:focus-visible {
 .menu-heading {
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
   margin: 0 0 var(--space-3);
 }
@@ -277,7 +277,7 @@ a:focus-visible {
   display: block;
   font-size: 16px;
   line-height: 24px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-dark-gray);
 }
 .menu-row__desc {
@@ -290,7 +290,7 @@ a:focus-visible {
 .menu-row__chevron {
   font-size: 20px;
   line-height: 29px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-500); /* 20px 큰 글씨 3:1 확보 */
   flex-shrink: 0;
 }
@@ -386,7 +386,7 @@ a:focus-visible {
 .note__hint {
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-text-secondary);
 }
 /* 쪽지 4색 — TDS 100/200 단계. 초록·파랑·노랑·빨강 네 계열이라 서로 확실히 구분되고,
@@ -419,7 +419,7 @@ a:focus-visible {
 .section__label {
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
   margin: 0 0 var(--space-1);
 }
@@ -445,7 +445,7 @@ a:focus-visible {
   gap: 6px;
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--color-text-secondary);
   background: var(--color-white);
   border: 1px solid var(--color-border);
@@ -490,7 +490,7 @@ a:focus-visible {
   color: var(--color-white);
   font-size: 14px;
   line-height: 21px;
-  font-weight: 600;
+  font-weight: 500;
   padding: 10px 18px;
   border-radius: 999px;
   z-index: 50;
@@ -553,7 +553,7 @@ a:focus-visible {
   display: inline-block;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
   background: var(--gray-100);
   padding: 5px 11px;
@@ -569,7 +569,7 @@ a:focus-visible {
   text-align: center;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-600);
   margin-top: var(--space-5);
 }
@@ -607,7 +607,7 @@ a:focus-visible {
 .reveal-msg {
   font-size: 17px;
   line-height: 25.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-800);
   margin: 0 0 var(--space-4);
   animation: fade-in 0.3s ease;
@@ -642,7 +642,7 @@ a:focus-visible {
   display: inline-block;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
   background: var(--brand-soft);
   padding: 5px 11px;
@@ -665,7 +665,7 @@ a:focus-visible {
 .zodiac-chip {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: #fff;
   background: rgba(255, 255, 255, 0.14);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -722,19 +722,19 @@ a:focus-visible {
 .reopen-card__label {
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-500);
 }
 .reopen-card__text {
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .reopen-card__cta {
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand);
   flex-shrink: 0;
 }
@@ -760,13 +760,13 @@ a:focus-visible {
 .recap-card__label {
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-500);
 }
 .recap-card__text {
   font-size: 14px;
   line-height: 21px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-800);
 }
 /* ── 고득점 축하 (색종이) ── */
@@ -833,13 +833,13 @@ a:focus-visible {
 .lucky-cell__k {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
 }
 .lucky-cell__v {
   font-size: 16px;
   line-height: 24px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
   display: flex;
   align-items: center;
@@ -890,7 +890,7 @@ a:focus-visible {
 .chip {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 5px 10px;
   border-radius: 999px;
 }
@@ -903,7 +903,7 @@ a:focus-visible {
   color: var(--brand-strong);
 }
 .chip--score b {
-  font-weight: 800;
+  font-weight: 700;
 }
 /* 오늘의 행운 보고서 — 타이밍·색·음식 (하루 설계 훅) */
 .report {
@@ -916,7 +916,7 @@ a:focus-visible {
   margin: 0 0 var(--space-3);
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-800);
   letter-spacing: -0.01em;
 }
@@ -937,12 +937,12 @@ a:focus-visible {
 .report__k {
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-600);
 }
 .report__v {
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
   display: inline-flex;
   align-items: center;
@@ -960,7 +960,7 @@ a:focus-visible {
 .report__why {
   margin: var(--space-3) 0 0;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   line-height: 19.5px;
   word-break: keep-all;
@@ -973,7 +973,7 @@ a:focus-visible {
   margin: 0;
   font-size: 17px;
   line-height: 25.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
   letter-spacing: -0.02em;
 }
@@ -981,14 +981,14 @@ a:focus-visible {
   margin: 4px 0 0;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-600);
 }
 /* ── 결과 히어로: 기분에 맞춘 하루 설계 ── */
 .briefing__headline {
   margin: 0 0 var(--space-2);
   font-size: 21px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 30px;
   letter-spacing: -0.02em;
   color: var(--gray-900);
@@ -998,7 +998,7 @@ a:focus-visible {
   margin: 0 0 var(--space-5);
   font-size: 14px;
   line-height: 21px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-600);
   word-break: keep-all;
 }
@@ -1012,7 +1012,7 @@ a:focus-visible {
   margin: 0 0 var(--space-3);
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-800);
   letter-spacing: -0.01em;
 }
@@ -1039,7 +1039,7 @@ a:focus-visible {
   color: var(--brand-strong);
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1047,7 +1047,7 @@ a:focus-visible {
 }
 .plan__text {
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 22.5px;
   color: var(--gray-900);
   word-break: keep-all;
@@ -1065,13 +1065,13 @@ a:focus-visible {
   flex: none;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
 }
 .plan__hold-v {
   font-size: 14px;
   line-height: 21px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
   word-break: keep-all;
 }
@@ -1079,7 +1079,7 @@ a:focus-visible {
 .section__lead {
   margin: 0 0 var(--space-2);
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--brand-strong);
   line-height: 22.5px;
   word-break: keep-all;
@@ -1095,14 +1095,14 @@ a:focus-visible {
 .report-hero__eyebrow {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
   letter-spacing: 0.02em;
 }
 .report-hero__title {
   margin: 8px 0 6px;
   font-size: 21px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 30px;
   color: var(--gray-900);
   letter-spacing: -0.02em;
@@ -1118,7 +1118,7 @@ a:focus-visible {
   background: rgba(255, 255, 255, 0.6);
   border-radius: 0 12px 12px 0;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-800);
   line-height: 21px;
   word-break: keep-all;
@@ -1130,7 +1130,7 @@ a:focus-visible {
   gap: 8px;
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
   margin: var(--space-2) 0 var(--space-3);
 }
@@ -1158,7 +1158,7 @@ a:focus-visible {
 .cat-top__label {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--brand-strong);
   text-transform: uppercase;
@@ -1176,14 +1176,14 @@ a:focus-visible {
 .cat-top__name {
   font-size: 20px;
   line-height: 29px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
   letter-spacing: -0.02em;
 }
 .cat-top__score {
   margin-left: auto;
   font-size: 32px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1;
 }
@@ -1203,7 +1203,7 @@ a:focus-visible {
 .cat-top__interp {
   margin: 0;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-800);
   line-height: 21px;
   word-break: keep-all;
@@ -1228,7 +1228,7 @@ a:focus-visible {
   width: 30px;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-600);
 }
 .cat-rank__emoji {
@@ -1241,7 +1241,7 @@ a:focus-visible {
   width: 46px;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
 }
 .cat-rank__bar {
@@ -1263,7 +1263,7 @@ a:focus-visible {
   width: 28px;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   text-align: right;
 }
 /* 행운 세트 — 미션 + 세트 + 숫자 활용 */
@@ -1280,13 +1280,13 @@ a:focus-visible {
 .lucky__mission-k {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
 }
 .lucky__mission-v {
   margin: 6px 0 0;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-900);
   line-height: 22.5px;
   word-break: keep-all;
@@ -1308,13 +1308,13 @@ a:focus-visible {
   color: #fff;
   font-size: 18px;
   line-height: 27px;
-  font-weight: 800;
+  font-weight: 700;
   display: grid;
   place-items: center;
 }
 .lucky__num-text {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   line-height: 21px;
   word-break: keep-all;
@@ -1341,7 +1341,7 @@ a:focus-visible {
 .match__badge {
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
 }
 .match__badge--bad {
@@ -1355,12 +1355,12 @@ a:focus-visible {
 .match__label {
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .match__hint {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   line-height: 18px;
   word-break: keep-all;
@@ -1376,13 +1376,13 @@ a:focus-visible {
 .charm__label {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: #90c2ff;
 }
 .charm__text {
   margin: 10px 0 8px;
   font-size: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: #ffffff;
   line-height: 27px;
   letter-spacing: -0.02em;
@@ -1391,7 +1391,7 @@ a:focus-visible {
 .charm__sub {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-400);
 }
 /* 심층 리포트 잠금 해제 버튼 — 눌러서 보고 싶게 */
@@ -1413,12 +1413,12 @@ a:focus-visible {
 .btn-unlock__main {
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 800;
+  font-weight: 700;
 }
 .btn-unlock__sub {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--brand-strong); /* 연파랑 배경 위 AA 확보 (4.82:1) */
   opacity: 0.9;
 }
@@ -1435,13 +1435,13 @@ a:focus-visible {
 .brag__pct {
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .brag__label {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
 }
 /* 오늘의 기운 — 홈과 결과를 잇는 키워드 */
@@ -1487,13 +1487,13 @@ a:focus-visible {
 .compat-banner__title {
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .compat-banner__desc {
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700); /* 틴트 배경 위 AA 확보 */
   margin-top: 2px;
 }
@@ -1502,7 +1502,7 @@ a:focus-visible {
   flex: none;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
 }
 /* ── 친구 궁합 화면 ── */
@@ -1521,7 +1521,7 @@ a:focus-visible {
   border-radius: 9px;
   font-size: 14px;
   line-height: 21px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700); /* gray-100 위 AA */
 }
 .seg-tab--on {
@@ -1541,7 +1541,7 @@ a:focus-visible {
 .compat-pair__x {
   font-size: 22px;
   line-height: 31px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-600); /* 큰 글자 AA(3:1) */
   flex: none;
 }
@@ -1560,7 +1560,7 @@ a:focus-visible {
 .compat-pick__k {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
 }
 .compat-pick__emoji {
@@ -1570,14 +1570,14 @@ a:focus-visible {
 .compat-pick__label {
   font-size: 14px;
   line-height: 21px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-800);
 }
 .compat-hint {
   text-align: center;
   font-size: 14px;
   line-height: 21px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-500);
   margin: var(--space-6) 0;
 }
@@ -1595,20 +1595,20 @@ a:focus-visible {
   background: var(--gray-200);
   color: var(--gray-500);
   font-size: 36px;
-  font-weight: 800;
+  font-weight: 700;
   display: grid;
   place-items: center;
 }
 .compat-lock__title {
   font-size: 16px;
   line-height: 24px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
   margin: 0 0 var(--space-2);
 }
 .compat-lock__teaser {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-600);
   line-height: 19.5px;
   word-break: keep-all;
@@ -1633,12 +1633,12 @@ a:focus-visible {
 .compat-result__badge {
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
 }
 .compat-result__score {
   font-size: 56px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--gray-900);
   line-height: 1.1;
@@ -1647,7 +1647,7 @@ a:focus-visible {
 .compat-result__score small {
   font-size: 20px;
   line-height: 29px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
   margin-left: 2px;
 }
@@ -1655,7 +1655,7 @@ a:focus-visible {
   display: inline-block;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
   background: rgba(255, 255, 255, 0.7);
   padding: 4px 12px;
@@ -1665,7 +1665,7 @@ a:focus-visible {
 .compat-result__head {
   font-size: 17px;
   line-height: 25.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
   margin: 0 0 var(--space-4);
   word-break: keep-all;
@@ -1693,13 +1693,13 @@ a:focus-visible {
 .compat-cat__label {
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-600);
 }
 .compat-cat__score {
   font-size: 17px;
   line-height: 25.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .compat-cat__bar {
@@ -1717,7 +1717,7 @@ a:focus-visible {
 }
 .compat-result__reason {
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   background: rgba(255, 255, 255, 0.7);
   border-radius: 12px;
@@ -1739,7 +1739,7 @@ a:focus-visible {
 .compat-ohaeng__label {
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
   background: rgba(255, 255, 255, 0.7);
   border-radius: 999px;
@@ -1751,7 +1751,7 @@ a:focus-visible {
   gap: 4px;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-800);
 }
 .compat-ohaeng__pair i {
@@ -1762,7 +1762,7 @@ a:focus-visible {
 .compat-ohaeng__flow {
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   border-radius: 999px;
   padding: 4px 12px;
 }
@@ -1794,7 +1794,7 @@ a:focus-visible {
 .saved-people__title {
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
   margin: 0;
 }
@@ -1819,7 +1819,7 @@ a:focus-visible {
   flex: none;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
   background: var(--white);
   border-radius: 999px;
@@ -1830,7 +1830,7 @@ a:focus-visible {
   min-width: 0;
   font-size: 14px;
   line-height: 21px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-900);
   white-space: nowrap;
   overflow: hidden;
@@ -1840,13 +1840,13 @@ a:focus-visible {
   flex: none;
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 800;
+  font-weight: 700;
 }
 .saved-row__hint {
   flex: none;
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-600);
   text-align: right;
 }
@@ -1871,14 +1871,14 @@ a:focus-visible {
 .save-person__title {
   font-size: 14px;
   line-height: 21px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
   margin: 0 0 2px;
 }
 .save-person__desc {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   margin: 0 0 var(--space-3);
 }
@@ -1895,7 +1895,7 @@ a:focus-visible {
   border: 1px solid var(--gray-200);
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-800);
 }
 .compat-line {
@@ -1911,12 +1911,12 @@ a:focus-visible {
   min-width: 60px;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
 }
 .compat-line__v {
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-800);
   line-height: 21px;
   word-break: keep-all;
@@ -1951,7 +1951,7 @@ a:focus-visible {
 .letter__from {
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-600);
 }
 /* 인사+공감: 작게, 조용하게 */
@@ -1967,7 +1967,7 @@ a:focus-visible {
 .letter__highlight {
   margin: 0 0 var(--space-5);
   font-size: 21px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 30px;
   letter-spacing: -0.02em;
   color: var(--gray-900);
@@ -1997,7 +1997,7 @@ a:focus-visible {
   display: block;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
   margin-bottom: 6px;
 }
@@ -2005,7 +2005,7 @@ a:focus-visible {
   margin: 0 0 4px;
   font-size: 16px;
   line-height: 24px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .letter__keep-caution {
@@ -2018,7 +2018,7 @@ a:focus-visible {
 .letter__special {
   margin: 0 0 var(--space-5);
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 22.5px;
   color: var(--brand-strong);
   background: var(--brand-soft);
@@ -2038,7 +2038,7 @@ a:focus-visible {
   text-align: right;
   font-size: 14px;
   line-height: 21px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700); /* 편지 배경 위 AA 확보 */
 }
 /* ── 등급별 편지지 ── */
@@ -2096,13 +2096,13 @@ a:focus-visible {
   margin-left: auto;
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 800;
+  font-weight: 700;
   padding: 4px 9px;
   border-radius: 999px;
   white-space: nowrap;
 }
 .rarity-badge b {
-  font-weight: 800;
+  font-weight: 700;
   opacity: 0.85;
 }
 .rarity-badge--common {
@@ -2155,7 +2155,7 @@ a:focus-visible {
 .mood-btn__label {
   font-size: 16px;
   line-height: 24px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-900);
 }
 /* ── 콕 집은 한마디 (핀포인트 훅) ── */
@@ -2218,7 +2218,7 @@ a:focus-visible {
   padding: 0 12px;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   text-decoration: underline;
   text-underline-offset: 2px;
@@ -2235,7 +2235,7 @@ a:focus-visible {
   display: block;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-800);
   margin-bottom: var(--space-3);
 }
@@ -2247,7 +2247,7 @@ a:focus-visible {
 .collection__item {
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-800);
   background: var(--white);
   border: 1px solid var(--gray-200);
@@ -2291,18 +2291,18 @@ a:focus-visible {
 .me-pick__k {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-600);
 }
 .me-pick__v {
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .me-pick__chev {
   color: var(--gray-700); /* 흰 배경 위 AA(4.5:1) */
-  font-weight: 700;
+  font-weight: 600;
 }
 .me-grid {
   /* 위의 '내 띠 고르면…' 점선 버튼과 딱 붙어 있었다(측정 0px).
@@ -2312,7 +2312,7 @@ a:focus-visible {
 .mood-heading {
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
   margin: var(--space-4) 0 var(--space-3);
 }
@@ -2320,7 +2320,7 @@ a:focus-visible {
   text-align: center;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-600);
   margin: var(--space-4) 0 0;
 }
@@ -2329,7 +2329,7 @@ a:focus-visible {
   margin: 0 0 var(--space-2);
   font-size: 14px;
   line-height: 21px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--brand-strong);
   word-break: keep-all;
 }
@@ -2353,7 +2353,7 @@ a:focus-visible {
   text-align: left;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
   background: var(--gray-50);
   border: 1px dashed var(--gray-300);
@@ -2384,7 +2384,7 @@ a:focus-visible {
   margin: 0;
   font-size: 14px;
   line-height: 21px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 /* 서열 카드 공유 칩과 동일 규격 — 같은 성격의 버튼은 같은 모양이어야 헷갈리지 않는다 */
@@ -2393,7 +2393,7 @@ a:focus-visible {
   min-height: 34px;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--white);
   background: var(--gray-800);
   border-radius: 999px;
@@ -2412,7 +2412,7 @@ a:focus-visible {
   margin: 0 0 var(--space-3);
   font-size: 14px;
   line-height: 21px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
   background: var(--brand-soft);
   border-radius: 10px;
@@ -2462,14 +2462,14 @@ a:focus-visible {
   gap: 3px;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .week-row__day i {
   font-style: normal;
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
 }
 .week-row__date {
@@ -2477,13 +2477,13 @@ a:focus-visible {
   font-variant-numeric: tabular-nums;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
 }
 .week-row__rel {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2492,7 +2492,7 @@ a:focus-visible {
 .week-row__tone {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-800);
   white-space: nowrap;
 }
@@ -2508,7 +2508,7 @@ a:focus-visible {
 .week-card__foot {
   margin: var(--space-3) 0 0;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-600);
   line-height: 18px;
 }
@@ -2542,7 +2542,7 @@ a:focus-visible {
   font-style: normal;
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 800;
+  font-weight: 700;
   /* 회색 칩 위 회색 글자는 AA 를 못 넘긴다 — gray-700 로 (7.4:1) */
   color: var(--gray-700);
   background: var(--gray-200);
@@ -2552,12 +2552,12 @@ a:focus-visible {
 .week-lock__title {
   font-size: 14px;
   line-height: 21px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .week-lock__desc {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   line-height: 18px;
 }
@@ -2565,7 +2565,7 @@ a:focus-visible {
   margin-top: 4px;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--white);
   /* 13px 흰 글자는 blue500(3.71:1) 위에서 AA 미달 — blue700 로 (5.41:1) */
   background: var(--brand-strong);
@@ -2592,7 +2592,7 @@ a:focus-visible {
   margin: 0;
   font-size: 14px;
   line-height: 21px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .rank-card__share {
@@ -2600,7 +2600,7 @@ a:focus-visible {
   min-height: 34px;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--white);
   background: var(--gray-800);
   border-radius: 999px;
@@ -2621,7 +2621,7 @@ a:focus-visible {
   margin: 0 0 var(--space-3);
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--brand-strong);
   background: var(--brand-soft);
   border-radius: 10px;
@@ -2667,7 +2667,7 @@ a:focus-visible {
    iOS 에서 카드 테두리를 뚫는 문제(리본이 라인박스 위로 그려짐)를 구조적으로 제거 */
 .podium__rank {
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
   padding: 4px 9px;
   border-radius: 999px;
@@ -2698,7 +2698,7 @@ a:focus-visible {
 .podium__name {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-800);
 }
 .podium--1 .podium__name {
@@ -2736,13 +2736,13 @@ a:focus-visible {
 .me-rank__title {
   font-size: 14px;
   line-height: 21px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .me-rank__sub {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
 }
 .me-rank__rank {
@@ -2752,20 +2752,20 @@ a:focus-visible {
   gap: 1px;
   font-size: 14px;
   line-height: 21px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
 }
 .me-rank__rank b {
   font-size: 26px;
   line-height: 35px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.02em;
 }
 .me-rank__rank i {
   font-style: normal;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
   margin-left: 2px;
 }
@@ -2780,7 +2780,7 @@ a:focus-visible {
   margin: var(--space-3) 0 0;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-800);
   background: rgba(255, 255, 255, 0.75);
   border-radius: 10px;
@@ -2797,7 +2797,7 @@ a:focus-visible {
   margin-top: var(--space-3);
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--brand-strong);
   text-align: center;
 }
@@ -2827,20 +2827,20 @@ a:focus-visible {
   text-align: right;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-600); /* 흰 배경 위 AA */
 }
 .rank-row__name {
   flex: 1;
   font-size: 14px;
   line-height: 21px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-800);
 }
 .rank-row__tone {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   border-radius: 999px;
   padding: 3px 9px;
 }
@@ -2886,9 +2886,9 @@ a:focus-visible {
   display: inline-block;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
-  color: #e8f3ff;
-  background: rgba(255, 255, 255, 0.16);
+  font-weight: 700;
+  color: #c9e2ff;
+  background: #194aa6; /* 반투명 대신 같은 계열의 한 단계 어두운 면 */
   border-radius: 999px;
   padding: 6px 14px;
 }
@@ -2896,7 +2896,7 @@ a:focus-visible {
   margin: 22px 0 6px;
   font-size: 14px;
   line-height: 21px;
-  font-weight: 700;
+  font-weight: 600;
   color: #e8f3ff;
 }
 /* 띠를 고른 상태에선 위의 persona 줄('○○띠인 당신,')이 일진 배지와의 간격을
@@ -2908,7 +2908,7 @@ a:focus-visible {
 .today-hook__line {
   margin: 0;
   font-size: 21px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 30px;
   letter-spacing: -0.02em;
   color: #fff;
@@ -2916,13 +2916,13 @@ a:focus-visible {
   text-wrap: balance;
 }
 .today-hook__line b {
-  font-weight: 800;
+  font-weight: 700;
   color: #fff;
 }
 .today-hook__hint {
   margin: 10px 0 0;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 19.5px;
   color: #e8f3ff;
   word-break: keep-all;
@@ -2933,7 +2933,7 @@ a:focus-visible {
   padding: 9px 14px;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
   background: var(--brand-soft);
   border: 1px solid #c9e2ff;
@@ -2964,12 +2964,12 @@ a:focus-visible {
 .tmr-tease__k {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: #b0b8c1;
 }
 .tmr-tease__v {
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 19.5px;
   color: #f9fafb;
   word-break: keep-all;
@@ -3002,7 +3002,7 @@ a:focus-visible {
   height: 52px;
   font-size: 21px;
   line-height: 30px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 1px;
   color: #bc1b2a;
   background: #ffeeee;
@@ -3019,13 +3019,13 @@ a:focus-visible {
 .iljin__date {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700); /* 틴트 배경 위 AA 확보 */
 }
 .iljin__rel {
   font-size: 14px;
   line-height: 21px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-800);
   word-break: keep-all;
 }
@@ -3036,7 +3036,7 @@ a:focus-visible {
   flex: none;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   border-radius: 999px;
   padding: 6px 13px;
 }
@@ -3059,7 +3059,7 @@ a:focus-visible {
 .iljin__line {
   margin: var(--space-4) 0 0;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   line-height: 21px;
   color: var(--gray-800);
   word-break: keep-all;
@@ -3078,7 +3078,7 @@ a:focus-visible {
   gap: 6px;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-800);
 }
 .iljin__boost-color b {
@@ -3087,13 +3087,13 @@ a:focus-visible {
 .iljin__boost-color small {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700); /* 틴트 배경 위 AA 확보 */
 }
 .iljin__boost-tip {
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--brand-strong);
   word-break: keep-all;
 }
@@ -3107,10 +3107,9 @@ a:focus-visible {
 .saju-chip {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
-  color: #e8f3ff;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-weight: 700;
+  color: #c9e2ff;
+  background: #194aa6;
   border-radius: 999px;
   padding: 5px 11px;
 }
@@ -3123,7 +3122,7 @@ a:focus-visible {
   margin: 28px 0 10px;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: #e8f3ff;
 }
 .today-hook__reveal {
@@ -3133,25 +3132,28 @@ a:focus-visible {
   margin: 0 0 var(--space-5);
 }
 .th-cell {
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
-  padding: 15px 6px;
-  background: rgba(255, 255, 255, 0.13);
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 14px;
+  gap: 2px;
+  padding: 0 8px;
+}
+/* 칸 사이는 박스가 아니라 얇은 선으로 나눈다 */
+.th-cell + .th-cell {
+  border-left: 1px solid rgba(255, 255, 255, 0.18);
 }
 .th-cell__k {
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #e8f3ff;
 }
 .th-cell__v {
   font-family: var(--font-num);
   font-size: 24px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
   color: #fff;
 }
@@ -3159,7 +3161,7 @@ a:focus-visible {
   font-family: var(--font-body);
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   font-style: normal;
   margin-left: 1px;
 }
@@ -3174,7 +3176,7 @@ a:focus-visible {
   padding: 13px 18px;
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
   background: #fff;
   border-radius: 14px;
@@ -3218,7 +3220,7 @@ a:focus-visible {
   margin: 0;
   font-size: 17px;
   line-height: 25.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .empty-state__desc {
@@ -3241,7 +3243,7 @@ a:focus-visible {
 .reset-confirm__q {
   margin: 0 0 var(--space-3);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 19.5px;
   color: var(--gray-800);
   text-align: center;
@@ -3258,7 +3260,7 @@ a:focus-visible {
   border-radius: var(--radius-md);
   font-size: 14px;
   line-height: 21px;
-  font-weight: 800;
+  font-weight: 700;
 }
 .reset-confirm__no {
   color: var(--gray-800);
@@ -3284,7 +3286,7 @@ a:focus-visible {
 .note--facedown .note__hint {
   color: var(--gray-700);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 600;
   text-align: center;
   word-break: keep-all;
   line-height: 18px;
@@ -3322,7 +3324,7 @@ a:focus-visible {
 }
 .noti-card__title {
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
   line-height: 22.5px;
 }
@@ -3336,7 +3338,7 @@ a:focus-visible {
   flex: none;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--white);
   background: var(--brand);
   border-radius: 999px;
@@ -3412,19 +3414,19 @@ a:focus-visible {
 .saju-entry__k {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-600);
 }
 .saju-entry__v {
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .saju-entry__sub {
   margin-top: 2px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-600);
   line-height: 18px;
 }
@@ -3433,8 +3435,8 @@ a:focus-visible {
   flex: 0 0 auto;
   font-size: 20px;
   line-height: 29px;
-  font-weight: 700;
-  color: var(--gray-600);
+  font-weight: 600;
+  color: var(--gray-800);
 }
 /* ── 생년월일시 입력 ── */
 .birth-form {
@@ -3458,7 +3460,7 @@ a:focus-visible {
 .birth-field__k {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
 }
 /* 네이티브 피커를 그대로 쓴다 — 직접 만든 휠보다 빠르고, 기기 접근성 설정을 따른다 */
@@ -3472,7 +3474,7 @@ a:focus-visible {
   font-variant-numeric: tabular-nums;
   font-size: 19px;
   line-height: 28px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .birth-field__input:disabled {
@@ -3490,7 +3492,7 @@ a:focus-visible {
   border: 1px solid var(--gray-200);
   font-size: 14px;
   line-height: 21px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
   text-align: left;
 }
@@ -3511,7 +3513,7 @@ a:focus-visible {
   background: var(--white);
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 900;
+  font-weight: 700;
   color: var(--brand-strong);
 }
 .birth-unknown--on .birth-unknown__box {
@@ -3530,7 +3532,7 @@ a:focus-visible {
 .birth-hint {
   margin: 0;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   line-height: 18px;
 }
@@ -3555,7 +3557,7 @@ a:focus-visible {
 .birth-peek__label {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
 }
 .birth-peek__icon {
@@ -3565,20 +3567,20 @@ a:focus-visible {
 .birth-peek__name {
   font-size: 20px;
   line-height: 29px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .birth-peek__tag {
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
 }
 .birth-peek__pillars {
   margin-top: 6px;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   letter-spacing: 0.14em;
   color: var(--gray-700);
 }
@@ -3589,7 +3591,7 @@ a:focus-visible {
   background: #fff9e7;
   border: 1px solid #ffe69b;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--score-low-text);
   line-height: 19.5px;
 }
@@ -3616,7 +3618,7 @@ a:focus-visible {
 .dm-hero__label {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
 }
 .dm-hero__icon {
@@ -3627,7 +3629,7 @@ a:focus-visible {
   margin: 0;
   font-size: 25px;
   line-height: 34px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
  /* 한자는 글자다 — 장식용 밝은 값(--dm-hue)을 쓰면 흰 배경에서 AA 를 못 넘는다 */
@@ -3636,7 +3638,7 @@ a:focus-visible {
   margin: 0;
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-800);
 }
 .dm-hero__nature {
@@ -3663,7 +3665,7 @@ a:focus-visible {
   border: 1px solid var(--gray-200);
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-800);
 }
 .dm-two {
@@ -3687,13 +3689,13 @@ a:focus-visible {
   margin-bottom: 6px;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
 }
 .dm-note__v {
   margin: 0;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-800);
   line-height: 21px;
 }
@@ -3718,7 +3720,7 @@ a:focus-visible {
   margin: 0;
   font-size: 14px;
   line-height: 21px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .pillars-card__edit {
@@ -3729,7 +3731,7 @@ a:focus-visible {
   background: var(--gray-100);
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
 }
 .pillars-card__edit::after {
@@ -3759,14 +3761,14 @@ a:focus-visible {
 .pcol__label {
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
 }
  /* 한자는 검정. 오행은 아래 점으로 알린다 — 글자마다 색이 다르면 산만하고, 화(火)의 붉은색은 경고처럼 보인다 */
 .pcol__stem,
 .pcol__branch {
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.15;
   color: var(--gray-900);
 }
@@ -3788,13 +3790,13 @@ a:focus-visible {
   margin-top: 2px;
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
 }
 .pillars-card__foot {
   margin: var(--space-3) 0 0;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   line-height: 18px;
 }
@@ -3808,7 +3810,7 @@ a:focus-visible {
 }
 .pillars-corr li {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   line-height: 18px;
 }
@@ -3825,7 +3827,7 @@ a:focus-visible {
   margin: 0 0 var(--space-3);
   font-size: 14px;
   line-height: 21px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .elbal-list {
@@ -3848,7 +3850,7 @@ a:focus-visible {
   gap: 5px;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
 }
 .elbal-row__dot {
@@ -3872,14 +3874,14 @@ a:focus-visible {
 .elbal-row__v {
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
   text-align: right;
 }
 .elbal-card__foot {
   margin: var(--space-3) 0 0;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   line-height: 19.5px;
 }
@@ -3889,7 +3891,7 @@ a:focus-visible {
   border-radius: 10px;
   background: var(--gray-50);
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   line-height: 19.5px;
 }
@@ -3910,7 +3912,7 @@ a:focus-visible {
   background: var(--brand-soft);
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
 }
 .reading-card--group .reading-card__badge {
@@ -3920,7 +3922,7 @@ a:focus-visible {
 .reading-card__body {
   margin: 0;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-800);
   line-height: 21px;
 }
@@ -3930,7 +3932,7 @@ a:focus-visible {
   border-radius: 10px;
   background: var(--gray-50);
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
   line-height: 19.5px;
 }
@@ -3952,13 +3954,13 @@ a:focus-visible {
   border: 1px solid var(--gray-200);
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-800);
 }
 .god-chip__pos {
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
 }
 .useful-card {
@@ -3972,20 +3974,20 @@ a:focus-visible {
   margin: 0 0 4px;
   font-size: 14px;
   line-height: 21px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
 }
 .useful-card__what {
   margin: 0;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-800);
 }
 .useful-card__how {
   margin: 6px 0 0;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   line-height: 19.5px;
 }
@@ -4021,7 +4023,7 @@ a:focus-visible {
   background: var(--brand-strong);
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--white);
 }
 .mygod__title {
@@ -4029,13 +4031,13 @@ a:focus-visible {
   min-width: 0;
   font-size: 16px;
   line-height: 24px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .mygod__body {
   margin: 0;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-800);
   line-height: 21px;
 }
@@ -4045,7 +4047,7 @@ a:focus-visible {
   padding: 9px 12px;
   border-radius: 10px;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 19.5px;
   background: var(--gray-50);
   color: var(--gray-700);
@@ -4070,7 +4072,7 @@ a:focus-visible {
   padding: 10px 12px;
   border-radius: 10px;
   font-size: 13px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-800);
   line-height: 19.5px;
 }
@@ -4085,7 +4087,7 @@ a:focus-visible {
   margin-bottom: 3px;
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
 }
 /* ── 개인정보 안내 ── 받았으면 지우는 길도 같은 화면에 둔다 */
@@ -4100,7 +4102,7 @@ a:focus-visible {
 .privacy-note__body {
   margin: 0 0 var(--space-3);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   line-height: 18px;
 }
@@ -4112,7 +4114,7 @@ a:focus-visible {
   border: 1px solid var(--gray-300);
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
 }
 .privacy-note__confirm {
@@ -4121,7 +4123,7 @@ a:focus-visible {
   gap: 10px;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-800);
 }
 .privacy-note__acts {
@@ -4137,7 +4139,7 @@ a:focus-visible {
   border: 1px solid var(--gray-300);
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-800);
 }
 .privacy-note__btn--danger {
@@ -4204,19 +4206,19 @@ a:focus-visible {
 .drawn__k {
   font-size: 11px;
   line-height: 16.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-700);
 }
 .drawn__name {
   font-size: 18px;
   line-height: 27px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .drawn__lead {
   margin-top: 3px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-800);
   line-height: 19.5px;
 }
@@ -4229,7 +4231,7 @@ a:focus-visible {
   border: 1px solid rgba(0, 0, 0, 0.06);
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-800);
   white-space: nowrap;
 }
@@ -4239,7 +4241,7 @@ a:focus-visible {
   margin-bottom: 4px;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
 }
 .mygod__why {
@@ -4247,12 +4249,12 @@ a:focus-visible {
   padding-top: var(--space-3);
   border-top: 1px solid var(--gray-100);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   line-height: 18px;
 }
 .mygod__why b {
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-800);
 }
 /* 쪽지 후보의 근거 한 줄 — 생년월일이 실제로 쓰였다는 걸 뽑기 직전에 알린다 */
@@ -4263,12 +4265,12 @@ a:focus-visible {
   background: var(--brand-soft);
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--brand-strong);
   text-align: center;
 }
 .pick-basis b {
-  font-weight: 800;
+  font-weight: 700;
 }
 /* ── 뽑기 1단계 · 알고 싶은 것 ── 주제를 고르는 자리. 이게 흐름의 시작이다 */
 .topic-basis {
@@ -4278,7 +4280,7 @@ a:focus-visible {
   background: var(--brand-soft);
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--brand-strong);
   text-align: center;
 }
@@ -4313,12 +4315,12 @@ a:focus-visible {
 .topic-btn__label {
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
 .topic-btn__desc {
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
   color: var(--gray-700);
   line-height: 18px;
 }
@@ -4331,7 +4333,7 @@ a:focus-visible {
   border: 1px solid #ffe69b;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: #9c5d00;
   text-align: center;
 }
@@ -4340,7 +4342,7 @@ a:focus-visible {
   margin: 2px 0 0;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
 }
 /* ── 돌려서 고르는 피커 ──
@@ -4396,14 +4398,14 @@ a:focus-visible {
   font-variant-numeric: tabular-nums;
   font-size: 17px;
   line-height: 25.5px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700); /* gray-500 은 흰 배경에서 3.04:1 로 AA 미달 */
   background: none;
 }
 .wheel__item--on {
   font-size: 19px;
   line-height: 28px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--brand-strong);
 }
 .wheel-row {
@@ -4422,7 +4424,7 @@ a:focus-visible {
   margin-bottom: 2px;
   font-size: 12px;
   line-height: 18px;
-  font-weight: 700;
+  font-weight: 600;
   color: var(--gray-700);
 }
 .wheel-group__v {
@@ -4430,6 +4432,6 @@ a:focus-visible {
   margin-bottom: var(--space-2);
   font-size: 17px;
   line-height: 25.5px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--gray-900);
 }
