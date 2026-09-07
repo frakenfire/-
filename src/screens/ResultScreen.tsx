@@ -259,7 +259,7 @@ export function ResultScreen({
                   같은 화면에서 기준이 둘이면 어느 쪽 말인지 헷갈린다. */}
               {result.daily ? (
                 <span className="iljin__rel">
-                  내 일간 <b>{result.daily.myStemHanja}</b>에게 오늘은{' '}
+                  내 일간 <b>{result.daily.myStemKor}</b>에게 오늘은{' '}
                   <b>{TEN_GOD_KO[result.daily.dayGod]}</b> · {ELEMENT_EMOJI[result.daily.myElement]}
                   {ELEMENT_KO[result.daily.myElement]} 기운
                 </span>

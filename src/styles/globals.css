@@ -230,19 +230,6 @@ a:focus-visible {
   flex-direction: column;
   gap: var(--space-3);
 }
-/* ── 홈 운세 메뉴 리스트 ── */
-.menu-heading {
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-  margin: 0 0 var(--space-3);
-}
-.menu-list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
 .menu-row {
   display: flex;
   align-items: center;
@@ -1283,16 +1270,6 @@ a:focus-visible {
   word-break: keep-all;
   position: relative;
 }
-.section-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-  margin: var(--space-2) 0 var(--space-3);
-}
 /* 항목별 운세 순위 — 1위는 인사이트 카드로 압도, 2~4위는 상대 비교 리스트 */
 .cat-wrap {
   display: flex;
@@ -1889,17 +1866,21 @@ a:focus-visible {
   border-radius: 999px;
   padding: 4px 12px;
 }
+/* 상생을 초록, 상극을 빨강으로 칠하면 이 앱에 없는 색이 둘 는다.
+   좋음은 파랑, 부딪힘은 주황 — 다른 화면의 기운 표시와 같은 규칙. */
 .compat-ohaeng__flow--generate {
-  color: #027648;
-  background: #f0faf6;
+  color: var(--white);
+  background: var(--brand-strong);
 }
 .compat-ohaeng__flow--same {
   color: #1b64da;
   background: #e8f3ff;
 }
 .compat-ohaeng__flow--control {
-  color: #d22030;
-  background: #ffeeee;
+  /* 주황 글자는 주황 틴트 위에서 3.4:1 로 AA 미달이다(TDS 주황은 900 이 최대).
+     뜻은 배경 틴트가, 대비는 진한 회색 글자가 나른다. */
+  color: var(--gray-800);
+  background: #fff3e0;
 }
 .compat-result__lines {
   display: flex;
@@ -2809,20 +2790,6 @@ a:focus-visible {
 .me-rank--top .me-rank__rank {
   color: #9c5d00; /* 금색 톤 AA */
 }
-.rank-card__me {
-  margin: var(--space-3) 0 0;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--gray-800);
-  background: rgba(255, 255, 255, 0.75);
-  border-radius: 10px;
-  padding: 9px 12px;
-}
-.rank-card__me--top {
-  color: var(--brand-strong);
-  background: var(--brand-soft);
-}
 .rank-card__more {
   display: block;
   width: 100%;
@@ -2880,9 +2847,11 @@ a:focus-visible {
   border-radius: 999px;
   padding: 3px 9px;
 }
+/* 일진 칩(.iljin__tone)과 같은 사다리 — 같은 뜻의 표시가 화면마다 다른 색이면
+   사용자는 둘을 다른 것으로 읽는다. */
 .rank-row__tone--great {
-  color: #027648;
-  background: #f0faf6;
+  color: var(--white);
+  background: var(--brand-strong);
 }
 .rank-row__tone--good {
   color: #1b64da;
@@ -2893,8 +2862,10 @@ a:focus-visible {
   background: var(--gray-100);
 }
 .rank-row__tone--caution {
-  color: #d22030;
-  background: #ffeeee;
+  /* 주황 글자는 주황 틴트 위에서 3.4:1 로 AA 미달이다(TDS 주황은 900 이 최대).
+     뜻은 배경 틴트가, 대비는 진한 회색 글자가 나른다. */
+  color: var(--gray-800);
+  background: #fff3e0;
 }
 /* ── 메인 focal ── '오늘의 나' 훅 카드
    즉시성(오늘 기운 노출) + 개인화 공감 한 줄 + 잠긴 결과(?)로 뽑을 이유 제공 */
@@ -3052,10 +3023,13 @@ a:focus-visible {
   line-height: 30px;
   font-weight: 700;
   letter-spacing: 1px;
-  color: #bc1b2a;
-  background: #ffeeee;
-  border: 2px solid #feafb4;
-  border-radius: 10px;
+  /* 낙관은 원래 붉지만, 이 앱에서 빨강은 '주의' 하나에만 쓴다.
+     앱 전체의 아이콘 타일과 같은 연파랑 + 진한 파랑으로 맞춘다. */
+  color: var(--brand-strong);
+  /* 카드 자체가 연파랑이라 도장까지 연파랑이면 묻힌다. 흰 바탕으로 띄운다. */
+  background: var(--white);
+  border: 1px solid #c9e2ff;
+  border-radius: 12px;
 }
 .iljin__flow {
   display: flex;
@@ -3088,21 +3062,25 @@ a:focus-visible {
   border-radius: 999px;
   padding: 6px 13px;
 }
+/* 네 단계를 색상(초록/파랑/회색/빨강)으로 가르면 화면에 없던 색이 두 개 는다.
+   이 앱에서 '좋다'는 파랑이다 — 진하기로 단계를 만들고, 주의만 주황으로 뺀다. */
 .iljin__tone--great {
-  color: #027648;
-  background: #f0faf6;
+  color: var(--white);
+  background: var(--brand-strong);
 }
 .iljin__tone--good {
-  color: #1b64da;
-  background: #e8f3ff;
+  color: var(--brand-strong);
+  background: var(--brand-soft);
 }
 .iljin__tone--steady {
-  color: #4e5968;
+  color: var(--gray-700);
   background: var(--gray-100);
 }
 .iljin__tone--caution {
-  color: #d22030;
-  background: #ffeeee;
+  /* 주황 글자는 주황 틴트 위에서 3.4:1 로 AA 미달이다(TDS 주황은 900 이 최대).
+     뜻은 배경 틴트가, 대비는 진한 회색 글자가 나른다. */
+  color: var(--gray-800);
+  background: #fff3e0;
 }
 .iljin__line {
   margin: var(--space-4) 0 0;
@@ -3222,29 +3200,8 @@ a:focus-visible {
   background: #fff;
   border-radius: 14px;
 }
-/* button-in-button — 화살표를 자체 원형 칩에 담아 프리미엄 디테일 (taste) */
-.today-hook__cta-arrow {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  font-size: 15px;
-  font-style: normal;
-  line-height: 1;
-  color: var(--brand-strong);
-  /* 어두운 히어로 카드 위 흰 원 + 진한 파랑 화살표.
-     흰 글자 on --brand 는 3.71 로 AA(4.5) 미달이었다. */
-  background: #fff;
-  border-radius: 999px;
-  transition: transform 0.24s var(--ease-spring);
-}
-.today-hook:active .today-hook__cta-arrow {
-  transform: translateX(2px);
-}
 @media (prefers-reduced-motion: reduce) {
-  .today-hook:active,
-  .today-hook:active .today-hook__cta-arrow {
+  .today-hook:active {
     transform: none;
   }
 }
@@ -3487,41 +3444,6 @@ a:focus-visible {
   flex-direction: column;
   gap: var(--space-3);
   margin: var(--space-5) 0 var(--space-4);
-}
-.birth-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--gray-50);
-  border: 1px solid var(--gray-200);
-}
-.birth-field--off {
-  opacity: 0.45;
-}
-.birth-field__k {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-700);
-}
-/* 네이티브 피커를 그대로 쓴다 — 직접 만든 휠보다 빠르고, 기기 접근성 설정을 따른다 */
-.birth-field__input {
-  width: 100%;
-  min-height: 34px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  font-family: var(--font-num);
-  font-variant-numeric: tabular-nums;
-  font-size: 19px;
-  line-height: 28px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.birth-field__input:disabled {
-  color: var(--gray-500);
 }
 .birth-unknown {
   display: flex;
@@ -3811,13 +3733,6 @@ a:focus-visible {
 .pcol__branch--none {
   color: var(--gray-400);
 }
-.pcol__kor {
-  margin-top: 2px;
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 600;
-  color: var(--gray-700);
-}
 .pillars-card__foot {
   margin: var(--space-3) 0 0;
   font-size: 12px;
@@ -4025,25 +3940,7 @@ a:focus-visible {
   border-left: 4px solid var(--brand);
   overflow: hidden;
 }
-.mygod__head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: var(--space-3);
-  flex-wrap: wrap;
-}
- /* 흰 글자를 얹으므로 --brand(3.71:1) 이 아니라 한 단계 진한 --brand-strong 을 쓴다 */
-.mygod__badge {
-  flex: 0 0 auto;
-  padding: 5px 11px;
-  border-radius: 999px;
-  background: var(--brand-strong);
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--white);
-}
-.mygod__title {
+ .mygod__title {
   margin: 0;
   min-width: 0;
   font-size: 16px;
@@ -4070,8 +3967,8 @@ a:focus-visible {
   color: var(--gray-700);
 }
 .mygod__fit--needed {
-  background: #f0faf6;
-  color: var(--score-high-text);
+  background: var(--brand-soft);
+  color: var(--brand-strong);
 }
 .mygod__fit--excess {
   background: #fff9e7;
@@ -4363,19 +4260,6 @@ a:focus-visible {
   font-weight: 500;
   color: var(--gray-700);
   line-height: 18px;
-}
-/* 입력이 모자랄 때의 안내 — 버튼을 잠그는 대신 눌렀을 때 뭐가 빠졌는지 말해준다 */
-.birth-nudge {
-  margin: 0 0 var(--space-3);
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: #fff9e7;
-  border: 1px solid #ffe69b;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  color: #9c5d00;
-  text-align: center;
 }
 /* 일간의 한글 표기 — 이름 아래 작게 */
 .dm-hero__kor {

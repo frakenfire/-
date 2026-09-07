@@ -45,19 +45,30 @@ export function DetailResultScreen({
         <p className="report-hero__summary">{detail.summary}</p>
       </div>
 
-      <div className="card fade-in">
-        <p className="section-title">항목별 운세 순위</p>
+      <section className="sec">
+        <div className="sec__head">
+          <h2 className="sec__title">항목별 운세 순위</h2>
+        </div>
+        <div className="card fade-in">
         <CategoryScores ranked={detail.ranked} />
-      </div>
+        </div>
+      </section>
 
-      <div className="card fade-in">
-        <p className="section-title">행운 세트</p>
+      <section className="sec">
+        <div className="sec__head">
+          <h2 className="sec__title">행운 세트</h2>
+        </div>
+        <div className="card fade-in">
         <LuckySetGrid luck={luck} mission={detail.mission} numberUse={detail.numberUse} />
-      </div>
+        </div>
+      </section>
 
       {/* 오늘 잘 맞는 띠 — 상세 리포트의 자동 궁합(친구 궁합과 구분) */}
-      <div className="card fade-in">
-        <p className="section-title">오늘 잘 맞는 띠</p>
+      <section className="sec">
+        <div className="sec__head">
+          <h2 className="sec__title">오늘 잘 맞는 띠</h2>
+        </div>
+        <div className="card fade-in">
         <div className="match">
           <div className="match__cell match__cell--good">
             <span className="match__badge">잘 맞아요</span>
@@ -72,7 +83,8 @@ export function DetailResultScreen({
             <span className="match__hint">{match.cautionReason}</span>
           </div>
         </div>
-      </div>
+        </div>
+      </section>
 
       {/* 오늘의 부적 — 스크린샷하고 싶은 한 줄 */}
       <div className="charm">
@@ -81,14 +93,21 @@ export function DetailResultScreen({
         <span className="charm__sub">화면 캡처해서 오늘 하루 곁에 둬보세요</span>
       </div>
 
-      <div className="btn-stack">
-        <button type="button" className="btn btn--secondary" onClick={onCopyLine}>
-          부적 문장만 복사할래요
-        </button>
-        <button type="button" className="btn btn--ghost" disabled={busy} onClick={onSave}>
-          결과 카드 저장하기 
-        </button>
-      </div>
+      <section className="sec">
+        <div className="sec__head">
+          <h2 className="sec__title">더 보기</h2>
+        </div>
+        <div className="rowlist">
+          <button type="button" className="act-row" onClick={onCopyLine}>
+            <span className="act-row__t">부적 문장만 복사할래요</span>
+            <span className="act-row__c" aria-hidden>›</span>
+          </button>
+          <button type="button" className="act-row" disabled={busy} onClick={onSave}>
+            <span className="act-row__t">결과 카드 저장하기</span>
+            <span className="act-row__c" aria-hidden>›</span>
+          </button>
+        </div>
+      </section>
 
       <Disclaimer />
     </AppLayout>

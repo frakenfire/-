@@ -46,7 +46,9 @@ for (const file of walk('src')) {
 // 리터럴 한자만 막으면 반쪽이다. 실제로 화면에 '壬 큰 물' 을 띄운 건
 // `${dm.hanja} ${dm.name}` 이었다 — 소스에는 한자가 한 글자도 없었다.
 // 그래서 화면을 그리는 파일에서 .hanja 를 읽는 것 자체를 막는다.
-const HANJA_FIELD = /\.hanja\b|\bhanja:/;
+// myStemHanja 처럼 이름이 hanja 로 '끝나는' 필드가 실제로 화면에 새어 나갔다.
+// \.hanja\b 만 보면 놓친다 — 대소문자 가리지 않고 hanja 가 든 이름을 전부 막는다.
+const HANJA_FIELD = /\.[A-Za-z]*[Hh]anja\b|\b[A-Za-z]*[Hh]anja:/;
 for (const file of walk('src')) {
   if (!/^src\/(screens|components)\//.test(file)) continue;
   const src = readFileSync(file, 'utf8');
