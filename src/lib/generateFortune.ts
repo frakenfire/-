@@ -57,8 +57,10 @@ function buildPersona(zodiac?: ZodiacId | null, star?: StarSignId | null): strin
   const z = zodiac ? findZodiac(zodiac) : undefined;
   const s = star ? findStarSign(star) : undefined;
   const parts: string[] = [];
-  if (z) parts.push(`${ZODIAC_TRAIT[zodiac as ZodiacId]} ${z.emoji}${z.label}`);
-  if (s) parts.push(`${STAR_TRAIT[star as StarSignId]} ${s.emoji}${s.label}`);
+  // 화면에 그대로 그려지는 문장이다 — 이모지를 넣으면 .tsx 를 훑는 가드를
+  // 전부 피해서 화면에만 나타난다. 실제로 열 회차 동안 그렇게 살아남았다.
+  if (z) parts.push(`${ZODIAC_TRAIT[zodiac as ZodiacId]} ${z.label}`);
+  if (s) parts.push(`${STAR_TRAIT[star as StarSignId]} ${s.label}`);
   if (parts.length === 0) return undefined;
   return `${parts.join(' × ')}인 당신에게`;
 }

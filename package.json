@@ -26,7 +26,8 @@
     "check:type": "node scripts/check-typography.mjs",
     "check:weight": "node scripts/check-weight.mjs",
     "check:hanja": "node scripts/check-hanja.mjs",
-    "check:uiemoji": "node scripts/check-ui-emoji.mjs"
+    "check:uiemoji": "node scripts/check-ui-emoji.mjs",
+    "audit:design": "node scripts/design-audit.mjs"
   },
   "dependencies": {
     "@apps-in-toss/web-framework": "^2.10.5",

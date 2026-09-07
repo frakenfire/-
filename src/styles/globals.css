@@ -184,6 +184,13 @@ a:focus-visible {
   border-radius: 999px;
   margin-bottom: var(--space-4);
 }
+/* <b>·<strong> 의 브라우저 기본값은 bolder 다. 부모가 700 이면 계산값이 900 이 되어,
+   CSS 어디에도 900 을 안 썼는데 화면에는 900 이 그려진다. 굵기 가드가 소스만 보느라
+   열 회차 동안 못 잡았다. */
+b,
+strong {
+  font-weight: 700;
+}
 /* ── CTA 버튼 ── */
 .btn {
   width: 100%;
@@ -1741,7 +1748,8 @@ a:focus-visible {
   color: var(--gray-700);
 }
 .compat-result__score {
-  font-size: 56px;
+  /* TDS 크기 표는 42 에서 끝난다. 56 은 그 밖의 값이라 눈대중으로 만든 티가 난다. */
+  font-size: 42px;
   font-weight: 700;
   letter-spacing: -0.03em;
   color: var(--gray-900);

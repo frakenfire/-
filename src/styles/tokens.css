@@ -26,12 +26,12 @@
   --orange: #fe9800; /* TDS adaptiveOrange500 — 포인트(행운)용, 제한 사용 */
 
   /* Semantic score colors — 배경 채움/점/바 등 장식 요소용 (텍스트엔 아래 -text 토큰 사용) */
-  --score-high: #03b26c; /* TDS adaptiveGreen500 */
+  --score-high: #1b64da; /* TDS adaptiveBlue700 — 이 앱에서 '좋다'는 파랑이다 */
   --score-mid: #3182f6; /* TDS adaptiveBlue500 */
   --score-low: #faa131; /* TDS adaptiveYellow700 */
 
   /* 작은 텍스트에서 WCAG AA(4.5:1, 흰 배경) 충족하는 어두운 변형 */
-  --score-high-text: #027648; /* TDS adaptiveGreen900 (5.69:1) */
+  --score-high-text: #1957c2; /* TDS adaptiveBlue800 (6.3:1) */
   --score-mid-text: #1b64da; /* TDS adaptiveBlue700 (5.41:1) */
   /* TDS 노랑/주황 램프는 가장 어두운 900 도 3.0:1 대에 그쳐 본문 AA 를 못 넘긴다.
      접근성을 우선해 TDS 계열을 유지한 더 어두운 자체 값을 쓴다 (5.28:1) */
