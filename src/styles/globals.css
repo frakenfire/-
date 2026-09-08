@@ -301,12 +301,11 @@ strong {
   display: flex;
   gap: var(--space-3);
   justify-content: center;
-  margin-top: var(--space-6);
-  padding-top: 10px; /* 가운데 카드를 올려둔 만큼 위가 잘리지 않게 */
-}
+  margin-top: var(--space-6); /* 가운데 카드를 올려둔 만큼 위가 잘리지 않게 */
+
+  padding: 10px 6px 0;}
 .note {
-  flex: 1 1 0;
-  max-width: 132px; /* 이 화면의 주인공. 작게 두면 아래가 텅 비고 '뽑는' 맛이 안 산다 */
+  flex: 1 1 0; /* 이 화면의 주인공. 작게 두면 아래가 텅 비고 '뽑는' 맛이 안 산다 */
   aspect-ratio: 5 / 7;
   border-radius: 18px;
   display: flex;
@@ -322,7 +321,9 @@ strong {
   transition:
     transform 0.14s ease,
     box-shadow 0.14s ease;
-}
+
+  min-width: 0;
+  max-width: 104px;}
 .note::before {
   /* 접은 자국 */
   content: '';
@@ -707,10 +708,6 @@ strong {
   margin-top: var(--space-5);
 }
 /* 쪽지 선택 힌트를 화면 바닥에 고정 — 카드는 상단, 힌트는 하단 구조 */
-.note-hint--foot {
-  margin-top: auto;
-  padding-top: var(--space-6);
-}
 /* 쪽지 등장 애니메이션 */
 .note {
   animation: note-in 0.34s ease both;

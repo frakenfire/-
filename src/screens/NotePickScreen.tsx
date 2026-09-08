@@ -70,9 +70,9 @@ export function NotePickScreen({
         ))}
       </div>
 
-      <p className="note-hint note-hint--foot">
-        {busy ?'쪽지 펼치는 중이에요' : '딱 끌리는 쪽지 하나만 콕'}
-      </p>
+      {/* 제목이 이미 '하나만 골라볼까요' 라고 묻는다. 바닥에 같은 말을 한 번 더
+          붙여두면 빈 화면을 메우려는 문장으로 읽힌다. 펼치는 중일 때만 한 줄. */}
+      {busy ? <p className="note-hint">쪽지 펼치는 중이에요</p> : null}
     </AppLayout>
   );
 }
