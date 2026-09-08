@@ -124,7 +124,7 @@ export function ResultScreen({
       {/* 내가 뽑은 쪽지 — 이 앱의 정체성이자, 방금 한 선택의 보상.
           이게 없으면 19장 중 하나를 고른 의식이 결과에 아무 흔적도 남기지 않는다.
           (실제로 그동안 쪽지 이름이 결과 어디에도 안 나왔다) */}
-      <div className={`drawn drawn--${note.color} fade-in`}>
+      <div className={`drawn drawn--${note.color}`}>
         <span className="drawn__icon" aria-hidden>
           <Icon name={note.icon} size={26} />
         </span>
@@ -138,7 +138,7 @@ export function ResultScreen({
 
       {/* 브리핑 카드 */}
       <div
-        className={`briefing briefing--${rarity.tier} fade-in`}
+        className={`briefing briefing--${rarity.tier}`}
         style={{ position: 'relative', overflow: 'hidden' }}
       >
         {luck.total >= 88 || rarity.special || milestone ? (
@@ -253,7 +253,7 @@ export function ResultScreen({
           <h2 className="sec__title">오늘 내 사주</h2>
         </div>
       {result.saju ? (
-        <div className="iljin fade-in">
+        <div className="iljin">
           <div className="iljin__row">
             <span className="iljin__seal" aria-hidden>{result.saju.iljin.kor}</span>
             <div className="iljin__flow">
@@ -295,8 +295,7 @@ export function ResultScreen({
           띠 운세와 갈리는 핵심이라 결과에서 가장 눈에 띄는 곳에 둔다.
           같은 날이어도 내 일간에 따라 십신이 달라지고, 신강신약에 따라 약이 되기도 독이 되기도 한다. */}
       {result.daily ? (
-        <div className="mygod fade-in">
-          <span className="mygod__eyebrow">이 쪽지가 당신에게 닿은 자리</span>
+        <div className="mygod">
           <p className="mygod__title">{result.daily.reading.title}</p>
           <p className="mygod__body">{result.daily.reading.body}</p>
           <p className={`mygod__fit mygod__fit--${result.daily.fit}`}>{result.daily.fitLine}</p>
@@ -327,7 +326,7 @@ export function ResultScreen({
             <p className="sec__desc">{rl.desc}</p>
           </div>
         </div>
-      <div className="card fade-in">
+      <div className="card">
         <div className="section">
           <p className="section__label">전체 풀이</p>
           <p className="section__lead">{result.pinpoint}</p>

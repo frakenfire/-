@@ -38,7 +38,6 @@ export function DetailResultScreen({
       }
     >
       <div className="report-hero">
-        <span className="report-hero__eyebrow">오늘의 심층 리포트</span>
         <h2 className="report-hero__title">
           오늘 밀어야 할 운은 <b>{topPick.label}</b>
         </h2>
@@ -49,7 +48,7 @@ export function DetailResultScreen({
         <div className="sec__head">
           <h2 className="sec__title">항목별 운세 순위</h2>
         </div>
-        <div className="card fade-in">
+        <div className="card">
         <CategoryScores ranked={detail.ranked} />
         </div>
       </section>
@@ -58,7 +57,7 @@ export function DetailResultScreen({
         <div className="sec__head">
           <h2 className="sec__title">행운 세트</h2>
         </div>
-        <div className="card fade-in">
+        <div className="card">
         <LuckySetGrid luck={luck} mission={detail.mission} numberUse={detail.numberUse} />
         </div>
       </section>
@@ -68,7 +67,7 @@ export function DetailResultScreen({
         <div className="sec__head">
           <h2 className="sec__title">오늘 잘 맞는 띠</h2>
         </div>
-        <div className="card fade-in">
+        <div className="card">
         <div className="match">
           <div className="match__cell match__cell--good">
             <span className="match__badge">잘 맞아요</span>
@@ -88,7 +87,6 @@ export function DetailResultScreen({
 
       {/* 오늘의 부적 — 스크린샷하고 싶은 한 줄 */}
       <div className="charm">
-        <span className="charm__label">오늘의 부적</span>
         <p className="charm__text">“{detail.charm}”</p>
         <span className="charm__sub">화면 캡처해서 오늘 하루 곁에 둬보세요</span>
       </div>

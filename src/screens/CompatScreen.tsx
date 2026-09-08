@@ -347,7 +347,7 @@ export function CompatScreen({
         </div>
       ) : result ? (
         <>
-          <div className={`compat-result compat-result--${result.vibe} fade-in`}>
+          <div className={`compat-result compat-result--${result.vibe}`}>
             <span className="compat-result__badge">{BAND_EMOJI[result.band]} 오늘의 {modeLabel} 궁합</span>
             <div className="compat-result__score num">{result.score}<small>점</small></div>
             <p className="compat-result__archetype">{result.archetype}</p>

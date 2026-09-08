@@ -76,7 +76,7 @@ export function NotePickScreen({
       </div>
 
       <p className="note-hint note-hint--foot">
-        {busy ?'쪽지 펼치는 중이에요…' : '딱 끌리는 쪽지 하나만 콕'}
+        {busy ?'쪽지 펼치는 중이에요' : '딱 끌리는 쪽지 하나만 콕'}
       </p>
     </AppLayout>
   );

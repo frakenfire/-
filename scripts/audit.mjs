@@ -504,7 +504,9 @@ async function run(browser) {
       check((await page.locator('.mygod__badge').count()) === 0,
         '[사주결과] 십신 용어가 헤드라인을 차지하지 않음');
       check((await page.locator('.mygod__why').count()) === 1, '[사주결과] 사주 근거를 밝힘');
-      check(res.includes('이 쪽지가 당신에게 닿은 자리'), '[사주결과] 해석이 쪽지 언어로 감싸짐');
+      // 위에 얹혀 있던 '이 쪽지가 당신에게 닿은 자리' 라벨은 반사적 kicker 라 걷어냈다.
+      // 쪽지 언어로 감싸졌는지는 십신 풀이 제목이 그려지는지로 본다.
+      check((await page.locator('.mygod__title').count()) === 1, '[사주결과] 해석이 쪽지 언어로 감싸짐');
       const fit = await page.locator('.mygod__fit').count();
       check(fit === 1, '[사주결과] 신강신약 판정 한 줄 노출');
       await diagnose(page, '사주결과');
@@ -635,7 +637,7 @@ async function run(browser) {
     await page.getByText('오늘의 심층 리포트 열기', { exact: false }).first().click();
     await wait(page, 2600);
     const d = await bodyText(page);
-    check(d.includes('오늘의 심층 리포트') && d.includes('부적'), '[심층] 열림');
+    check(d.includes('심층 리포트') && d.includes('부적'), '[심층] 열림');
     await diagnose(page, '심층');
     await page.getByText('부적 문장만 복사', { exact: false }).first().click();
     await wait(page, 1400);

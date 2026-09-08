@@ -343,7 +343,6 @@ strong {
 .note--opening {
   animation: note-open 0.5s ease both !important;
   border-color: var(--brand);
-  box-shadow: 0 12px 28px rgba(49, 130, 246, 0.28);
   z-index: 2;
 }
 @keyframes note-open {
@@ -922,15 +921,6 @@ strong {
     transform: scale(1);
   }
 }
-@keyframes bob {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-5px);
-  }
-}
 /* ── 행운 세트 그리드 ── */
 .lucky-grid {
   display: grid;
@@ -984,12 +974,16 @@ strong {
   color: var(--gray-900);
 }
 .briefing__chips {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
   align-items: center;
   margin-bottom: var(--space-4);
-}
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 6px;
+  margin: 0 0 var(--space-3);
+  font-size: 13px;
+  line-height: 19.5px;
+  color: var(--gray-700);}
 /* 등급 스탬프 리빌 — 점수 카운트업이 끝날 즈음 등급 배지가 도장처럼 찍힌다 */
 @keyframes stamp-in {
   0% {
@@ -1014,20 +1008,27 @@ strong {
   font-size: 12px;
   line-height: 18px;
   font-weight: 600;
-  padding: 5px 10px;
-  border-radius: 999px;
-}
+
+  padding: 0;
+  background: none;}
 .chip--type {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: var(--gray-100);
   color: var(--gray-800);
+
+  padding: 0;
+  background: none;}
+.briefing__chips > * + *::before {
+  content: '·';
+  margin-right: 6px;
+  color: var(--gray-400);
 }
 .chip--score {
-  background: var(--brand-soft);
   color: var(--brand-strong);
-}
+
+  padding: 0;
+  background: none;}
 .chip--score b {
   font-weight: 700;
 }
@@ -1199,13 +1200,6 @@ strong {
 
   padding: var(--space-2) 0 var(--space-5);
   border-bottom: 1px solid var(--gray-100);}
-.report-hero__eyebrow {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--brand-strong);
-  letter-spacing: 0.02em;
-}
 .report-hero__title {
   margin: 8px 0 6px;
   font-size: 21px;
@@ -1450,12 +1444,6 @@ strong {
   padding: var(--space-6) var(--space-5);
   margin-bottom: var(--space-6);
 }
-.charm__label {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: #90c2ff;
-}
 .charm__text {
   margin: 10px 0 8px;
   font-size: 18px;
@@ -1563,26 +1551,25 @@ strong {
 /* 띠/별자리 모드 전환 탭 */
 .seg-tabs {
   display: flex;
-  gap: 6px;
-  background: var(--gray-100);
-  padding: 4px;
-  border-radius: 12px;
   margin-bottom: var(--space-6);
-}
+
+  gap: 0;
+  padding: 0;
+  border-bottom: 1px solid var(--gray-100);}
 .seg-tab {
   flex: 1;
   min-height: 44px;
-  border-radius: 9px;
   font-size: 14px;
   line-height: 21px;
   font-weight: 600;
   color: var(--gray-700); /* gray-100 위 AA */
-}
+
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;}
 .seg-tab--on {
-  background: var(--white);
   color: var(--gray-900);
-  box-shadow: var(--shadow-card);
-}
+
+  border-bottom-color: var(--gray-900);}
 .zodiac-grid--full {
   margin-top: var(--space-4);
 }
@@ -2145,14 +2132,13 @@ strong {
 }
 /* ── 등급 뱃지 ── */
 .rarity-badge {
-  margin-left: auto;
   font-size: 11px;
   line-height: 16.5px;
   font-weight: 700;
-  padding: 4px 9px;
-  border-radius: 999px;
   white-space: nowrap;
-}
+
+  padding: 0;
+  background: none;}
 .rarity-badge b {
   font-weight: 700;
   opacity: 0.85;
@@ -3435,14 +3421,7 @@ strong {
   border-bottom: 1px solid var(--gray-100);
   text-align: left;
 }
- /* 파란 배경(brand-soft) 위에선 gray-600 이 4.11:1 로 AA 미달 */
-.dm-hero__label {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--gray-700);
-}
-/* 일간 히어로만은 자기 오행 색을 쓴다 — 이 화면의 주인공이라서.
+ /* 일간 히어로만은 자기 오행 색을 쓴다 — 이 화면의 주인공이라서.
    상자는 두르지 않는다. */
 .dm-hero__icon {
   display: flex;
@@ -3672,16 +3651,14 @@ strong {
   border-top: 1px solid var(--gray-100);
 }
 .reading-card__badge {
-  display: inline-block;
   margin: 0 0 var(--space-3);
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(--brand-soft);
   font-size: 13px;
   line-height: 19.5px;
   font-weight: 700;
   color: var(--brand-strong);
-}
+
+  display: block;
+  padding: 0;}
 .reading-card--group .reading-card__badge {
   background: var(--gray-100);
   color: var(--gray-800);
@@ -3948,15 +3925,6 @@ strong {
   font-weight: 700;
   color: var(--gray-800);
   white-space: nowrap;
-}
-/* 십신 카드 — 용어를 헤드라인에서 내리고 근거 자리로 */
-.mygod__eyebrow {
-  display: block;
-  margin-bottom: 4px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--brand-strong);
 }
 .mygod__why {
   margin: var(--space-3) 0 0;

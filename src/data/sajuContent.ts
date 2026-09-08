@@ -43,7 +43,7 @@ export const STRENGTH_READING: Record<'strong' | 'weak', { label: string; short:
     label: '신강',
     short: '에너지가 안에 꽉 찬 편',
     body: '스스로 밀고 나가는 힘이 넉넉해요. 남에게 기대지 않아도 굴러가는 대신, 힘이 안에서 돌기만 하면 답답해져요.',
-    tip: '쌓인 걸 밖으로 쓰는 통로를 만드는 게 좋아요 — 만들거나, 나누거나, 움직이거나.',
+    tip: '쌓인 걸 밖으로 쓰는 통로를 만드는 게 좋아요. 만들거나, 나누거나, 움직이거나.',
   },
   weak: {
     label: '신약',

@@ -33,7 +33,7 @@ export function computeRarity(seed: number): Rarity {
 // 등급별 특별 편지 문장 (에픽 이상) — 요정이 흥분해서 덧붙이는 한마디
 export const RARITY_LINE: Record<RarityTier, string | null> = {
   legendary:
-    '앗… 이건 정말 드물게 나오는 전설의 쪽지예요. 이런 날의 당신에겐, 좋은 일이 안 생기는 게 더 어려워요.',
+    '앗, 이건 정말 드물게 나오는 전설의 쪽지예요. 이런 날의 당신에겐, 좋은 일이 안 생기는 게 더 어려워요.',
   epic: '오늘은 조금 특별해요. 이런 쪽지는 자주 못 써주거든요. 그러니 오늘의 당신을 믿어봐요.',
   rare: null,
   common: null,

@@ -161,7 +161,7 @@ export function buildRankingShareText(args: {
     ``,
   ];
   if (args.me) {
-    lines.push(`나(${args.me.emoji}${args.me.label})는 오늘 ${args.me.rank}위 — ${args.me.gloss}`);
+    lines.push(`나(${args.me.emoji}${args.me.label})는 오늘 ${args.me.rank}위, ${args.me.gloss}`);
     lines.push(`네 띠는 몇 위게? 3초면 나와`);
   } else {
     lines.push(`네 띠는 몇 위인지 3초면 나와`);
