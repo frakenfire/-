@@ -194,7 +194,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '내 몫도 벅찬 날에 남의 일까지 떠안는 것',
       },
       {
-        headline: '오늘 하루, 나를 몰아붙이지 않는 게 최고의 전략이에요.',
+        headline: '오늘 하루, 나를 몰아붙이지 않는 게 제일 나은 전략이에요.',
         vibe: '속도를 늦추는 것도 훌륭한 하루 설계예요.',
         steps: [
           { when: '아침', text: '억지로 괜찮은 척할 필요 없어요. 그대로 시작해요.' },
@@ -450,7 +450,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '늦어진다고 초조하게 스스로를 다그치는 것',
       },
       {
-        headline: '이번 달은 나를 돌보는 게 최고의 계획이에요.',
+        headline: '이번 달은 나를 돌보는 게 제일 나은 계획이에요.',
         vibe: '속도를 늦추면 놓치던 것들이 보여요.',
         steps: [
           { when: '1주차', text: '일정에서 하나를 덜어내요.' },
