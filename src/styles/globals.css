@@ -1032,10 +1032,9 @@ strong {
 /* 오늘의 행운 보고서 — 타이밍·색·음식 (하루 설계 훅) */
 .report {
   margin-top: var(--space-5);
-  background: var(--gray-50);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-}
+
+  padding: var(--space-4) 0 0;
+  border-top: 1px solid var(--gray-100);}
 .report__head {
   margin: 0 0 var(--space-3);
   font-size: 13px;
@@ -1047,16 +1046,20 @@ strong {
 .report__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-2);
-}
+
+  gap: 0;}
 .report__cell {
-  background: var(--white);
-  border-radius: 12px;
-  padding: 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 5px;
   min-width: 0;
+
+  padding: 0 12px;}
+.report__cell:first-child {
+  padding-left: 0;
+}
+.report__cell + .report__cell {
+  border-left: 1px solid var(--gray-100);
 }
 .report__k {
   font-size: 11px;
@@ -1162,11 +1165,10 @@ strong {
   margin-top: var(--space-4);
   padding-top: var(--space-3);
   border-top: 1px solid var(--gray-200);
+
   display: flex;
-  gap: 8px;
-  align-items: baseline;
-  flex-wrap: wrap;
-}
+  flex-direction: column;
+  gap: 4px;}
 .plan__hold-k {
   flex: none;
   font-size: 12px;
@@ -1659,20 +1661,16 @@ strong {
   margin: 0 0 var(--space-4);
 }
 .compat-result {
-  text-align: center;
-  border-radius: var(--radius-xl);
-  padding: var(--space-6) var(--space-5);
   margin-bottom: var(--space-6);
-  background: var(--gray-50);
-}
+
+  text-align: left;
+  padding: var(--space-5) 0 0;
+  border-top: 1px solid var(--gray-100);}
 .compat-result--twin {
-  background: var(--color-soft-pink);
 }
 .compat-result--harmony {
-  background: var(--brand-soft);
 }
 .compat-result--spark {
-  background: var(--color-soft-yellow);
 }
 .compat-result__badge {
   font-size: 13px;
@@ -1687,8 +1685,8 @@ strong {
   letter-spacing: -0.03em;
   color: var(--gray-900);
   line-height: 1.1;
-  margin: 4px 0;
-}
+
+  margin: 2px 0 0;}
 .compat-result__score small {
   font-size: 20px;
   line-height: 29px;
@@ -1697,16 +1695,14 @@ strong {
   margin-left: 2px;
 }
 .compat-result__archetype {
-  display: inline-block;
   font-size: 13px;
   line-height: 19.5px;
   font-weight: 700;
   color: var(--brand-strong);
-  background: rgba(255, 255, 255, 0.7);
-  padding: 4px 12px;
-  border-radius: 999px;
-  margin: 0 0 var(--space-3);
-}
+
+  display: block;
+  padding: 0;
+  margin: 4px 0 var(--space-3);}
 .compat-result__head {
   font-size: 17px;
   line-height: 25.5px;
@@ -1718,18 +1714,25 @@ strong {
 .compat-cats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-2);
-  margin-bottom: var(--space-6);
-}
+
+  gap: 0;
+  margin: 0 0 var(--space-4);
+  border-top: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--gray-100);
+  padding: var(--space-3) 0;}
 .compat-cat {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 4px;
-  background: var(--white);
-  border-radius: 12px;
-  padding: var(--space-3) 6px;
   min-width: 0;
+
+  align-items: flex-start;
+  padding: 0 12px;}
+.compat-cat:first-child {
+  padding-left: 0;
+}
+.compat-cat + .compat-cat {
+  border-left: 1px solid var(--gray-100);
 }
 .compat-cat__label {
   font-size: 11px;
@@ -1760,32 +1763,28 @@ strong {
   font-size: 13px;
   font-weight: 500;
   color: var(--gray-700);
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 12px;
-  padding: 10px 12px;
-  margin: 0 0 var(--space-3);
   line-height: 19.5px;
   word-break: keep-all;
   text-align: left;
-}
+
+  padding: 0;
+  margin: 0 0 var(--space-3);}
 /* 오행 상성 줄 — 두 사람의 오행(목화토금수)과 상생/상극/비화 */
 .compat-ohaeng {
   display: flex;
   align-items: center;
-  justify-content: center;
   gap: 8px;
   flex-wrap: wrap;
   margin: 0 0 var(--space-3);
-}
+
+  justify-content: flex-start;}
 .compat-ohaeng__label {
   font-size: 11px;
   line-height: 16.5px;
   font-weight: 700;
   color: var(--gray-700);
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 999px;
-  padding: 4px 9px;
-}
+
+  padding: 0;}
 .compat-ohaeng__pair {
   display: inline-flex;
   align-items: center;
@@ -1826,9 +1825,9 @@ strong {
 .compat-result__lines {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
   text-align: left;
-}
+
+  gap: 0;}
 /* 내 사람들 — 저장해둔 상대와의 오늘 궁합 랭킹 */
 .saved-people {
   margin: 0 0 var(--space-4);
@@ -1957,10 +1956,9 @@ strong {
   display: flex;
   gap: 10px;
   align-items: baseline;
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 12px;
-  padding: 10px 12px;
-}
+
+  padding: 12px 0;
+  border-top: 1px solid var(--gray-100);}
 .compat-line__k {
   flex: none;
   min-width: 60px;
@@ -2337,14 +2335,6 @@ strong {
   /* 위의 '내 띠 고르면…' 점선 버튼과 딱 붙어 있었다(측정 0px).
      카드 내부 리듬(12px)에 맞춘다. */
   margin: var(--space-3) 0 var(--space-3);
-}
-.mood-heading {
-  font-size: 17px;
-  line-height: 25.5px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--gray-900);
-  margin: var(--space-6) 0 var(--space-3);
 }
 /* 결과 브리핑의 개인화 한 줄 — 흰 카드 위 (예전 파란 카드용 연한색은 안 보였음) */
 .briefing__persona {
@@ -3019,18 +3009,19 @@ strong {
   color: rgba(255, 255, 255, 0.86);
 }
 .today-hook__cta {
-  display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 13px 18px;
   font-size: 15px;
   line-height: 22.5px;
   font-weight: 700;
   color: var(--brand-strong);
   background: #fff;
   border-radius: 14px;
-}
+
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 12px 20px;}
 @media (prefers-reduced-motion: reduce) {
   .today-hook:active {
     transform: none;

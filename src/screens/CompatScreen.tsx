@@ -401,26 +401,33 @@ export function CompatScreen({
               </div>
             </div>
           </div>
-          <div className="btn-stack">
-            <button type="button" className="btn btn--primary" onClick={brag}>
-              이 궁합 친구한테 자랑하기 
-            </button>
-            <button type="button" className="btn btn--secondary" disabled={busy} onClick={saveCard}>
-              궁합 카드 이미지로 저장하기 
-            </button>
-            <button
-              type="button"
-              className="btn btn--ghost"
-              onClick={() => {
-                if (mode === 'zodiac') setFriendZodiac(null);
-                else setFriendStar(null);
-                setUnlocked(false);
-                setPicking('friend');
-              }}
-            >
-              다른 사람이랑도 해볼래요
-            </button>
-          </div>
+          <button type="button" className="btn btn--primary" onClick={brag}>
+            이 궁합 친구한테 자랑하기
+          </button>
+          <section className="sec" style={{ marginTop: 'var(--space-6)' }}>
+            <div className="sec__head">
+              <h2 className="sec__title">더 보기</h2>
+            </div>
+            <div className="rowlist">
+              <button type="button" className="act-row" disabled={busy} onClick={saveCard}>
+                <span className="act-row__t">궁합 카드 이미지로 저장하기</span>
+                <span className="act-row__c" aria-hidden>›</span>
+              </button>
+              <button
+                type="button"
+                className="act-row"
+                onClick={() => {
+                  if (mode === 'zodiac') setFriendZodiac(null);
+                  else setFriendStar(null);
+                  setUnlocked(false);
+                  setPicking('friend');
+                }}
+              >
+                <span className="act-row__t">다른 사람이랑도 해볼래요</span>
+                <span className="act-row__c" aria-hidden>›</span>
+              </button>
+            </div>
+          </section>
 
           <div className="save-person">
             <p className="save-person__title">이 사람, 내 사람으로 저장할까요?</p>

@@ -33,11 +33,8 @@ export function MoodScreen({
   return (
     <AppLayout onBack={onBack} step={3} totalSteps={4}>
       <h2 className="h2">쪽지를 쓰기 전에, 지금 나는?</h2>
-      <p className="lead">
-        {hasBirth
-          ? '지금 기분만 알려주세요.'
-          : '기분 · 띠 · 별자리를 고르면 나에게 딱 맞는 쪽지가 나와요.'}
-      </p>
+      {/* 사주가 없을 때도 같은 한 줄. 띠·별자리 고르기는 아래 칸의 라벨이 설명한다. */}
+      <p className="lead">지금 기분을 골라주세요.</p>
 
       {/* 내 띠 · 별자리 — 사주가 없을 때의 가벼운 개인화 경로.
           사주가 있으면 띠는 이미 입춘 기준으로 정해져 있어, 또 물으면 "방금 넣었는데?"가 된다. */}
@@ -105,7 +102,6 @@ export function MoodScreen({
       </>
       )}
 
-      <p className="mood-heading">지금 기분은 어때요?</p>
       <div className="mood-grid">
         {MOODS.map((m) => (
           <button key={m.key} type="button" className="mood-btn" onClick={() => onSelect(m.key)}>
