@@ -1,409 +1,50 @@
-import type { ReactElement } from 'react';
-
-// 선 아이콘 — 이모지 대신.
+// 아이콘 — 검증된 라이브러리(Lucide)를 쓴다.
 //
-// 설치된 토스 런타임 번들(prod.ios.rn84.js)을 뒤져보면 이모지가 단 한 글자도
-// 없다. 토스는 그림이 필요한 자리에 전부 자기 아이콘을 쓴다. 이모지는
-// 기기마다 다른 그림이 나오고(애플/삼성/윈도우), 글리프가 라인박스를 넘쳐
-// 카드 테두리를 뚫기도 한다.
+// 처음엔 여기서 48개 아이콘의 좌표를 손으로 찍었다. 대조표로 렌더해 보니 여섯 개가
+// 상자·막대사탕·향수병·연필로 읽혀 다시 그려야 했고, 나머지도 굵기와 균형이 고르지
+// 않았다. AI 가 만든 화면의 표시 목록에는 "모델이 직접 그린 아이콘 SVG" 가 따로 한
+// 항목으로 올라 있다. 좌표를 찍는 대신 이름만 고른다.
 //
-// 여기 있는 것들은 전부 같은 규격이다 — 24 그리드, 선 굵기 1.8, 끝은 둥글게.
-// 색은 currentColor 라 놓이는 자리의 글자색을 따라간다.
+// 이름 체계(IconName)는 그대로 둔다. 쓰는 쪽은 바뀌지 않는다.
+import type { LucideIcon } from 'lucide-react';
+import {
+  Heart, Moon, Bell, Lock, Calendar, Sunrise, Coins, Briefcase, TriangleAlert, Star,
+  TreeDeciduous, Leaf, Sun, Lamp, Mountain, Wheat, Sword, Gem, Waves, Droplet,
+  Feather, TrendingUp, DoorOpen, Wallet, ClipboardCheck, MessageCircle, Clock, Compass,
+  Link, Target, Cloud, Sticker, Lightbulb, Flame, Clover, Headphones, Gift,
+  Soup, Users, MessageCircleHeart, HeartHandshake, House, Flower2,
+  Smile, Meh, Annoyed, Frown, HeartCrack,
+} from 'lucide-react';
 
 export type IconName =
-  | 'heart'
-  | 'moon'
-  | 'bell'
-  | 'lock'
-  | 'calendar'
-  | 'sunrise'
-  | 'coin'
-  | 'briefcase'
-  | 'alert'
-  | 'star'
-  | 'tree'
-  | 'leaf'
-  | 'sun'
-  | 'candle'
-  | 'mountain'
-  | 'field'
-  | 'blade'
-  | 'gem'
-  | 'wave'
-  | 'drop'
-  | 'feather'
-  | 'trendUp'
-  | 'door'
-  | 'wallet'
-  | 'checklist'
-  | 'chat'
-  | 'clock'
-  | 'compass'
-  | 'link'
-  | 'target'
-  | 'balloon'
-  | 'sparkle'
-  | 'bulb'
-  | 'flame'
-  | 'clover'
-  | 'headphone'
-  | 'gift'
-  | 'bowl'
-  | 'users'
-  | 'heartSpark'
-  | 'heartPair'
-  | 'home'
-  | 'flower'
-  | 'faceGood'
-  | 'faceSoso'
-  | 'faceTired'
-  | 'faceAnxious'
-  | 'faceLonely';
+  | 'heart' | 'moon' | 'bell' | 'lock' | 'calendar' | 'sunrise' | 'coin' | 'briefcase'
+  | 'alert' | 'star' | 'tree' | 'leaf' | 'sun' | 'candle' | 'mountain' | 'field'
+  | 'blade' | 'gem' | 'wave' | 'drop' | 'feather' | 'trendUp' | 'door' | 'wallet'
+  | 'checklist' | 'chat' | 'clock' | 'compass' | 'link' | 'target' | 'balloon'
+  | 'sparkle' | 'bulb' | 'flame' | 'clover' | 'headphone' | 'gift' | 'bowl' | 'users'
+  | 'heartSpark' | 'heartPair' | 'home' | 'flower' | 'faceGood' | 'faceSoso'
+  | 'faceTired' | 'faceAnxious' | 'faceLonely';
 
-const PATHS: Record<IconName, ReactElement> = {
-  heart: (
-    <path d="M12 20s-7-4.35-7-9.2A4.05 4.05 0 0 1 12 8a4.05 4.05 0 0 1 7 2.8c0 4.85-7 9.2-7 9.2Z" />
-  ),
-  moon: <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" />,
-  bell: (
-    <>
-      <path d="M18 15V10a6 6 0 1 0-12 0v5l-1.5 2.5h15L18 15Z" />
-      <path d="M10 20a2.2 2.2 0 0 0 4 0" />
-    </>
-  ),
-  lock: (
-    <>
-      <rect x="4.8" y="10.8" width="14.4" height="9" rx="2.6" />
-      <path d="M8.6 10.8V8.2a3.4 3.4 0 1 1 6.8 0v2.6" />
-    </>
-  ),
-  calendar: (
-    <>
-      <rect x="3.5" y="5" width="17" height="15.5" rx="3.5" />
-      <path d="M3.5 10h17M8 3v4M16 3v4" />
-    </>
-  ),
-  // 오늘 — 지평선 위로 막 올라온 해
-  sunrise: (
-    <>
-      <path d="M7.5 15.5a4.5 4.5 0 0 1 9 0" />
-      <path d="M12 4.5V7M5.8 7.3l1.7 1.7M18.2 7.3l-1.7 1.7M2.8 15.5h2.2M19 15.5h2.2" />
-      <path d="M3 19.2h18" />
-    </>
-  ),
-  // 돈 — 겹쳐 쌓은 동전
-  coin: (
-    <>
-      <ellipse cx="12" cy="7.5" rx="7" ry="3" />
-      <path d="M5 7.5v4c0 1.66 3.13 3 7 3s7-1.34 7-3v-4" />
-      <path d="M5 11.5v4c0 1.66 3.13 3 7 3s7-1.34 7-3v-4" />
-    </>
-  ),
-  briefcase: (
-    <>
-      <rect x="3.5" y="7.5" width="17" height="12" rx="3" />
-      <path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5M3.5 12.5h17" />
-    </>
-  ),
-  alert: (
-    <>
-      <path d="M12 4.5 21 19.5H3L12 4.5Z" />
-      <path d="M12 10v3.5M12 16.6v.1" />
-    </>
-  ),
-  star: <path d="m12 4 2.45 5.1 5.55.75-4.05 3.9 1 5.5L12 16.6 7.05 19.25l1-5.5L4 9.85l5.55-.75L12 4Z" />,
-  // 갑목 — 곧게 올라가는 큰 나무
-  tree: (
-    <>
-      <circle cx="12" cy="6.8" r="3.3" />
-      <circle cx="7.3" cy="10.2" r="2.9" />
-      <circle cx="16.7" cy="10.2" r="2.9" />
-      <path d="M12 20.5v-7.8M12 15.4 9.2 12.9M12 17.4l2.8-2.5" />
-    </>
-  ),
-  // 을목 — 감아 오르는 덩굴 잎
-  leaf: (
-    <>
-      <path d="M5 19c0-7 4.5-12 14-12 0 8-4.5 12-11 12H5Z" />
-      <path d="M8.5 15.5c2-2.5 4.3-4.2 7-5.3" />
-    </>
-  ),
-  // 병화 — 한낮의 해
-  sun: (
-    <>
-      <circle cx="12" cy="12" r="4.2" />
-      <path d="M12 3v2.2M12 18.8V21M3 12h2.2M18.8 12H21M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M18.4 5.6l-1.6 1.6M7.2 16.8l-1.6 1.6" />
-    </>
-  ),
-  // 정화 — 촛불
-  candle: (
-    <>
-      <path d="M12 2.8c1.7 2.3 2.5 3.8 2.5 5a2.5 2.5 0 0 1-5 0c0-1.2.8-2.7 2.5-5Z" />
-      <rect x="9" y="12.2" width="6" height="8.3" rx="1.4" />
-      <path d="M12 12.2v-1.4" />
-    </>
-  ),
-  // 무토 — 큰 산
-  mountain: (
-    <>
-      <path d="M3 19h18L14.2 7.5 10.8 13 8.6 10 3 19Z" />
-      <path d="M12.4 10.6 14.2 7.5" />
-    </>
-  ),
-  // 기토 — 기름진 밭
-  field: (
-    <>
-      <path d="M12 14.2V7.4" />
-      <path d="M12 11.4c0-2.3 1.4-3.6 3.6-3.9-.2 2.3-1.5 3.6-3.6 3.9Zm0 0C12 9.1 10.6 7.8 8.4 7.5c.2 2.3 1.5 3.6 3.6 3.9Z" />
-      <path d="M3.6 17.4c2.8-1.5 5.6-1.5 8.4 0s5.6 1.5 8.4 0M3.6 20.6c2.8-1.5 5.6-1.5 8.4 0s5.6 1.5 8.4 0" />
-    </>
-  ),
-  // 경금 — 벼려진 쇠
-  blade: (
-    <>
-      <path d="M12 3.2 14.6 7v7.2H9.4V7L12 3.2Z" />
-      <path d="M7.4 14.2h9.2M12 14.2V20.6" />
-    </>
-  ),
-  // 신금 — 보석
-  gem: (
-    <>
-      <path d="M6.5 4.5h11l3 5-8.5 10.5L3.5 9.5l3-5Z" />
-      <path d="M3.5 9.5h17M9 4.5l3 5 3-5M12 9.5V20" />
-    </>
-  ),
-  // 임수 — 큰 물
-  wave: (
-    <>
-      <path d="M3 9.5c2.25-2.4 4.5-2.4 6.75 0s4.5 2.4 6.75 0S19.5 7.1 21 8" />
-      <path d="M3 14.5c2.25-2.4 4.5-2.4 6.75 0s4.5 2.4 6.75 0S19.5 12.1 21 13" />
-      <path d="M3 19.5c2.25-2.4 4.5-2.4 6.75 0" />
-    </>
-  ),
-  // ── 쪽지 18종 ──────────────────────────────────────────────────────────
-  // 천천히 풀림 — 가볍게 내려앉는 깃털
-  feather: (
-    <>
-      <path d="M19.8 4.2c-8 0-12.9 4.6-12.9 10.3v2.7l2.9-.1c5.2-.4 10-5.1 10-12.9Z" />
-      <path d="M4.2 20.8 9.8 15.2M9.4 15.6l4.2-.2M11.4 12.4l4.1-.2M13.6 9.2l3.4-.2" />
-    </>
-  ),
-  // 다시 올라옴 — 우상향
-  trendUp: (
-    <>
-      <path d="M3.5 17.5 9.5 11l3.5 3.5L20 7.5" />
-      <path d="M15.2 7.5H20v4.8" />
-    </>
-  ),
-  // 살짝 열림 — 반쯤 열린 문
-  door: (
-    <>
-      <path d="M6.5 20.5V4.8a1 1 0 0 1 1.2-1l6.5-1.2a1 1 0 0 1 1.2 1v17.7l-7.7-1.4a1 1 0 0 1-.8-1h-.4Z" />
-      <path d="M4 20.5h16M12.6 12.2v1.6" />
-    </>
-  ),
-  // 새는 돈 막기 — 지갑
-  wallet: (
-    <>
-      <rect x="3.5" y="6" width="17" height="13" rx="3" />
-      <path d="M3.5 10.5h13a2 2 0 0 1 0 4h-13" />
-    </>
-  ),
-  // 밀린 일 정리 — 체크한 목록
-  checklist: (
-    <>
-      <rect x="4.5" y="4" width="15" height="16.5" rx="3" />
-      <path d="m8.5 10 1.8 1.8L14 8M8.5 16h7" />
-    </>
-  ),
-  // 가벼운 연락 — 말풍선
-  chat: (
-    <>
-      <path d="M20 12.2c0 3.9-3.6 7-8 7-.9 0-1.8-.1-2.6-.4L4.5 20.5l1.3-3.6A6.7 6.7 0 0 1 4 12.2c0-3.9 3.6-7 8-7s8 3.1 8 7Z" />
-      <path d="M9 12.2h.1M12 12.2h.1M15 12.2h.1" />
-    </>
-  ),
-  clock: (
-    <>
-      <circle cx="12" cy="12" r="8" />
-      <path d="M12 7.5V12l3 1.8" />
-    </>
-  ),
-  // 조심스러운 선택 — 나침반
-  compass: (
-    <>
-      <circle cx="12" cy="12" r="8.2" />
-      <path d="m15.2 8.8-2 4.4-4.4 2 2-4.4 4.4-2Z" />
-    </>
-  ),
-  // 뜻밖의 도움 — 맞물린 두 고리
-  link: (
-    <>
-      <circle cx="8.6" cy="12" r="4.6" />
-      <circle cx="15.4" cy="12" r="4.6" />
-    </>
-  ),
-  // 작은 성공 — 과녁
-  target: (
-    <>
-      <circle cx="12" cy="12" r="8.2" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="12" cy="12" r="0.4" />
-    </>
-  ),
-  balloon: (
-    <>
-      <path d="M12 3.2c3.1 0 5.5 2.4 5.5 5.6 0 3.4-2.7 6.6-5.5 6.6S6.5 12.2 6.5 8.8c0-3.2 2.4-5.6 5.5-5.6Z" />
-      <path d="m12 15.4-.9 1.6h1.8L12 15.4ZM12 17c0 2 1.6 2 1.6 3.5" />
-    </>
-  ),
-  // 행운 스티커 — 반짝임
-  sparkle: (
-    <>
-      <path d="M11 3.5c.5 3.6 1.4 4.5 5 5-3.6.5-4.5 1.4-5 5-.5-3.6-1.4-4.5-5-5 3.6-.5 4.5-1.4 5-5Z" />
-      <path d="M17.8 14.2c.25 1.8.7 2.25 2.5 2.5-1.8.25-2.25.7-2.5 2.5-.25-1.8-.7-2.25-2.5-2.5 1.8-.25 2.25-.7 2.5-2.5Z" />
-    </>
-  ),
-  // 반짝 아이디어 — 전구
-  bulb: (
-    <>
-      <path d="M9 15.5A6 6 0 1 1 15 15.5v1.2H9v-1.2Z" />
-      <path d="M9.8 19.5h4.4M10.4 21h3.2" />
-    </>
-  ),
-  // 용기 한 스푼 — 불꽃
-  flame: (
-    <>
-      <path d="M12 2.8c.6 3.4 5.4 4.9 5.4 10a5.4 5.4 0 0 1-10.8 0c0-2 .8-3.3 1.7-4.4.3 1 .9 1.7 1.7 2 .2-3 .8-5.3 2-7.6Z" />
-    </>
-  ),
-  // 반가운 재회 — 네 잎
-  clover: (
-    <>
-      <path d="M12 12c0-2.4-1-4-2.9-4a2.9 2.9 0 0 0 0 5.8c1.9 0 2.9-1.4 2.9-1.8Z" />
-      <path d="M12 12c2.4 0 4-1 4-2.9a2.9 2.9 0 0 0-5.8 0c0 1.9 1.4 2.9 1.8 2.9Z" />
-      <path d="M12 12c0 2.4 1 4 2.9 4a2.9 2.9 0 0 0 0-5.8c-1.9 0-2.9 1.4-2.9 1.8Z" />
-      <path d="M12 12c-2.4 0-4 1-4 2.9a2.9 2.9 0 0 0 5.8 0c0-1.9-1.4-2.9-1.8-2.9Z" />
-      <path d="M12.4 12.6 16 19" />
-    </>
-  ),
-  headphone: (
-    <>
-      <path d="M4.5 15.5v-3a7.5 7.5 0 0 1 15 0v3" />
-      <rect x="3" y="14.5" width="4.2" height="6" rx="2.1" />
-      <rect x="16.8" y="14.5" width="4.2" height="6" rx="2.1" />
-    </>
-  ),
-  gift: (
-    <>
-      <rect x="3.5" y="9" width="17" height="11.5" rx="2.5" />
-      <path d="M3.5 13.5h17M12 9v11.5" />
-      <path d="M12 9c-3.6 0-5-.7-5-2.3S8.2 3.5 12 9Zm0 0c3.6 0 5-.7 5-2.3S15.8 3.5 12 9Z" />
-    </>
-  ),
-  // ── 관계 · 기분 · 음식 ────────────────────────────────────────────────
-  // 행운 음식 — 음식마다 다른 그림을 두면 열여덟 칸이 각자 소리를 낸다.
-  // 이름은 글자로 이미 쓰여 있으니 그릇 하나면 족하다.
-  bowl: (
-    <>
-      <path d="M3.5 11.5h17a8.5 8.5 0 0 1-8.5 8.5 8.5 8.5 0 0 1-8.5-8.5Z" />
-      <path d="M9 8.2c0-1.2 1.5-1.6 1.5-2.9M13 8.2c0-1.2 1.5-1.6 1.5-2.9" />
-    </>
-  ),
-  users: (
-    <>
-      <circle cx="9.2" cy="8.6" r="3.4" />
-      <path d="M3.4 19.6c0-2.9 2.6-4.8 5.8-4.8s5.8 1.9 5.8 4.8" />
-      <path d="M16 5.6a3.4 3.4 0 0 1 0 6.6M17.2 15.2c2.1.5 3.4 1.9 3.4 4.4" />
-    </>
-  ),
-  heartSpark: (
-    <>
-      <path d="M10.8 19s-6.3-3.9-6.3-8.3A3.65 3.65 0 0 1 10.8 8a3.65 3.65 0 0 1 6.3 2.7c0 4.4-6.3 8.3-6.3 8.3Z" />
-      <path d="M18.6 3.4c.2 1.6.6 2 2.2 2.2-1.6.2-2 .6-2.2 2.2-.2-1.6-.6-2-2.2-2.2 1.6-.2 2-.6 2.2-2.2Z" />
-    </>
-  ),
-  heartPair: (
-    <>
-      <path d="M9.4 18.6s-5.9-3.7-5.9-7.8A3.4 3.4 0 0 1 9.4 8a3.4 3.4 0 0 1 5.9 2.8c0 4.1-5.9 7.8-5.9 7.8Z" />
-      <path d="M16.6 15.6c2.4-1.9 4.4-4.2 4.4-6.6a3 3 0 0 0-5-2.2" />
-    </>
-  ),
-  home: (
-    <>
-      <path d="M3.8 10.6 12 4l8.2 6.6v8.4a1.6 1.6 0 0 1-1.6 1.6H5.4a1.6 1.6 0 0 1-1.6-1.6v-8.4Z" />
-      <path d="M9.4 20.6v-6.2h5.2v6.2" />
-    </>
-  ),
-  flower: (
-    <>
-      <circle cx="12" cy="5.4" r="2.3" />
-      <circle cx="16.1" cy="8.4" r="2.3" />
-      <circle cx="14.5" cy="13.2" r="2.3" />
-      <circle cx="9.5" cy="13.2" r="2.3" />
-      <circle cx="7.9" cy="8.4" r="2.3" />
-      <path d="M12 15.4v5.2" />
-    </>
-  ),
-  // 기분 다섯 — 같은 얼굴에 눈·입만 바꾼다. 표정이 서로 확실히 갈려야
-  // 고르는 순간 망설이지 않는다.
-  faceGood: (
-    <>
-      <circle cx="12" cy="12" r="8.4" />
-      <path d="M9 10.4h.1M15 10.4h.1" />
-      <path d="M8.6 14a4.2 4.2 0 0 0 6.8 0" />
-    </>
-  ),
-  faceSoso: (
-    <>
-      <circle cx="12" cy="12" r="8.4" />
-      <path d="M9 10.4h.1M15 10.4h.1" />
-      <path d="M9.2 15h5.6" />
-    </>
-  ),
-  faceTired: (
-    <>
-      <circle cx="12" cy="12" r="8.4" />
-      <path d="M7.6 10.2c.9-1 2-1 2.9 0M13.5 10.2c.9-1 2-1 2.9 0" />
-      <path d="M9.4 15.4h5.2" />
-    </>
-  ),
-  faceAnxious: (
-    <>
-      <circle cx="12" cy="12" r="8.4" />
-      <path d="M9 10h.1M15 10h.1" />
-      <path d="M8.8 15.8c.7-.9 1.4-.9 2.1 0s1.4.9 2.1 0 1.4-.9 2.1 0" />
-    </>
-  ),
-  faceLonely: (
-    <>
-      <circle cx="12" cy="12" r="8.4" />
-      <path d="M9 10.2h.1M15 10.2h.1" />
-      <path d="M9 16.2a4 4 0 0 1 6 0" />
-      <path d="M16.6 12.6c.8 1.1 1.2 1.9 1.2 2.4a1.2 1.2 0 0 1-2.4 0c0-.5.4-1.3 1.2-2.4Z" />
-    </>
-  ),
-  // 계수 — 이슬비 한 방울
-  drop: <path d="M12 3.5c3.4 4 5.2 6.8 5.2 9.2a5.2 5.2 0 0 1-10.4 0c0-2.4 1.8-5.2 5.2-9.2Z" />,
+const ICONS: Record<IconName, LucideIcon> = {
+  heart: Heart, moon: Moon, bell: Bell, lock: Lock, calendar: Calendar, sunrise: Sunrise,
+  coin: Coins, briefcase: Briefcase, alert: TriangleAlert, star: Star,
+  // 일간 10종
+  tree: TreeDeciduous, leaf: Leaf, sun: Sun, candle: Lamp, mountain: Mountain, field: Wheat,
+  blade: Sword, gem: Gem, wave: Waves, drop: Droplet,
+  // 쪽지 18종
+  feather: Feather, trendUp: TrendingUp, door: DoorOpen, wallet: Wallet, checklist: ClipboardCheck,
+  chat: MessageCircle, clock: Clock, compass: Compass, link: Link, target: Target,
+  balloon: Cloud, sparkle: Sticker, bulb: Lightbulb, flame: Flame, clover: Clover,
+  headphone: Headphones, gift: Gift,
+  // 음식 · 관계 · 기분
+  bowl: Soup, users: Users, heartSpark: MessageCircleHeart, heartPair: HeartHandshake,
+  home: House, flower: Flower2,
+  faceGood: Smile, faceSoso: Meh, faceTired: Annoyed, faceAnxious: Frown, faceLonely: HeartCrack,
 };
 
 type Props = { name: IconName; size?: number };
 
 export function Icon({ name, size = 22 }: Props) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden
-      focusable="false"
-    >
-      {PATHS[name]}
-    </svg>
-  );
+  const Glyph = ICONS[name];
+  return <Glyph size={size} strokeWidth={1.8} absoluteStrokeWidth aria-hidden focusable="false" />;
 }
