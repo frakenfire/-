@@ -40,14 +40,7 @@ export function AppLayout({
       <div className="app__body">
         {typeof step === 'number' && totalSteps ? (
           <div className="progress" aria-hidden>
-            {Array.from({ length: totalSteps }).map((_, i) => (
-              <span
-                key={i}
-                className={
-                  i < step ? 'progress__dot progress__dot--active' : 'progress__dot'
-                }
-              />
-            ))}
+            <div className="progress__fill" style={{ width: `${(step / totalSteps) * 100}%` }} />
           </div>
         ) : null}
         {children}

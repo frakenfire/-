@@ -465,19 +465,20 @@ strong {
   margin-top: var(--space-2);
 }
 /* ── 진행 표시 ── */
+/* 진행 표시는 칸을 나눈 점 네 개가 아니라 얇은 막대 하나가 채워지는 모양이다.
+   칸이 나뉘면 '단계 선택기' 처럼 보이고, 막대는 '얼마나 왔나' 로 읽힌다. */
 .progress {
-  display: flex;
-  gap: 6px;
+  height: 3px;
   margin-bottom: var(--space-5);
-}
-.progress__dot {
-  height: 4px;
-  flex: 1;
   border-radius: 999px;
-  background: var(--color-border);
+  background: var(--gray-100);
+  overflow: hidden;
 }
-.progress__dot--active {
-  background: var(--color-signature-green);
+.progress__fill {
+  height: 100%;
+  border-radius: 999px;
+  background: var(--brand);
+  transition: width 0.25s ease;
 }
 /* ── 토스트 ── */
 .toast {
@@ -922,15 +923,21 @@ strong {
 .lucky-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-2);
-}
+
+  gap: 0;
+  border-top: 1px solid var(--gray-100);}
 .lucky-cell {
-  background: var(--gray-50);
-  border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-4);
   display: flex;
   flex-direction: column;
   gap: 4px;
+
+  padding: var(--space-3) 12px;
+  border-bottom: 1px solid var(--gray-100);}
+.lucky-cell:nth-child(odd) {
+  padding-left: 0;
+}
+.lucky-cell:nth-child(even) {
+  border-left: 1px solid var(--gray-100);
 }
 .lucky-cell__k {
   font-size: 12px;
@@ -1345,13 +1352,11 @@ strong {
 .lucky {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-}
+
+  gap: 0;}
 .lucky__mission {
-  background: var(--brand-soft);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-}
+
+  padding: 0 0 var(--space-4);}
 .lucky__mission-k {
   font-size: 12px;
   line-height: 18px;
@@ -1370,23 +1375,18 @@ strong {
   display: flex;
   align-items: center;
   gap: 12px;
-  background: var(--gray-50);
-  border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-4);
-}
+
+  padding: var(--space-3) 0 0;}
 .lucky__num-badge {
-  flex: none;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: var(--brand-strong); /* 18px 는 일반 텍스트 기준(4.5:1) */
-  color: #fff;
+  flex: none; /* 18px 는 일반 텍스트 기준(4.5:1) */
   font-size: 18px;
   line-height: 27px;
   font-weight: 700;
-  display: grid;
   place-items: center;
-}
+
+  color: var(--brand-strong);
+  font-size: 20px;
+  line-height: 29px;}
 .lucky__num-text {
   font-size: 14px;
   font-weight: 500;
@@ -4057,20 +4057,20 @@ strong {
   scroll-snap-align: center;
   font-family: var(--font-num);
   font-variant-numeric: tabular-nums;
-  font-size: 17px;
-  line-height: 25.5px;
-  font-weight: 500;
   color: var(--gray-600); /* gray-500 은 흰 배경에서 3.04:1 로 AA 미달 */
   background: none;
-}
+
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;}
 /* 고른 값은 색이 아니라 굵기와 크기로 구분한다 — 띠 위의 파란 글씨는
    '지금 눌린 버튼' 처럼 읽혀 굴릴 수 있다는 걸 가린다. */
 .wheel__item--on {
-  font-size: 19px;
-  line-height: 28px;
-  font-weight: 700;
   color: var(--gray-900);
-}
+
+  font-size: 17px;
+  line-height: 25.5px;
+  font-weight: 700;}
 .wheel-row {
   display: flex;
   align-items: center;
