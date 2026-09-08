@@ -1,6 +1,5 @@
 import { AppLayout } from '../components/AppLayout.tsx';
 import { NoteCard } from '../components/NoteCard.tsx';
-import { Mascot } from '../components/Mascot.tsx';
 import { NOTE_PICK, NOTE_TEASERS } from '../data/copy.ts';
 import { todayKey, hashSeed } from '../lib/dateSeed.ts';
 import type { Note } from '../types/fortune.ts';
@@ -69,10 +68,6 @@ export function NotePickScreen({
             onClick={() => !busy && onPick(note)}
           />
         ))}
-      </div>
-
-      <div className="note-mascot" aria-hidden>
-        <Mascot size={96} mood="happy" />
       </div>
 
       <p className="note-hint note-hint--foot">

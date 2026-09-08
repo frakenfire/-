@@ -1412,8 +1412,8 @@ strong {
   background: var(--gray-50);
 }
 .match__cell--good {
-  background: var(--brand-soft);
-}
+
+  background: var(--gray-50);}
 .match__badge {
   font-size: 11px;
   line-height: 16.5px;
@@ -1439,26 +1439,27 @@ strong {
 /* 오늘의 부적 — 캡처하고 싶은 다크 카드 */
 .charm {
   text-align: center;
-  background: var(--gray-900);
-  border-radius: var(--radius-xl);
-  padding: var(--space-6) var(--space-5);
   margin-bottom: var(--space-6);
-}
+
+  background: var(--gray-50);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);}
 .charm__text {
   margin: 10px 0 8px;
   font-size: 18px;
   font-weight: 700;
-  color: #ffffff;
   line-height: 27px;
   letter-spacing: -0.02em;
   word-break: keep-all;
-}
+
+  color: var(--gray-900);}
 .charm__sub {
   font-size: 12px;
   line-height: 18px;
   font-weight: 500;
-  color: var(--gray-400);
-}
+
+  /* gray-50 위에서 gray-600 은 4.42:1 로 AA 미달 */
+  color: var(--gray-700);}
 /* 심층 리포트 잠금 해제 버튼 — 눌러서 보고 싶게 */
 .btn--unlock {
   display: flex;
@@ -2148,17 +2149,13 @@ strong {
   color: var(--gray-700); /* 회색 틴트 위 AA 확보 (6.45:1) */
 }
 .rarity-badge--rare {
-  background: #e8f3ff;
   color: #1b64da; /* TDS adaptiveBlue700 — 4.61:1 */
 }
 .rarity-badge--epic {
-  background: #f9f0fc;
   color: #8222a2;
 }
 .rarity-badge--legendary {
-  background: #ffefbf;
   color: #9c5d00;
-  box-shadow: 0 0 0 1px #ffd158 inset;
 }
 /* ── 기분 입력 ── */
 /* 다섯 개는 목록이지 카드 다섯 장이 아니다. 상자 하나 안에서
@@ -2362,15 +2359,6 @@ strong {
   word-break: keep-all;
 }
 /* 쪽지 선택 화면 마스코트 — 카드와 하단 힌트 사이 빈 공간을 채운다 */
-.note-mascot {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 0;
-  margin-top: var(--space-4); /* 화면이 좁아 flex 여백이 0 이 돼도 최소 간격 보장 */
-  opacity: 0.95;
-}
 /* 인트로 티저 — 오늘 운 좋은 띠 (궁금증 유발) */
 .lucky-today__set {
   display: block;
@@ -3453,25 +3441,27 @@ strong {
   line-height: 21px;
   text-align: left;
 }
+.dm-chips > li + li::before {
+  content: '·';
+  margin: 0 6px;
+  color: var(--gray-400);
+}
 .dm-chips {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  gap: 6px;
   margin: var(--space-3) 0 0;
   padding: 0;
   list-style: none;
-}
+
+  gap: 0;}
 .dm-chip {
-  padding: 6px 12px;
-  border-radius: 999px;
-  background: var(--white);
-  border: 1px solid var(--gray-200);
   font-size: 12px;
   line-height: 18px;
   font-weight: 700;
   color: var(--gray-800);
-}
+
+  padding: 0;}
 .dm-two {
   display: grid;
   grid-template-columns: 1fr;
@@ -3916,16 +3906,14 @@ strong {
 .drawn__kw {
   flex: 0 0 auto;
   margin-top: 6px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(0, 0, 0, 0.06);
   font-size: 12px;
   line-height: 18px;
   font-weight: 700;
   color: var(--gray-800);
   white-space: nowrap;
-}
+
+  padding: 0;
+  color: var(--gray-600);}
 .mygod__why {
   margin: var(--space-3) 0 0;
   padding-top: var(--space-3);

@@ -87,7 +87,7 @@ export function DetailResultScreen({
 
       {/* 오늘의 부적 — 스크린샷하고 싶은 한 줄 */}
       <div className="charm">
-        <p className="charm__text">“{detail.charm}”</p>
+        <p className="charm__text">{detail.charm}</p>
         <span className="charm__sub">화면 캡처해서 오늘 하루 곁에 둬보세요</span>
       </div>
 
