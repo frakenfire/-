@@ -50,6 +50,9 @@ export function NotePickScreen({
         <p className="pick-basis">오늘 기운에 맞춰 <b>내 사주로 고른</b> 세 장이에요</p>
       ) : null}
 
+      {/* 이 화면의 내용은 쪽지 석 장뿐이다. 위에 붙여두면 아래 절반이 비어
+          만들다 만 화면으로 읽힌다. 남은 공간의 세로 중앙에 둔다. */}
+      <div className="note-stage">
       <div className="note-row">
         {notes.map((note, i) => (
           <NoteCard
@@ -68,6 +71,7 @@ export function NotePickScreen({
             onClick={() => !busy && onPick(note)}
           />
         ))}
+      </div>
       </div>
 
       {/* 제목이 이미 '하나만 골라볼까요' 라고 묻는다. 바닥에 같은 말을 한 번 더
