@@ -7,7 +7,6 @@ import { STAR_SIGNS, type StarSign, type StarSignId } from '../data/starSign.ts'
 import type { Mood } from '../types/fortune.ts';
 
 type Props = {
-  fortuneLabel: string;
   zodiac: Zodiac | null;
   star: StarSign | null;
   onPickZodiac: (id: ZodiacId) => void;
@@ -21,7 +20,6 @@ type Props = {
 // 지금 나 = 기분 + 띠 + 별자리. 세 개를 조합해 '나에게 딱 맞는' 쪽지를 만든다.
 // (띠/별자리만으론 12분의 1이라 뻔하니, 기분까지 더해 720가지로 좁힌다.)
 export function MoodScreen({
-  fortuneLabel,
   zodiac,
   star,
   onPickZodiac,
@@ -34,7 +32,6 @@ export function MoodScreen({
 
   return (
     <AppLayout onBack={onBack} step={3} totalSteps={4}>
-      {fortuneLabel ? <span className="eyebrow">{fortuneLabel}</span> : null}
       <h2 className="h2">쪽지를 쓰기 전에, 지금 나는?</h2>
       <p className="lead">
         {hasBirth
@@ -119,7 +116,6 @@ export function MoodScreen({
           </button>
         ))}
       </div>
-      <p className="mood-foot">기분을 고르면 바로 쪽지를 뽑아요</p>
     </AppLayout>
   );
 }

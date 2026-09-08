@@ -19,7 +19,6 @@ type Props = {
 export function TopicScreen({ sajuBadge, onSelect, onBack }: Props) {
   return (
     <AppLayout onBack={onBack} step={2} totalSteps={4}>
-      <span className="eyebrow">쪽지 뽑기</span>
       <h2 className="h2">오늘, 뭐가 제일 궁금해요?</h2>
       <p className="lead">고른 주제로 오늘의 쪽지를 뽑아요.</p>
 

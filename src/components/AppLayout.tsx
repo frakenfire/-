@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import { APP_NAME } from '../data/copy.ts';
 
 type Props = {
   children: ReactNode;
@@ -22,7 +21,9 @@ export function AppLayout({
 }: Props) {
   return (
     <div className="app">
-      <nav className="app__nav">
+      {/* 토스 화면의 네비는 뒤로가기와(필요할 때만) 화면 이름뿐이다. 앱 이름을 매 화면
+          반복하면 본문의 큰 제목과 헤더가 둘이 된다. 홈은 아예 비운다. */}
+      <nav className={onBack || title ? 'app__nav' : 'app__nav app__nav--empty'}>
         {onBack ? (
           <button
             type="button"
@@ -32,10 +33,8 @@ export function AppLayout({
           >
             ‹
           </button>
-        ) : (
-          <span className="app__nav-back" aria-hidden />
-        )}
-        <span className="app__nav-title">{title ?? APP_NAME}</span>
+        ) : null}
+        {title ? <span className="app__nav-title">{title}</span> : null}
       </nav>
 
       <div className="app__body">

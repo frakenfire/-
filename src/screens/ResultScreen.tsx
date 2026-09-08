@@ -125,7 +125,6 @@ export function ResultScreen({
           이게 없으면 19장 중 하나를 고른 의식이 결과에 아무 흔적도 남기지 않는다.
           (실제로 그동안 쪽지 이름이 결과 어디에도 안 나왔다) */}
       <div className={`drawn drawn--${note.color} fade-in`}>
-        <span className="drawn__pin" aria-hidden />
         <span className="drawn__icon" aria-hidden>
           <Icon name={note.icon} size={26} />
         </span>

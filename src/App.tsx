@@ -603,7 +603,6 @@ export default function App() {
 
       {screen === 'mood' && (
         <MoodScreen
-          fortuneLabel={fortuneType ? FORTUNE_LABEL[fortuneType] : ''}
           zodiac={zodiac}
           star={starSign}
           onPickZodiac={handleSaveMyZodiac}

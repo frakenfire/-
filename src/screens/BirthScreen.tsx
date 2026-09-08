@@ -80,7 +80,6 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
 
   return (
     <AppLayout onBack={onBack} step={inFlow ? 1 : undefined} totalSteps={inFlow ? 4 : undefined}>
-      <span className="eyebrow">{inFlow ? '쪽지 뽑기' : '쪽지를 나에게 맞추기'}</span>
       <h2 className="h2">언제 태어났어요?</h2>
       <p className="lead">이 기기에만 저장돼요. 어디에도 보내지 않아요.</p>
 
@@ -136,11 +135,9 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
           <span className="birth-unknown__box" aria-hidden />
           태어난 시각을 몰라요
         </button>
-        <p className="birth-hint">
-          {unknownTime
-            ? '시각 없이 세 기둥으로 봐요. 성격·기운은 그대로 나오고, 시주가 담당하는 부분만 빠져요.'
-            : '30분만 달라도 결과가 바뀌어요. 대략이라도 알면 훨씬 정확해져요.'}
-        </p>
+        {/* '30분만 달라도…' 같은 설득 문장은 넣지 않는다. 몰라요를 켰을 때만,
+            무엇이 빠지는지 한 문장. */}
+        {unknownTime ? <p className="birth-hint">시각 없이 세 기둥으로 봐요.</p> : null}
       </div>
 
       {/* 굴리는 동안 결과가 같이 바뀐다 — 입력의 대가를 먼저 보여준다 */}

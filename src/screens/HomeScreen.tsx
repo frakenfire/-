@@ -116,21 +116,20 @@ export function HomeScreen({
       {/* 첫 블록 — 상단 네비에 앱 이름이 이미 있어서, 큰 제목 자리는 앱 이름을
           반복하지 않고 '나에게 건네는 인사'가 차지한다. (예전엔 같은 글자가 두 번) */}
       <div className="home-hero">
-        <div className="pill-row">
-          <span className="date-pill">{todayLabel()}</span>
-          {streak >= 7 ? (
-            <span className="streak-pill streak-pill--crown"> {streak}일째!</span>
-          ) : streak >= 2 ? (
-            <span className="streak-pill"> {streak}일째 쪽지</span>
-          ) : (
-            // 오늘 이미 뽑았는데 '오늘의 첫 쪽지'가 그대로 붙어 있으면
-            // 아직 안 뽑은 것처럼 읽힌다. 뽑은 뒤엔 위의  N일째와 같은 말투로.
-            <span className="streak-pill streak-pill--new">
-              {todayReading ?' 1일째 쪽지' : '오늘의 첫 쪽지'}
-            </span>
-          )}
-        </div>
         <h1 className="h1">{greeting(todayKey())}</h1>
+        {/* 날짜와 연속 기록은 제목 위 알약 두 개가 아니라 제목 밑 보조 한 줄이다.
+            제목 위에 뭔가 있으면 헤더가 둘로 읽힌다. */}
+        <p className="home-hero__sub">
+          {todayLabel()}
+          {' · '}
+          {streak >= 7
+            ? `${streak}일째!`
+            : streak >= 2
+              ? `${streak}일째 쪽지`
+              : todayReading
+                ? '1일째 쪽지'
+                : '오늘의 첫 쪽지'}
+        </p>
       </div>
 
       {/*  메인 focal — '오늘의 나'훅 카드
@@ -306,20 +305,24 @@ export function HomeScreen({
           <p className="rank-card__copied">서열표 복사 완료! 단톡방에 붙여넣기만 하면 돼요</p>
         ) : null}
 
-        <div className="rank-podium">
-          {ranking.slice(0, 3).map((r, i) => {
+        {/* 순위는 목록이다. 타일 세 장을 나란히 세우면 '카드 더미' 로 읽히고,
+            4위부터는 어차피 목록이라 위아래 모양이 달라진다. 처음부터 한 목록으로. */}
+        <ol className="rank-list rank-list--top">
+          {ranking.slice(0, 3).map((r) => {
             const z = findZodiac(r.animal);
             const me = zodiac?.id === r.animal;
             return (
-              <div key={r.animal} className={`podium podium--${i + 1}${me ? ' podium--me' : ''}`}>
-                {/* 메달 이모지는 iOS 에서 글리프가 라인박스를 넘쳐 카드 테두리를 뚫는다.
-                    텍스트 배지는 어느 플랫폼에서든 같은 크기로 그려진다. */}
-                <span className="podium__rank">{i + 1}위</span>
-                <span className="podium__name">{z?.label}{me ? ' (나!)' : ''}</span>
-              </div>
+              <li key={r.animal} className={me ? 'rank-row rank-row--me' : 'rank-row'}>
+                <span className={`rank-row__no num${r.rank === 1 ? ' rank-row__no--first' : ''}`}>{r.rank}</span>
+                <span className="rank-row__name">
+                  {z?.label}
+                  {me ? ' (나)' : ''}
+                </span>
+                <span className={`rank-row__tone rank-row__tone--${r.tone}`}>{r.toneWord}</span>
+              </li>
             );
           })}
-        </div>
+        </ol>
 
         {myRank && zodiac ? (
           /* 누른 직후 '내 것'이 한눈에 보여야 한다 — 이모지 + 큰 순위 숫자 카드.

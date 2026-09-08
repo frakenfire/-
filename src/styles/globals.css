@@ -85,17 +85,22 @@ a:focus-visible {
   border-radius: 999px;
 }
 .app__nav-title {
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 600;
-  color: var(--color-dark-gray);
+  font-size: 17px;
+  line-height: 25.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--gray-900);
+}
+/* 홈처럼 네비에 아무것도 없을 땐 높이를 줄여 본문이 위로 올라오게 */
+.app__nav--empty {
+  height: 24px;
 }
 .app__body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  /* TDS 스크린 마진 — 좌우 24px. 20px 은 콘텐츠가 가장자리에 붙어 답답해 보인다 */
-  padding: var(--space-5) var(--space-6) var(--space-8);
+  /* TDS 스크린 마진 — 좌우 24px. 위는 네비가 이미 띄웠으니 8px 만. */
+  padding: var(--space-2) var(--space-6) var(--space-8);
   overflow-y: auto;
 }
 /* 헤더는 상단에 고정하고, 선택 콘텐츠(그리드·카드)만 남은 공간을
@@ -105,11 +110,11 @@ a:focus-visible {
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   gap: var(--space-4);
   min-height: 0;
   padding: var(--space-4) 0;
-}
+
+  justify-content: flex-start;}
 /* 선택 그리드는 헤더 바로 아래 자연스럽게 두고(위로 쏠림 없음),
    하단엔 안내 푸터를 margin-top:auto 로 바닥에 고정해 화면 위아래
    구조를 잡는다. mood 화면과 같은, 빈 느낌이 안 드는 패턴. */
@@ -171,18 +176,6 @@ a:focus-visible {
   color: var(--color-text-secondary);
   margin: 0 0 var(--space-5);
   white-space: pre-line;
-}
-.eyebrow {
-  display: inline-block;
-  align-self: flex-start; /* 본문이 stretch 라 알약이 화면 폭만큼 늘어나 있었다 */
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--brand-strong); /* 연파랑 배경 위 AA */
-  background: var(--brand-soft);
-  padding: 4px 10px;
-  border-radius: 999px;
-  margin-bottom: var(--space-4);
 }
 /* <b>·<strong> 의 브라우저 기본값은 bolder 다. 부모가 700 이면 계산값이 900 이 되어,
    CSS 어디에도 900 을 안 썼는데 화면에는 900 이 그려진다. 굵기 가드가 소스만 보느라
@@ -541,17 +534,12 @@ strong {
 .home-hero {
   padding: var(--space-3) 0 var(--space-5);
 }
-/* 날짜는 알약이 아니라 그냥 글이다. 인사 위에 알약 두 개가 나란히 서면
-   읽을 것도 아닌 칩이 화면 맨 위를 차지한다. 알약은 '연속 며칠' 하나만. */
-.date-pill {
-  display: inline-block;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  /* 바탕이 흰색이 아니라 gray-50 이라 gray-600 은 4.42:1 로 AA 미달 */
-  color: var(--gray-700);
-  padding: 5px 0;
-  margin-bottom: var(--space-4);
+.home-hero__sub {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+  color: var(--gray-600);
 }
 .home-hero .h1 {
   margin-bottom: 0;
@@ -774,40 +762,6 @@ strong {
   background: var(--brand);
   transform: scale(1.2);
 }
-/* ── 스트릭 배지 ── */
-.pill-row {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: var(--space-3);
-}
-.pill-row .date-pill {
-  margin-bottom: 0;
-}
-.streak-pill {
-  display: inline-block;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--brand-strong);
-  background: var(--brand-soft);
-  padding: 5px 11px;
-  border-radius: 999px;
-}
-.streak-pill--new {
-  color: var(--brand-strong);
-  background: var(--brand-soft);
-}
-.streak-pill--crown {
-  color: var(--brand-strong);
-  background: var(--brand-soft);
-}
-.zodiac-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 6px;
-  margin: 4px 0 10px;
-}
 .zodiac-chip {
   display: inline-flex;
   align-items: center;
@@ -1014,9 +968,9 @@ strong {
 }
 /* ── 오늘의 처방 브리핑 ── */
 .briefing {
-  padding: var(--space-5);
   margin-bottom: var(--space-6);
-}
+
+  padding: var(--space-4) 0;}
 .briefing__meta {
   margin: 10px 0 0;
   font-size: 13px;
@@ -1240,12 +1194,11 @@ strong {
 }
 /* ── 심층 리포트 (상세화면) ── */
 .report-hero {
-  background: var(--brand-soft);
-  border-radius: var(--radius-xl);
-  padding: var(--space-6) var(--space-5);
   margin-bottom: var(--space-6);
   box-shadow: var(--shadow-card);
-}
+
+  padding: var(--space-2) 0 var(--space-5);
+  border-bottom: 1px solid var(--gray-100);}
 .report-hero__eyebrow {
   font-size: 12px;
   line-height: 18px;
@@ -2269,9 +2222,9 @@ strong {
 }
 /* ── 결과 카드 (토스식 화이트 카드) ── */
 .card {
-  padding: var(--space-6) var(--space-5);
   margin-bottom: var(--space-6);
-}
+
+  padding: var(--space-4) 0;}
 @media (max-width: 360px) {
   .h1 {
     font-size: 24px;
@@ -2413,14 +2366,6 @@ strong {
   color: var(--gray-900);
   margin: var(--space-6) 0 var(--space-3);
 }
-.mood-foot {
-  text-align: center;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-600);
-  margin: var(--space-4) 0 0;
-}
 /* 결과 브리핑의 개인화 한 줄 — 흰 카드 위 (예전 파란 카드용 연한색은 안 보였음) */
 .briefing__persona {
   margin: 0 0 var(--space-2);
@@ -2444,20 +2389,18 @@ strong {
 .lucky-today__set {
   display: block;
   width: 100%;
-  margin: var(--space-3) 0 0;
-  padding: 10px 12px;
   min-height: 44px;
   text-align: left;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
-  color: var(--gray-700);
-  background: var(--gray-50);
   /* 점선 테두리는 '여기에 뭔가 놓일 자리' 라는 템플릿 신호다. 실제로 누르는
      버튼에 쓰면 만들다 만 화면으로 보인다. 실선 한 줄로. */
-  border: 1px solid var(--gray-200);
-  border-radius: var(--radius-md);
-}
+
+  margin: 0;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gray-100);
+  color: var(--brand-strong);
+  font-weight: 600;}
 .lucky-today__set:active {
   background: var(--white);
 }
@@ -2633,8 +2576,8 @@ strong {
 }
 /* ── 오늘의 띠 서열 ── 리더보드. 매일 갈리는 12띠 랭킹(사주 일진 기반) */
 .rank-card {
-  padding: var(--space-4);
-}
+
+  padding: 0;}
 .rank-card__copied {
   margin: 0 0 var(--space-3);
   font-size: 13px;
@@ -2645,75 +2588,6 @@ strong {
   border-radius: 10px;
   padding: 8px 12px;
   text-align: center;
-}
-.rank-podium {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  align-items: end;
-}
-.podium {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-end; /* 높이가 달라도 동물·이름 기준선이 나란히 */
-  gap: 4px;
-  padding: 10px 4px 10px;
-  background: var(--white);
-  border: 1px solid var(--gray-200);
-  border-radius: 14px;
-  overflow: hidden; /* 어떤 글리프도 카드 밖으로 나가지 않는다 */
-}
-.podium--1 {
-  order: 2;
-  padding-top: 14px;
-  padding-bottom: 12px;
-  background: var(--brand-soft);
-  border-color: #c9e2ff;
-}
-.podium--2 {
-  order: 1;
-}
-.podium--3 {
-  order: 3;
-}
-.podium--me {
-  outline: 2px solid var(--brand);
-  outline-offset: 1px;
-}
-/* 순위는 이모지 메달 대신 텍스트 배지 — 플랫폼마다 크기가 다른 메달 글리프가
-   iOS 에서 카드 테두리를 뚫는 문제(리본이 라인박스 위로 그려짐)를 구조적으로 제거 */
-.podium__rank {
-  font-size: 11px;
-  font-weight: 700;
-  line-height: 1;
-  padding: 4px 9px;
-  border-radius: 999px;
-  background: var(--gray-100);
-  color: var(--gray-700);
-  margin-bottom: 2px;
-}
-.podium--1 .podium__rank {
-  background: #ffefbf;
-  color: #9c5d00; /* 금색 톤 유지하며 AA(4.96) — a9791a 는 3.4 로 미달 */
-  box-shadow: 0 0 0 1px #ffd158 inset;
-}
-.podium--2 .podium__rank {
-  background: var(--gray-100);
-  color: var(--gray-700);
-}
-.podium--3 .podium__rank {
-  background: #fff3e0;
-  color: #9c5d00;
-}
-.podium--1 .podium__name {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--gray-800);
-}
-.podium--1 .podium__name {
-  color: var(--brand-strong);
 }
 /* 내 순위 카드 — 띠를 고른 직후 '내 것'이 한눈에 보이는 확인 장치 */
 .me-rank {
@@ -2780,12 +2654,19 @@ strong {
   display: block;
   width: 100%;
   min-height: 44px; /* 최소 터치 영역 */
-  margin-top: var(--space-3);
   font-size: 13px;
   line-height: 19.5px;
   font-weight: 600;
   color: var(--brand-strong);
-  text-align: center;
+
+  margin-top: 0;
+  padding: 14px 0;
+  text-align: left;}
+.rank-list--top {
+  margin-top: 0;
+}
+.rank-row__no--first {
+  color: var(--brand-strong);
 }
 .rank-list {
   list-style: none;
@@ -2799,23 +2680,22 @@ strong {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 7px 10px;
-  background: var(--white);
-  border-radius: 10px;
-}
+
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-100);}
 .rank-row--me {
   outline: 2px solid var(--brand);
   outline-offset: -1px;
 }
 .rank-row__no {
   flex: none;
-  width: 20px;
-  text-align: right;
   font-size: 13px;
   line-height: 19.5px;
   font-weight: 700;
   color: var(--gray-600); /* 흰 배경 위 AA */
-}
+
+  width: 24px;
+  text-align: left;}
 .rank-row__name {
   display: flex;
   align-items: center;
@@ -3333,7 +3213,8 @@ strong {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  width: 100%;
+  width: auto;
+  align-self: stretch;
   min-height: 44px;
   margin-bottom: var(--space-8);
   padding: var(--space-4);
@@ -3429,16 +3310,15 @@ strong {
   gap: 10px;
   width: 100%;
   min-height: 44px;
-  padding: 10px 14px;
-  border-radius: var(--radius-md);
-  background: var(--white);
-  border: 1px solid var(--gray-200);
   font-size: 14px;
   line-height: 21px;
   font-weight: 600;
   color: var(--gray-700);
   text-align: left;
-}
+
+  padding: 14px 0;
+  border-top: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--gray-100);}
 .birth-unknown--on {
   background: var(--brand-soft);
   border-color: var(--brand);
@@ -3487,16 +3367,13 @@ strong {
 .birth-peek {
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 4px;
   margin-bottom: var(--space-6);
-  padding: var(--space-5) var(--space-4);
-  border-radius: var(--radius-lg);
-  background: var(--gray-50);
-  border: 1px solid var(--gray-200);
-  text-align: center;
   overflow: hidden;
-}
+
+  align-items: flex-start;
+  padding: var(--space-4) 0 0;
+  text-align: left;}
 .birth-peek__label {
   font-size: 12px;
   line-height: 18px;
@@ -3546,18 +3423,17 @@ strong {
   color: var(--brand-strong);
 }
 /* ── 일간 히어로 ── 이 화면에서 "이게 나야"가 오는 자리 ── */
+/* 중앙정렬 큰 틴트 카드는 온보딩 완료 화면의 모양이지 정보 화면의 모양이 아니다.
+   토스의 '내 정보' 류 화면은 전부 좌측 정렬이고, 히어로도 바탕 위에 그냥 놓인다. */
 .dm-hero {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 6px;
+  align-items: flex-start;
+  gap: 4px;
   margin-bottom: var(--space-6);
-  padding: var(--space-6) var(--space-4) var(--space-5);
-  border-radius: var(--radius-xl);
-  background: var(--brand-soft);
-  border: 1px solid #c9e2ff;
-  text-align: center;
-  overflow: hidden;
+  padding: var(--space-2) 0 var(--space-5);
+  border-bottom: 1px solid var(--gray-100);
+  text-align: left;
 }
  /* 파란 배경(brand-soft) 위에선 gray-600 이 4.11:1 로 AA 미달 */
 .dm-hero__label {
@@ -3601,7 +3477,7 @@ strong {
 .dm-chips {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 6px;
   margin: var(--space-3) 0 0;
   padding: 0;
@@ -3624,10 +3500,10 @@ strong {
   margin-bottom: var(--space-6);
 }
 .dm-note {
-  padding: var(--space-4);
+  padding: var(--space-3) 0;
 }
-.dm-note--shadow {
-  background: var(--gray-50);
+.dm-note + .dm-note {
+  border-top: 1px solid var(--gray-100);
 }
 .dm-note__k {
   display: block;
@@ -3646,9 +3522,9 @@ strong {
 }
 /* ── 여덟 글자 ── */
 .pillars-card {
-  padding: var(--space-4);
   overflow: hidden;
-}
+
+  padding: 0;}
 .pillars-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -3719,8 +3595,8 @@ strong {
 }
 /* ── 오행 저울 ── */
 .elbal-card {
-  padding: var(--space-4);
-}
+
+  padding: 0;}
 .elbal-list {
   display: flex;
   flex-direction: column;
@@ -3788,8 +3664,12 @@ strong {
 }
 /* ── 해석 카드 ── */
 .reading-card {
-  margin-bottom: var(--space-6);
-  padding: var(--space-4);
+
+  margin: 0;
+  padding: var(--space-4) 0;}
+.reading-card + .reading-card,
+.reading-card + .useful-card {
+  border-top: 1px solid var(--gray-100);
 }
 .reading-card__badge {
   display: inline-block;
@@ -3851,12 +3731,9 @@ strong {
   color: var(--gray-700);
 }
 .useful-card {
-  margin-bottom: var(--space-6);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  background: var(--brand-soft);
-  border: 1px solid #c9e2ff;
-}
+
+  margin: 0;
+  padding: var(--space-4) 0 0;}
 .useful-card__title {
   margin: 0 0 4px;
   font-size: 14px;
@@ -4026,38 +3903,6 @@ strong {
   background: var(--white);
   overflow: hidden;
 }
-/* 뽑은 쪽지의 색은 지키되 한 단계 낮춘다.
-   TDS 는 색마다 50 과 100 두 단계의 옅은 톤을 갖는데, 100(#aeefd5·#ffd4d6)은
-   칩·배지 크기에 쓰라고 만든 채도다. 카드 한 장을 통째로 칠하면 화면에서
-   가장 큰 면이 가장 센 색이 되어, 그 위의 글씨보다 배경이 먼저 읽힌다.
-   면에는 50, 테두리에 100 — 같은 색인데 소리만 줄어든다. */
-.drawn--softGreen {
-  background: #f0faf6;
-  border-color: #aeefd5;
-}
-.drawn--cream {
-  background: #e8f3ff;
-  border-color: #c9e2ff;
-}
-.drawn--softYellow {
-  background: #fff9e7;
-  border-color: #ffefbf;
-}
-.drawn--softPink {
-  background: #ffeeee;
-  border-color: #ffd4d6;
-}
-/* 종이에 꽂힌 핀 — 쪽지라는 사물감을 주는 최소한의 장치 */
-.drawn__pin {
-  position: absolute;
-  top: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 26px;
-  height: 3px;
-  border-radius: 999px;
-  background: rgba(0, 0, 0, 0.1);
-}
 .drawn__icon {
   flex: 0 0 auto;
   display: flex;
@@ -4129,15 +3974,13 @@ strong {
 /* 쪽지 후보의 근거 한 줄 — 생년월일이 실제로 쓰였다는 걸 뽑기 직전에 알린다 */
 .pick-basis {
   margin: var(--space-3) 0 0;
-  padding: 9px 12px;
-  border-radius: 10px;
-  background: var(--brand-soft);
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 600;
-  color: var(--brand-strong);
-  text-align: center;
-}
+
+  padding: 0;
+  text-align: left;
+  color: var(--gray-700);
+  font-weight: 500;}
 .pick-basis b {
   font-weight: 700;
 }
@@ -4163,6 +4006,9 @@ strong {
   grid-template-columns: 1fr 1fr;
   gap: var(--space-3);
   margin-top: var(--space-5);
+}
+.topic-btn:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
 }
 .topic-btn {
   display: flex;
@@ -4287,10 +4133,10 @@ strong {
   gap: var(--space-2);
 }
 .wheel-group {
-  padding: var(--space-3) var(--space-3) var(--space-2);
-  border-radius: var(--radius-md);
-  background: var(--white);
-  border: 1px solid var(--gray-200);
+
+  padding: var(--space-3) 0;}
+.wheel-group + .wheel-group {
+  border-top: 1px solid var(--gray-100);
 }
 .wheel-group__k {
   display: block;

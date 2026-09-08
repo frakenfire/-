@@ -576,7 +576,10 @@ async function run(browser) {
       check(t.includes('이렇게 보내요'), `[운세:${expect}] 하루 설계 노출`);
       if (topic === '이번 달의 나') {
         // 월간 화면인데 총평/한마디가 '하루' 단위로 말하면 안 된다
-        const monthBody = t.split('🔎')[1] ?? t;
+        // 예전엔 🔎 이모지를 기준으로 풀이 부분만 잘라 봤는데, 이모지를 걷어낸 뒤로
+        // 기준이 사라져 화면 전체를 보고 있었다 — 그러면 편지·사주 블록의 '하루' 문장에
+        // 걸린다. 풀이 섹션의 제목을 기준으로 자른다.
+        const monthBody = t.split('전체 풀이')[1] ?? t;
         check(!/나쁠 것 없는 하루|무난한 날이에요\./.test(monthBody), '[월간] 총평이 월 단위');
       }
       check(page.__errs.length === 0, `[운세:${expect}] 콘솔 에러 없음`, page.__errs.join(' | '));
