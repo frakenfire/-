@@ -8,6 +8,8 @@ type Props = {
   mood?: Mood;
   /** 지정 시 점수로 표정 자동 결정 (mood보다 우선) */
   score?: number;
+  /** 배경 원과 반짝임 없이 캐릭터만. 색 카드 위처럼 이미 바탕이 있는 자리용 */
+  bare?: boolean;
 };
 
 export function moodFromScore(score: number): Mood {
@@ -16,7 +18,7 @@ export function moodFromScore(score: number): Mood {
   return 'calm';
 }
 
-export function Mascot({ size = 120, mood = 'happy', score }: Props) {
+export function Mascot({ size = 120, mood = 'happy', score, bare = false }: Props) {
   const m: Mood = typeof score === 'number' ? moodFromScore(score) : mood;
 
   return (
@@ -28,7 +30,7 @@ export function Mascot({ size = 120, mood = 'happy', score }: Props) {
       role="img"
       aria-label="오늘쪽지 마스코트"
     >
-      <circle cx="100" cy="100" r="92" fill="var(--brand-soft)" />
+      {bare ? null : <circle cx="100" cy="100" r="92" fill="var(--brand-soft)" />}
       <ellipse cx="100" cy="168" rx="52" ry="9" fill="#333d4b" opacity="0.08" />
 
       {/* 쪽지 몸통 */}
@@ -89,15 +91,20 @@ export function Mascot({ size = 120, mood = 'happy', score }: Props) {
         <path d="M88 130 q12 12 24 0" stroke="#333d4b" strokeWidth="5" strokeLinecap="round" fill="none" />
       )}
 
-      {/* 반짝임 (grin일 때 더 화려하게) */}
-      <path d="M158 58 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 Z" fill="var(--orange)" />
-      <path d="M40 44 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2 Z" fill="#f7c948" />
-      {m === 'grin' ? (
+      {/* 반짝임 (grin일 때 더 화려하게). 반짝이는 별은 'AI 기능' 표시로 굳어진 모양이라
+          바탕이 있는 자리(bare)에서는 뺀다. */}
+      {bare ? null : (
+        <>
+          <path d="M158 58 l3 8 8 3 -8 3 -3 8 -3 -8 -8 -3 8 -3 Z" fill="var(--orange)" />
+          <path d="M40 44 l2 6 6 2 -6 2 -2 6 -2 -6 -6 -2 6 -2 Z" fill="#f7c948" />
+        </>
+      )}
+      {!bare && m === 'grin' ? (
         <>
           <circle cx="164" cy="120" r="4" fill="#f7c948" />
           <path d="M34 118 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2 Z" fill="var(--orange)" />
         </>
-      ) : (
+      ) : bare ? null : (
         <circle cx="164" cy="120" r="4" fill="#f7c948" />
       )}
     </svg>
