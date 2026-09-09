@@ -181,7 +181,17 @@ async function run() {
   const browser = await chromium.launch({ executablePath: process.env.CHROME_PATH });
   const page = await browser.newPage({ viewport: { width: 375, height: 812 } });
   const w = (ms = 600) => page.waitForTimeout(ms);
-  const grab = async (name) => auditScreen(name, await page.evaluate(collect));
+  // DESIGN_SHOTS=디렉터리 를 주면 화면마다 전체 스크린샷도 남긴다(눈으로 훑는 용도).
+  const shotsDir = process.env.DESIGN_SHOTS;
+  let shotNo = 0;
+  const grab = async (name) => {
+    if (shotsDir) {
+      shotNo += 1;
+      const file = `${shotsDir}/${String(shotNo).padStart(2, '0')}_${name.replace(/[^가-힣a-z0-9]+/gi, '_')}.png`;
+      await page.screenshot({ path: file, fullPage: true });
+    }
+    auditScreen(name, await page.evaluate(collect));
+  };
 
   // ── 화면을 하나도 빠뜨리지 않고 전부 훑는다 ──
   await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);

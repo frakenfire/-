@@ -322,7 +322,7 @@ async function run(browser) {
 
       await diagnose(page, '주간(잠김)');
 
-      await page.getByText('이번 주 미리보기', { exact: false }).first().click();
+      await page.locator('.week-lock').first().click();
       await wait(page, 1500);
       const open = await bodyText(page);
       check(/이번 주는 .+(트여요|순해요|잔잔해요)/.test(open), '[주간] 해제 후 헤드라인 노출',
@@ -387,7 +387,7 @@ async function run(browser) {
       // 휠은 굴려도 되고 눌러도 된다 — 자동화는 누르는 쪽으로 확인한다
       await pickBirth(page, { year: 2024, month: 2, day: 4, ampm: '오전', hour: 10, minute: '00' });
       const peek = await bodyText(page);
-      check(/당신의 일간/.test(peek), '[사주입력] 입력 도중 미리보기 노출');
+      check(/내 일간/.test(peek), '[사주입력] 입력 도중 미리보기 노출');
       check(peek.includes('앞 해의 띠'), '[사주입력] 입춘 경계 안내가 뜬다');
       check((await page.locator('.birth-peek__pillars').innerText()).trim().length >= 8,
         '[사주입력] 미리보기에 팔자가 채워짐');

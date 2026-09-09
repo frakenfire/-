@@ -12,7 +12,7 @@ import {
   TreeDeciduous, Leaf, Sun, Lamp, Mountain, Wheat, Sword, Gem, Waves, Droplet,
   Feather, TrendingUp, DoorOpen, Wallet, ClipboardCheck, MessageCircle, Clock, Compass,
   Link, Target, Cloud, Sticker, Lightbulb, Flame, Clover, Headphones, Gift,
-  Soup, Users, MessageCircleHeart, HeartHandshake, House, Flower2,
+  Soup, Users, MessageCircleHeart, HeartHandshake, House, Flower2, UserRound,
   Smile, Meh, Annoyed, Frown, HeartCrack,
 } from 'lucide-react';
 
@@ -23,7 +23,7 @@ export type IconName =
   | 'checklist' | 'chat' | 'clock' | 'compass' | 'link' | 'target' | 'balloon'
   | 'sparkle' | 'bulb' | 'flame' | 'clover' | 'headphone' | 'gift' | 'bowl' | 'users'
   | 'heartSpark' | 'heartPair' | 'home' | 'flower' | 'faceGood' | 'faceSoso'
-  | 'faceTired' | 'faceAnxious' | 'faceLonely';
+  | 'faceTired' | 'faceAnxious' | 'faceLonely' | 'person';
 
 const ICONS: Record<IconName, LucideIcon> = {
   heart: Heart, moon: Moon, bell: Bell, lock: Lock, calendar: Calendar, sunrise: Sunrise,
@@ -38,7 +38,7 @@ const ICONS: Record<IconName, LucideIcon> = {
   headphone: Headphones, gift: Gift,
   // 음식 · 관계 · 기분
   bowl: Soup, users: Users, heartSpark: MessageCircleHeart, heartPair: HeartHandshake,
-  home: House, flower: Flower2,
+  home: House, flower: Flower2, person: UserRound,
   faceGood: Smile, faceSoso: Meh, faceTired: Annoyed, faceAnxious: Frown, faceLonely: HeartCrack,
 };
 

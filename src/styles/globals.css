@@ -1602,16 +1602,29 @@ strong {
   align-items: center;
   gap: 4px;
   padding: var(--space-5) var(--space-3);
-  border: 2px solid var(--gray-200);
+  border: 0;
   border-radius: var(--radius-lg);
-  background: var(--white);
+  background: var(--gray-50);
   cursor: pointer;
 }
+.compat-pick:active {
+  background: var(--gray-100);
+}
 .compat-pick__k {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--brand-strong);
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-700); /* gray-50 위 AA */
+}
+.compat-pick__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--gray-200);
+  color: var(--gray-600);
 }
 .compat-pick__emoji {
   display: flex;
@@ -1623,10 +1636,13 @@ strong {
   color: var(--gray-700);
 }
 .compat-pick__label {
-  font-size: 14px;
-  line-height: 21px;
+  font-size: 15px;
+  line-height: 22.5px;
   font-weight: 600;
-  color: var(--gray-800);
+  color: var(--gray-900);
+}
+.compat-pick--empty .compat-pick__label {
+  color: var(--brand-strong);
 }
 .compat-hint {
   text-align: center;
@@ -1638,9 +1654,8 @@ strong {
 }
 .compat-lock {
   text-align: center;
-  background: var(--gray-50);
-  border-radius: var(--radius-xl);
-  padding: var(--space-6) var(--space-5);
+  padding: var(--space-6) 0 0;
+  border-top: 1px solid var(--gray-100);
 }
 .compat-lock__score {
   width: 76px;
@@ -2377,8 +2392,7 @@ strong {
 /* ── 이번 주 운세 캘린더 ── 스트릭 보상(3일 연속) 또는 광고로 열리는 7일 미리보기.
    좋은 날을 미리 알려 "그날 다시 오게" 만드는 리텐션 장치라 서열 카드 위에 둔다. */
 .week-card {
-  padding: var(--space-4);
-  overflow: hidden; /* 이모지·배지가 라운드 밖으로 삐져나오지 않게 */
+  padding: 0;
 }
 .week-card__headline {
   margin: 0 0 var(--space-3);
@@ -2488,61 +2502,45 @@ strong {
    "3일만 더" 처럼 남은 개수를 보여줘야 스트릭이 목표가 된다. */
 .week-lock {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-3);
   width: 100%;
-  min-height: 44px;
-  padding: var(--space-3) var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--gray-50);
-  border: 1px solid var(--gray-200);
-  text-align: center;
-  transition: transform 0.2s var(--ease-spring);
+  min-height: 54px;
+  padding: 12px 0;
+  text-align: left;
 }
-.week-lock:active {
-  transform: scale(0.98);
-}
-.week-lock__peek {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  width: 100%;
-  margin-bottom: 2px;
-}
-.week-lock__peek i {
-  font-style: normal;
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 700;
-  /* 회색 칩 위 회색 글자는 AA 를 못 넘긴다 — gray-700 로 (7.4:1) */
+.week-lock__icon {
+  flex: none;
+  display: flex;
+  align-items: center;
   color: var(--gray-700);
-  background: var(--gray-200);
-  border-radius: 7px;
-  padding: 7px 0;
+}
+.week-lock__text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 .week-lock__title {
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 700;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 600;
   color: var(--gray-900);
 }
 .week-lock__desc {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 500;
-  color: var(--gray-700);
-  line-height: 18px;
+  color: var(--gray-600);
+  line-height: 19.5px;
+  word-break: keep-all;
 }
 .week-lock__cta {
-  margin-top: 4px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--white);
-  /* 13px 흰 글자는 blue500(3.71:1) 위에서 AA 미달 — blue700 로 (5.41:1) */
-  background: var(--brand-strong);
-  border-radius: 999px;
-  padding: 10px 18px;
+  flex: none;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
+  color: var(--brand-strong);
 }
 /* ── 오늘의 띠 서열 ── 리더보드. 매일 갈리는 12띠 랭킹(사주 일진 기반) */
 .rank-card {
@@ -2564,11 +2562,9 @@ strong {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: var(--space-3) 0 0;
-  padding: 12px 16px;
-  border-radius: 14px;
-  background: var(--brand-soft);
-  border: 1px solid #c9e2ff;
+  margin: 0;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--gray-100);
 }
 .me-rank__body {
   flex: 1;
@@ -2613,12 +2609,8 @@ strong {
   color: var(--gray-700);
   margin-left: 2px;
 }
-.me-rank--top {
-  background: #fff9e7;
-  border-color: #ffd158;
-}
 .me-rank--top .me-rank__rank {
-  color: #9c5d00; /* 금색 톤 AA */
+  color: var(--brand-strong);
 }
 .rank-card__more {
   display: block;
@@ -2653,9 +2645,9 @@ strong {
 
   padding: 12px 0;
   border-bottom: 1px solid var(--gray-100);}
-.rank-row--me {
-  outline: 2px solid var(--brand);
-  outline-offset: -1px;
+.rank-row--me .rank-row__name {
+  color: var(--brand-strong);
+  font-weight: 700;
 }
 .rank-row__no {
   flex: none;
@@ -2677,31 +2669,25 @@ strong {
   color: var(--gray-800);
 }
 .rank-row__tone {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  border-radius: 999px;
-  padding: 3px 9px;
+  flex: none;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
 }
 /* 일진 칩(.iljin__tone)과 같은 사다리 — 같은 뜻의 표시가 화면마다 다른 색이면
    사용자는 둘을 다른 것으로 읽는다. */
 .rank-row__tone--great {
-  color: var(--white);
-  background: var(--brand-strong);
+  color: var(--brand-strong);
+  font-weight: 700;
 }
 .rank-row__tone--good {
-  color: #1b64da;
-  background: #e8f3ff;
+  color: var(--brand-strong);
 }
 .rank-row__tone--steady {
-  color: #4e5968;
-  background: var(--gray-100);
+  color: var(--gray-600);
 }
 .rank-row__tone--caution {
-  /* 주황 글자는 주황 틴트 위에서 3.4:1 로 AA 미달이다(TDS 주황은 900 이 최대).
-     뜻은 배경 틴트가, 대비는 진한 회색 글자가 나른다. */
   color: var(--gray-800);
-  background: #fff3e0;
 }
 /* ── 메인 focal ── '오늘의 나' 훅 카드
    즉시성(오늘 기운 노출) + 개인화 공감 한 줄 + 잠긴 결과(?)로 뽑을 이유 제공 */
@@ -2737,14 +2723,11 @@ strong {
   line-height: 0;
 }
 .today-hook__kw {
-  display: inline-block;
+  display: block;
   font-size: 13px;
   line-height: 19.5px;
-  font-weight: 700;
-  color: #c9e2ff;
-  background: #194aa6; /* 반투명 대신 같은 계열의 한 단계 어두운 면 */
-  border-radius: 999px;
-  padding: 6px 14px;
+  font-weight: 500;
+  color: var(--white); /* 파란 면 위 13px 는 흰색만 AA 를 넘긴다 */
 }
 .today-hook__persona {
   margin: 16px 0 6px;
@@ -2757,7 +2740,7 @@ strong {
    갖고 있다. 띠 미설정이면 그 줄이 없어 헤드라인이 배지에 그대로 붙으므로,
    배지 바로 뒤에 올 때만 같은 22px 를 직접 준다. */
 .today-hook__kw + .today-hook__line {
-  margin-top: 16px;
+  margin-top: 8px;
 }
 .today-hook__line {
   margin: 0;
@@ -2800,15 +2783,15 @@ strong {
   align-items: center;
   gap: var(--space-3);
   margin-top: var(--space-4);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--gray-900);
+  padding: 14px 0;
+  border-top: 1px solid var(--gray-100);
+  border-bottom: 1px solid var(--gray-100);
 }
 .tmr-tease__moon {
   flex: none;
   display: flex;
   align-items: center;
-  color: #d1d6db; /* 어두운 회색 카드 위 — 선 아이콘이 묻히지 않게 */
+  color: var(--gray-700);
 }
 .tmr-tease__body {
   display: flex;
@@ -2817,16 +2800,16 @@ strong {
   min-width: 0;
 }
 .tmr-tease__k {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: #b0b8c1;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-600);
 }
 .tmr-tease__v {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
-  line-height: 19.5px;
-  color: #f9fafb;
+  line-height: 21px;
+  color: var(--gray-900);
   word-break: keep-all;
 }
 /* 결과 화면 '오늘의 일진' 스탬프 스트립 — 행운 보고서(3칸 그리드)와 겹치지 않는
@@ -2955,24 +2938,12 @@ strong {
 }
 /* 사주 근거 칩 — 일진×내 띠 관계를 가볍게(한자 없이) 보여줌 */
 .today-hook__saju {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 12px;
-}
-.saju-chip {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: #c9e2ff;
-  background: #194aa6;
-  border-radius: 999px;
-  padding: 5px 11px;
-}
-.saju-chip--rel {
-  color: var(--brand-strong);
-  background: #fff;
-  border-color: #fff;
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+  color: var(--white);
+  word-break: keep-all;
 }
 .today-hook__reveal {
   display: grid;
@@ -3336,45 +3307,53 @@ strong {
 }
 /* 입력 도중 미리보기 — 다 채우기 전에 '이게 나오는구나'가 와야 이탈이 준다 */
 .birth-peek {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-bottom: var(--space-6);
-  overflow: hidden;
-
-  align-items: flex-start;
-  padding: var(--space-4) 0 0;
-  text-align: left;}
-.birth-peek__label {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-700);
+  margin: var(--space-2) 0 var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--gray-100);
+  text-align: left;
 }
-.birth-peek__icon {
+.birth-peek__label {
+  display: block;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+.birth-peek__row {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: var(--brand-strong);
+  gap: 12px;
+  margin-top: 6px;
+}
+.birth-peek__icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  color: var(--gray-700);
+}
+.birth-peek__txt {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 .birth-peek__name {
-  font-size: 20px;
-  line-height: 29px;
+  font-size: 17px;
+  line-height: 25.5px;
   font-weight: 700;
   color: var(--gray-900);
 }
 .birth-peek__tag {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  color: var(--gray-700);
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+  color: var(--gray-600);
 }
 .birth-peek__pillars {
-  margin-top: 6px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
   color: var(--gray-700);
 }
 .birth-warn {
@@ -3670,29 +3649,29 @@ strong {
 .god-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
   margin: var(--space-3) 0 0;
   padding: 0;
   list-style: none;
 }
+.god-chips > li + li::before {
+  content: '·';
+  margin: 0 6px;
+  color: var(--gray-400);
+}
 .god-chip {
-  display: flex;
+  display: inline-flex;
   align-items: baseline;
   gap: 4px;
-  padding: 5px 10px;
-  border-radius: 8px;
-  background: var(--gray-50);
-  border: 1px solid var(--gray-200);
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 600;
   color: var(--gray-800);
 }
 .god-chip__pos {
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 700;
-  color: var(--gray-700);
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-600);
 }
 .useful-card {
 

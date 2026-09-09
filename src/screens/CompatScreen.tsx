@@ -275,18 +275,18 @@ export function CompatScreen({
           제목·버튼이 상단에 쏠려 아래가 비는 걸 막는다. */}
       <div className={!ready && savedRanked.length === 0 ? 'fill-rest' : undefined}>
       <div className="compat-pair">
-        <button type="button" className="compat-pick" onClick={() => setPicking('my')}>
+        <button type="button" className={myLabel ? 'compat-pick' : 'compat-pick compat-pick--empty'} onClick={() => setPicking('my')}>
           <span className="compat-pick__k">나</span>
           <span className="compat-pick__emoji">
-            {myLabel ? <PickMark item={myLabel} size={44} /> : '＋'}
+            {myLabel ? <PickMark item={myLabel} size={44} /> : <span className="compat-pick__empty"><Icon name="person" size={22} /></span>}
           </span>
           <span className="compat-pick__label">{myLabel ? myLabel.label : `${modeLabel} 고르기`}</span>
         </button>
         <span className="compat-pair__x">×</span>
-        <button type="button" className="compat-pick" onClick={() => setPicking('friend')}>
+        <button type="button" className={friendLabel ? 'compat-pick' : 'compat-pick compat-pick--empty'} onClick={() => setPicking('friend')}>
           <span className="compat-pick__k">상대</span>
           <span className="compat-pick__emoji">
-            {friendLabel ? <PickMark item={friendLabel} size={44} /> : '＋'}
+            {friendLabel ? <PickMark item={friendLabel} size={44} /> : <span className="compat-pick__empty"><Icon name="person" size={22} /></span>}
           </span>
           <span className="compat-pick__label">{friendLabel ? friendLabel.label : `${modeLabel} 고르기`}</span>
         </button>

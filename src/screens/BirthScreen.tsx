@@ -143,12 +143,16 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
       {/* 굴리는 동안 결과가 같이 바뀐다 — 입력의 대가를 먼저 보여준다 */}
       {preview && dm ? (
         <div className="birth-peek">
-          <span className="birth-peek__label">당신의 일간</span>
-          <span className="birth-peek__icon" aria-hidden>
-            <Icon name={dm.icon} size={34} />
-          </span>
-          <strong className="birth-peek__name">{dm.name}</strong>
-          <span className="birth-peek__tag">{dm.tagline}</span>
+          <span className="birth-peek__label">내 일간</span>
+          <div className="birth-peek__row">
+            <span className="birth-peek__icon" aria-hidden>
+              <Icon name={dm.icon} size={28} />
+            </span>
+            <div className="birth-peek__txt">
+              <strong className="birth-peek__name">{dm.name}</strong>
+              <span className="birth-peek__tag">{dm.tagline}</span>
+            </div>
+          </div>
           <span className="birth-peek__pillars">
             {preview.year.kor} {preview.month.kor} {preview.day.kor}
             {preview.hour ? ` ${preview.hour.kor}` : ''}

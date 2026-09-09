@@ -149,12 +149,9 @@ export function HomeScreen({
               {ZODIAC_TRAIT[zodiac.id]} {zodiac.label}인 당신,
             </p>
             <p className="today-hook__line">{saju.title}</p>
-            <div className="today-hook__saju" aria-hidden>
-              <span className="saju-chip saju-chip--rel">
-                내 띠와 {saju.relationKo}({saju.relationGloss})
-              </span>
-              <span className="saju-chip">기운 {saju.toneWord}</span>
-            </div>
+            <p className="today-hook__saju">
+              내 띠와 {saju.relationKo}({saju.relationGloss}) · 기운 {saju.toneWord}
+            </p>
             <p className="today-hook__hint">{saju.headline}</p>
           </>
         ) : (
@@ -274,18 +271,16 @@ export function HomeScreen({
             </>
           ) : (
             <button type="button" className="week-lock" onClick={onUnlockWeek}>
-              <span className="week-lock__peek" aria-hidden>
-                {['월', '화', '수', '목', '금', '토', '일'].map((w) => (
-                  <i key={w}>{w}</i>
-                ))}
+              <span className="week-lock__icon" aria-hidden><Icon name="calendar" size={22} /></span>
+              <span className="week-lock__text">
+                <span className="week-lock__title">앞으로 7일, 언제가 좋은 날일까요?</span>
+                <span className="week-lock__desc">
+                  {streak >= 3
+                    ? `${streak}일 연속 달성, 이번 주 캘린더가 무료로 열려요`
+                    : `${3 - streak}일만 더 연속 뽑으면 무료로 열려요 · 지금 보려면 광고`}
+                </span>
               </span>
-              <span className="week-lock__title">앞으로 7일, 언제가 좋은 날일까요?</span>
-              <span className="week-lock__desc">
-                {streak >= 3
-                  ? `${streak}일 연속 달성! 이번 주 캘린더가 무료로 열려요 `
-                  : `${3 - streak}일만 더 연속 뽑으면 무료로 열려요 · 지금 보려면 광고 `}
-              </span>
-              <span className="week-lock__cta">{streak >= 3 ?'무료로 열기' : '이번 주 미리보기'}</span>
+              <span className="week-lock__cta">{streak >= 3 ? '무료로 열기' : '미리보기'}</span>
             </button>
           )}
           </div>
