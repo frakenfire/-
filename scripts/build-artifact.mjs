@@ -4,7 +4,14 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const DIST = 'dist';
-const OUT = process.argv[2] ?? 'artifact.html';
+// 출력 경로는 반드시 받는다. 기본값(artifact.html) 을 두었더니 실제로
+// 세 회차 동안 프로젝트 루트에 쓰고 있었고, 게시한 파일은 옛날 것 그대로였다.
+// 조용히 틀린 곳에 쓰느니 멈추는 편이 낫다.
+const OUT = process.argv[2];
+if (!OUT) {
+  console.error('❌ 출력 경로를 주세요:  node scripts/build-artifact.mjs <경로.html>');
+  process.exit(1);
+}
 
 let html = readFileSync(join(DIST, 'index.html'), 'utf8');
 const assets = join(DIST, 'assets');
