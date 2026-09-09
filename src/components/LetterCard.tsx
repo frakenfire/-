@@ -17,7 +17,7 @@ export function LetterCard({
     <div className={`letter letter--${rarity.tier}`}>
       <div className="letter__head">
         <Mascot size={44} score={score} />
-        <span className="letter__from">쪽지 요정이 당신에게</span>
+        <span className="letter__from">쪽지 요정의 편지</span>
         <span className={`rarity-badge rarity-badge--${rarity.tier}`}>
           {rarity.label}
           {rarity.pct ? <b> · {rarity.pct}</b> : null}

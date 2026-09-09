@@ -62,7 +62,7 @@ function buildPersona(zodiac?: ZodiacId | null, star?: StarSignId | null): strin
   if (z) parts.push(`${ZODIAC_TRAIT[zodiac as ZodiacId]} ${z.label}`);
   if (s) parts.push(`${STAR_TRAIT[star as StarSignId]} ${s.label}`);
   if (parts.length === 0) return undefined;
-  return `${parts.join(' × ')}인 당신에게`;
+  return `${parts.join(' × ')}에게`;
 }
 
 export function generateFortune(input: FortuneInput): FortuneResult {

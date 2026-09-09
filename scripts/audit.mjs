@@ -611,11 +611,11 @@ async function run(browser) {
 
     await page.getByText('요정이 쓴 편지도 읽기', { exact: false }).first().click();
     await wait(page, 900);
-    check((await bodyText(page)).includes('당신의 쪽지 요정 드림'), '[결과] 요정 편지 열림');
+    check((await bodyText(page)).includes('쪽지 요정 드림'), '[결과] 요정 편지 열림');
     await diagnose(page, '결과(편지)');
     await page.getByText('요정의 편지 접기', { exact: false }).first().click();
     await wait(page, 700);
-    check(!(await bodyText(page)).includes('당신의 쪽지 요정 드림'), '[결과] 요정 편지 접힘');
+    check(!(await bodyText(page)).includes('쪽지 요정 드림'), '[결과] 요정 편지 접힘');
 
     for (const [label, expect] of [['카드 저장하고 스토리에 올리기', '저장'], ['이 쪽지, 친구한테 보내주기', '복사']]) {
       await page.getByText(label, { exact: false }).first().click();

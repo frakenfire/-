@@ -187,7 +187,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
   ],
   love: [
     {
-      pinpoint: '상대 답장 속도에 은근 신경 쓰고 있죠? 그건 당신이 그만큼 마음 쓰고 있다는 뜻이에요.',
+      pinpoint: '상대 답장 속도에 은근 신경 쓰고 있죠? 그건 그만큼 마음 쓰고 있다는 뜻이에요.',
       summary: [
         '상대의 마음을 너무 빨리 단정하지 않는 게 좋아요.',
         '무거운 대화보다 가벼운 말 한마디가 분위기를 바꿔요.',

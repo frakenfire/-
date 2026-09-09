@@ -21,7 +21,7 @@ const TYPE_STEP: Record<FortuneType, string> = {
   luck: '행운 세트를 예쁘게 담는 중',
 };
 
-const LAST_STEP = '거의 다 됐어요, 두근두근!';
+const LAST_STEP = '거의 다 됐어요';
 const SPECIAL_STEP = '앗, 이건 조금 특별한 쪽지예요';
 
 type Props = {

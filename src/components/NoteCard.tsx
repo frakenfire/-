@@ -38,7 +38,7 @@ export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, on
         {opening || faceDown ? null : <Icon name={note.icon} size={26} />}
       </span>
       <span className="note__hint">
-        {opening ? '두근두근' : faceDown ? (teaser ?? '쪽지') : note.name}
+        {opening ? '여는 중' : faceDown ? (teaser ?? '쪽지') : note.name}
       </span>
     </button>
   );

@@ -146,7 +146,7 @@ export function HomeScreen({
         {zodiac && saju ? (
           <>
             <p className="today-hook__persona">
-              {ZODIAC_TRAIT[zodiac.id]} {zodiac.label}인 당신,
+              {ZODIAC_TRAIT[zodiac.id]} {zodiac.label}라면,
             </p>
             <p className="today-hook__line">{saju.title}</p>
             <p className="today-hook__saju">

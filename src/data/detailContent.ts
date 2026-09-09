@@ -36,7 +36,7 @@ export const CATEGORY_INTERP: Record<string, Record<Band, string>> = {
   health: {
     high: '컨디션이 좋은 날이에요. 이 기운으로 미뤄둔 운동 하나 어때요?',
     mid: '무난한 건강운이에요. 물과 스트레칭만 챙겨도 하루가 가벼워요.',
-    low: '몸이 신호를 보내요. 오늘은 무리 말고 일찍 쉬는 게 최고예요.',
+    low: '몸이 신호를 보내요. 오늘은 무리 말고 일찍 쉬는 게 제일 나아요.',
   },
 };
 
