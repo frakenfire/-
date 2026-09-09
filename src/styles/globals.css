@@ -1407,7 +1407,6 @@ strong {
 .match {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--space-3);
 }
 .match__cell {
   display: flex;
@@ -1415,17 +1414,17 @@ strong {
   align-items: center;
   text-align: center;
   gap: 4px;
-  padding: var(--space-4) var(--space-3);
-  border-radius: var(--radius-md);
-  background: var(--gray-50);
+  padding: var(--space-3) var(--space-3);
+}
+.match__cell + .match__cell {
+  border-left: 1px solid var(--gray-100);
 }
 .match__cell--good {
-
-  background: var(--gray-50);}
+}
 .match__badge {
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 700;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
   color: var(--brand-strong);
 }
 .match__badge--bad {
@@ -1824,27 +1823,20 @@ strong {
   margin: 0 2px;
 }
 .compat-ohaeng__flow {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  border-radius: 999px;
-  padding: 4px 12px;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
 }
 /* 상생을 초록, 상극을 빨강으로 칠하면 이 앱에 없는 색이 둘 는다.
    좋음은 파랑, 부딪힘은 주황 — 다른 화면의 기운 표시와 같은 규칙. */
 .compat-ohaeng__flow--generate {
-  color: var(--white);
-  background: var(--brand-strong);
+  color: var(--brand-strong);
 }
 .compat-ohaeng__flow--same {
-  color: #1b64da;
-  background: #e8f3ff;
+  color: var(--brand-strong);
 }
 .compat-ohaeng__flow--control {
-  /* 주황 글자는 주황 틴트 위에서 3.4:1 로 AA 미달이다(TDS 주황은 900 이 최대).
-     뜻은 배경 틴트가, 대비는 진한 회색 글자가 나른다. */
   color: var(--gray-800);
-  background: #fff3e0;
 }
 .compat-result__lines {
   display: flex;
@@ -2012,12 +2004,8 @@ strong {
 }
 /* ── 쪽지 요정의 편지 (토스식 위계) ── */
 .letter {
-  background: var(--white);
-  border: 1px solid var(--gray-100);
-  border-radius: var(--radius-xl);
-  padding: var(--space-6) var(--space-5) var(--space-5);
-  margin-bottom: var(--space-6);
-  box-shadow: var(--shadow-card);
+  padding: var(--space-4) 0 var(--space-2);
+  margin-bottom: var(--space-4);
 }
 .letter__head {
   display: flex;
@@ -2029,14 +2017,14 @@ strong {
   font-size: 13px;
   line-height: 19.5px;
   font-weight: 600;
-  color: var(--gray-600);
+  color: var(--gray-700); /* 연회색 면 위 AA */
 }
 /* 인사+공감: 작게, 조용하게 */
 .letter__intro {
   margin: 0 0 var(--space-4);
   font-size: 14px;
   line-height: 21px;
-  color: var(--gray-600);
+  color: var(--gray-700);
   word-break: keep-all;
   white-space: pre-line;
 }
@@ -2120,15 +2108,11 @@ strong {
 }
 /* ── 등급별 편지지 ── */
 .letter--rare {
-  border-color: #c9e2ff;
-  box-shadow: 0 2px 12px rgba(49, 130, 246, 0.12);
 }
 .letter--rare .letter__from {
   color: #1b64da; /* TDS adaptiveBlue700 — 4.61:1 */
 }
 .letter--epic {
-  border-color: #edccf8;
-  box-shadow: 0 2px 14px rgba(123, 63, 212, 0.14);
 }
 .letter--epic .letter__from {
   color: #8222a2;
@@ -2137,10 +2121,6 @@ strong {
   background: linear-gradient(transparent 62%, #f9f0fc 62%);
 }
 .letter--legendary {
-  border: 2px solid #ffd158;
-  box-shadow: 0 8px 28px rgba(197, 152, 32, 0.22);
-  position: relative;
-  overflow: hidden;
 }
 /* 예전엔 여기에 흰 빛이 카드를 가로지르는 스윕 애니메이션이 있었다.
    토스 어디에도 없는 처리이고, 가만히 있어야 할 화면에서 계속 움직였다. */
@@ -2869,31 +2849,24 @@ strong {
 }
 .iljin__tone {
   flex: none;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  border-radius: 999px;
-  padding: 6px 13px;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
 }
 /* 네 단계를 색상(초록/파랑/회색/빨강)으로 가르면 화면에 없던 색이 두 개 는다.
    이 앱에서 '좋다'는 파랑이다 — 진하기로 단계를 만들고, 주의만 주황으로 뺀다. */
 .iljin__tone--great {
-  color: var(--white);
-  background: var(--brand-strong);
+  color: var(--brand-strong);
+  font-weight: 700;
 }
 .iljin__tone--good {
   color: var(--brand-strong);
-  background: var(--brand-soft);
 }
 .iljin__tone--steady {
-  color: var(--gray-700);
-  background: var(--gray-100);
+  color: var(--gray-600);
 }
 .iljin__tone--caution {
-  /* 주황 글자는 주황 틴트 위에서 3.4:1 로 AA 미달이다(TDS 주황은 900 이 최대).
-     뜻은 배경 틴트가, 대비는 진한 회색 글자가 나른다. */
   color: var(--gray-800);
-  background: #fff3e0;
 }
 .iljin__line {
   margin: var(--space-4) 0 0;
@@ -2909,7 +2882,7 @@ strong {
   gap: 4px;
   margin-top: var(--space-3);
   padding-top: var(--space-3);
-  border-top: 1px solid #c9e2ff;
+  border-top: 1px solid var(--gray-100);
 }
 .iljin__boost-color {
   display: inline-flex;
@@ -3776,30 +3749,28 @@ strong {
 }
 /* ── 개인정보 안내 ── 받았으면 지우는 길도 같은 화면에 둔다 */
 .privacy-note {
-  margin-top: var(--space-4);
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--gray-50);
-  border: 1px solid var(--gray-200);
-  text-align: center;
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--gray-100);
+  text-align: left;
 }
 .privacy-note__body {
-  margin: 0 0 var(--space-3);
-  font-size: 12px;
+  margin: 0 0 var(--space-2);
+  font-size: 13px;
   font-weight: 500;
   color: var(--gray-700);
-  line-height: 18px;
+  line-height: 19.5px;
+  word-break: keep-all;
 }
 .privacy-note__del {
   min-height: 44px;
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: var(--white);
-  border: 1px solid var(--gray-300);
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
+  padding: 10px 0;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
   color: var(--gray-700);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 .privacy-note__confirm {
   display: flex;
