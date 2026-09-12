@@ -100,7 +100,7 @@ a:focus-visible {
   display: flex;
   flex-direction: column;
   /* TDS 스크린 마진 — 좌우 24px. 위는 네비가 이미 띄웠으니 8px 만. */
-  padding: var(--space-2) var(--space-6) var(--space-8);
+  padding: var(--space-2) var(--space-6) var(--space-6);
   overflow-y: auto;
 }
 /* 헤더는 상단에 고정하고, 선택 콘텐츠(그리드·카드)만 남은 공간을
@@ -175,7 +175,7 @@ a:focus-visible {
   font-size: 16px;
   line-height: 24px;
   color: var(--color-text-secondary);
-  margin: 0 0 var(--space-5);
+  margin: 0 0 12px;
   white-space: pre-line;
 }
 /* <b>·<strong> 의 브라우저 기본값은 bolder 다. 부모가 700 이면 계산값이 900 이 되어,
@@ -333,7 +333,7 @@ strong {
     box-shadow 0.14s ease;
 
   min-width: 0;
-  max-width: 110px;}
+  max-width: 124px;}
 .note::before {
   /* 접은 자국 */
   content: '';
@@ -565,15 +565,15 @@ strong {
    모양이다. 네이티브 앱은 그렇게 안 만든다 — 바탕이 흰색이고, 구획은 화면 끝까지
    닿는 회색 띠가 나눈다. 카드마다 테두리와 라운드를 두르는 대신 띠 하나로 가른다. */
 .sec {
-  margin-bottom: var(--space-6);
+  margin-bottom: 20px;
 }
 .sec + .sec::before,
 .sec--band::before {
   content: '';
   display: block;
-  height: 10px;
+  height: 8px;
   /* 좌우 화면 여백(24px)을 넘어 끝까지 닿게 */
-  margin: 0 calc(-1 * var(--space-6)) var(--space-6);
+  margin: 0 calc(-1 * var(--space-6)) 20px;
   background: var(--gray-100);
 }
 .sec__head {
@@ -3145,7 +3145,7 @@ strong {
   width: auto;
   align-self: stretch;
   min-height: 44px;
-  margin-bottom: var(--space-8);
+  margin-bottom: 16px;
   padding: var(--space-4);
   text-align: left;
   transition: transform 0.2s var(--ease-spring);
@@ -4340,7 +4340,7 @@ strong {
 /* ── 이름 입력: 토스 텍스트 필드 ── */
 .field {
   display: block;
-  margin-bottom: var(--space-6);
+  margin-bottom: 16px;
 }
 .field__k {
   display: block;
@@ -4430,7 +4430,7 @@ strong {
   font-size: 13px;
   line-height: 19.5px;
   font-weight: 500;
-  color: var(--gray-600);
+  color: var(--gray-700); /* 파스텔 면 위 AA */
 }
 .lucky4__v {
   font-size: 18px;
@@ -4457,4 +4457,73 @@ strong {
   min-height: 54px;
   font-size: 16px;
   line-height: 24px;
+}
+
+/* ── 생동감: 여백은 줄이고, 색은 늘리고, 들어올 때 살짝 움직인다 ── */
+.note-stage {
+  flex: 0 0 auto;
+  justify-content: flex-start;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 0 0;
+}
+.note-stage__hint {
+  margin: 0;
+  text-align: center;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+.note--tint0 { background: #e8f3ff; border-color: #c9e2ff; }
+.note--tint1 { background: #fff9e7; border-color: #ffefbf; }
+.note--tint2 { background: #ffeeee; border-color: #ffd4d6; }
+
+.compat-banner__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+}
+.compat-banner__icon--yellow { background: #fff9e7; color: #9c5d00; }
+.compat-banner__icon--pink { background: #ffeeee; color: #e45600; }
+.week-lock__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  justify-content: center;
+  color: var(--brand-strong);
+}
+.lucky4__tile--blue { background: #e8f3ff; border-color: #e8f3ff; }
+.lucky4__tile--yellow { background: #fff9e7; border-color: #fff9e7; }
+.lucky4__tile--yellow .lucky4__icon { color: #9c5d00; }
+.lucky4__tile--orange { background: #fff3e0; border-color: #fff3e0; }
+.lucky4__tile--orange .lucky4__icon { color: #e45600; }
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.app__body > * {
+  animation: rise-in 0.22s ease-out both;
+}
+.app__body > *:nth-child(2) { animation-delay: 40ms; }
+.app__body > *:nth-child(3) { animation-delay: 80ms; }
+.app__body > *:nth-child(4) { animation-delay: 120ms; }
+.app__body > *:nth-child(5) { animation-delay: 160ms; }
+.app__body > *:nth-child(n + 6) { animation-delay: 200ms; }
+@media (prefers-reduced-motion: reduce) {
+  .app__body > * { animation: none; }
+}
+
+/* 쪽지 화면: 마스코트 + 쪽지 석 장 + 한 줄을 남은 공간 가운데에 */
+.note-stage {
+  flex: 1 1 auto;
+  justify-content: center;
+  padding: 8px 0 24px;
+}
+.note-stage__mascot {
+  display: flex;
+  justify-content: center;
 }

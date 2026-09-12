@@ -269,7 +269,7 @@ export function HomeScreen({
             </>
           ) : (
             <button type="button" className="week-lock" onClick={onUnlockWeek}>
-              <span className="week-lock__icon" aria-hidden><Icon name="calendar" size={22} /></span>
+              <span className="week-lock__icon" aria-hidden><Icon name="calendar" size={20} /></span>
               <span className="week-lock__text">
                 <span className="week-lock__title">앞으로 7일, 언제가 좋은 날일까요?</span>
                 <span className="week-lock__desc">
@@ -400,7 +400,7 @@ export function HomeScreen({
         </div>
         <div className="rowlist">
       <button type="button" className="compat-banner" onClick={onStartMonth}>
-        <span className="compat-banner__icon" aria-hidden><Icon name="calendar" /></span>
+        <span className="compat-banner__icon compat-banner__icon--yellow" aria-hidden><Icon name="calendar" /></span>
         <span className="compat-banner__body">
           <span className="compat-banner__title">이번 달 내 운세는?</span>
           <span className="compat-banner__desc">1주차부터 4주차까지 흐름이 나와요</span>
@@ -408,7 +408,7 @@ export function HomeScreen({
         <span className="compat-banner__cta">보러가기 ›</span>
       </button>
       <button type="button" className="compat-banner" onClick={onCompat}>
-        <span className="compat-banner__icon" aria-hidden><Icon name="heart" /></span>
+        <span className="compat-banner__icon compat-banner__icon--pink" aria-hidden><Icon name="heart" /></span>
         <span className="compat-banner__body">
           <span className="compat-banner__title">오늘 우리 궁합, 몇 점일까?</span>
           <span className="compat-banner__desc">띠 또는 별자리만 고르면 바로 나와요</span>

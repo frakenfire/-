@@ -25,7 +25,7 @@ export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, on
       type="button"
       /* 접힌 쪽지는 셋 다 같은 종이여야 한다. 색이 다르면 뒤집기 전부터
          서로 다른 것이 보여서, 고르는 게 아니라 색을 고르는 일이 된다. */
-      className={`note ${faceDown ? 'note--paper note--facedown' : NOTE_COLOR_CLASS[note.color]} note--${state}`}
+      className={`note ${faceDown ? `note--paper note--facedown note--tint${index % 3}` : NOTE_COLOR_CLASS[note.color]} note--${state}`}
       style={
         {
           '--tilt': `${tilt}deg`,

@@ -234,19 +234,19 @@ export function ResultScreen({
                 <strong className="lucky4__v">{luck.color.name}</strong>
                 <span className="lucky4__why">{luck.time}에 곁에 두면 좋아요</span>
               </div>
-              <div className="lucky4__tile">
+              <div className="lucky4__tile lucky4__tile--blue">
                 <span className="lucky4__icon" aria-hidden><Icon name="headphone" size={26} /></span>
                 <span className="lucky4__k">노래</span>
                 <strong className="lucky4__v">{song.title}</strong>
                 <span className="lucky4__why">{song.artist} · {song.why}</span>
               </div>
-              <div className="lucky4__tile">
+              <div className="lucky4__tile lucky4__tile--yellow">
                 <span className="lucky4__icon" aria-hidden><Icon name="target" size={26} /></span>
                 <span className="lucky4__k">행동</span>
                 <strong className="lucky4__v">{result.luckyPoint.split(' · ')[2] ?? result.luckyPoint}</strong>
                 <span className="lucky4__why">{luck.direction}으로 가면 더 좋아요</span>
               </div>
-              <div className="lucky4__tile">
+              <div className="lucky4__tile lucky4__tile--orange">
                 <span className="lucky4__icon" aria-hidden><Icon name="bowl" size={26} /></span>
                 <span className="lucky4__k">음식</span>
                 <strong className="lucky4__v">{luck.food.name}</strong>
