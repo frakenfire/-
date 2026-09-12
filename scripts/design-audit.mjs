@@ -210,16 +210,18 @@ async function run() {
   await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);
   await grab('홈(사주 전)');
 
-  await page.getByText('생년월일 입력하기', { exact: false }).first().click(); await w(700);
+  await page.getByText('오늘 쪽지 열어보기').first().click(); await w(700);
   await grab('생년월일');
   await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click(); await w(300);
-  await page.getByText('내 사주 보기', { exact: false }).first().click(); await w(900);
+  await page.getByText('이 사주로 쪽지 열기', { exact: false }).first().click(); await w(900);
+  await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);
+  await page.locator('.saju-entry--done').first().click(); await w(900);
   await grab('내 사주');
 
   await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);
   await grab('홈(사주 후)');
 
-  await page.getByText('쪽지 뽑기 시작하기').first().click(); await w(900);
+  await page.getByText('오늘 쪽지 열어보기').first().click(); await w(900);
   await grab('쪽지 고르기');
 
   await page.locator('[class*="note"]').first().click();

@@ -107,7 +107,7 @@ async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topi
   await wait(page, 400);
   if (zodiac) await setZodiac(page, zodiac);
   // 흐름: (생년월일) → 주제 → 기분 → 쪽지. 생년월일은 건너뛸 수 있다.
-  await page.getByText('쪽지 뽑기 시작하기').first().click();
+  await page.getByText('오늘 쪽지 열어보기').first().click();
   await wait(page, 600);
   // 흐름은 네 장: 홈 → 이름·생년월일(없이 보기 가능) → 쪽지 → 결과. 주제·기분은 묻지 않는다.
   if (await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).count()) {
@@ -247,7 +247,7 @@ async function run(browser) {
     const t = await bodyText(page);
     check(/오늘은 \S+일/.test(t), '[홈] 일진 카드 노출');
     check(t.includes('오늘의 띠 서열'), '[홈] 띠 서열 노출');
-    check(t.includes('쪽지 뽑기 시작하기'), '[홈] 시작 CTA 노출');
+    check(t.includes('오늘 쪽지 열어보기'), '[홈] 시작 CTA 노출');
     // 앱인토스 반려 사유: 진입 직후 바텀시트/모달이 자동으로 뜨면 안 된다
     const modalCount = await page.locator('[role="dialog"], [class*="bottom-sheet"], [class*="bottomsheet"], dialog[open]').count();
     check(modalCount === 0, '[홈] 진입 즉시 모달/바텀시트 없음 (토스 정책)', `${modalCount}개 발견`);
@@ -258,7 +258,7 @@ async function run(browser) {
   // 2. 홈의 모든 컨트롤이 어딘가로 간다
   {
     const TARGETS = [
-      ['시작하기', '쪽지 뽑기 시작하기', '언제 태어났어요'],
+      ['시작하기', '오늘 쪽지 열어보기', '언제 태어났어요'],
       ['띠 서열 공유', '단톡방에 던지기', '오늘의 띠 서열'],
       ['4위부터 보기', '4위부터 꼴찌까지 보기', '오늘의 띠 서열'],
       ['궁합 배너', '오늘 우리 궁합', '친구 궁합'],
@@ -343,11 +343,11 @@ async function run(browser) {
       // 진입점은 '무엇을 넣는지' 만 말하면 된다. 왜 필요한지를 설득하는 문장은
       // 넣지 않는다 — 누르기 전에 읽어야 할 글이 늘어날 뿐이다.
       const home = await bodyText(page);
-      check(home.includes('생년월일 입력하기'), '[사주] 홈에 진입점 노출');
-      check(home.includes('태어난 날짜와 시각'), '[사주] 무엇을 넣는지가 홈에서 바로 보임');
+      check(!home.includes('생년월일 입력하기'), '[사주] 홈에 뽑기와 같은 곳으로 가는 행이 없음');
       check(!/모두에게 같은 쪽지|쪽지가 달라져요/.test(home), '[사주] 설득 문구 없음');
 
-      await page.getByText('생년월일 입력하기', { exact: false }).first().click();
+      // 생년월일은 뽑기 흐름의 첫 장에서 받는다
+      await page.getByText('오늘 쪽지 열어보기').first().click();
       await wait(page, 800);
       check((await bodyText(page)).includes('언제 태어났어요'), '[사주입력] 화면 진입');
       // 개인정보를 받는 화면이므로 어디에 저장되는지 먼저 말해야 한다
@@ -379,7 +379,12 @@ async function run(browser) {
       await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
       await wait(page, 400);
 
-      await page.getByText('내 사주 보기', { exact: false }).first().click();
+      await page.getByText('이 사주로 쪽지 열기', { exact: false }).first().click();
+      await wait(page, 900);
+      // 저장됐으면 홈의 '내 사주' 행으로 사주 화면에 들어간다
+      await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+      await wait(page, 600);
+      await page.locator('.saju-entry--done').first().click();
       await wait(page, 1200);
 
       const saju = await bodyText(page);
@@ -430,10 +435,10 @@ async function run(browser) {
       // 기분 화면에서도 띠·별자리를 다시 묻지 않아야 한다 — 같은 목적의 입력이 세 갈래면 컨셉이 흐려진다
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
-      await page.getByText('쪽지 뽑기 시작하기').first().click();
+      await page.getByText('오늘 쪽지 열어보기').first().click();
       await wait(page, 600);
       const pickText = await bodyText(page);
-      check(pickText.includes('하나만 골라볼까요'), '[흐름] 사주가 있으면 바로 쪽지 고르기');
+      check(pickText.includes('어떤 걸 열어볼까요'), '[흐름] 사주가 있으면 바로 쪽지 고르기');
       check((await page.locator('.pick-basis').count()) === 1, '[흐름] 무엇을 근거로 뽑는지 한 줄로 보임');
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
@@ -455,7 +460,7 @@ async function run(browser) {
       // 여기가 안 바뀌면 사주 화면만 따로 놀고, 매일 보는 결과는 여전히 띠 12분의 1이다.
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
-      await page.getByText('쪽지 뽑기 시작하기').first().click();
+      await page.getByText('오늘 쪽지 열어보기').first().click();
       await wait(page, 600);
       // 생년월일을 받아놓고 정작 뽑는 쪽지에 안 쓰면 "그래서 뭐가 달라졌지" 가 된다
       check((await page.locator('.pick-basis').count()) === 1,
@@ -494,8 +499,8 @@ async function run(browser) {
       await wait(page, 900);
       check((await page.locator('.saju-entry--done').count()) === 0,
         '[사주] 삭제 후 홈 배지가 사라짐');
-      check((await bodyText(page)).includes('생년월일 입력하기'),
-        '[사주] 삭제 후 다시 만들기로 되돌아감');
+      check(/열어보기/.test(await bodyText(page)),
+        '[사주] 삭제 후 홈으로 되돌아감');
       const gone = await page.evaluate(() => window.localStorage.getItem('tomorrowNoteBirth'));
       check(gone === null, '[사주] 삭제 후 저장소에 생년월일이 남지 않음', String(gone));
     } catch (e) {
@@ -582,7 +587,7 @@ async function run(browser) {
     await page.getByText('다른 쪽지도 뽑아볼래요', { exact: false }).first().click();
     await wait(page, 2600);
     const r = await bodyText(page);
-    check(r.includes('끌리는 쪽지') || r.includes('지금 기분은'), '[재뽑기] 다시 뽑기 화면');
+    check(r.includes('어떤 걸 열어볼까요'), '[재뽑기] 다시 뽑기 화면');
     await page.context().close();
   }
 
@@ -715,8 +720,8 @@ async function run(browser) {
   // 13. 화면별 뒤로가기
   {
     const BACKS = [
-      ['생년월일', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('쪽지 뽑기 시작하기').first().click(); }, '오늘의 띠 서열'],
-      ['쪽지 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('쪽지 뽑기 시작하기').first().click(); await wait(p, 500); await p.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click(); }, '오늘의 띠 서열'],
+      ['생년월일', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); }, '오늘의 띠 서열'],
+      ['쪽지 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); await wait(p, 500); await p.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click(); }, '오늘의 띠 서열'],
       ['결과', async (p) => { await drawTo(p); }, '오늘의 띠 서열'],
       ['궁합', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 우리 궁합', { exact: false }).first().click(); }, '오늘의 띠 서열'],
     ];

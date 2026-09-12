@@ -164,7 +164,7 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
         className="btn btn--primary"
         onClick={() => input && onSave(name.trim() ? { date: dateStr, time: timeStr, name: name.trim() } : { date: dateStr, time: timeStr })}
       >
-        {inFlow ? '이 사주로 쪽지 뽑기' : '내 사주 보기'}
+        {inFlow ? '이 사주로 쪽지 열기' : '내 사주 보기'}
       </button>
       {inFlow && onSkip ? (
         <button type="button" className="birth-unknown birth-skip" onClick={onSkip} aria-pressed={false}>

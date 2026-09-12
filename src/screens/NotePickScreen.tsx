@@ -48,7 +48,7 @@ export function NotePickScreen({
       {/* 생년월일을 받아놓고 쪽지 후보에 안 쓰면 "그래서 뭐가 달라졌지" 가 된다.
           반영됐다는 사실을 이 자리에서 밝힌다. */}
       {personal ? (
-        <p className="pick-basis">오늘 기운에 맞춰 <b>내 사주로 고른</b> 세 장이에요</p>
+        <p className="pick-basis">오늘 기운과 <b>내 사주</b>에 맞춰 골라뒀어요</p>
       ) : null}
 
       {/* 이 화면의 내용은 쪽지 석 장뿐이다. 위에 붙여두면 아래 절반이 비어
@@ -76,7 +76,7 @@ export function NotePickScreen({
           />
         ))}
       </div>
-      <p className="note-stage__hint">마음 가는 쪽지를 눌러요</p>
+      <p className="note-stage__hint">톡 눌러서 열어봐요</p>
       </div>
 
       {/* 제목이 이미 '하나만 골라볼까요' 라고 묻는다. 바닥에 같은 말을 한 번 더

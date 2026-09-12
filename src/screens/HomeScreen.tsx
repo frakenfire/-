@@ -174,7 +174,7 @@ export function HomeScreen({
           </div>
         ) : null}
         <button type="button" className="btn btn--primary today-hook__cta" onClick={onStart}>
-          {drawn ? '다른 기분으로 하나 더 뽑기' : '쪽지 뽑기 시작하기'}
+          {drawn ? '하나 더 열어보기' : '오늘 쪽지 열어보기'}
         </button>
       </div>
 
@@ -196,18 +196,7 @@ export function HomeScreen({
           </span>
           <span className="saju-entry__chev" aria-hidden>›</span>
         </button>
-      ) : (
-        <button type="button" className="saju-entry" onClick={onSaju}>
-          <span className="saju-entry__icon" aria-hidden>
-            <Mascot size={32} mood="calm" bare />
-          </span>
-          <span className="saju-entry__text">
-            <strong className="saju-entry__v">생년월일 입력하기</strong>
-            <span className="saju-entry__sub">태어난 날짜와 시각</span>
-          </span>
-          <span className="saju-entry__chev" aria-hidden>›</span>
-        </button>
-      )}
+      ) : null}
 
       {/* 오늘 나에게 — 사주 있는 사람이 홈에서 바로 보고 싶은 것: 오늘 돈·사랑·일 */}
       {sajuBadge ? (

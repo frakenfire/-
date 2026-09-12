@@ -70,7 +70,8 @@ export function Mascot({ size = 120, mood = 'happy', score, bare = false, accent
       <circle cx="76" cy="126" r="7" fill="#ffc7b0" opacity={m === 'tired' || m === 'lonely' ? 0.45 : 0.9} />
       <circle cx="124" cy="126" r="7" fill="#ffc7b0" opacity={m === 'tired' || m === 'lonely' ? 0.45 : 0.9} />
 
-      {/* 눈 */}
+      {/* 눈 — 가끔 깜빡인다 */}
+      <g className="mascot__eyes">
       {m === 'grin' ? (
         <>
           <path d="M69 120 q7 -9 14 0" stroke={INK} strokeWidth="5" strokeLinecap="round" fill="none" />
@@ -110,6 +111,7 @@ export function Mascot({ size = 120, mood = 'happy', score, bare = false, accent
           <circle cx="126" cy="116" r="1.6" fill="#fff" />
         </>
       )}
+      </g>
 
       {/* 입 */}
       {m === 'grin' ? (
