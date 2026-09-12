@@ -4561,3 +4561,34 @@ strong {
   .mascot__eyes { animation: none; }
   .today-hook__art svg, .note-stage__mascot svg, .score-hero__mascot svg { animation: none; }
 }
+
+/* 움직임을 눈에 보이게: 4px 는 안 보였다. 숨 쉬듯 8px + 살짝 기울기, 깜빡임은 3초마다 */
+@keyframes mascot-bob {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+  35% { transform: translateY(-8px) rotate(-2deg) scale(1.03); }
+  70% { transform: translateY(-2px) rotate(2deg) scale(1.01); }
+}
+.today-hook__art svg,
+.note-stage__mascot svg,
+.score-hero__mascot svg,
+.dm-hero__icon svg,
+.compat-result__mascot svg,
+.report-hero__mascot svg {
+  animation: mascot-bob 2.6s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+@keyframes mascot-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.1); }
+}
+.mascot__eyes {
+  animation: mascot-blink 3.2s ease-in-out infinite;
+}
+@keyframes note-float {
+  0%, 100% { transform: translateY(0) rotate(var(--tilt, 0deg)); }
+  50% { transform: translateY(-9px) rotate(calc(var(--tilt, 0deg) + 1.5deg)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .today-hook__art svg, .note-stage__mascot svg, .score-hero__mascot svg,
+  .dm-hero__icon svg, .compat-result__mascot svg, .report-hero__mascot svg { animation: none; }
+}

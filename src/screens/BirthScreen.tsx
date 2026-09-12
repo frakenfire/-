@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { WheelPicker, type WheelItem } from '../components/WheelPicker.tsx';
-import { computeFourPillars, boundaryNotice } from '../lib/fourPillars.ts';
+import { boundaryNotice } from '../lib/fourPillars.ts';
 import { parseBirth } from '../lib/birth.ts';
 import type { StoredBirth } from '../lib/storage.ts';
 
@@ -73,7 +73,6 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
   const timeStr = unknownTime ? null : `${pad(hour24)}:${pad(minute)}`;
   const input = useMemo(() => parseBirth(dateStr, timeStr), [dateStr, timeStr]);
 
-  const preview = useMemo(() => (input ? computeFourPillars(input) : null), [input]);
   const notice = useMemo(() => (input ? boundaryNotice(input) : null), [input]);
 
   return (
@@ -153,11 +152,6 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
 
       {notice ? <p className="birth-warn">{notice}</p> : null}
 
-      {preview?.zodiacDiffersFromCalendarYear ? (
-        <p className="birth-warn birth-warn--info">
-          2월 4일보다 먼저 태어나서, 사주에서는 <b>앞 해의 띠</b>로 봐요. 달력 띠와 달라도 맞아요.
-        </p>
-      ) : null}
 
       <button
         type="button"

@@ -368,7 +368,6 @@ async function run(browser) {
       await pickBirth(page, { year: 2024, month: 2, day: 4, ampm: '오전', hour: 10, minute: '00' });
       const peek = await bodyText(page);
       check(/2024년 2월 4일/.test(peek), '[사주입력] 고른 날짜가 요약 줄에 바로 반영');
-      check(peek.includes('앞 해의 띠'), '[사주입력] 입춘 경계 안내가 뜬다');
 
       // 시각 모름 경로도 살아 있어야 한다 (모르는 사람이 많다)
       await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
