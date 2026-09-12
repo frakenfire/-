@@ -385,7 +385,7 @@ export function CompatScreen({
                   {result.elements.bEmoji} {result.elements.bKo}
                 </span>
                 <span className={`compat-ohaeng__flow compat-ohaeng__flow--${result.elements.flow}`}>
-                  {result.elements.flowKo} · {result.elements.flowGloss}
+                  {result.elements.flowKo}
                 </span>
               </div>
             ) : null}
