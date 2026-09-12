@@ -3360,27 +3360,33 @@ strong {
 }
  /* 일간 히어로만은 자기 오행 색을 쓴다 — 이 화면의 주인공이라서.
    상자는 두르지 않는다. */
-.dm-hero__icon {
+.dm-hero__row {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 10px;
+}
+.dm-hero__icon {
+  flex: none;
+  display: flex;
+  align-items: center;
   color: var(--dm-hue-text);
 }
 .dm-hero__name {
   margin: 0;
-  font-size: 25px;
-  line-height: 34px;
+  font-size: 24px;
+  line-height: 33px;
   font-weight: 700;
+  letter-spacing: -0.02em;
   color: var(--gray-900);
 }
  /* 한자는 글자다 — 장식용 밝은 값(--dm-hue)을 쓰면 흰 배경에서 AA 를 못 넘는다 */
 
 .dm-hero__tag {
-  margin: 0;
+  margin: 2px 0 0;
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 600;
-  color: var(--gray-800);
+  font-weight: 500;
+  color: var(--gray-600);
 }
 .dm-hero__nature {
   margin: var(--space-3) 0 0;
@@ -3618,33 +3624,6 @@ strong {
   font-weight: 600;
   color: var(--gray-700);
   line-height: 19.5px;
-}
-.god-chips {
-  display: flex;
-  flex-wrap: wrap;
-  margin: var(--space-3) 0 0;
-  padding: 0;
-  list-style: none;
-}
-.god-chips > li + li::before {
-  content: '·';
-  margin: 0 6px;
-  color: var(--gray-400);
-}
-.god-chip {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 4px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  color: var(--gray-800);
-}
-.god-chip__pos {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-600);
 }
 .useful-card {
 
@@ -3951,13 +3930,6 @@ strong {
   line-height: 18px;
 }
 /* 일간의 한글 표기 — 이름 아래 작게 */
-.dm-hero__kor {
-  margin: 2px 0 0;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-700);
-}
 /* ── 돌려서 고르는 피커 ──
    네이티브 date/time 입력은 로케일을 따라가 '03/15/1994' 로 뜨고, 고른 값이
    앱으로 안 넘어오는 경우가 있다. 직접 굴리고 눌러서 고르게 만든다. */

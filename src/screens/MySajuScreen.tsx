@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Icon } from '../components/Icon.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { computeFourPillars, type BirthInput } from '../lib/fourPillars.ts';
-import { analyzeSaju, balanceShape, TEN_GOD_KO } from '../lib/tenGods.ts';
+import { analyzeSaju, balanceShape } from '../lib/tenGods.ts';
 import { DAY_MASTER_BY_INDEX } from '../data/dayMaster.ts';
 import {
   GROUP_READING,
@@ -57,7 +57,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
   function share() {
     onShare(
       [
-        `내 일간은 ${dm.name}(${dm.kor})`,
+        `나는 ${dm.name}`,
         `"${dm.tagline}"`,
         ``,
         `사주 ${pillars.year.kor} ${pillars.month.kor} ${pillars.day.kor}${pillars.hour ? ` ${pillars.hour.kor}` : ''}`,
@@ -72,13 +72,12 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
     <AppLayout onBack={onBack}>
       {/* 1. 나는 누구인가 — 여기서 "이게 나야"가 안 오면 나머지는 안 읽힌다 */}
       <div className="dm-hero" style={{ ['--dm-hue' as string]: dm.hue, ['--dm-hue-text' as string]: dm.hueText }}>
-        <span className="dm-hero__icon" aria-hidden>
-          <Icon name={dm.icon} size={40} />
-        </span>
-        <h2 className="dm-hero__name">
-          {dm.name}
-        </h2>
-        <p className="dm-hero__kor">{dm.kor}</p>
+        <div className="dm-hero__row">
+          <span className="dm-hero__icon" aria-hidden>
+            <Icon name={dm.icon} size={28} />
+          </span>
+          <h2 className="dm-hero__name">{dm.name}</h2>
+        </div>
         <p className="dm-hero__tag">{dm.tagline}</p>
         <p className="dm-hero__nature">{dm.nature}</p>
         <ul className="dm-chips">
@@ -207,14 +206,6 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
           {group.title}
         </p>
         <p className="reading-card__body">{group.body}</p>
-        <ul className="god-chips">
-          {profile.gods.map((g) => (
-            <li key={g.position} className="god-chip">
-              <span className="god-chip__pos">{g.position}</span>
-              {TEN_GOD_KO[g.god]}
-            </li>
-          ))}
-        </ul>
       </div>
 
       <div className="useful-card">
