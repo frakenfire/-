@@ -414,7 +414,7 @@ export function ResultScreen({
               {tomorrowBetter
                 ? `내일은 오늘보다 기운이 좋아요 (${tomorrowSaju.relationKo}). 내일 쪽지 잊지 마요!`
                 : result.daily
-                  ? `내일 기운은 ${tomorrowSaju.toneWord} 내일 쪽지로 확인해요`
+                  ? `내일 기운은 ${tomorrowSaju.toneWord}. 내일 쪽지로 확인해요`
                   : `내일은 내 띠와 ${tomorrowSaju.relationKo}(${tomorrowSaju.relationGloss}). 내일 쪽지로 확인해요`}
             </span>
           </span>
