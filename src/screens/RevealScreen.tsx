@@ -14,9 +14,9 @@ const COMMON_STEPS = [
 const TYPE_STEP: Record<FortuneType, string> = {
   tomorrow: '오늘의 나를 살펴보는 중',
   month: '이번 달을 쭉 펼쳐보는 중',
-  love: '연애운을 살짝 들여다보는 중',
-  money: '금전운을 살짝 들여다보는 중',
-  work: '직장운을 차곡차곡 살피는 중',
+  love: '사랑운을 살짝 들여다보는 중',
+  money: '돈운을 살짝 들여다보는 중',
+  work: '일운을 차곡차곡 살피는 중',
   caution: '조심할 순간을 콕 짚어보는 중',
   luck: '행운 세트를 예쁘게 담는 중',
 };

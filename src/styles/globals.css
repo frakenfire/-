@@ -384,7 +384,7 @@ strong {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 30px;
+  height: 44px;
   color: var(--gray-800);
 }
 .note__hint {
@@ -1217,6 +1217,10 @@ strong {
 
   padding: var(--space-2) 0 var(--space-5);
   border-bottom: 1px solid var(--gray-100);}
+.report-hero__mascot {
+  display: block;
+  margin-bottom: 4px;
+}
 .report-hero__title {
   margin: 8px 0 6px;
   font-size: 21px;
@@ -1623,9 +1627,6 @@ strong {
   justify-content: center;
   width: 44px;
   height: 44px;
-  border-radius: 50%;
-  background: var(--gray-200);
-  color: var(--gray-600);
 }
 .compat-pick__emoji {
   display: flex;
@@ -1702,6 +1703,16 @@ strong {
   line-height: 19.5px;
   font-weight: 700;
   color: var(--gray-700);
+}
+.compat-result__scorerow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+.compat-result__mascot {
+  display: flex;
+  align-items: center;
 }
 .compat-result__score {
   /* TDS 크기 표는 42 에서 끝난다. 56 은 그 밖의 값이라 눈대중으로 만든 티가 난다. */
@@ -2187,7 +2198,7 @@ strong {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
+  width: 44px;
   color: var(--gray-800);
 }
 .mood-btn__label {

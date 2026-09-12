@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { Icon } from '../components/Icon.tsx';
+import { Mascot } from '../components/Mascot.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { AdBadge } from '../components/AdNotice.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
@@ -278,7 +279,7 @@ export function CompatScreen({
         <button type="button" className={myLabel ? 'compat-pick' : 'compat-pick compat-pick--empty'} onClick={() => setPicking('my')}>
           <span className="compat-pick__k">나</span>
           <span className="compat-pick__emoji">
-            {myLabel ? <PickMark item={myLabel} size={44} /> : <span className="compat-pick__empty"><Icon name="person" size={22} /></span>}
+            {myLabel ? <PickMark item={myLabel} size={44} /> : <span className="compat-pick__empty"><Mascot size={36} mood="calm" bare /></span>}
           </span>
           <span className="compat-pick__label">{myLabel ? myLabel.label : `${modeLabel} 고르기`}</span>
         </button>
@@ -286,7 +287,7 @@ export function CompatScreen({
         <button type="button" className={friendLabel ? 'compat-pick' : 'compat-pick compat-pick--empty'} onClick={() => setPicking('friend')}>
           <span className="compat-pick__k">상대</span>
           <span className="compat-pick__emoji">
-            {friendLabel ? <PickMark item={friendLabel} size={44} /> : <span className="compat-pick__empty"><Icon name="person" size={22} /></span>}
+            {friendLabel ? <PickMark item={friendLabel} size={44} /> : <span className="compat-pick__empty"><Mascot size={36} mood="calm" bare /></span>}
           </span>
           <span className="compat-pick__label">{friendLabel ? friendLabel.label : `${modeLabel} 고르기`}</span>
         </button>
@@ -349,7 +350,10 @@ export function CompatScreen({
         <>
           <div className={`compat-result compat-result--${result.vibe}`}>
             <span className="compat-result__badge">{BAND_EMOJI[result.band]} 오늘의 {modeLabel} 궁합</span>
-            <div className="compat-result__score num">{result.score}<small>점</small></div>
+            <div className="compat-result__scorerow">
+              <div className="compat-result__score num">{result.score}<small>점</small></div>
+              <span className="compat-result__mascot" aria-hidden><Mascot size={52} score={result.score} bare /></span>
+            </div>
             <p className="compat-result__archetype">{result.archetype}</p>
             <p className="compat-result__head">{result.headline}</p>
 

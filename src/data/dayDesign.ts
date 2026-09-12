@@ -547,7 +547,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '설렘을 재기만 하다 놓치는 것',
       },
       {
-        headline: '연애운이 좋은 날엔 솔직함이 제일 잘 통해요.',
+        headline: '사랑운이 좋은 날엔 솔직함이 제일 잘 통해요.',
         vibe: '돌려 말하기보다 담백하게가 정답이에요.',
         steps: [
           { when: '아침', text: '하고 싶었던 말을 한 줄로 정리해봐요.' },
@@ -745,7 +745,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '계획 세우는 데만 힘을 쏟고 실행을 미루는 것',
       },
       {
-        headline: '재물운 좋은 날엔 흥정이 잘 먹혀요.',
+        headline: '돈운 좋은 날엔 흥정이 잘 먹혀요.',
         vibe: '가격 얘기를 꺼내기 좋은 타이밍이에요.',
         steps: [
           { when: '아침', text: '오늘 사야 할 것의 시세를 미리 확인해요.' },
@@ -766,7 +766,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
       },
       {
         headline: '들어온 복은 나눠야 더 크게 돌아와요.',
-        vibe: '작은 베풂이 재물운의 마중물이 돼요.',
+        vibe: '작은 베풂이 돈운의 마중물이 돼요.',
         steps: [
           { when: '아침', text: '커피 한 잔을 옆 사람에게 사봐요.' },
           { when: '낮', text: '안 쓰는 물건 하나를 나눔이나 중고로 내놔요.' },
@@ -807,7 +807,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '숫자를 확인하고 필요 이상으로 불안해하는 것',
       },
       {
-        headline: '큰 변화 없는 재물운, 지금 습관을 지키면 충분해요.',
+        headline: '큰 변화 없는 돈운, 지금 습관을 지키면 충분해요.',
         vibe: '평소 하던 관리만 유지해도 무난한 날이에요.',
         steps: [
           { when: '아침', text: '평소처럼 필요한 것만 계산해요.' },
@@ -827,7 +827,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '스트레스를 장바구니로 푸는 것',
       },
       {
-        headline: '무난한 재물운엔 습관 하나가 자산이 돼요.',
+        headline: '무난한 돈운엔 습관 하나가 자산이 돼요.',
         vibe: '자동으로 굴러가게 만들면 이겨요.',
         steps: [
           { when: '아침', text: '소액 자동이체 하나를 걸어둬요.' },
@@ -1015,7 +1015,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '완벽을 핑계로 공유를 미루는 것',
       },
       {
-        headline: '오늘은 무난하게 흘러가는 직장운이에요.',
+        headline: '오늘은 무난하게 흘러가는 일운이에요.',
         vibe: '큰 이벤트 없이 하던 대로만 해도 괜찮은 날이에요.',
         steps: [
           { when: '아침', text: '평소 루틴대로 하루를 시작해요.' },

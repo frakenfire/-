@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 import { Icon } from './Icon.tsx';
+import { Mascot } from './Mascot.tsx';
 import type { Note } from '../types/fortune.ts';
 import { NOTE_COLOR_CLASS } from '../data/notes.ts';
 
@@ -35,7 +36,13 @@ export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, on
       aria-label={faceDown ? '쪽지 뽑기' : `${note.name} 쪽지`}
     >
       <span className="note__seal" aria-hidden>
-        {opening || faceDown ? null : <Icon name={note.icon} size={26} />}
+        {opening ? (
+          <Mascot size={40} mood="grin" bare />
+        ) : faceDown ? (
+          <Mascot size={40} mood={(['happy', 'calm', 'happy'] as const)[index % 3]} bare />
+        ) : (
+          <Icon name={note.icon} size={26} />
+        )}
       </span>
       <span className="note__hint">
         {opening ? '여는 중' : faceDown ? (teaser ?? '쪽지') : note.name}

@@ -268,7 +268,7 @@ async function run(browser) {
     ];
     // 주제(알고 싶은 것)는 홈이 아니라 뽑기 1단계에 있다.
     // 홈 맨 아래 '보조' 목록으로 두면 같은 행동이 두 곳에 생기고 흐름이 흐려진다.
-    for (const topic of ['이번 달의 나', '연애운', '금전운', '직장운', '조심할 것', '행운 포인트']) {
+    for (const topic of ['이번 달의 나', '사랑운', '돈운', '일운', '조심할 것', '행운 포인트']) {
       const page = await newPage(browser);
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
@@ -566,8 +566,8 @@ async function run(browser) {
   // 3. 운세 7종 관통 + 월간 화면의 시간 단위
   {
     const TOPICS = [
-      [null, '오늘의 쪽지'], ['이번 달의 나', '이번 달의 나'], ['연애운', '연애운'],
-      ['금전운', '금전운'], ['직장운', '직장운'], ['조심할 것', '조심할 것'], ['행운 포인트', '행운 포인트'],
+      [null, '오늘의 쪽지'], ['이번 달의 나', '이번 달의 나'], ['사랑운', '사랑운'],
+      ['돈운', '돈운'], ['일운', '일운'], ['조심할 것', '조심할 것'], ['행운 포인트', '행운 포인트'],
     ];
     for (const [topic, expect] of TOPICS) {
       const page = await newPage(browser);

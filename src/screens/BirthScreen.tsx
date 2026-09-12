@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Icon } from '../components/Icon.tsx';
+import { Mascot } from '../components/Mascot.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { WheelPicker, type WheelItem } from '../components/WheelPicker.tsx';
 import { computeFourPillars, boundaryNotice } from '../lib/fourPillars.ts';
@@ -146,7 +146,7 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
           <span className="birth-peek__label">내 일간</span>
           <div className="birth-peek__row">
             <span className="birth-peek__icon" aria-hidden>
-              <Icon name={dm.icon} size={28} />
+              <Mascot size={34} accent={dm.hue} bare />
             </span>
             <div className="birth-peek__txt">
               <strong className="birth-peek__name">{dm.name}</strong>

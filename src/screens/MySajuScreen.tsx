@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { Icon } from '../components/Icon.tsx';
+import { Mascot } from '../components/Mascot.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { computeFourPillars, type BirthInput } from '../lib/fourPillars.ts';
 import { analyzeSaju, balanceShape } from '../lib/tenGods.ts';
@@ -74,7 +74,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
       <div className="dm-hero" style={{ ['--dm-hue' as string]: dm.hue, ['--dm-hue-text' as string]: dm.hueText }}>
         <div className="dm-hero__row">
           <span className="dm-hero__icon" aria-hidden>
-            <Icon name={dm.icon} size={28} />
+            <Mascot size={40} accent={dm.hue} bare />
           </span>
           <h2 className="dm-hero__name">{dm.name}</h2>
         </div>

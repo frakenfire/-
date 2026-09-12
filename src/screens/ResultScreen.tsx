@@ -1,3 +1,4 @@
+import { Mascot } from '../components/Mascot.tsx';
 import { softBreak } from '../lib/softBreak.ts';
 import { useEffect, useState } from 'react';
 import { Icon } from '../components/Icon.tsx';
@@ -127,7 +128,7 @@ export function ResultScreen({
           (실제로 그동안 쪽지 이름이 결과 어디에도 안 나왔다) */}
       <div className={`drawn drawn--${note.color}`}>
         <span className="drawn__icon" aria-hidden>
-          <Icon name={note.icon} size={26} />
+          <Mascot size={40} score={luck.total} bare />
         </span>
         <span className="drawn__text">
           <span className="drawn__k">내가 뽑은 쪽지</span>

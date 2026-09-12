@@ -1,7 +1,12 @@
 import { useState } from 'react';
-import { Icon } from '../components/Icon.tsx';
+import { Mascot, type MascotMood } from '../components/Mascot.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { MOODS } from '../data/letterFragments.ts';
+
+// 기분 다섯을 마스코트 표정으로. 얼굴 아이콘 대신 같은 캐릭터가 표정만 바꾼다.
+const MOOD_FACE: Record<string, MascotMood> = {
+  good: 'grin', soso: 'calm', tired: 'tired', anxious: 'anxious', lonely: 'lonely',
+};
 import { ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac.ts';
 import { STAR_SIGNS, type StarSign, type StarSignId } from '../data/starSign.ts';
 import type { Mood } from '../types/fortune.ts';
@@ -106,7 +111,7 @@ export function MoodScreen({
         {MOODS.map((m) => (
           <button key={m.key} type="button" className="mood-btn" onClick={() => onSelect(m.key)}>
             <span className="mood-btn__emoji" aria-hidden>
-              <Icon name={m.icon} size={26} />
+              <Mascot size={34} mood={MOOD_FACE[m.key]} bare />
             </span>
             <span className="mood-btn__label">{m.label}</span>
           </button>
