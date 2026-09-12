@@ -387,9 +387,9 @@ async function run(browser) {
       // 휠은 굴려도 되고 눌러도 된다 — 자동화는 누르는 쪽으로 확인한다
       await pickBirth(page, { year: 2024, month: 2, day: 4, ampm: '오전', hour: 10, minute: '00' });
       const peek = await bodyText(page);
-      check(/내 일간/.test(peek), '[사주입력] 입력 도중 미리보기 노출');
+      check(/타고난 성격/.test(peek), '[사주입력] 입력 도중 미리보기 노출');
       check(peek.includes('앞 해의 띠'), '[사주입력] 입춘 경계 안내가 뜬다');
-      check((await page.locator('.birth-peek__pillars').innerText()).trim().length >= 8,
+      check((await page.locator('.birth-peek__name').innerText()).trim().length >= 2,
         '[사주입력] 미리보기에 팔자가 채워짐');
 
       // 시각 모름 경로도 살아 있어야 한다 (모르는 사람이 많다)

@@ -3374,6 +3374,34 @@ strong {
 }
  /* 일간 히어로만은 자기 오행 색을 쓴다 — 이 화면의 주인공이라서.
    상자는 두르지 않는다. */
+.dm-hero__cap {
+  display: block;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-600);
+  margin-bottom: 6px;
+}
+.qa {
+  margin: 0;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 500;
+  color: var(--gray-800);
+  word-break: keep-all;
+}
+.qa b {
+  color: var(--gray-900);
+}
+.qa--sub {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 21px;
+  color: var(--gray-600);
+}
+.qa + .dm-note {
+  margin-top: var(--space-4);
+}
 .dm-hero__row {
   display: flex;
   align-items: center;
