@@ -16,6 +16,7 @@ import { todayVibe } from '../lib/dayVibe.ts';
 import { todayKey } from '../lib/dateSeed.ts';
 import type { ZodiacId } from '../data/zodiac.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
+import type { LuckySong } from '../data/luckySongs.ts';
 
 type Props = {
   result: FortuneResult;
@@ -28,6 +29,9 @@ type Props = {
   onDetail: () => void;
   onSave: () => void;
   onShare: () => void;
+  onCopy: () => void;
+  userName: string | null;
+  song: LuckySong;
   onRetry: () => void;
   onCompat: () => void;
   onBack: () => void;
@@ -50,6 +54,9 @@ export function ResultScreen({
   onDetail,
   onSave,
   onShare,
+  onCopy,
+  userName,
+  song,
   onRetry,
   onCompat,
   onBack,
@@ -133,7 +140,7 @@ export function ResultScreen({
             <Mascot size={88} score={luck.total} bare />
           </span>
           <div className="score-hero__num">
-            <span className="score-hero__k">오늘 점수</span>
+            <span className="score-hero__k">{userName ? `${userName}님의 오늘 점수` : '오늘 점수'}</span>
             <span className="score-hero__v"><b className="num">{shownTotal}</b>점</span>
             <span className="score-hero__grade">{GRADE_KO[luck.grade] ?? luck.grade}</span>
           </div>
@@ -216,7 +223,49 @@ export function ResultScreen({
           </div>
         </div>
 
-        {/* 행운 보고서 — day: 타이밍·색·음식 / month: 행운의 주·이달의 색·키워드 */}
+        {/* 오늘의 행운 — 색·노래·행동·음식. 한눈에 보이게 큰 네 칸 */}
+        {!isMonth ? (
+          <div className="lucky4">
+            <p className="lucky4__head">오늘의 행운</p>
+            <div className="lucky4__grid">
+              <div className="lucky4__tile">
+                <span className="lucky4__swatch" style={{ background: luck.color.hex }} aria-hidden />
+                <span className="lucky4__k">색깔</span>
+                <strong className="lucky4__v">{luck.color.name}</strong>
+                <span className="lucky4__why">{luck.time}에 곁에 두면 좋아요</span>
+              </div>
+              <div className="lucky4__tile">
+                <span className="lucky4__icon" aria-hidden><Icon name="headphone" size={26} /></span>
+                <span className="lucky4__k">노래</span>
+                <strong className="lucky4__v">{song.title}</strong>
+                <span className="lucky4__why">{song.artist} · {song.why}</span>
+              </div>
+              <div className="lucky4__tile">
+                <span className="lucky4__icon" aria-hidden><Icon name="target" size={26} /></span>
+                <span className="lucky4__k">행동</span>
+                <strong className="lucky4__v">{result.luckyPoint.split(' · ')[2] ?? result.luckyPoint}</strong>
+                <span className="lucky4__why">{luck.direction}으로 가면 더 좋아요</span>
+              </div>
+              <div className="lucky4__tile">
+                <span className="lucky4__icon" aria-hidden><Icon name="bowl" size={26} /></span>
+                <span className="lucky4__k">음식</span>
+                <strong className="lucky4__v">{luck.food.name}</strong>
+                <span className="lucky4__why">{luck.food.why}</span>
+              </div>
+            </div>
+            <div className="share-row">
+              <button type="button" className="btn btn--primary share-row__btn" disabled={busy} onClick={onShare}>
+                카톡·메시지로 보내기
+              </button>
+              <button type="button" className="btn btn--secondary share-row__btn" disabled={busy} onClick={onCopy}>
+                복사하기
+              </button>
+            </div>
+          </div>
+        ) : null}
+
+        {/* 행운 보고서 — month: 행운의 주·이달의 색·키워드 */}
+        {isMonth ? (
         <div className="report">
           <p className="report__head"> {isMonth ?'이번 달 행운 보고서' : '오늘의 행운 보고서'}</p>
           <div className="report__grid">
@@ -250,6 +299,7 @@ export function ResultScreen({
               : luck.food.why}
           </p>
         </div>
+        ) : null}
       </div>
 
       {/* 오늘의 사주 — 일진 도장(스탬프) 스트립. 행운 보고서 그리드와 다른 시각 언어로,

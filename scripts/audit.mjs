@@ -109,14 +109,12 @@ async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topi
   // 흐름: (생년월일) → 주제 → 기분 → 쪽지. 생년월일은 건너뛸 수 있다.
   await page.getByText('쪽지 뽑기 시작하기').first().click();
   await wait(page, 600);
-  if (await page.getByText('지금은 건너뛸게요', { exact: false }).count()) {
-    await page.getByText('지금은 건너뛸게요', { exact: false }).first().click();
+  // 흐름은 네 장: 홈 → 이름·생년월일(없이 보기 가능) → 쪽지 → 결과. 주제·기분은 묻지 않는다.
+  if (await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).count()) {
+    await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click();
     await wait(page, 500);
   }
-  await page.getByText(topic || '오늘의 나', { exact: false }).first().click();
-  await wait(page, 500);
-  await page.locator('button', { hasText: mood }).first().click();
-  await wait(page, 600);
+  void topic; void mood;
   await page.locator('[class*="note"]').first().click();
   await wait(page, 4300); // 쪽지 열림 + 로딩 연출
 }
@@ -266,25 +264,7 @@ async function run(browser) {
       ['궁합 배너', '오늘 우리 궁합', '친구 궁합'],
       ['데이터 삭제', '내 데이터 전체 삭제', '네, 전부 지울게요'],
     ];
-    // 주제(알고 싶은 것)는 홈이 아니라 뽑기 1단계에 있다.
-    // 홈 맨 아래 '보조' 목록으로 두면 같은 행동이 두 곳에 생기고 흐름이 흐려진다.
-    for (const topic of ['이번 달의 나', '사랑운', '돈운', '일운', '조심할 것', '행운 포인트']) {
-      const page = await newPage(browser);
-      await page.goto(URL_BASE, { waitUntil: 'networkidle' });
-      await wait(page, 500);
-      try {
-        await page.getByText('쪽지 뽑기 시작하기').first().click();
-        await wait(page, 600);
-        await page.getByText('지금은 건너뛸게요', { exact: false }).first().click();
-        await wait(page, 500);
-        await page.getByText(topic, { exact: false }).first().click();
-        await wait(page, 800);
-        check((await bodyText(page)).includes('지금 기분'), `[뽑기1단계→${topic}] 이동`);
-      } catch (e) {
-        bad(`[뽑기1단계→${topic}] 이동`, e.message.split('\n')[0]);
-      }
-      await page.context().close();
-    }
+    // 주제 화면은 네 장 흐름에서 뺐다. 이번 달은 홈의 '이번 달 내 운세는?' 행으로만 간다.
 
     for (const [name, needle, expect] of TARGETS) {
       const page = await newPage(browser);
@@ -452,14 +432,9 @@ async function run(browser) {
       await wait(page, 500);
       await page.getByText('쪽지 뽑기 시작하기').first().click();
       await wait(page, 600);
-      const topicText = await bodyText(page);
-      check(topicText.includes('뭐가 제일 궁금해요'), '[흐름] 1단계는 알고 싶은 것 고르기');
-      check(/내 사주 · /.test(topicText), '[흐름] 무엇을 근거로 뽑는지 한 줄로 보임');
-      await page.getByText('오늘의 나', { exact: false }).first().click();
-      await wait(page, 600);
-      const moodText = await bodyText(page);
-      check(!moodText.includes('내 별자리'), '[사주] 사주가 있으면 기분 화면에서 띠·별자리를 안 물음');
-      check(moodText.includes('지금 기분을 골라주세요'), '[사주] 사주가 있으면 기분만 묻는다');
+      const pickText = await bodyText(page);
+      check(pickText.includes('하나만 골라볼까요'), '[흐름] 사주가 있으면 바로 쪽지 고르기');
+      check((await page.locator('.pick-basis').count()) === 1, '[흐름] 무엇을 근거로 뽑는지 한 줄로 보임');
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
 
@@ -481,10 +456,6 @@ async function run(browser) {
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
       await page.getByText('쪽지 뽑기 시작하기').first().click();
-      await wait(page, 500);
-      await page.getByText('오늘의 나', { exact: false }).first().click();
-      await wait(page, 500);
-      await page.locator('button', { hasText: '그냥 그래요' }).first().click();
       await wait(page, 600);
       // 생년월일을 받아놓고 정작 뽑는 쪽지에 안 쓰면 "그래서 뭐가 달라졌지" 가 된다
       check((await page.locator('.pick-basis').count()) === 1,
@@ -561,45 +532,7 @@ async function run(browser) {
     await page.context().close();
   }
 
-  // 3. 운세 7종 관통 + 월간 화면의 시간 단위
-  {
-    const TOPICS = [
-      [null, '오늘의 쪽지'], ['이번 달의 나', '이번 달의 나'], ['사랑운', '사랑운'],
-      ['돈운', '돈운'], ['일운', '일운'], ['조심할 것', '조심할 것'], ['행운 포인트', '행운 포인트'],
-    ];
-    for (const [topic, expect] of TOPICS) {
-      const page = await newPage(browser);
-      await drawTo(page, { topic, mood: '기분 좋아요' });
-      const t = await bodyText(page);
-      check(t.includes(expect) && /오늘 점수\s*\d+\s*점/.test(t), `[운세:${expect}] 결과 도달`,
-        (t.match(/오늘 점수\s*\d+\s*점\s*\S+/) || [''])[0]);
-      check(t.includes('이렇게 보내요'), `[운세:${expect}] 하루 설계 노출`);
-      if (topic === '이번 달의 나') {
-        // 월간 화면인데 총평/한마디가 '하루' 단위로 말하면 안 된다
-        // 예전엔 🔎 이모지를 기준으로 풀이 부분만 잘라 봤는데, 이모지를 걷어낸 뒤로
-        // 기준이 사라져 화면 전체를 보고 있었다 — 그러면 편지·사주 블록의 '하루' 문장에
-        // 걸린다. 풀이 섹션의 제목을 기준으로 자른다.
-        const monthBody = t.split('전체 풀이')[1] ?? t;
-        check(!/나쁠 것 없는 하루|무난한 날이에요\./.test(monthBody), '[월간] 총평이 월 단위');
-      }
-      check(page.__errs.length === 0, `[운세:${expect}] 콘솔 에러 없음`, page.__errs.join(' | '));
-      await page.context().close();
-    }
-  }
-
-  // 4. 기분 5종 — 각각 다른 결과가 나오는지
-  {
-    const seen = new Set();
-    for (const mood of ['기분 좋아요', '그냥 그래요', '좀 지쳤어요', '불안해요', '외로워요']) {
-      const page = await newPage(browser);
-      await drawTo(page, { mood });
-      const t = await bodyText(page);
-      check(/오늘 점수\s*\d+\s*점/.test(t), `[기분:${mood}] 결과 도달`);
-      seen.add((t.match(/오늘 점수\s*\d+\s*점\s*\S+/) || [''])[0] + (t.match(/💌[^\n]*\n([^\n]+)/) || [])[1]);
-      await page.context().close();
-    }
-    check(seen.size >= 3, '[기분] 5종이 서로 다른 결과를 낸다', `서로 다른 결과 ${seen.size}종`);
-  }
+  // 3·4. 주제·기분 화면은 흐름에서 뺐다(네 장 구조). 주제별 문장 다양성은 단위 테스트가 본다.
 
   // 5. 결과 화면의 모든 액션
   {
@@ -783,9 +716,7 @@ async function run(browser) {
   {
     const BACKS = [
       ['생년월일', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('쪽지 뽑기 시작하기').first().click(); }, '오늘의 띠 서열'],
-      ['주제 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('쪽지 뽑기 시작하기').first().click(); await wait(p, 500); await p.getByText('지금은 건너뛸게요', { exact: false }).first().click(); }, '오늘의 띠 서열'],
-      ['기분 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('쪽지 뽑기 시작하기').first().click(); await wait(p, 500); await p.getByText('지금은 건너뛸게요', { exact: false }).first().click(); await wait(p, 500); await p.getByText('오늘의 나', { exact: false }).first().click(); }, '뭐가 제일 궁금해요'],
-      ['쪽지 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('쪽지 뽑기 시작하기').first().click(); await wait(p, 500); await p.getByText('지금은 건너뛸게요', { exact: false }).first().click(); await wait(p, 500); await p.getByText('오늘의 나', { exact: false }).first().click(); await wait(p, 500); await p.locator('button', { hasText: '그냥 그래요' }).first().click(); }, '지금 기분'],
+      ['쪽지 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('쪽지 뽑기 시작하기').first().click(); await wait(p, 500); await p.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click(); }, '오늘의 띠 서열'],
       ['결과', async (p) => { await drawTo(p); }, '오늘의 띠 서열'],
       ['궁합', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 우리 궁합', { exact: false }).first().click(); }, '오늘의 띠 서열'],
     ];

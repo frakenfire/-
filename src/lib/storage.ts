@@ -366,7 +366,17 @@ export type StoredBirth = {
   date: string;
   /** 'HH:MM' 또는 null(모름) */
   time: string | null;
+  /** 결과에 부를 이름. 없어도 된다 */
+  name?: string;
 };
+// 생년월일 없이 보고 싶어요 — 한 번 고르면 다시 묻지 않는다
+const SKIP_BIRTH_KEY = 'tomorrowNoteSkipBirth';
+export function loadSkipBirth(): boolean {
+  return safeGet(SKIP_BIRTH_KEY) === '1';
+}
+export function saveSkipBirth(v: boolean): boolean {
+  return safeSet(SKIP_BIRTH_KEY, v ? '1' : '');
+}
 
 export function loadBirth(): StoredBirth | null {
   const raw = safeGet(BIRTH_KEY);
@@ -378,7 +388,8 @@ export function loadBirth(): StoredBirth | null {
     // 형식만 보면 "25:00" 같은 값이 통과한다. 화면과 같은 검증을 써서
     // 저장소에 남은 이상한 값이 잘못된 사주로 이어지지 않게 한다.
     if (!parseBirth(v.date, time)) return null;
-    return { date: v.date, time };
+    const name = typeof v.name === 'string' ? v.name.trim().slice(0, 10) : undefined;
+    return name ? { date: v.date, time, name } : { date: v.date, time };
   } catch {
     return null;
   }

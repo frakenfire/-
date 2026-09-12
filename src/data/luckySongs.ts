@@ -1,0 +1,36 @@
+// 오늘의 노래 — 결과 화면 '오늘의 행운' 네 칸 중 하나.
+// 제목과 가수는 사실이고, 이유는 아이도 아는 말로 한 줄.
+export type LuckySong = { title: string; artist: string; why: string };
+
+export const LUCKY_SONGS: LuckySong[] = [
+  { title: '밤편지', artist: '아이유', why: '조용한 밤에 마음이 가라앉아요.' },
+  { title: '좋은 날', artist: '아이유', why: '기분이 위로 올라가요.' },
+  { title: 'Dynamite', artist: '방탄소년단', why: '몸이 저절로 움직여요.' },
+  { title: 'Butter', artist: '방탄소년단', why: '아침을 부드럽게 열어줘요.' },
+  { title: '봄날', artist: '방탄소년단', why: '그리운 마음이 따뜻해져요.' },
+  { title: 'Hype Boy', artist: '뉴진스', why: '걸음이 가벼워져요.' },
+  { title: 'Ditto', artist: '뉴진스', why: '오후가 말랑해져요.' },
+  { title: 'Super Shy', artist: '뉴진스', why: '설레는 날에 딱이에요.' },
+  { title: '사건의 지평선', artist: '윤하', why: '끝낼 일을 끝내게 해줘요.' },
+  { title: '너의 모든 순간', artist: '성시경', why: '좋아하는 사람이 떠올라요.' },
+  { title: '벚꽃 엔딩', artist: '버스커 버스커', why: '산책이 하고 싶어져요.' },
+  { title: '여수 밤바다', artist: '버스커 버스커', why: '멀리 떠나는 기분이 나요.' },
+  { title: '우리들의 블루스', artist: '임영웅', why: '마음이 든든해져요.' },
+  { title: '사랑은 늘 도망가', artist: '임영웅', why: '천천히 걷고 싶어져요.' },
+  { title: '취중진담', artist: '김동률', why: '솔직해질 용기가 나요.' },
+  { title: '거리에서', artist: '성시경', why: '저녁 공기가 잘 어울려요.' },
+  { title: '한 페이지가 될 수 있게', artist: '데이식스', why: '오늘을 기억하고 싶어져요.' },
+  { title: '예뻤어', artist: '데이식스', why: '좋았던 날이 떠올라요.' },
+  { title: 'Love Dive', artist: '아이브', why: '자신감이 붙어요.' },
+  { title: 'After LIKE', artist: '아이브', why: '고민이 가벼워져요.' },
+  { title: 'Next Level', artist: '에스파', why: '집중이 올라가요.' },
+  { title: 'Spicy', artist: '에스파', why: '축 처진 오후를 깨워요.' },
+  { title: '눈의 꽃', artist: '박효신', why: '마음이 차분해져요.' },
+  { title: '야생화', artist: '박효신', why: '힘든 날을 버티게 해줘요.' },
+  { title: 'Celebrity', artist: '아이유', why: '나를 칭찬하고 싶어져요.' },
+  { title: '라일락', artist: '아이유', why: '기분 전환이 돼요.' },
+  { title: '흔들리는 꽃들 속에서 네 샴푸향이 느껴진거야', artist: '장범준', why: '봄바람 같은 하루가 돼요.' },
+  { title: '고백', artist: '뜨거운 감자', why: '말하고 싶은 마음이 생겨요.' },
+  { title: 'Sugar', artist: '마룬5', why: '아침 준비가 즐거워져요.' },
+  { title: 'Happy', artist: '퍼렐 윌리엄스', why: '웃음이 저절로 나요.' },
+];

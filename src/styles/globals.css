@@ -4336,3 +4336,125 @@ strong {
   transform: none;
   opacity: 1;
 }
+
+/* ── 이름 입력: 토스 텍스트 필드 ── */
+.field {
+  display: block;
+  margin-bottom: var(--space-6);
+}
+.field__k {
+  display: block;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+  margin-bottom: 6px;
+}
+.field__input {
+  width: 100%;
+  min-height: 54px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--gray-100);
+  font-size: 17px;
+  line-height: 25.5px;
+  font-weight: 600;
+  color: var(--gray-900);
+  outline: none;
+  transition: background-color 0.12s ease, box-shadow 0.12s ease;
+}
+.field__input::placeholder {
+  color: var(--gray-500);
+  font-weight: 500;
+}
+.field__input:focus {
+  background: var(--white);
+  box-shadow: 0 0 0 2px var(--brand);
+}
+.birth-skip {
+  margin-top: 4px;
+}
+
+/* ── 입체감: 주인공 카드에만 얇은 그림자 ── */
+.today-hook,
+.score-hero,
+.lucky4__tile,
+.compat-pick,
+.topic-btn {
+  box-shadow: 0 6px 20px rgba(0, 23, 51, 0.06);
+}
+
+/* ── 오늘의 행운 네 칸: 색·노래·행동·음식 ── */
+.lucky4 {
+  margin-top: var(--space-5);
+}
+.lucky4__head {
+  margin: 0 0 var(--space-3);
+  font-size: 20px;
+  line-height: 29px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.lucky4__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+.lucky4__tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-height: 150px;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--white);
+  border: 1px solid var(--gray-100);
+}
+.lucky4__swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-bottom: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+.lucky4__icon {
+  display: flex;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  margin-bottom: 8px;
+  color: var(--brand-strong);
+}
+.lucky4__k {
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+.lucky4__v {
+  font-size: 18px;
+  line-height: 27px;
+  font-weight: 700;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+.lucky4__why {
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
+.share-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+.share-row__btn {
+  min-height: 54px;
+  font-size: 16px;
+  line-height: 24px;
+}

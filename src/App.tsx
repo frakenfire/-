@@ -7,7 +7,7 @@ import { pickNotesFor } from './lib/pickNotes.ts';
 import { generateFortune } from './lib/generateFortune.ts';
 import { luckPercentile } from './lib/luck.ts';
 import { showRewardAd, isRewarded, isUnsupportedFreePass, adResultMessage } from './lib/ads.ts';
-import { shareBriefing, shareForUnlock, copyText, shareMessage } from './lib/share.ts';
+import { buildShareText, shareBriefing, shareForUnlock, copyText, shareMessage } from './lib/share.ts';
 import { AppLayout } from './components/AppLayout.tsx';
 import { saveResultCard } from './lib/saveImage.ts';
 import {
@@ -21,8 +21,7 @@ import {
   pushHistory,
   getRecordForDate,
   bumpRarity,
-  getRarityCounts,
-} from './lib/storage.ts';
+  getRarityCounts, loadSkipBirth, saveSkipBirth } from './lib/storage.ts';
 import { clearAllData } from './lib/storage.ts';
 import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError, canAskNotification, askNotificationAgreement, askReview } from './lib/toss.ts';
 import { findNote } from './data/notes.ts';
@@ -46,6 +45,8 @@ import { MySajuScreen } from './screens/MySajuScreen.tsx';
 import { TopicScreen } from './screens/TopicScreen.tsx';
 import { computeFourPillars } from './lib/fourPillars.ts';
 import { tap } from './lib/haptic.ts';
+import { LUCKY_SONGS } from './data/luckySongs.ts';
+import { hashSeed } from './lib/dateSeed.ts';
 import { dailyForMe } from './lib/dailySaju.ts';
 import { analyzeSaju } from './lib/tenGods.ts';
 import { DAY_MASTER_BY_INDEX } from './data/dayMaster.ts';
@@ -281,9 +282,7 @@ export default function App() {
   }
 
   function handleType(t: FortuneType) {
-    markVisit(dateKey);
-    setFortuneType(t);
-    setScreen('mood');
+    startDraw(t);
   }
 
   function handleMood(m: Mood) {
@@ -396,6 +395,26 @@ export default function App() {
     await runRewardGate('detail', () => setScreen('detail'));
   }
 
+  function briefingOf(r: NonNullable<typeof result>) {
+    const brag = luckPercentile(r.luck.total);
+    return {
+      title: r.title,
+      score: r.luck.total,
+      headline: r.dayPlan.headline,
+      doItem: r.dayPlan.steps[0].text,
+      dontItem: r.dayPlan.holdOff,
+      brag: brag.isBrag ? `상위 ${brag.pct}%` : undefined,
+      pinpoint: r.pinpoint,
+    };
+  }
+
+  // 복사하기 — 카톡 붙여넣기용. 공유창과 같은 문구.
+  async function handleCopyResult() {
+    if (!result) return;
+    const ok = await copyText(buildShareText(briefingOf(result)));
+    flash(ok ? '복사했어요. 카톡에 붙여넣으면 돼요' : '앗, 복사를 못 했어요');
+  }
+
   async function handleShare() {
     if (!result) return;
     const brag = luckPercentile(result.luck.total);
@@ -460,20 +479,32 @@ export default function App() {
   // 뽑기 흐름 중에 생년월일을 받았으면 흐름을 이어간다(주제 고르기로).
   // 홈에서 직접 들어왔으면 세운 사주를 보여준다.
   const [birthFromFlow, setBirthFromFlow] = useState(false);
+  const [skipBirth, setSkipBirth] = useState(() => loadSkipBirth());
+
+  // 뽑기 시작 — 주제·기분은 묻지 않는다. 오늘의 나, 보통 기분이 기본이다.
+  function startDraw(type: FortuneType = 'tomorrow') {
+    markVisit(dateKey);
+    setFortuneType(type);
+    setMood((m) => m ?? 'soso');
+    setScreen('pick');
+  }
 
   function handleSaveBirth(b: StoredBirth) {
     setBirth(b);
     saveBirth(b);
     logEvent('birth_saved', { hasTime: b.time !== null, viaFlow: birthFromFlow });
-    setScreen(birthFromFlow ? 'topic' : 'saju');
+    if (birthFromFlow) startDraw();
+    else setScreen('saju');
     setBirthFromFlow(false);
   }
 
   // 생년월일 없이 그냥 뽑고 싶은 사람도 있다. 막지 않는다.
   function handleSkipBirth() {
     logEvent('birth_skipped', {});
-    setScreen('topic');
+    saveSkipBirth(true);
+    setSkipBirth(true);
     setBirthFromFlow(false);
+    startDraw();
   }
 
   // 홈에 보여줄 일간 배지 — 사주를 세운 사람에게는 '내 것'이 홈에서 바로 보여야 한다.
@@ -594,15 +625,15 @@ export default function App() {
           sajuBadge={sajuBadge}
           onSaju={() => setScreen(birth ? 'saju' : 'birth')}
           onStart={() => {
-            if (birthInput) {
-              setScreen('topic');
+            if (birthInput || skipBirth) {
+              startDraw();
             } else {
               setBirthFromFlow(true);
               setScreen('birth');
             }
           }}
           onStartMonth={() => {
-            if (birthInput) {
+            if (birthInput || skipBirth) {
               handleType('month');
             } else {
               setBirthFromFlow(true);
@@ -648,7 +679,7 @@ export default function App() {
           fortuneLabel={fortuneType ? FORTUNE_LABEL[fortuneType] : ''}
           personal={notePick.personal}
           onPick={handlePick}
-          onBack={() => setScreen('mood')}
+          onBack={() => setScreen('home')}
         />
       )}
 
@@ -663,6 +694,9 @@ export default function App() {
           onDetail={handleDetail}
           onSave={handleSave}
           onShare={handleShare}
+          onCopy={handleCopyResult}
+          userName={birth?.name ?? null}
+          song={LUCKY_SONGS[hashSeed(`${dateKey}|song|${note.id}`) % LUCKY_SONGS.length]}
           onRetry={handleRetry}
           onCompat={() => setScreen('compat')}
           onBack={() => setScreen('home')}
@@ -688,7 +722,7 @@ export default function App() {
           onEdit={() => setScreen('birth')}
           onShare={handleShareSaju}
           onDeleteBirth={handleDeleteBirth}
-          onDraw={() => setScreen('topic')}
+          onDraw={() => startDraw()}
         />
       )}
 

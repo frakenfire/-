@@ -219,11 +219,7 @@ async function run() {
   await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);
   await grab('홈(사주 후)');
 
-  await page.getByText('쪽지 뽑기 시작하기').first().click(); await w(600);
-  await grab('주제 고르기');
-  await page.getByText('오늘의 나', { exact: false }).first().click(); await w(600);
-  await grab('기분 고르기');
-  await page.locator('button', { hasText: '그냥 그래요' }).first().click(); await w(900);
+  await page.getByText('쪽지 뽑기 시작하기').first().click(); await w(900);
   await grab('쪽지 고르기');
 
   await page.locator('[class*="note"]').first().click();
