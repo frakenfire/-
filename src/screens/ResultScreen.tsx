@@ -1,4 +1,5 @@
 import { Mascot } from '../components/Mascot.tsx';
+import { DAY_ANSWERS } from '../data/sajuAnswers.ts';
 import { softBreak } from '../lib/softBreak.ts';
 import { useEffect, useState } from 'react';
 import { Icon } from '../components/Icon.tsx';
@@ -8,7 +9,7 @@ import { Disclaimer } from '../components/Disclaimer.tsx';
 import { AdBadge, AdBanner } from '../components/AdNotice.tsx';
 import { luckPercentile, GRADE_KO } from '../lib/luck.ts';
 import { ELEMENT_EMOJI, ELEMENT_KO, sajuToday } from '../lib/saju.ts';
-import { TEN_GOD_KO, analyzeSaju } from '../lib/tenGods.ts';
+import { analyzeSaju } from '../lib/tenGods.ts';
 import { computeFourPillars, type BirthInput } from '../lib/fourPillars.ts';
 import { dailyForMe, asSajuToday } from '../lib/dailySaju.ts';
 import { todayVibe } from '../lib/dayVibe.ts';
@@ -263,10 +264,7 @@ export function ResultScreen({
               {/* 사주를 넣은 사람에겐 '내 띠' 가 아니라 '내 일간' 기준으로 말한다.
                   같은 화면에서 기준이 둘이면 어느 쪽 말인지 헷갈린다. */}
               {result.daily ? (
-                <span className="iljin__rel">
-                  오늘 나에게 오는 건 <b>{TEN_GOD_KO[result.daily.dayGod]}</b> · {ELEMENT_EMOJI[result.daily.myElement]}
-                  {ELEMENT_KO[result.daily.myElement]} 기운
-                </span>
+                <span className="iljin__rel"><b>{result.daily.reading.title}</b></span>
               ) : (
                 <span className="iljin__rel">
                   내 띠와 <b>{result.saju.relationGloss}</b> · {ELEMENT_EMOJI[result.saju.myElement]}
@@ -297,9 +295,13 @@ export function ResultScreen({
           같은 날이어도 내 일간에 따라 십신이 달라지고, 신강신약에 따라 약이 되기도 독이 되기도 한다. */}
       {result.daily ? (
         <div className="mygod">
-          <p className="mygod__title">{result.daily.reading.title}</p>
           <p className="mygod__body">{result.daily.reading.body}</p>
           <p className={`mygod__fit mygod__fit--${result.daily.fit}`}>{result.daily.fitLine}</p>
+          <ul className="mygod__qa">
+            <li><span className="mygod__qa-k">돈</span>{DAY_ANSWERS[result.daily.dayGodGroup].money}</li>
+            <li><span className="mygod__qa-k">사랑</span>{DAY_ANSWERS[result.daily.dayGodGroup].love}</li>
+            <li><span className="mygod__qa-k">일</span>{DAY_ANSWERS[result.daily.dayGodGroup].work}</li>
+          </ul>
           <ul className="mygod__acts">
             <li className="mygod__act mygod__act--do">
               <span className="mygod__act-k">오늘 하면 좋아요</span>
@@ -310,11 +312,6 @@ export function ResultScreen({
               {result.daily.reading.avoid}
             </li>
           </ul>
-          {/* 사주 용어는 헤드라인이 아니라 근거 자리에 둔다 — 정확함은 지키되 앞세우지 않는다 */}
-          <p className="mygod__why">
-            왜냐하면 · 내 글자 <b>{result.daily.myStemKor}</b>과 오늘 글자 <b>{result.daily.iljin.kor}</b>이 만나{' '}
-            <b>{TEN_GOD_KO[result.daily.dayGod]}</b>이 돼요
-          </p>
         </div>
       ) : null}
       </section>

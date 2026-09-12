@@ -3738,6 +3738,28 @@ strong {
   background: #fff9e7;
   color: var(--score-low-text);
 }
+.mygod__qa {
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.mygod__qa li {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--gray-100);
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+  color: var(--gray-800);
+  word-break: keep-all;
+}
+.mygod__qa-k {
+  flex: none;
+  width: 36px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
 .mygod__acts {
   display: flex;
   flex-direction: column;

@@ -496,17 +496,17 @@ async function run(browser) {
 
       const res = await bodyText(page);
       check((await page.locator('.mygod').count()) === 1, '[사주결과] 오늘의 십신 카드 노출');
-      check(res.includes('오늘 나에게 오는 건'), '[사주결과] 띠가 아니라 일간 기준으로 말함');
+      check((await page.locator('.mygod__qa li').count()) === 3, '[사주결과] 오늘 돈·사랑·일 세 줄로 답함');
       check(!res.includes('내 띠와'), '[사주결과] 띠 기준 문구가 함께 뜨지 않음(기준 이원화 방지)');
       check(/오늘 하면 좋아요/.test(res) && /오늘은 피하세요/.test(res),
         '[사주결과] 할 것·피할 것이 함께 나옴');
       // 사주 용어는 헤드라인이 아니라 근거 자리에 있어야 한다
       check((await page.locator('.mygod__badge').count()) === 0,
         '[사주결과] 십신 용어가 헤드라인을 차지하지 않음');
-      check((await page.locator('.mygod__why').count()) === 1, '[사주결과] 사주 근거를 밝힘');
+      check((await page.locator('.mygod__why').count()) === 0, '[사주결과] 용어 근거 줄이 손님 앞에 없음');
       // 위에 얹혀 있던 '이 쪽지가 당신에게 닿은 자리' 라벨은 반사적 kicker 라 걷어냈다.
       // 쪽지 언어로 감싸졌는지는 십신 풀이 제목이 그려지는지로 본다.
-      check((await page.locator('.mygod__title').count()) === 1, '[사주결과] 해석이 쪽지 언어로 감싸짐');
+      check((await page.locator('.iljin__rel b').count()) === 1, '[사주결과] 오늘 기운 제목이 머리에 있음');
       const fit = await page.locator('.mygod__fit').count();
       check(fit === 1, '[사주결과] 신강신약 판정 한 줄 노출');
       await diagnose(page, '사주결과');

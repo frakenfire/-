@@ -586,6 +586,14 @@ export default function App() {
               setScreen('birth');
             }
           }}
+          onStartMonth={() => {
+            if (birthInput) {
+              handleType('month');
+            } else {
+              setBirthFromFlow(true);
+              setScreen('birth');
+            }
+          }}
           onReset={handleReset}
           weekUnlocked={weekUnlocked}
           onUnlockWeek={handleUnlockWeek}

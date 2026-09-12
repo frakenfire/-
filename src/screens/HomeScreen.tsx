@@ -42,6 +42,8 @@ type Props = {
   onCompat: () => void;
   /** 쪽지 뽑기 시작 — 주제 고르기(1단계)로 간다 */
   onStart: () => void;
+  /** 손님이 사주 앱에서 자주 찾는 '이번 달 운세' 로 바로 */
+  onStartMonth: () => void;
   onReset: () => void;
   /** 주간 캘린더 — 스트릭 3일 이상이면 무료, 아니면 광고로 연다 */
   weekUnlocked: boolean;
@@ -68,6 +70,7 @@ export function HomeScreen({
   onReopen,
   onCompat,
   onStart,
+  onStartMonth,
   onReset,
 }: Props) {
   const yNote = yesterdayRecord ? findNote(yesterdayRecord.noteId) : null;
@@ -396,6 +399,14 @@ export function HomeScreen({
           <h2 className="sec__title">더 해보기</h2>
         </div>
         <div className="rowlist">
+      <button type="button" className="compat-banner" onClick={onStartMonth}>
+        <span className="compat-banner__icon" aria-hidden><Icon name="calendar" /></span>
+        <span className="compat-banner__body">
+          <span className="compat-banner__title">이번 달 내 운세는?</span>
+          <span className="compat-banner__desc">1주차부터 4주차까지 흐름이 나와요</span>
+        </span>
+        <span className="compat-banner__cta">보러가기 ›</span>
+      </button>
       <button type="button" className="compat-banner" onClick={onCompat}>
         <span className="compat-banner__icon" aria-hidden><Icon name="heart" /></span>
         <span className="compat-banner__body">
