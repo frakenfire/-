@@ -31,6 +31,24 @@ export const NOTE_DIRECTION: Record<string, NoteDirection> = {
   reunion: 'any', // 반가운 재회
   focus: 'hold', // 집중의 시간 — 벌리지 않고 하나로 좁히는 쪽
   gift: 'any', // 뜻밖의 선물
+  deepBreath: 'hold',
+  firstStep: 'push',
+  kindWord: 'push',
+  luckyCoin: 'any',
+  quietDay: 'hold',
+  bigSmile: 'push',
+  sunnyMind: 'hold',
+  newRoad: 'push',
+  warmHome: 'hold',
+  goodNews: 'any',
+  sharpEye: 'hold',
+  teamUp: 'push',
+  letGo: 'hold',
+  flowerDay: 'push',
+  steadyStep: 'hold',
+  braveNo: 'push',
+  lockIn: 'hold',
+  tinyJoy: 'any',
 };
 
 // 본문 변주를 같은 잣대로 나누는 어휘. 손으로 42개를 태깅하면 문장이 늘 때마다 어긋나므로,
