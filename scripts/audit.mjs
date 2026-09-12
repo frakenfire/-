@@ -381,16 +381,14 @@ async function run(browser) {
         '[사주입력] 버튼을 비활성으로 잠그지 않음');
       // 휠은 늘 값을 갖고 있어 '미입력' 상태가 없다 — 대신 기본값으로도 바로 진행되는지 본다
       check((await page.locator('.wheel').count()) === 6, '[사주입력] 생년월일·시각 휠 6개');
-      check((await page.locator('.birth-peek').count()) === 1, '[사주입력] 기본값에서도 미리보기가 뜬다');
+      check((await page.locator('.wheel-group__v').count()) >= 1, '[사주입력] 고른 값이 요약 줄에 보인다');
 
       // 입춘 경계(2024-02-04 10:00) — 달력 띠와 사주 띠가 갈리는 날
       // 휠은 굴려도 되고 눌러도 된다 — 자동화는 누르는 쪽으로 확인한다
       await pickBirth(page, { year: 2024, month: 2, day: 4, ampm: '오전', hour: 10, minute: '00' });
       const peek = await bodyText(page);
-      check(/타고난 성격/.test(peek), '[사주입력] 입력 도중 미리보기 노출');
+      check(/2024년 2월 4일/.test(peek), '[사주입력] 고른 날짜가 요약 줄에 바로 반영');
       check(peek.includes('앞 해의 띠'), '[사주입력] 입춘 경계 안내가 뜬다');
-      check((await page.locator('.birth-peek__name').innerText()).trim().length >= 2,
-        '[사주입력] 미리보기에 팔자가 채워짐');
 
       // 시각 모름 경로도 살아 있어야 한다 (모르는 사람이 많다)
       await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();

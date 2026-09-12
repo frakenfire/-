@@ -45,6 +45,9 @@ import { parseBirth } from './lib/birth.ts';
 import { MySajuScreen } from './screens/MySajuScreen.tsx';
 import { TopicScreen } from './screens/TopicScreen.tsx';
 import { computeFourPillars } from './lib/fourPillars.ts';
+import { tap } from './lib/haptic.ts';
+import { dailyForMe } from './lib/dailySaju.ts';
+import { analyzeSaju } from './lib/tenGods.ts';
 import { DAY_MASTER_BY_INDEX } from './data/dayMaster.ts';
 
 type ScreenName = 'home' | 'mood' | 'pick' | 'reveal' | 'result' | 'detail' | 'compat' | 'birth' | 'saju' | 'topic';
@@ -84,6 +87,15 @@ export default function App() {
   // 자정을 넘겨도(앱을 계속 켜둬도) 날짜가 갱신되도록 state 로 관리하고,
   // 앱이 포그라운드로 돌아올 때마다 신뢰 가능한 '오늘'을 다시 확인한다.
   const [dateKey, setDateKey] = useState(() => todayKey());
+  // 누르는 맛 — 버튼이면 어디든 손끝에 한 번
+  useEffect(() => {
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as HTMLElement | null;
+      if (t?.closest('button, [role="button"], a')) tap('soft');
+    };
+    document.addEventListener('pointerdown', onDown, { passive: true });
+    return () => document.removeEventListener('pointerdown', onDown);
+  }, []);
   const yesterdayKey = useMemo(() => {
     const d = new Date(`${dateKey}T12:00:00`);
     d.setDate(d.getDate() - 1);
@@ -467,10 +479,13 @@ export default function App() {
   // 홈에 보여줄 일간 배지 — 사주를 세운 사람에게는 '내 것'이 홈에서 바로 보여야 한다.
   const sajuBadge = useMemo(() => {
     if (!birthInput) return null;
-    const dm = DAY_MASTER_BY_INDEX[computeFourPillars(birthInput).dayStem];
+    const pillars = computeFourPillars(birthInput);
+    const dm = DAY_MASTER_BY_INDEX[pillars.dayStem];
+    // 오늘 기운이 돈·사랑·일에 어떻게 닿는지 홈에서 바로 보여주기 위한 묶음
+    const group = dailyForMe(dateKey, pillars, analyzeSaju(pillars)).dayGodGroup;
     // 한자는 붙이지 않는다. '壬 큰 물' 은 읽는 사람 대부분에게 앞 글자가 장벽이다.
-    return { icon: dm.icon, name: dm.name, hue: dm.hue };
-  }, [birthInput]);
+    return { icon: dm.icon, name: dm.name, hue: dm.hue, group };
+  }, [birthInput, dateKey]);
 
   // 사주를 세우면 띠는 이미 정해진다(그것도 입춘 기준이라 더 정확하다).
   // 그런데도 홈이 "내 띠를 고르면…"이라고 물으면 유저는 "방금 넣었는데?" 가 된다.

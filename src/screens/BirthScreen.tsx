@@ -1,10 +1,8 @@
 import { useMemo, useState } from 'react';
-import { Mascot } from '../components/Mascot.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { WheelPicker, type WheelItem } from '../components/WheelPicker.tsx';
 import { computeFourPillars, boundaryNotice } from '../lib/fourPillars.ts';
 import { parseBirth } from '../lib/birth.ts';
-import { DAY_MASTER_BY_INDEX } from '../data/dayMaster.ts';
 import type { StoredBirth } from '../lib/storage.ts';
 
 type Props = {
@@ -76,7 +74,6 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
 
   const preview = useMemo(() => (input ? computeFourPillars(input) : null), [input]);
   const notice = useMemo(() => (input ? boundaryNotice(input) : null), [input]);
-  const dm = preview ? DAY_MASTER_BY_INDEX[preview.dayStem] : null;
 
   return (
     <AppLayout onBack={onBack} step={inFlow ? 1 : undefined} totalSteps={inFlow ? 4 : undefined}>
@@ -139,22 +136,6 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
             무엇이 빠지는지 한 문장. */}
         {unknownTime ? <p className="birth-hint">시각 없이 세 기둥으로 봐요.</p> : null}
       </div>
-
-      {/* 굴리는 동안 결과가 같이 바뀐다 — 입력의 대가를 먼저 보여준다 */}
-      {preview && dm ? (
-        <div className="birth-peek">
-          <span className="birth-peek__label">타고난 성격</span>
-          <div className="birth-peek__row">
-            <span className="birth-peek__icon" aria-hidden>
-              <Mascot size={64} accent={dm.hue} bare />
-            </span>
-            <div className="birth-peek__txt">
-              <strong className="birth-peek__name">{dm.name}</strong>
-              <span className="birth-peek__tag">{dm.tagline}</span>
-            </div>
-          </div>
-        </div>
-      ) : null}
 
       {notice ? <p className="birth-warn">{notice}</p> : null}
 

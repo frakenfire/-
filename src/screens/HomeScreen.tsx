@@ -13,7 +13,8 @@ import { shareMessage, buildRankingShareText } from '../lib/share.ts';
 import { softBreak } from '../lib/softBreak.ts';
 import { computeWeekAhead, buildWeekShareText, type WeekDay } from '../lib/weekAhead.ts';
 import { findZodiac, ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac.ts';
-import { ZODIAC_TRAIT } from '../data/traits.ts';
+import { DAY_ANSWERS } from '../data/sajuAnswers.ts';
+import type { GodGroup } from '../lib/tenGods.ts';
 import type { StoredResult, TodayReading, RarityCounts } from '../lib/storage.ts';
 
 function todayLabel(): string {
@@ -48,7 +49,7 @@ type Props = {
   /** 주간 캘린더 — 스트릭 3일 이상이면 무료, 아니면 광고로 연다 */
   weekUnlocked: boolean;
   /** 사주를 이미 세웠으면 일간 배지, 아니면 null */
-  sajuBadge: { icon: IconName; name: string; hue: string } | null;
+  sajuBadge: { icon: IconName; name: string; hue: string; group: GodGroup } | null;
   onSaju: () => void;
   onUnlockWeek: () => void;
   onShareWeek: (text: string) => void;
@@ -87,6 +88,7 @@ export function HomeScreen({
   const [shared, setShared] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
   const vibe = todayVibe(todayKey());
+  const drawnName = todayReading ? findNote(todayReading.noteId)?.name ?? null : null;
   const iljin = iljinOf(todayKey());
   const saju = zodiac ? sajuToday(todayKey(), zodiac.id) : null;
   const ranking = dailyZodiacRanking(todayKey());
@@ -140,59 +142,41 @@ export function HomeScreen({
           사주 일진(日辰) 기반: 오늘 일진과 내 띠의 전통 관계(삼합·육합·상충 등)로
           '오늘 기운'을 결정적으로 계산해 개인화. 띠 미설정 시 일진+오늘 기운만 노출.
           잠긴 결과(?점·?)로 궁금증/FOMO 유발 뽑아야 전부 열림 */}
-      <button type="button" className="today-hook" onClick={onStart}>
-        <span className="today-hook__art" aria-hidden>
-          <Mascot size={44} score={streak >= 3 ? 90 : 80} bare />
-        </span>
-        <span className="today-hook__kw">
-           오늘은 {iljin.kor}일
-        </span>
-        {zodiac && saju ? (
-          <>
-            <p className="today-hook__persona">
-              {ZODIAC_TRAIT[zodiac.id]} {zodiac.label}라면,
-            </p>
-            <p className="today-hook__line">{softBreak(saju.title, 16)}</p>
-            <p className="today-hook__saju">
-              내 띠와 {saju.relationGloss} · 기운 {saju.toneWord}
-            </p>
-            <p className="today-hook__hint">{saju.headline}</p>
-          </>
-        ) : (
-          <>
-            <p className="today-hook__line">
-              지금은 <b>{vibe.word}</b> 기운이 좋아요
-            </p>
-            <p className="today-hook__hint">{vibe.line}</p>
-          </>
-        )}
-
-        {/* 아직 안 뽑았으면 잠긴 ?로 궁금증을, 이미 뽑았으면 오늘 나온 값을 그대로 보여준다.
-            (이미 88점을 본 사람에게 '?점'을 다시 내미는 건 뒷걸음질이다)
-            물음표 세 칸이 이미 '뽑으면 열린다'를 말한다 — 같은 말을 글로 또 쓰지 않는다. */}
-        <div className="today-hook__reveal" aria-hidden>
-          <div className="th-cell">
-            <span className="th-cell__k">오늘 점수</span>
-            <span className="th-cell__v">{drawn ? drawn.luck.total : '?'}<i>점</i></span>
+      {/* 메인 카드 — 글은 왼쪽, 마스코트는 오른쪽 크게, 버튼은 한 줄 꽉 채워서.
+          물음표 세 칸으로 궁금하게 만들던 방식은 걷었다. 누를 게 하나여야 누르고 싶어진다. */}
+      <div className="today-hook">
+        <div className="today-hook__head">
+          <div className="today-hook__txt">
+            <span className="today-hook__kw">오늘은 {iljin.kor}일</span>
+            {zodiac && saju ? (
+              <>
+                <p className="today-hook__line">{softBreak(saju.title, 14)}</p>
+                <p className="today-hook__hint">{saju.headline}</p>
+              </>
+            ) : (
+              <>
+                <p className="today-hook__line">
+                  지금은 <b>{vibe.word}</b> 기운이 좋아요
+                </p>
+                <p className="today-hook__hint">{vibe.line}</p>
+              </>
+            )}
           </div>
-          <div className="th-cell">
-            <span className="th-cell__k">행운의 색</span>
-            <span className={`th-cell__v${drawn ? '' : ' th-cell__v--q'}`}>
-              {drawn ? drawn.luck.color.name : '?'}
-            </span>
-          </div>
-          <div className="th-cell">
-            <span className="th-cell__k">행운 음식</span>
-            <span className={`th-cell__v${drawn ? '' : ' th-cell__v--q'}`}>
-              {drawn ? drawn.luck.food.name : '?'}
-            </span>
-          </div>
+          <span className="today-hook__art" aria-hidden>
+            <Mascot size={96} score={drawn ? drawn.luck.total : streak >= 3 ? 90 : 80} bare />
+          </span>
         </div>
-
-        <span className="today-hook__cta">
+        {drawn ? (
+          <div className="today-hook__score">
+            <span className="today-hook__score-k">오늘 점수</span>
+            <span className="today-hook__score-v"><b className="num">{drawn.luck.total}</b>점</span>
+            {drawnName ? <span className="today-hook__score-note">{drawnName}</span> : null}
+          </div>
+        ) : null}
+        <button type="button" className="btn btn--primary today-hook__cta" onClick={onStart}>
           {drawn ? '다른 기분으로 하나 더 뽑기' : '쪽지 뽑기 시작하기'}
-        </span>
-      </button>
+        </button>
+      </div>
 
       {/* 내 사주 — 이 앱에서 가장 개인적인 값이라 홈 상단에 둔다.
           아직 안 만든 사람에겐 '띠로는 12분의 1'이라는 이유를 대고 부른다. */}
@@ -224,6 +208,20 @@ export function HomeScreen({
           <span className="saju-entry__chev" aria-hidden>›</span>
         </button>
       )}
+
+      {/* 오늘 나에게 — 사주 있는 사람이 홈에서 바로 보고 싶은 것: 오늘 돈·사랑·일 */}
+      {sajuBadge ? (
+        <section className="sec">
+          <div className="sec__head">
+            <h2 className="sec__title">오늘 나에게</h2>
+          </div>
+          <ul className="mygod__qa mygod__qa--home">
+            <li><span className="mygod__qa-k">돈</span>{DAY_ANSWERS[sajuBadge.group].money}</li>
+            <li><span className="mygod__qa-k">사랑</span>{DAY_ANSWERS[sajuBadge.group].love}</li>
+            <li><span className="mygod__qa-k">일</span>{DAY_ANSWERS[sajuBadge.group].work}</li>
+          </ul>
+        </section>
+      ) : null}
 
       {/* 이번 주 운세 캘린더 — 스트릭에 줄 보상이자, 좋은 날을 미리 알려
           그날 다시 오게 만드는 리텐션 장치. 잠금 해제는 스트릭(무료) 또는 광고. */}

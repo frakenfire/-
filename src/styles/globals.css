@@ -4170,3 +4170,169 @@ strong {
 .score-hero .drawn__lead {
   color: var(--gray-700); /* 파란 틴트 위 AA */
 }
+
+/* ── 메인 카드 재설계: 글 왼쪽, 마스코트 오른쪽 크게, 버튼 한 줄 ── */
+.today-hook {
+  display: block;
+  background: var(--brand-soft);
+  padding: 20px;
+  border-radius: 20px;
+  margin-bottom: var(--space-6);
+  transition: none;
+}
+.today-hook:active {
+  transform: none;
+}
+.today-hook__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.today-hook__txt {
+  flex: 1;
+  min-width: 0;
+}
+.today-hook__art {
+  flex: none;
+  display: flex;
+}
+.today-hook .today-hook__kw {
+  color: var(--gray-700);
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+}
+.today-hook .today-hook__line {
+  margin: 4px 0 0;
+  font-size: 22px;
+  line-height: 31px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--gray-900);
+  white-space: pre-line;
+}
+.today-hook .today-hook__line b {
+  color: var(--brand-strong);
+}
+.today-hook .today-hook__hint {
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
+.today-hook__score {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(27, 100, 218, 0.12);
+}
+.today-hook__score-k {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+  color: var(--gray-700);
+}
+.today-hook__score-v {
+  font-size: 17px;
+  line-height: 25.5px;
+  font-weight: 700;
+  color: var(--brand-strong);
+}
+.today-hook__score-v b {
+  font-size: 32px;
+  line-height: 42px;
+}
+.today-hook__score-note {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+.today-hook .today-hook__cta {
+  display: block;
+  width: 100%;
+  margin-top: 16px;
+  background: var(--brand);
+  color: var(--white);
+  font-size: 17px;
+  line-height: 25.5px;
+  font-weight: 700;
+  min-height: 54px;
+  border-radius: 14px;
+  padding: 0 16px;
+  text-align: center;
+}
+.mygod__qa--home li {
+  font-size: 15px;
+  line-height: 22.5px;
+}
+.mygod__qa--home li:first-child {
+  border-top: 0;
+}
+
+/* ── 누르는 맛: 토스는 누르는 것마다 손끝에 반응이 온다 ── */
+.btn,
+.act-row,
+.compat-banner,
+.saju-entry,
+.week-lock,
+.mood-btn,
+.topic-btn,
+.compat-pick,
+.zodiac-chip,
+.reopen-card,
+.rank-card__more,
+.sec__action,
+.seg-tab,
+.lucky-today__set,
+.rel-chip {
+  transition: transform 0.12s ease, background-color 0.12s ease, opacity 0.12s ease;
+}
+.btn:active,
+.topic-btn:active,
+.compat-pick:active,
+.zodiac-chip:active,
+.today-hook__cta:active {
+  transform: scale(0.97);
+}
+.btn--primary:active {
+  background: var(--brand-strong);
+}
+.act-row:active,
+.compat-banner:active,
+.saju-entry:active,
+.week-lock:active,
+.mood-btn:active,
+.reopen-card:active,
+.rank-card__more:active,
+.lucky-today__set:active {
+  background: var(--gray-100);
+}
+.sec__action:active,
+.seg-tab:active {
+  opacity: 0.6;
+}
+
+/* ── 드럼 피커: 위아래가 흐려지며 굴러가는 느낌 ── */
+.wheel__scroll {
+  overscroll-behavior: contain;
+  mask-image: linear-gradient(to bottom, transparent 0, #000 30%, #000 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 30%, #000 70%, transparent 100%);
+}
+.wheel__item {
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+/* 옛 히어로의 절대 배치를 걷는다. 마스코트는 글 옆에 제 자리로 */
+.today-hook .today-hook__art {
+  position: static;
+  width: 96px;
+  height: 96px;
+  right: auto;
+  top: auto;
+  transform: none;
+  opacity: 1;
+}

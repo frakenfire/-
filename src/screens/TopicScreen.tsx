@@ -6,7 +6,7 @@ import type { FortuneType } from '../types/fortune.ts';
 
 type Props = {
   /** 세워둔 사주 — 무엇을 근거로 뽑는지 한 줄로 */
-  sajuBadge: { icon: IconName; name: string; hue: string } | null;
+  sajuBadge: { icon: IconName; name: string; hue: string; group?: string } | null;
   onSelect: (t: FortuneType) => void;
   onBack: () => void;
 };

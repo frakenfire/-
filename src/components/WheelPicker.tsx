@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { tap } from '../lib/haptic.ts';
 
 export const WHEEL_ITEM_H = 44;
 
@@ -24,6 +25,7 @@ type Props = {
 export function WheelPicker({ items, value, onChange, label, disabled = false }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const settle = useRef<number | undefined>(undefined);
+  const lastTick = useRef(-1);
   const idx = Math.max(0, items.findIndex((i) => i.value === value));
 
   // 값이 밖에서 바뀌면(예: 월이 바뀌어 일수가 줄면) 스크롤 위치를 맞춘다.
@@ -36,6 +38,15 @@ export function WheelPicker({ items, value, onChange, label, disabled = false }:
 
   function handleScroll() {
     if (disabled) return;
+    const el0 = ref.current;
+    if (el0) {
+      // 칸 하나를 지날 때마다 손끝에 틱. 실제 드럼 피커가 주는 그 느낌이다.
+      const cur = Math.round(el0.scrollTop / WHEEL_ITEM_H);
+      if (cur !== lastTick.current) {
+        lastTick.current = cur;
+        tap('tick');
+      }
+    }
     window.clearTimeout(settle.current);
     // 멈춘 뒤에 확정한다. 굴러가는 도중마다 바꾸면 값이 요동친다.
     settle.current = window.setTimeout(() => {
@@ -48,6 +59,7 @@ export function WheelPicker({ items, value, onChange, label, disabled = false }:
 
   function pick(v: number) {
     if (disabled) return;
+    tap('tick');
     onChange(v);
   }
 
