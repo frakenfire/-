@@ -212,11 +212,7 @@ export function HomeScreen({
       ) : (
         <button type="button" className="saju-entry" onClick={onSaju}>
           <span className="saju-entry__icon" aria-hidden>
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor"
-              strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="5" width="18" height="16" rx="4" />
-              <path d="M3 10h18M8 3v4M16 3v4" />
-            </svg>
+            <Mascot size={32} mood="calm" bare />
           </span>
           <span className="saju-entry__text">
             <strong className="saju-entry__v">생년월일 입력하기</strong>
