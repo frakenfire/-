@@ -4568,22 +4568,12 @@ strong {
   35% { transform: translateY(-8px) rotate(-2deg) scale(1.03); }
   70% { transform: translateY(-2px) rotate(2deg) scale(1.01); }
 }
-.today-hook__art svg,
-.note-stage__mascot svg,
-.score-hero__mascot svg,
-.dm-hero__icon svg,
-.compat-result__mascot svg,
-.report-hero__mascot svg {
-  animation: mascot-bob 2.6s ease-in-out infinite;
-  transform-origin: 50% 90%;
-}
+
 @keyframes mascot-blink {
   0%, 92%, 100% { transform: scaleY(1); }
   95% { transform: scaleY(0.1); }
 }
-.mascot__eyes {
-  animation: mascot-blink 3.2s ease-in-out infinite;
-}
+
 @keyframes note-float {
   0%, 100% { transform: translateY(0) rotate(var(--tilt, 0deg)); }
   50% { transform: translateY(-9px) rotate(calc(var(--tilt, 0deg) + 1.5deg)); }
@@ -4592,3 +4582,84 @@ strong {
   .today-hook__art svg, .note-stage__mascot svg, .score-hero__mascot svg,
   .dm-hero__icon svg, .compat-result__mascot svg, .report-hero__mascot svg { animation: none; }
 }
+
+/* ── 쪽지 석 장: 가로로 긴 봉투 세 줄. 작은 카드 셋보다 크고, 누르기 쉽다 ── */
+.note-stage {
+  flex: 1 1 auto;
+  justify-content: center;
+  padding: 8px 0 24px;
+}
+.note-row {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+}
+.note-row > * { --tilt: 0deg; margin-top: 0; }
+.note {
+  flex: 0 0 auto;
+  width: 100%;
+  max-width: none;
+  aspect-ratio: auto;
+  min-height: 96px;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 20px;
+  text-align: left;
+  border-width: 0;
+  box-shadow: 0 6px 20px rgba(0, 23, 51, 0.06);
+}
+.note__seal { height: auto; }
+.note--facedown .note__hint {
+  font-size: 17px;
+  line-height: 25.5px;
+  font-weight: 700;
+  color: var(--gray-900);
+  text-align: left;
+}
+@keyframes note-float {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+.note--idle { animation: note-in 0.34s ease both, note-float 3.2s ease-in-out 0.6s infinite; }
+.note--idle:nth-child(2) { animation-delay: 80ms, 1.2s; }
+.note--idle:nth-child(3) { animation-delay: 160ms, 1.9s; }
+@keyframes note-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── 결과 위 한 줄 ── */
+.result__headline {
+  margin: 20px 0 4px;
+  font-size: 22px;
+  line-height: 31px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--gray-900);
+  white-space: pre-line;
+}
+.result__vibe {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-700);
+}
+
+/* ── 화면 전환: 오른쪽에서 밀려 들어온다 ── */
+@keyframes screen-in {
+  from { opacity: 0; transform: translateX(18px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.app__body {
+  animation: screen-in 0.24s ease-out both;
+}
+@media (prefers-reduced-motion: reduce) {
+  .app__body { animation: none; }
+}
+
+/* 화면 전환 중 옆으로 삐져나오는 폭을 가둔다 */
+.app { overflow-x: hidden; }

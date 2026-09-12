@@ -1,20 +1,10 @@
-import { Mascot } from '../components/Mascot.tsx';
-import { DAY_ANSWERS } from '../data/sajuAnswers.ts';
-import { softBreak } from '../lib/softBreak.ts';
 import { useEffect, useState } from 'react';
+import { Mascot } from '../components/Mascot.tsx';
 import { Icon } from '../components/Icon.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
-import { LetterCard } from '../components/LetterCard.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
-import { AdBadge, AdBanner } from '../components/AdNotice.tsx';
-import { luckPercentile, GRADE_KO } from '../lib/luck.ts';
-import { ELEMENT_EMOJI, ELEMENT_KO, sajuToday } from '../lib/saju.ts';
-import { analyzeSaju } from '../lib/tenGods.ts';
-import { computeFourPillars, type BirthInput } from '../lib/fourPillars.ts';
-import { dailyForMe, asSajuToday } from '../lib/dailySaju.ts';
-import { todayVibe } from '../lib/dayVibe.ts';
-import { todayKey } from '../lib/dateSeed.ts';
-import type { ZodiacId } from '../data/zodiac.ts';
+import { GRADE_KO } from '../lib/luck.ts';
+import { softBreak } from '../lib/softBreak.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
 import type { LuckySong } from '../data/luckySongs.ts';
 
@@ -22,58 +12,22 @@ type Props = {
   result: FortuneResult;
   note: Note;
   busy: boolean;
-  zodiacId?: ZodiacId | null;
-  /** 사주를 넣었으면 내일 예고도 일간 기준으로 */
-  birth?: BirthInput | null;
-  streak?: number;
-  onDetail: () => void;
-  onSave: () => void;
   onShare: () => void;
   onCopy: () => void;
   userName: string | null;
   song: LuckySong;
-  onRetry: () => void;
-  onCompat: () => void;
   onBack: () => void;
-  // 아침 알림 동의 — 콘솔 템플릿 미설정이면 App 이 카드 자체를 숨긴다
-  showNotiCard?: boolean;
-  onAskNoti?: () => void;
 };
 
-// 결과 = 기분에 맞춘 하루 설계.
-// 공유는 "친구에게 도움 주기"로 첫 번째 액션. 상위 % 배지로 자랑 공유를 유도한다.
-export function ResultScreen({
-  result,
-  note,
-  busy,
-  zodiacId,
-  birth = null,
-  streak = 0,
-  showNotiCard = false,
-  onAskNoti,
-  onDetail,
-  onSave,
-  onShare,
-  onCopy,
-  userName,
-  song,
-  onRetry,
-  onCompat,
-  onBack,
-}: Props) {
-  const { luck, rarity, dayPlan } = result;
-  const [letterOpen, setLetterOpen] = useState(false);
-  const brag = luckPercentile(luck.total);
-  const vibe = todayVibe(todayKey()); // 홈과 같은'오늘의 기운' — 홈결과 연결
+// 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
+// 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
+export function ResultScreen({ result, note, busy, onShare, onCopy, userName, song, onBack }: Props) {
+  const { luck, dayPlan } = result;
+  const isMonth = result.reading.scale === 'month';
 
-  // 총운 카운트업 리빌 — 0N 으로 차오르며 점수가'뽑힌'느낌을 준다.
-  // prefers-reduced-motion 이면 즉시 최종값.
+  // 점수 카운트업 — 0에서 차오르며 '뽑힌' 느낌
   const [shownTotal, setShownTotal] = useState(0);
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      setShownTotal(luck.total);
-      return;
-    }
     let raf = 0;
     const t0 = performance.now();
     const dur = 900;
@@ -87,57 +41,23 @@ export function ResultScreen({
     return () => cancelAnimationFrame(raf);
   }, [luck.total]);
 
-  // 풀이 라벨 — month 타입은 초반/중순/월말, 나머지는 오전/오후/저녁.
-  const isMonth = result.reading.scale === 'month';
-
-  // 스트릭 마일스톤 — 3·7·14·30일 달성 순간을 축하 이벤트로 (습관 고리 보상)
-  const milestone = [3, 7, 14, 30].includes(streak);
-
-  // 내일 예고 — 내일 일진×내 띠를 미리 보여줘 '내일 다시 올 이유'를 만든다.
-  // (day 결과 + 띠 설정 시에만. 사주 엔진이라 결정적)
-  const tomorrowSaju =
-    isMonth
-      ? null
-      : // 사주를 넣었으면 내일도 내 일간 기준으로 본다. 오늘은 일간, 내일은 띠로 말하면
-        // 같은 카드 안에서 기준이 갈려 "어느 쪽 얘기지?" 가 된다.
-        birth
-        ? asSajuToday(
-            dailyForMe(
-              todayKey(new Date(Date.now() + 86400000)),
-              computeFourPillars(birth),
-              analyzeSaju(computeFourPillars(birth)),
-            ),
-            todayKey(new Date(Date.now() + 86400000)),
-          )
-        : zodiacId
-          ? sajuToday(todayKey(new Date(Date.now() + 86400000)), zodiacId)
-          : null;
-  const TONE_RANK = { caution: 0, steady: 1, good: 2, great: 3 } as const;
-  const tomorrowBetter =
-    tomorrowSaju && result.saju ? TONE_RANK[tomorrowSaju.tone] > TONE_RANK[result.saju.tone] : false;
-  const rl = isMonth
-    ? { title: '이번 달 풀이', desc: '초반부터 월말까지 이번 달을 그려봤어요', m: '이번 달 초반', a: '중순', e: '월말' }
-    : { title: '오늘의 풀이', desc: '시간대별로 하루를 미리 그려봤어요', m: '오전', a: '오후', e: '저녁' };
+  const action = result.luckyPoint.split(' · ')[2] ?? result.luckyPoint;
 
   return (
     <AppLayout
       onBack={onBack}
       title={isMonth ? '이번 달 쪽지' : '오늘의 쪽지'}
       bottom={
-        // 가장 중요한 단일 액션(공유)을 화면 하단에 고정 — 실제 토스 BottomCTA 패턴.
-        // 광고 없이, 스크롤과 무관하게 항상 누를 수 있게 둔다.
         <button type="button" className="btn btn--primary" disabled={busy} onClick={onShare}>
-          이 쪽지, 친구한테 보내주기 
+          친구한테 보내기
         </button>
       }
     >
-      {/* 내가 뽑은 쪽지 — 이 앱의 정체성이자, 방금 한 선택의 보상.
-          이게 없으면 19장 중 하나를 고른 의식이 결과에 아무 흔적도 남기지 않는다.
-          (실제로 그동안 쪽지 이름이 결과 어디에도 안 나왔다) */}
+      {/* 1. 한눈 요약 */}
       <div className={`drawn drawn--${note.color} score-hero`}>
         <div className="score-hero__top">
           <span className="score-hero__mascot" aria-hidden>
-            <Mascot size={88} score={luck.total} bare />
+            <Mascot size={96} score={luck.total} bare />
           </span>
           <div className="score-hero__num">
             <span className="score-hero__k">{userName ? `${userName}님의 오늘 점수` : '오늘 점수'}</span>
@@ -152,342 +72,66 @@ export function ResultScreen({
         </div>
       </div>
 
-      {/* 브리핑 카드 */}
-      <div
-        className={`briefing briefing--${rarity.tier}`}
-        style={{ position: 'relative', overflow: 'hidden' }}
-      >
-        {luck.total >= 88 || rarity.special || milestone ? (
-          <div className="confetti" aria-hidden>
-            {['', '', '', '', '', '', '', ''].map((e, i) => (
-              <span
-                key={i}
-                className="confetti__bit"
-                style={{ left: `${8 + i * 12}%`, animationDelay: `${i * 0.12}s` }}
-              >
-                {e}
-              </span>
-            ))}
+      <p className="result__headline">{softBreak(dayPlan.headline, 18)}</p>
+      <p className="result__vibe">{dayPlan.vibe}</p>
+
+      {/* 2. 오늘의 행운 네 칸 */}
+      <div className="lucky4">
+        <p className="lucky4__head">{isMonth ? '이번 달의 행운' : '오늘의 행운'}</p>
+        <div className="lucky4__grid">
+          <div className="lucky4__tile">
+            <span className="lucky4__swatch" style={{ background: luck.color.hex }} aria-hidden />
+            <span className="lucky4__k">색깔</span>
+            <strong className="lucky4__v">{luck.color.name}</strong>
+            <span className="lucky4__why">{luck.time}에 곁에 두면 좋아요</span>
           </div>
-        ) : null}
-
-        <div className="briefing__chips">
-          <span className="chip chip--type">
-            <Icon name={note.icon} size={15} /> {result.title}
-          </span>
-          <span className={`rarity-badge rarity-badge--${rarity.tier}`}>
-            {rarity.label}
-          </span>
-        </div>
-
-        {milestone ? (
-          <p className="streak-hit">
-             {streak}일 연속 쪽지 달성! 꾸준함이 운을 키운대요
-          </p>
-        ) : null}
-
-        {result.persona ?<p className="briefing__persona"> {result.persona}</p> : null}
-        <p className="briefing__headline">{softBreak(dayPlan.headline, 18)}</p>
-        <p className="briefing__vibe">{dayPlan.vibe}</p>
-
-        {/* 알약을 다섯 개 세워두면 무엇도 눈에 안 들어온다. 등수·기운처럼
-            '읽고 지나가는' 값은 칩에서 빼서 헤드라인 밑 한 줄로 눕혔다.
-            기운은 사주가 없는 사람에게만 — 있으면 아래 일진 줄이 같은 말을 한다. */}
-        {brag.isBrag || (!isMonth && !result.saju) ? (
-          <p
-            className="briefing__meta"
-            aria-label={brag.isBrag ? `${isMonth ? '이번 달' : '오늘'} 상위 ${brag.pct}퍼센트` : undefined}
-          >
-            {brag.isBrag ? (
-              <b>{isMonth ?'이번 달' : '오늘'} 점수 상위 {brag.pct}% · {brag.label}</b>
-            ) : null}
-            {brag.isBrag && !isMonth && !result.saju ?' · ' : null}
-            {!isMonth && !result.saju ? <>오늘의 기운 · {vibe.word}</> : null}
-          </p>
-        ) : null}
-
-        {/* 기분에 맞춘 하루 설계 — 결과의 주인공 */}
-        <div className="plan">
-          <p className="plan__title">{isMonth ? '이번 달, 이렇게 보내요' : '오늘, 이렇게 보내요'}</p>
-          <ul className="plan__steps">
-            {dayPlan.steps.map((s) => (
-              <li className="plan__step" key={s.when}>
-                <span className="plan__when">{s.when}</span>
-                <span className="plan__text">{s.text}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="plan__hold">
-            <span className="plan__hold-k">{isMonth ? '이번 달은 접어둬요' : '오늘은 접어둬요'}</span>
-            <span className="plan__hold-v">{dayPlan.holdOff}</span>
+          <div className="lucky4__tile lucky4__tile--blue">
+            <span className="lucky4__icon" aria-hidden><Icon name="headphone" size={26} /></span>
+            <span className="lucky4__k">노래</span>
+            <strong className="lucky4__v">{song.title}</strong>
+            <span className="lucky4__why">{song.artist} · {song.why}</span>
+          </div>
+          <div className="lucky4__tile lucky4__tile--yellow">
+            <span className="lucky4__icon" aria-hidden><Icon name="target" size={26} /></span>
+            <span className="lucky4__k">행동</span>
+            <strong className="lucky4__v">{action}</strong>
+            <span className="lucky4__why">{luck.direction}으로 가면 더 좋아요</span>
+          </div>
+          <div className="lucky4__tile lucky4__tile--orange">
+            <span className="lucky4__icon" aria-hidden><Icon name="bowl" size={26} /></span>
+            <span className="lucky4__k">음식</span>
+            <strong className="lucky4__v">{luck.food.name}</strong>
+            <span className="lucky4__why">{luck.food.why}</span>
           </div>
         </div>
-
-        {/* 오늘의 행운 — 색·노래·행동·음식. 한눈에 보이게 큰 네 칸 */}
-        {!isMonth ? (
-          <div className="lucky4">
-            <p className="lucky4__head">오늘의 행운</p>
-            <div className="lucky4__grid">
-              <div className="lucky4__tile">
-                <span className="lucky4__swatch" style={{ background: luck.color.hex }} aria-hidden />
-                <span className="lucky4__k">색깔</span>
-                <strong className="lucky4__v">{luck.color.name}</strong>
-                <span className="lucky4__why">{luck.time}에 곁에 두면 좋아요</span>
-              </div>
-              <div className="lucky4__tile lucky4__tile--blue">
-                <span className="lucky4__icon" aria-hidden><Icon name="headphone" size={26} /></span>
-                <span className="lucky4__k">노래</span>
-                <strong className="lucky4__v">{song.title}</strong>
-                <span className="lucky4__why">{song.artist} · {song.why}</span>
-              </div>
-              <div className="lucky4__tile lucky4__tile--yellow">
-                <span className="lucky4__icon" aria-hidden><Icon name="target" size={26} /></span>
-                <span className="lucky4__k">행동</span>
-                <strong className="lucky4__v">{result.luckyPoint.split(' · ')[2] ?? result.luckyPoint}</strong>
-                <span className="lucky4__why">{luck.direction}으로 가면 더 좋아요</span>
-              </div>
-              <div className="lucky4__tile lucky4__tile--orange">
-                <span className="lucky4__icon" aria-hidden><Icon name="bowl" size={26} /></span>
-                <span className="lucky4__k">음식</span>
-                <strong className="lucky4__v">{luck.food.name}</strong>
-                <span className="lucky4__why">{luck.food.why}</span>
-              </div>
-            </div>
-            <div className="share-row">
-              <button type="button" className="btn btn--primary share-row__btn" disabled={busy} onClick={onShare}>
-                카톡·메시지로 보내기
-              </button>
-              <button type="button" className="btn btn--secondary share-row__btn" disabled={busy} onClick={onCopy}>
-                복사하기
-              </button>
-            </div>
-          </div>
-        ) : null}
-
-        {/* 행운 보고서 — month: 행운의 주·이달의 색·키워드 */}
-        {isMonth ? (
-        <div className="report">
-          <p className="report__head"> {isMonth ?'이번 달 행운 보고서' : '오늘의 행운 보고서'}</p>
-          <div className="report__grid">
-            <div className="report__cell">
-              <span className="report__k">{isMonth ? '행운의 주' : '타이밍'}</span>
-              <span className="report__v">{isMonth ? `${luck.luckyWeek ?? 1}주차` : luck.time}</span>
-            </div>
-            <div className="report__cell">
-              <span className="report__k">{isMonth ? '이달의 색' : '행운 색'}</span>
-              <span className="report__v">
-                <i className="report__dot" style={{ background: luck.color.hex }} aria-hidden />
-                {luck.color.name}
-              </span>
-            </div>
-            <div className="report__cell">
-              <span className="report__k">{isMonth ? '이달의 키워드' : '행운 음식'}</span>
-              <span className="report__v">
-                {isMonth ? (
-                  luck.tag
-                ) : (
-                  <>
-                    <Icon name="bowl" size={15} /> {luck.food.name}
-                  </>
-                )}
-              </span>
-            </div>
-          </div>
-          <p className="report__why">
-            {isMonth
-              ? `이번 달은 '${luck.tag}'을 키워드로 삼으면 술술 풀려요.`
-              : luck.food.why}
-          </p>
+        {/* 3. 공유 */}
+        <div className="share-row">
+          <button type="button" className="btn btn--primary share-row__btn" disabled={busy} onClick={onShare}>
+            카톡·메시지로 보내기
+          </button>
+          <button type="button" className="btn btn--secondary share-row__btn" disabled={busy} onClick={onCopy}>
+            복사하기
+          </button>
         </div>
-        ) : null}
       </div>
 
-      {/* 오늘의 사주 — 일진 도장(스탬프) 스트립. 행운 보고서 그리드와 다른 시각 언어로,
-          일진×내 띠 관계·기운·개운 컬러(행운 색의 근거)를 한 줄 흐름으로 보여준다 */}
-      <section className="sec">
-        <div className="sec__head">
-          <h2 className="sec__title">오늘 내 사주</h2>
-        </div>
-      {result.saju ? (
-        <div className="iljin">
-          <div className="iljin__row">
-            <span className="iljin__seal" aria-hidden>{result.saju.iljin.kor}</span>
-            <div className="iljin__flow">
-              <span className="iljin__date">오늘은 {result.saju.iljin.kor}일</span>
-              {/* 사주를 넣은 사람에겐 '내 띠' 가 아니라 '내 일간' 기준으로 말한다.
-                  같은 화면에서 기준이 둘이면 어느 쪽 말인지 헷갈린다. */}
-              {result.daily ? (
-                <span className="iljin__rel"><b>{result.daily.reading.title}</b></span>
-              ) : (
-                <span className="iljin__rel">
-                  내 띠와 <b>{result.saju.relationGloss}</b> · {ELEMENT_EMOJI[result.saju.myElement]}
-                  {ELEMENT_KO[result.saju.myElement]} 기운
-                </span>
-              )}
-            </div>
-            <span className={`iljin__tone iljin__tone--${result.saju.tone}`}>
-              {result.saju.toneWord}
-            </span>
-          </div>
-          {/* 사주를 넣은 사람에게는 바로 아래 '이 쪽지가 닿은 자리' 제목이 같은
-              문장을 다시 말한다. 두 카드를 한 섹션으로 합치고 나서야 드러난 중복이다. */}
-          {result.daily ? null : <p className="iljin__line">{result.saju.headline}</p>}
-          <div className="iljin__boost">
-            <span className="iljin__boost-color">
-              <i className="report__dot" style={{ background: result.saju.luckyColor.hex }} aria-hidden />
-              나에게 좋은 색 <b>{result.saju.luckyColor.name}</b>
-              <small>({ELEMENT_KO[result.saju.boostElement]} 기운을 채워요)</small>
-            </span>
-            <span className="iljin__boost-tip"> {result.saju.tip}</span>
-          </div>
-        </div>
-      ) : null}
-
-      {/* 오늘, 나에게 — 사주를 넣은 사람만 보는 자리.
-          띠 운세와 갈리는 핵심이라 결과에서 가장 눈에 띄는 곳에 둔다.
-          같은 날이어도 내 일간에 따라 십신이 달라지고, 신강신약에 따라 약이 되기도 독이 되기도 한다. */}
-      {result.daily ? (
-        <div className="mygod">
-          <p className="mygod__body">{result.daily.reading.body}</p>
-          <p className={`mygod__fit mygod__fit--${result.daily.fit}`}>{result.daily.fitLine}</p>
-          <ul className="mygod__qa">
-            <li><span className="mygod__qa-k">돈</span>{DAY_ANSWERS[result.daily.dayGodGroup].money}</li>
-            <li><span className="mygod__qa-k">사랑</span>{DAY_ANSWERS[result.daily.dayGodGroup].love}</li>
-            <li><span className="mygod__qa-k">일</span>{DAY_ANSWERS[result.daily.dayGodGroup].work}</li>
-          </ul>
-          <ul className="mygod__acts">
-            <li className="mygod__act mygod__act--do">
-              <span className="mygod__act-k">오늘 하면 좋아요</span>
-              {result.daily.reading.doThis}
+      {/* 4. 오늘 이렇게 보내요 */}
+      <div className="plan">
+        <p className="plan__title">{isMonth ? '이번 달, 이렇게 보내요' : '오늘, 이렇게 보내요'}</p>
+        <ul className="plan__steps">
+          {dayPlan.steps.map((s) => (
+            <li className="plan__step" key={s.when}>
+              <span className="plan__when">{s.when}</span>
+              <span className="plan__text">{s.text}</span>
             </li>
-            <li className="mygod__act mygod__act--dont">
-              <span className="mygod__act-k">오늘은 피하세요</span>
-              {result.daily.reading.avoid}
-            </li>
-          </ul>
-        </div>
-      ) : null}
-      </section>
-
-      {/* 하루 풀이 — 매일 볼 만한 해석 */}
-      <section className="sec">
-        <div className="sec__head">
-          <div>
-            <h2 className="sec__title">{rl.title}</h2>
-            <p className="sec__desc">{rl.desc}</p>
-          </div>
-        </div>
-      <div className="card">
-        <div className="section">
-          <p className="section__label">전체 풀이</p>
-          <p className="section__lead">{result.pinpoint}</p>
-          <p className="section__text">{result.reading.overall}</p>
-        </div>
-        <div className="section">
-          <p className="section__label">{rl.m}</p>
-          <p className="section__text">{result.reading.morning}</p>
-        </div>
-        <div className="section">
-          <p className="section__label">{rl.a}</p>
-          <p className="section__text">{result.reading.afternoon}</p>
-        </div>
-        <div className="section">
-          <p className="section__label">{rl.e}</p>
-          <p className="section__text">{result.reading.evening}</p>
-        </div>
-        <div className="section">
-          <p className="section__label">사람과의 사이</p>
-          <p className="section__text">{result.reading.people}</p>
-        </div>
-        <div className="section">
-          <p className="section__label">마음 관리</p>
-          <p className="section__text">{result.reading.mind}</p>
+          ))}
+        </ul>
+        <div className="plan__hold">
+          <span className="plan__hold-k">{isMonth ? '이번 달은 접어둬요' : '오늘은 접어둬요'}</span>
+          <span className="plan__hold-v">{dayPlan.holdOff}</span>
         </div>
       </div>
-      </section>
 
-      {/* 보상 하나만 블록으로 남긴다. 전에는 옅은 파랑 덩어리 네 개가 아래로
-          줄줄이 쌓여서, 무엇이 중요한 동작인지 화면이 말해주지 못했다. */}
-      <button type="button" className="btn btn--unlock" disabled={busy} onClick={onDetail}>
-        <span className="btn-unlock__top">
-          <span className="btn-unlock__main">오늘의 심층 리포트 열기</span>
-          <AdBadge label="광고" />
-        </span>
-        <span className="btn-unlock__sub">제일 좋은 운 · 잘 맞는 띠 · 행운 미션 · 오늘의 한 줄</span>
-      </button>
-
-      <section className="sec" style={{ marginTop: 'var(--space-8)' }}>
-        <div className="sec__head">
-          <h2 className="sec__title">더 보기</h2>
-        </div>
-        <div className="rowlist">
-          <button type="button" className="act-row" onClick={() => setLetterOpen((v) => !v)}>
-            <span className="act-row__t">
-              {letterOpen ?'요정의 편지 접기' : '요정이 쓴 편지도 읽기'}
-            </span>
-            <span className="act-row__c" aria-hidden>{letterOpen ?'⌃' : '⌄'}</span>
-          </button>
-
-          {letterOpen ? (
-            <div className="act-row__panel">
-              <LetterCard letter={result.letter} score={luck.total} rarity={rarity} />
-            </div>
-          ) : null}
-
-          <button type="button" className="act-row" disabled={busy} onClick={onSave}>
-            {/* 두 동작처럼 보이면 안 된다 — 실제 동작은 '저장' 하나고, 스토리는 그 다음 안내다. */}
-            <span className="act-row__t">카드 저장하고 스토리에 올리기</span>
-            <span className="act-row__c" aria-hidden>›</span>
-          </button>
-
-          <button type="button" className="act-row" disabled={busy} onClick={onRetry}>
-            <span className="act-row__t">다른 쪽지도 뽑아볼래요</span>
-            <AdBadge label="광고" />
-            <span className="act-row__c" aria-hidden>›</span>
-          </button>
-
-          <button type="button" className="compat-banner" onClick={onCompat}>
-            <span className="compat-banner__icon" aria-hidden><Icon name="heart" /></span>
-            <span className="compat-banner__body">
-              <span className="compat-banner__title">이 사람이랑 오늘 궁합은?</span>
-              <span className="compat-banner__desc">띠 또는 별자리만 고르면 바로 나와요</span>
-            </span>
-            <span className="compat-banner__cta">보러가기 ›</span>
-          </button>
-        </div>
-      </section>
-
-      {/* 내일 예고 — 리텐션 훅: 내일 일진과 내 띠 관계를 티저로 */}
-      {tomorrowSaju ? (
-        <div className="tmr-tease">
-          <span className="tmr-tease__moon" aria-hidden><Icon name="moon" /></span>
-          <span className="tmr-tease__body">
-            <span className="tmr-tease__k">내일 예고 · {tomorrowSaju.iljin.kor}일</span>
-            <span className="tmr-tease__v">
-              {tomorrowBetter
-                ? `내일은 오늘보다 기운이 좋아요 (${tomorrowSaju.relationKo}). 내일 쪽지 잊지 마요!`
-                : result.daily
-                  ? `내일 기운은 ${tomorrowSaju.toneWord}. 내일 쪽지로 확인해요`
-                  : `내일은 내 띠와 ${tomorrowSaju.relationKo}(${tomorrowSaju.relationGloss}). 내일 쪽지로 확인해요`}
-            </span>
-          </span>
-        </div>
-      ) : null}
-
-      {/* 아침 알림 옵트인 — 내일 예고로 궁금증을 만든 직후가 동의율이 가장 높다.
-          한 번 답하면(동의/거절) 다시 조르지 않는다. */}
-      {showNotiCard && onAskNoti ? (
-        <button type="button" className="noti-card" onClick={onAskNoti} disabled={busy}>
-          <span className="noti-card__icon" aria-hidden><Icon name="bell" /></span>
-          <span className="noti-card__body">
-            <span className="noti-card__title">내일 아침, 오늘의 쪽지 알림 받기</span>
-            <span className="noti-card__desc">눈 뜨자마자 하루 기운부터 확인해요</span>
-          </span>
-          <span className="noti-card__cta">받을래요</span>
-        </button>
-      ) : null}
-
-      <AdBanner />
       <Disclaimer />
     </AppLayout>
   );

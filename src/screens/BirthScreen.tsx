@@ -76,7 +76,20 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
   const notice = useMemo(() => (input ? boundaryNotice(input) : null), [input]);
 
   return (
-    <AppLayout onBack={onBack} step={inFlow ? 1 : undefined} totalSteps={inFlow ? 3 : undefined}>
+    <AppLayout
+      onBack={onBack}
+      step={inFlow ? 1 : undefined}
+      totalSteps={inFlow ? 3 : undefined}
+      bottom={
+        <button
+          type="button"
+          className="btn btn--primary"
+          onClick={() => input && onSave(name.trim() ? { date: dateStr, time: timeStr, name: name.trim() } : { date: dateStr, time: timeStr })}
+        >
+          {inFlow ? '쪽지 열어보기' : '내 사주 보기'}
+        </button>
+      }
+    >
       <h2 className="h2">언제 태어났어요?</h2>
       <p className="lead">이 기기에만 저장돼요. 어디에도 보내지 않아요.</p>
 
@@ -150,22 +163,14 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
         {unknownTime ? <p className="birth-hint">시각 없이 세 기둥으로 봐요.</p> : null}
       </div>
 
-      {notice ? <p className="birth-warn">{notice}</p> : null}
-
-
-      <button
-        type="button"
-        className="btn btn--primary"
-        onClick={() => input && onSave(name.trim() ? { date: dateStr, time: timeStr, name: name.trim() } : { date: dateStr, time: timeStr })}
-      >
-        {inFlow ? '이 사주로 쪽지 열기' : '내 사주 보기'}
-      </button>
       {inFlow && onSkip ? (
         <button type="button" className="birth-unknown birth-skip" onClick={onSkip} aria-pressed={false}>
           <span className="birth-unknown__box" aria-hidden />
           생년월일 없이 보고 싶어요
         </button>
       ) : null}
+
+      {notice ? <p className="birth-warn">{notice}</p> : null}
     </AppLayout>
   );
 }

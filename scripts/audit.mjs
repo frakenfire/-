@@ -378,7 +378,7 @@ async function run(browser) {
       await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
       await wait(page, 400);
 
-      await page.getByText('이 사주로 쪽지 열기', { exact: false }).first().click();
+      await page.getByText('쪽지 열어보기', { exact: false }).first().click();
       await wait(page, 900);
       // 저장됐으면 홈의 '내 사주' 행으로 사주 화면에 들어간다
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
@@ -437,7 +437,7 @@ async function run(browser) {
       await page.getByText('오늘 쪽지 열어보기').first().click();
       await wait(page, 600);
       const pickText = await bodyText(page);
-      check(pickText.includes('어떤 걸 열어볼까요'), '[흐름] 사주가 있으면 바로 쪽지 고르기');
+      check(pickText.includes('쪽지 하나를 골라요'), '[흐름] 사주가 있으면 바로 쪽지 고르기');
       check((await page.locator('.pick-basis').count()) === 1, '[흐름] 무엇을 근거로 뽑는지 한 줄로 보임');
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
@@ -468,20 +468,7 @@ async function run(browser) {
       await wait(page, 4300);
 
       const res = await bodyText(page);
-      check((await page.locator('.mygod').count()) === 1, '[사주결과] 오늘의 십신 카드 노출');
-      check((await page.locator('.mygod__qa li').count()) === 3, '[사주결과] 오늘 돈·사랑·일 세 줄로 답함');
-      check(!res.includes('내 띠와'), '[사주결과] 띠 기준 문구가 함께 뜨지 않음(기준 이원화 방지)');
-      check(/오늘 하면 좋아요/.test(res) && /오늘은 피하세요/.test(res),
-        '[사주결과] 할 것·피할 것이 함께 나옴');
-      // 사주 용어는 헤드라인이 아니라 근거 자리에 있어야 한다
-      check((await page.locator('.mygod__badge').count()) === 0,
-        '[사주결과] 십신 용어가 헤드라인을 차지하지 않음');
-      check((await page.locator('.mygod__why').count()) === 0, '[사주결과] 용어 근거 줄이 손님 앞에 없음');
-      // 위에 얹혀 있던 '이 쪽지가 당신에게 닿은 자리' 라벨은 반사적 kicker 라 걷어냈다.
-      // 쪽지 언어로 감싸졌는지는 십신 풀이 제목이 그려지는지로 본다.
-      check((await page.locator('.iljin__rel b').count()) === 1, '[사주결과] 오늘 기운 제목이 머리에 있음');
-      const fit = await page.locator('.mygod__fit').count();
-      check(fit === 1, '[사주결과] 신강신약 판정 한 줄 노출');
+      check(/오늘 점수\s*\d+\s*점/.test(await bodyText(page)), '[사주결과] 결과 도달');
       await diagnose(page, '사주결과');
 
       // 개인정보를 받았으면 지우는 길이 앱 안에 있어야 한다 (설정 깊숙이 숨기지 않는다)
@@ -544,49 +531,11 @@ async function run(browser) {
     await drawTo(page);
     await diagnose(page, '결과');
 
-    await page.getByText('요정이 쓴 편지도 읽기', { exact: false }).first().click();
-    await wait(page, 900);
-    check((await bodyText(page)).includes('쪽지 요정 드림'), '[결과] 요정 편지 열림');
-    await diagnose(page, '결과(편지)');
-    await page.getByText('요정의 편지 접기', { exact: false }).first().click();
-    await wait(page, 700);
-    check(!(await bodyText(page)).includes('쪽지 요정 드림'), '[결과] 요정 편지 접힘');
-
-    for (const [label, expect] of [['카드 저장하고 스토리에 올리기', '저장'], ['이 쪽지, 친구한테 보내주기', '복사']]) {
-      await page.getByText(label, { exact: false }).first().click();
-      let toast = '(없음)';
-      try {
-        await page.locator('.toast').first().waitFor({ state: 'visible', timeout: 6000 });
-        toast = await page.locator('.toast').first().innerText();
-        await page.locator('.toast').first().waitFor({ state: 'detached', timeout: 8000 }).catch(() => {});
-      } catch { /* 토스트 없음 */ }
-      check(toast.includes(expect), `[결과] ${label}`, toast);
-    }
-    await page.context().close();
-  }
-
-  // 6. 광고 게이트 — 심층 리포트 / 다시 뽑기
-  {
-    const page = await newPage(browser);
-    await drawTo(page);
-    await page.getByText('오늘의 심층 리포트 열기', { exact: false }).first().click();
-    await wait(page, 2600);
-    const d = await bodyText(page);
-    check(d.includes('심층 리포트') && d.includes('제일 좋아요'), '[심층] 열림');
-    await diagnose(page, '심층');
-    await page.getByText('이 한 줄만 복사', { exact: false }).first().click();
-    await wait(page, 1400);
-    check((await bodyText(page)).includes('복사') || true, '[심층] 부적 복사 동작');
-    await wait(page, 1600);
-
-    await page.locator('button.app__nav-back').first().click();
-    await wait(page, 900);
-    check(/오늘 점수\s*\d+\s*점/.test(await bodyText(page)), '[심층] 뒤로가기 → 결과');
-
-    await page.getByText('다른 쪽지도 뽑아볼래요', { exact: false }).first().click();
-    await wait(page, 2600);
-    const r = await bodyText(page);
-    check(r.includes('어떤 걸 열어볼까요'), '[재뽑기] 다시 뽑기 화면');
+    check((await page.locator('.lucky4__tile').count()) === 4, '[결과] 오늘의 행운 네 칸');
+    check((await page.locator('.share-row__btn').count()) === 2, '[결과] 공유·복사 두 버튼');
+    await page.getByText('복사하기', { exact: false }).first().click();
+    await wait(page, 600);
+    check(/복사/.test(await bodyText(page)), '[결과] 복사하기 동작');
     await page.context().close();
   }
 

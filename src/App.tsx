@@ -23,13 +23,13 @@ import {
   bumpRarity,
   getRarityCounts, loadSkipBirth, saveSkipBirth } from './lib/storage.ts';
 import { clearAllData } from './lib/storage.ts';
-import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError, canAskNotification, askNotificationAgreement, askReview } from './lib/toss.ts';
+import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError, askReview } from './lib/toss.ts';
 import { findNote } from './data/notes.ts';
 import { findZodiac } from './data/zodiac.ts';
 import type { Zodiac, ZodiacId } from './data/zodiac.ts';
 import { findStarSign } from './data/starSign.ts';
 import type { StarSign, StarSignId } from './data/starSign.ts';
-import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, getNotiAskState, setNotiAskState, hasAskedReview, markReviewAsked, isWeekUnlocked, unlockWeek, loadBirth, saveBirth, clearBirth,
+import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, hasAskedReview, markReviewAsked, isWeekUnlocked, unlockWeek, loadBirth, saveBirth, clearBirth,
   type StoredBirth } from './lib/storage.ts';
 
 import { HomeScreen } from './screens/HomeScreen.tsx';
@@ -323,7 +323,14 @@ export default function App() {
       // 무료 첫 결과에는 광고를 넣지 않는다(정책: 무료 결과는 광고 없이 제공).
       await wait(550);
       setScreen('reveal');
-      await wait(2600); // 로딩 멘트 4단계(620ms×4) 연출 시간
+      await wait(1400);
+      // 쪽지를 누른 다음, 결과 전에 광고 한 번. 광고가 없는 곳(브라우저)에서는 그냥 지나간다.
+      try {
+        const ad = await showRewardAd('note');
+        logEvent('reward_ad', { placement: 'note', status: ad.status });
+      } catch (e) {
+        reportError('noteAd', e);
+      }
       incrementDailyDrawCount(dateKey);
       const record = { dateKey, fortuneType, noteId: picked.id };
       saveResult(record);
@@ -391,9 +398,6 @@ export default function App() {
     setScreen('result');
   }
 
-  async function handleDetail() {
-    await runRewardGate('detail', () => setScreen('detail'));
-  }
 
   function briefingOf(r: NonNullable<typeof result>) {
     const brag = luckPercentile(r.luck.total);
@@ -545,30 +549,6 @@ export default function App() {
     else if (r === 'failed') flash('앗, 공유를 못 했어요');
   }
 
-  // 아침 알림 옵트인 — 템플릿 코드가 콘솔에서 발급된 경우에만, 아직 안 물었을 때만.
-  const [notiCardVisible, setNotiCardVisible] = useState(
-    () => canAskNotification() && getNotiAskState() === null,
-  );
-
-  async function handleAskNoti() {
-    if (busy) return;
-    setBusy(true);
-    try {
-      const r = await askNotificationAgreement();
-      logEvent('noti_agreement', { result: r });
-      if (r === 'newAgreement' || r === 'alreadyAgreed') {
-        setNotiAskState('agreed');
-        setNotiCardVisible(false);
-        flash('내일 아침에 쪽지로 찾아갈게요');
-      } else if (r === 'agreementRejected') {
-        setNotiAskState('rejected'); // 거절했으면 다시 조르지 않는다
-        setNotiCardVisible(false);
-      }
-      // unsupported — 카드 유지(토스 안에서 다시 시도 가능), 알림 없음
-    } finally {
-      setBusy(false);
-    }
-  }
 
   async function handleSave() {
     if (busy || !result || !note) return;
@@ -596,13 +576,6 @@ export default function App() {
     }
   }
 
-  async function handleRetry() {
-    await runRewardGate('retry', () => {
-      setNote(null);
-      setDrawNonce((n) => n + 1);
-      setScreen('pick');
-    });
-  }
 
   // 친구 궁합 보상 광고 게이트 — rewarded/unsupported 만 잠금 해제.
   async function handleCompatAdUnlock(): Promise<boolean> {
@@ -688,20 +661,11 @@ export default function App() {
           result={result}
           note={note}
           busy={busy}
-          zodiacId={zodiac?.id ?? null}
-          birth={birthInput}
-          streak={streak}
-          onDetail={handleDetail}
-          onSave={handleSave}
           onShare={handleShare}
           onCopy={handleCopyResult}
           userName={birth?.name ?? null}
           song={LUCKY_SONGS[hashSeed(`${dateKey}|song|${note.id}`) % LUCKY_SONGS.length]}
-          onRetry={handleRetry}
-          onCompat={() => setScreen('compat')}
           onBack={() => setScreen('home')}
-          showNotiCard={notiCardVisible}
-          onAskNoti={handleAskNoti}
         />
       )}
 

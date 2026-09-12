@@ -10,6 +10,8 @@
 //   lonely  외로워요 (눈물 한 방울)
 // accent 를 주면 접힌 귀퉁이와 볼 색이 바뀐다 — 사주 열 가지가 저마다의 색을 갖는다.
 
+import { useEffect, useRef } from 'react';
+
 export type MascotMood = 'grin' | 'happy' | 'calm' | 'tired' | 'anxious' | 'lonely';
 
 type Props = {
@@ -34,9 +36,40 @@ const INK = '#333d4b';
 export function Mascot({ size = 120, mood = 'happy', score, bare = false, accent }: Props) {
   const m: MascotMood = typeof score === 'number' ? moodFromScore(score) : mood;
   const fold = accent ?? '#e8f3ff';
+  const svgRef = useRef<SVGSVGElement>(null);
+  const eyesRef = useRef<SVGGElement>(null);
+  // 숨 쉬듯 오르내리고 가끔 깜빡인다. CSS 가 아니라 스크립트라 어디서든 움직인다.
+  useEffect(() => {
+    const el = svgRef.current;
+    const eyes = eyesRef.current;
+    if (!el || typeof el.animate !== 'function') return;
+    const bob = el.animate(
+      [
+        { transform: 'translateY(0) rotate(0deg) scale(1)' },
+        { transform: 'translateY(-8px) rotate(-2deg) scale(1.03)', offset: 0.35 },
+        { transform: 'translateY(-2px) rotate(2deg) scale(1.01)', offset: 0.7 },
+        { transform: 'translateY(0) rotate(0deg) scale(1)' },
+      ],
+      { duration: 2600, iterations: Infinity, easing: 'ease-in-out' },
+    );
+    const blink = eyes?.animate(
+      [
+        { transform: 'scaleY(1)' },
+        { transform: 'scaleY(1)', offset: 0.92 },
+        { transform: 'scaleY(0.1)', offset: 0.95 },
+        { transform: 'scaleY(1)' },
+      ],
+      { duration: 3200, iterations: Infinity },
+    );
+    return () => {
+      bob.cancel();
+      blink?.cancel();
+    };
+  }, []);
 
   return (
     <svg
+      ref={svgRef}
       width={size}
       height={size}
       viewBox={bare ? "40 56 120 114" : "0 0 200 200"}
@@ -71,7 +104,7 @@ export function Mascot({ size = 120, mood = 'happy', score, bare = false, accent
       <circle cx="124" cy="126" r="7" fill="#ffc7b0" opacity={m === 'tired' || m === 'lonely' ? 0.45 : 0.9} />
 
       {/* 눈 — 가끔 깜빡인다 */}
-      <g className="mascot__eyes">
+      <g ref={eyesRef} className="mascot__eyes">
       {m === 'grin' ? (
         <>
           <path d="M69 120 q7 -9 14 0" stroke={INK} strokeWidth="5" strokeLinecap="round" fill="none" />

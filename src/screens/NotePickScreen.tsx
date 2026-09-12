@@ -1,7 +1,6 @@
-import { Mascot } from '../components/Mascot.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { NoteCard } from '../components/NoteCard.tsx';
-import { NOTE_PICK, NOTE_TEASERS } from '../data/copy.ts';
+import { NOTE_TEASERS } from '../data/copy.ts';
 import { todayKey, hashSeed } from '../lib/dateSeed.ts';
 import type { Note } from '../types/fortune.ts';
 
@@ -41,22 +40,9 @@ export function NotePickScreen({
 
   return (
     <AppLayout onBack={busy ? undefined : onBack} step={2} totalSteps={3}>
-      <h2 className="h2" style={{ whiteSpace: 'pre-line' }}>
-        {NOTE_PICK.title}
-      </h2>
-      <p className="lead">{NOTE_PICK.lead}</p>
-      {/* 생년월일을 받아놓고 쪽지 후보에 안 쓰면 "그래서 뭐가 달라졌지" 가 된다.
-          반영됐다는 사실을 이 자리에서 밝힌다. */}
-      {personal ? (
-        <p className="pick-basis">오늘 기운과 <b>내 사주</b>에 맞춰 골라뒀어요</p>
-      ) : null}
-
-      {/* 이 화면의 내용은 쪽지 석 장뿐이다. 위에 붙여두면 아래 절반이 비어
-          만들다 만 화면으로 읽힌다. 남은 공간의 세로 중앙에 둔다. */}
+      <h2 className="h2">쪽지 하나를 골라요</h2>
+      {personal ? <p className="pick-basis">오늘 기운과 <b>내 사주</b>에 맞춰 골라뒀어요</p> : null}
       <div className="note-stage">
-      <span className="note-stage__mascot" aria-hidden>
-        <Mascot size={120} mood={openingId ? 'grin' : 'happy'} bare />
-      </span>
       <div className="note-row">
         {notes.map((note, i) => (
           <NoteCard
@@ -76,7 +62,6 @@ export function NotePickScreen({
           />
         ))}
       </div>
-      <p className="note-stage__hint">톡 눌러서 열어봐요</p>
       </div>
 
       {/* 제목이 이미 '하나만 골라볼까요' 라고 묻는다. 바닥에 같은 말을 한 번 더

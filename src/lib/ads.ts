@@ -22,6 +22,8 @@ export const AD_GROUPS = {
   // App.tsx handleSave 를 runRewardGate('saveImage', ...) 로 감싸면 된다.
   saveImage: 'REPLACE_REWARD_SAVE',
   retry: 'REPLACE_REWARD_RETRY',
+  // 쪽지를 누른 뒤 결과 전에 한 번
+  note: 'REPLACE_REWARD_NOTE',
   compat: 'REPLACE_REWARD_COMPAT',
 } as const;
 
