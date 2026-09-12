@@ -408,7 +408,7 @@ export default function App() {
   async function handleCopyLine() {
     if (!result) return;
     const ok = await copyText(result.detail.charm);
-    flash(ok ?'부적 문장 복사 완료!' : '앗, 복사를 못 했어요');
+    flash(ok ?'한 줄 복사 완료!' : '앗, 복사를 못 했어요');
   }
 
   // 결과 카드 저장 = 바이럴 공유 자산이라 광고 게이팅 없이 무료로(확산 우선).

@@ -39,14 +39,14 @@ export function DetailResultScreen({
     >
       <div className="report-hero">
         <h2 className="report-hero__title">
-          오늘 밀어야 할 운은 <b>{topPick.label}</b>
+          오늘은 <b>{topPick.label}</b>이 제일 좋아요
         </h2>
         <p className="report-hero__summary">{detail.summary}</p>
       </div>
 
       <section className="sec">
         <div className="sec__head">
-          <h2 className="sec__title">항목별 운세 순위</h2>
+          <h2 className="sec__title">오늘 뭐가 제일 좋을까</h2>
         </div>
         <div className="card">
         <CategoryScores ranked={detail.ranked} />
@@ -55,7 +55,7 @@ export function DetailResultScreen({
 
       <section className="sec">
         <div className="sec__head">
-          <h2 className="sec__title">행운 세트</h2>
+          <h2 className="sec__title">오늘의 행운</h2>
         </div>
         <div className="card">
         <LuckySetGrid luck={luck} mission={detail.mission} numberUse={detail.numberUse} />
@@ -97,7 +97,7 @@ export function DetailResultScreen({
         </div>
         <div className="rowlist">
           <button type="button" className="act-row" onClick={onCopyLine}>
-            <span className="act-row__t">부적 문장만 복사할래요</span>
+            <span className="act-row__t">이 한 줄만 복사할래요</span>
             <span className="act-row__c" aria-hidden>›</span>
           </button>
           <button type="button" className="act-row" disabled={busy} onClick={onSave}>

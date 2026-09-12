@@ -85,7 +85,7 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
 
       <div className="birth-form">
         <div className="wheel-group">
-          <span className="wheel-group__k">생년월일 (양력)</span>
+          <span className="wheel-group__k">생년월일</span>
           <span className="wheel-group__v">
             {year}년 {month}월 {safeDay}일
           </span>
@@ -164,7 +164,7 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
 
       {preview?.zodiacDiffersFromCalendarYear ? (
         <p className="birth-warn birth-warn--info">
-          입춘 전에 태어나서 사주로는 <b>앞 해의 띠</b>예요. 달력 띠와 다르게 나오는 게 맞아요.
+          2월 4일보다 먼저 태어나서, 사주에서는 <b>앞 해의 띠</b>로 봐요. 달력 띠와 달라도 맞아요.
         </p>
       ) : null}
 

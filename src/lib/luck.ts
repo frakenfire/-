@@ -12,7 +12,7 @@ export type CategoryScore = { key: string; label: string; emoji: string; score: 
 
 export type LuckSet = {
   total: number; // 65~99 (긍정 스큐)
-  grade: string; // 대길 / 길 / 중길 / 소길 / 평
+  grade: string; // 대길 / 길 / 중길 / 소길 / 평 (내부 키. 화면은 GRADE_KO 로)
   categories: CategoryScore[];
   color: LuckColor;
   number: number; // 1~45
@@ -57,9 +57,9 @@ const ITEMS = [
 const TAGS = ['정리', '연결', '회복', '기회', '여유', '집중', '다정', '도전', '안정', '설렘'];
 
 const CATEGORY_META = [
-  { key: 'love', label: '애정운', emoji: '' },
-  { key: 'money', label: '재물운', emoji: '' },
-  { key: 'work', label: '직장운', emoji: '' },
+  { key: 'love', label: '사랑운', emoji: '' },
+  { key: 'money', label: '돈운', emoji: '' },
+  { key: 'work', label: '일운', emoji: '' },
   { key: 'health', label: '건강운', emoji: '' },
 ];
 
@@ -86,6 +86,11 @@ const TONE_BAND: Record<'great' | 'good' | 'steady' | 'caution', [number, number
   good: [75, 95],
   steady: [70, 90], // 비화·평운 — 무난하되 대길은 아님
   caution: [65, 82], // 충·형·원진 — 길 이상은 뜨지 않음
+};
+
+/** 등급을 화면에 보일 때 쓰는 말. '중길' 은 아이가 모른다. */
+export const GRADE_KO: Record<string, string> = {
+  대길: '아주 좋음', 길: '좋음', 중길: '괜찮음', 소길: '보통', 평: '잔잔함',
 };
 
 export function luckBandForTone(tone: 'great' | 'good' | 'steady' | 'caution'): [number, number] {

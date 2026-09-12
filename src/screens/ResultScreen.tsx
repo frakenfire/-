@@ -1,10 +1,11 @@
+import { softBreak } from '../lib/softBreak.ts';
 import { useEffect, useState } from 'react';
 import { Icon } from '../components/Icon.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { LetterCard } from '../components/LetterCard.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
 import { AdBadge, AdBanner } from '../components/AdNotice.tsx';
-import { luckPercentile } from '../lib/luck.ts';
+import { luckPercentile, GRADE_KO } from '../lib/luck.ts';
 import { ELEMENT_EMOJI, ELEMENT_KO, sajuToday } from '../lib/saju.ts';
 import { TEN_GOD_KO, analyzeSaju } from '../lib/tenGods.ts';
 import { computeFourPillars, type BirthInput } from '../lib/fourPillars.ts';
@@ -160,7 +161,7 @@ export function ResultScreen({
             <Icon name={note.icon} size={15} /> {result.title}
           </span>
           <span className="chip chip--score">
-            총운 <b className="num">{shownTotal}점</b> · {luck.grade}
+            오늘 점수 <b className="num">{shownTotal}점</b> · {GRADE_KO[luck.grade] ?? luck.grade}
           </span>
           <span className={`rarity-badge rarity-badge--${rarity.tier}`}>
             {rarity.label}
@@ -174,7 +175,7 @@ export function ResultScreen({
         ) : null}
 
         {result.persona ?<p className="briefing__persona"> {result.persona}</p> : null}
-        <p className="briefing__headline">{dayPlan.headline}</p>
+        <p className="briefing__headline">{softBreak(dayPlan.headline, 18)}</p>
         <p className="briefing__vibe">{dayPlan.vibe}</p>
 
         {/* 알약을 다섯 개 세워두면 무엇도 눈에 안 들어온다. 등수·기운처럼
@@ -186,7 +187,7 @@ export function ResultScreen({
             aria-label={brag.isBrag ? `${isMonth ? '이번 달' : '오늘'} 상위 ${brag.pct}퍼센트` : undefined}
           >
             {brag.isBrag ? (
-              <b>{isMonth ?'이번 달' : '오늘'} 총운 상위 {brag.pct}% · {brag.label}</b>
+              <b>{isMonth ?'이번 달' : '오늘'} 점수 상위 {brag.pct}% · {brag.label}</b>
             ) : null}
             {brag.isBrag && !isMonth && !result.saju ?' · ' : null}
             {!isMonth && !result.saju ? <>오늘의 기운 · {vibe.word}</> : null}
@@ -257,18 +258,17 @@ export function ResultScreen({
           <div className="iljin__row">
             <span className="iljin__seal" aria-hidden>{result.saju.iljin.kor}</span>
             <div className="iljin__flow">
-              <span className="iljin__date">오늘의 일진 · {result.saju.iljin.kor}일</span>
+              <span className="iljin__date">오늘은 {result.saju.iljin.kor}일</span>
               {/* 사주를 넣은 사람에겐 '내 띠' 가 아니라 '내 일간' 기준으로 말한다.
                   같은 화면에서 기준이 둘이면 어느 쪽 말인지 헷갈린다. */}
               {result.daily ? (
                 <span className="iljin__rel">
-                  내 일간 <b>{result.daily.myStemKor}</b>에게 오늘은{' '}
-                  <b>{TEN_GOD_KO[result.daily.dayGod]}</b> · {ELEMENT_EMOJI[result.daily.myElement]}
+                  오늘 나에게 오는 건 <b>{TEN_GOD_KO[result.daily.dayGod]}</b> · {ELEMENT_EMOJI[result.daily.myElement]}
                   {ELEMENT_KO[result.daily.myElement]} 기운
                 </span>
               ) : (
                 <span className="iljin__rel">
-                  내 띠와 <b>{result.saju.relationKo}</b>({result.saju.relationGloss}) · {ELEMENT_EMOJI[result.saju.myElement]}
+                  내 띠와 <b>{result.saju.relationGloss}</b> · {ELEMENT_EMOJI[result.saju.myElement]}
                   {ELEMENT_KO[result.saju.myElement]} 기운
                 </span>
               )}
@@ -283,8 +283,8 @@ export function ResultScreen({
           <div className="iljin__boost">
             <span className="iljin__boost-color">
               <i className="report__dot" style={{ background: result.saju.luckyColor.hex }} aria-hidden />
-              개운 컬러 <b>{result.saju.luckyColor.name}</b>
-              <small>({ELEMENT_KO[result.saju.boostElement]} 보충)</small>
+              나에게 좋은 색 <b>{result.saju.luckyColor.name}</b>
+              <small>({ELEMENT_KO[result.saju.boostElement]} 기운을 채워요)</small>
             </span>
             <span className="iljin__boost-tip"> {result.saju.tip}</span>
           </div>
@@ -311,8 +311,8 @@ export function ResultScreen({
           </ul>
           {/* 사주 용어는 헤드라인이 아니라 근거 자리에 둔다 — 정확함은 지키되 앞세우지 않는다 */}
           <p className="mygod__why">
-            근거 · 내 일간 <b>{result.daily.myStemKor}</b> × 오늘 <b>{result.daily.iljin.kor}</b>일 ={' '}
-            <b>{TEN_GOD_KO[result.daily.dayGod]}</b>
+            왜냐하면 · 내 글자 <b>{result.daily.myStemKor}</b>과 오늘 글자 <b>{result.daily.iljin.kor}</b>이 만나{' '}
+            <b>{TEN_GOD_KO[result.daily.dayGod]}</b>이 돼요
           </p>
         </div>
       ) : null}
@@ -362,7 +362,7 @@ export function ResultScreen({
           <span className="btn-unlock__main">오늘의 심층 리포트 열기</span>
           <AdBadge label="광고" />
         </span>
-        <span className="btn-unlock__sub">운세 원픽 · 잘 맞는 띠 · 행운 미션 · 부적</span>
+        <span className="btn-unlock__sub">제일 좋은 운 · 잘 맞는 띠 · 행운 미션 · 오늘의 한 줄</span>
       </button>
 
       <section className="sec" style={{ marginTop: 'var(--space-8)' }}>

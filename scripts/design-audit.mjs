@@ -41,6 +41,9 @@ const RED_ALLOWED = ['reset-confirm__yes', 'privacy-note__btn--danger'];
 // 구분해야 하므로 한 색으로 못 만든다 — 목(木)의 초록은 여기서만 허용한다.
 const GREEN_ALLOWED = ['elbal-row__dot', 'elbal-row__bar', 'pcol__els'];
 const HANJA = /[\u{3400}-\u{4DBF}\u{4E00}-\u{9FFF}]/u;
+// 어른도 사전 없이는 모르는 명리 용어. 화면에 그대로 나오면 아이 눈높이가 아니다.
+// 뜻을 풀어 쓴 말(찰떡 사이, 규칙 기운, 오늘 점수)로만 말한다.
+const JARGON = /일진|십신|신강|신약|용신|오행|비화|삼합|육합|상충|상형|원진|자형|상파|상생|상극|총운|중길|대길|소길|개운 (컬러|색)|비견|겁재|식신|편재|정재|편관|정관|편인|정인|천간|사주팔자|입춘/;
 const EMOJI = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u;
 // 별자리 기호는 활자다(색 없음). 이건 이모지로 치지 않는다.
 const STAR_SIGNS = /[\u{2648}-\u{2653}]/u;
@@ -149,6 +152,10 @@ function auditScreen(name, data) {
   const heavy = data.weights.filter((w) => w.w > 700);
   check(heavy.length === 0, `[${name}] 굵기 700 이하`, heavy.map((w) => `${w.cls}:${w.w}`).slice(0, 4).join(' / '));
 
+  // 4.5) 명리 용어가 화면에 그대로 나오지 않는가
+  const jargon = data.texts.filter((t) => JARGON.test(t.text));
+  check(jargon.length === 0, `[${name}] 명리 용어 없음`, jargon.map((t) => t.text.match(JARGON)?.[0] + ':' + t.text.slice(0, 24)).slice(0, 4).join(' / '));
+
   // 5) 글자 크기가 TDS 스케일 위에 있는가
   const offScale = data.sizes.filter((s) => s.size && !TDS_SIZES.has(Math.round(s.size)));
   check(offScale.length === 0, `[${name}] 크기 TDS 스케일`,
@@ -189,6 +196,12 @@ async function run() {
       shotNo += 1;
       const file = `${shotsDir}/${String(shotNo).padStart(2, '0')}_${name.replace(/[^가-힣a-z0-9]+/gi, '_')}.png`;
       await page.screenshot({ path: file, fullPage: true });
+    }
+    // DESIGN_TEXT=디렉터리 를 주면 화면에 실제로 그려진 글자를 파일로 남긴다(말 난이도 점검용).
+    if (process.env.DESIGN_TEXT) {
+      const { writeFileSync } = await import('node:fs');
+      const txt = await page.evaluate(() => document.querySelector('.app')?.innerText ?? '');
+      writeFileSync(`${process.env.DESIGN_TEXT}/${String(shotNo || 0).padStart(2, '0')}_${name.replace(/[^가-힣a-z0-9]+/gi, '_')}.txt`, txt);
     }
     auditScreen(name, await page.evaluate(collect));
   };

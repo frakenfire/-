@@ -161,6 +161,7 @@ a:focus-visible {
   letter-spacing: -0.02em;
   margin: 0 0 var(--space-3);
   color: var(--color-dark-gray);
+  white-space: pre-line; /* softBreak 가 넣은 줄바꿈을 그대로 */
 }
 .h2 {
   font-size: 24px;
@@ -1111,6 +1112,7 @@ strong {
 /* 카드 헤더 — 제목이 홀로 뜨지 않게 부제와 묶는다 */
 /* ── 결과 히어로: 기분에 맞춘 하루 설계 ── */
 .briefing__headline {
+  white-space: pre-line;
   margin: 0 0 var(--space-2);
   font-size: 21px;
   font-weight: 700;
@@ -2723,6 +2725,7 @@ strong {
   margin-top: 8px;
 }
 .today-hook__line {
+  white-space: pre-line;
   margin: 0;
   font-size: 21px;
   font-weight: 700;
@@ -3531,7 +3534,7 @@ strong {
 }
 .elbal-row {
   display: grid;
-  grid-template-columns: 22px minmax(0, 1fr) 42px;
+  grid-template-columns: 34px minmax(0, 1fr) 42px;
   align-items: center;
   gap: 10px;
 }

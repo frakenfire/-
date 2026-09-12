@@ -10,6 +10,7 @@ import { todayVibe } from '../lib/dayVibe.ts';
 import { todayKey, hashSeed } from '../lib/dateSeed.ts';
 import { sajuToday, iljinOf, dailyZodiacRanking } from '../lib/saju.ts';
 import { shareMessage, buildRankingShareText } from '../lib/share.ts';
+import { softBreak } from '../lib/softBreak.ts';
 import { computeWeekAhead, buildWeekShareText, type WeekDay } from '../lib/weekAhead.ts';
 import { findZodiac, ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac.ts';
 import { ZODIAC_TRAIT } from '../data/traits.ts';
@@ -116,7 +117,7 @@ export function HomeScreen({
       {/* 첫 블록 — 상단 네비에 앱 이름이 이미 있어서, 큰 제목 자리는 앱 이름을
           반복하지 않고 '나에게 건네는 인사'가 차지한다. (예전엔 같은 글자가 두 번) */}
       <div className="home-hero">
-        <h1 className="h1">{greeting(todayKey())}</h1>
+        <h1 className="h1">{softBreak(greeting(todayKey()))}</h1>
         {/* 날짜와 연속 기록은 제목 위 알약 두 개가 아니라 제목 밑 보조 한 줄이다.
             제목 위에 뭔가 있으면 헤더가 둘로 읽힌다. */}
         <p className="home-hero__sub">
@@ -141,16 +142,16 @@ export function HomeScreen({
           <Mascot size={56} score={streak >= 3 ? 90 : 80} bare />
         </span>
         <span className="today-hook__kw">
-           오늘의 일진 · {iljin.kor}일
+           오늘은 {iljin.kor}일
         </span>
         {zodiac && saju ? (
           <>
             <p className="today-hook__persona">
               {ZODIAC_TRAIT[zodiac.id]} {zodiac.label}라면,
             </p>
-            <p className="today-hook__line">{saju.title}</p>
+            <p className="today-hook__line">{softBreak(saju.title, 16)}</p>
             <p className="today-hook__saju">
-              내 띠와 {saju.relationKo}({saju.relationGloss}) · 기운 {saju.toneWord}
+              내 띠와 {saju.relationGloss} · 기운 {saju.toneWord}
             </p>
             <p className="today-hook__hint">{saju.headline}</p>
           </>
@@ -168,7 +169,7 @@ export function HomeScreen({
             물음표 세 칸이 이미 '뽑으면 열린다'를 말한다 — 같은 말을 글로 또 쓰지 않는다. */}
         <div className="today-hook__reveal" aria-hidden>
           <div className="th-cell">
-            <span className="th-cell__k">오늘 총운</span>
+            <span className="th-cell__k">오늘 점수</span>
             <span className="th-cell__v">{drawn ? drawn.luck.total : '?'}<i>점</i></span>
           </div>
           <div className="th-cell">
@@ -331,7 +332,7 @@ export function HomeScreen({
                   ?'1위! 단톡방 자랑각이에요'
                   : myRank.rank <= 3
                     ? '포디움에 올랐어요 · 기분 좋게 시작해요'
-                    : `${myRank.relationKo}(${myRank.relationGloss}) · 기운 ${myRank.toneWord}`}
+                    : `${myRank.relationGloss} · 기운 ${myRank.toneWord}`}
               </span>
             </span>
             <span className="me-rank__rank">

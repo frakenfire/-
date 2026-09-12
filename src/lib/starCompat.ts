@@ -153,7 +153,7 @@ const TIP = [
 const CATEGORY_META = [
   { key: 'chem', label: '케미', emoji: '' },
   { key: 'talk', label: '대화', emoji: '' },
-  { key: 'conflict', label: '갈등 관리', emoji: '' },
+  { key: 'conflict', label: '안 싸우기', emoji: '' },
 ];
 
 function pickR<T>(arr: T[], r: () => number): T {

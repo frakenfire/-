@@ -247,7 +247,7 @@ async function run(browser) {
     await page.goto(URL_BASE, { waitUntil: 'networkidle' });
     await wait(page, 800);
     const t = await bodyText(page);
-    check(t.includes('오늘의 일진'), '[홈] 일진 카드 노출');
+    check(/오늘은 \S+일/.test(t), '[홈] 일진 카드 노출');
     check(t.includes('오늘의 띠 서열'), '[홈] 띠 서열 노출');
     check(t.includes('쪽지 뽑기 시작하기'), '[홈] 시작 CTA 노출');
     // 앱인토스 반려 사유: 진입 직후 바텀시트/모달이 자동으로 뜨면 안 된다
@@ -405,7 +405,7 @@ async function run(browser) {
       await wait(page, 1200);
 
       const saju = await bodyText(page);
-      check(saju.includes('내 일간'), '[사주] 카드 화면 진입');
+      check(saju.includes('내 사주 글자'), '[사주] 카드 화면 진입');
       check(saju.length > 500, '[사주] 빈 화면 아님', `글자 ${saju.length}자`);
 
       // 네 기둥이 모두 서 있고, 일주가 '나'로 표시돼야 한다
@@ -425,13 +425,13 @@ async function run(browser) {
 
       // 적용된 보정이 근거로 보여야 한다 (왜 이 값인지 확인 가능해야 신뢰가 생긴다)
       check((await page.locator('.pillars-corr li').count()) >= 1, '[사주] 적용된 보정 근거 노출');
-      check(/신강|신약/.test(saju), '[사주] 강약 판정 노출');
-      check(/나를 살리는 기운/.test(saju), '[사주] 용신 안내 노출');
+      check(/힘이 많은 편|힘을 받아 쓰는 편/.test(saju), '[사주] 강약 판정 노출');
+      check(/나에게 좋은 기운/.test(saju), '[사주] 용신 안내 노출');
 
       await diagnose(page, '사주');
 
       // 공유 · 수정 버튼이 실제로 동작해야 한다
-      await page.getByText('내 일간 자랑하기', { exact: false }).first().click();
+      await page.getByText('내 사주 자랑하기', { exact: false }).first().click();
       await wait(page, 1200);
       check(/공유|복사/.test(await bodyText(page)), '[사주] 내 일간 자랑하기 동작');
 
@@ -476,7 +476,7 @@ async function run(browser) {
 
       await page.locator('.saju-entry--done').first().click();
       await wait(page, 1000);
-      check((await bodyText(page)).includes('내 일간'), '[사주] 홈 배지 → 사주 화면 복귀');
+      check((await bodyText(page)).includes('내 사주 글자'), '[사주] 홈 배지 → 사주 화면 복귀');
 
       // 사주를 넣은 사람의 '오늘 결과'가 실제로 개인 기준으로 바뀌는가.
       // 여기가 안 바뀌면 사주 화면만 따로 놀고, 매일 보는 결과는 여전히 띠 12분의 1이다.
@@ -496,7 +496,7 @@ async function run(browser) {
 
       const res = await bodyText(page);
       check((await page.locator('.mygod').count()) === 1, '[사주결과] 오늘의 십신 카드 노출');
-      check(res.includes('내 일간'), '[사주결과] 띠가 아니라 일간 기준으로 말함');
+      check(res.includes('오늘 나에게 오는 건'), '[사주결과] 띠가 아니라 일간 기준으로 말함');
       check(!res.includes('내 띠와'), '[사주결과] 띠 기준 문구가 함께 뜨지 않음(기준 이원화 방지)');
       check(/오늘 하면 좋아요/.test(res) && /오늘은 피하세요/.test(res),
         '[사주결과] 할 것·피할 것이 함께 나옴');
@@ -573,8 +573,8 @@ async function run(browser) {
       const page = await newPage(browser);
       await drawTo(page, { topic, mood: '기분 좋아요' });
       const t = await bodyText(page);
-      check(t.includes(expect) && /총운 \d+점/.test(t), `[운세:${expect}] 결과 도달`,
-        (t.match(/총운 \d+점 · \S+/) || [''])[0]);
+      check(t.includes(expect) && /오늘 점수 \d+점/.test(t), `[운세:${expect}] 결과 도달`,
+        (t.match(/오늘 점수 \d+점 · \S+/) || [''])[0]);
       check(t.includes('이렇게 보내요'), `[운세:${expect}] 하루 설계 노출`);
       if (topic === '이번 달의 나') {
         // 월간 화면인데 총평/한마디가 '하루' 단위로 말하면 안 된다
@@ -596,8 +596,8 @@ async function run(browser) {
       const page = await newPage(browser);
       await drawTo(page, { mood });
       const t = await bodyText(page);
-      check(/총운 \d+점/.test(t), `[기분:${mood}] 결과 도달`);
-      seen.add((t.match(/총운 \d+점 · \S+/) || [''])[0] + (t.match(/💌[^\n]*\n([^\n]+)/) || [])[1]);
+      check(/오늘 점수 \d+점/.test(t), `[기분:${mood}] 결과 도달`);
+      seen.add((t.match(/오늘 점수 \d+점 · \S+/) || [''])[0] + (t.match(/💌[^\n]*\n([^\n]+)/) || [])[1]);
       await page.context().close();
     }
     check(seen.size >= 3, '[기분] 5종이 서로 다른 결과를 낸다', `서로 다른 결과 ${seen.size}종`);
@@ -637,16 +637,16 @@ async function run(browser) {
     await page.getByText('오늘의 심층 리포트 열기', { exact: false }).first().click();
     await wait(page, 2600);
     const d = await bodyText(page);
-    check(d.includes('심층 리포트') && d.includes('부적'), '[심층] 열림');
+    check(d.includes('심층 리포트') && d.includes('제일 좋아요'), '[심층] 열림');
     await diagnose(page, '심층');
-    await page.getByText('부적 문장만 복사', { exact: false }).first().click();
+    await page.getByText('이 한 줄만 복사', { exact: false }).first().click();
     await wait(page, 1400);
     check((await bodyText(page)).includes('복사') || true, '[심층] 부적 복사 동작');
     await wait(page, 1600);
 
     await page.locator('button.app__nav-back').first().click();
     await wait(page, 900);
-    check(/총운 \d+점/.test(await bodyText(page)), '[심층] 뒤로가기 → 결과');
+    check(/오늘 점수 \d+점/.test(await bodyText(page)), '[심층] 뒤로가기 → 결과');
 
     await page.getByText('다른 쪽지도 뽑아볼래요', { exact: false }).first().click();
     await wait(page, 2600);
@@ -718,7 +718,7 @@ async function run(browser) {
     page.on('pageerror', (e) => errs.push(e.message));
     page.__errs = errs;
     await drawTo(page, { zodiac: null });
-    check(/총운 \d+점/.test(await bodyText(page)), '[악조건] localStorage 차단에서도 결과까지 도달');
+    check(/오늘 점수 \d+점/.test(await bodyText(page)), '[악조건] localStorage 차단에서도 결과까지 도달');
     check(errs.length === 0, '[악조건] localStorage 차단 시 예외 없음', errs.join(' | '));
     await ctx.close();
   }
@@ -739,7 +739,7 @@ async function run(browser) {
   {
     const page = await newPage(browser, { reducedMotion: 'reduce' });
     await drawTo(page);
-    check(/총운 \d+점/.test(await bodyText(page)), '[악조건] reduced-motion 에서 결과 도달');
+    check(/오늘 점수 \d+점/.test(await bodyText(page)), '[악조건] reduced-motion 에서 결과 도달');
     await page.context().close();
   }
 

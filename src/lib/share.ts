@@ -19,8 +19,8 @@ export type ShareOutcome = 'shared' | 'copied' | 'cancelled' | 'failed';
 
 export function buildShareText(b: ShareBriefing): string {
   const head = b.brag
-    ? `오늘쪽지 · ${b.title} · 총운 ${b.score}점 (${b.brag}) `
-    : `오늘쪽지 · ${b.title} (총운 ${b.score}점)`;
+    ? `오늘쪽지 · ${b.title} · 오늘 점수 ${b.score}점 (${b.brag}) `
+    : `오늘쪽지 · ${b.title} (오늘 점수 ${b.score}점)`;
   // 콕집기(콜드리딩)를 첫 인용으로 — 받는 사람이 '어떻게 알았지'를 먼저 느끼게.
   const hook = b.pinpoint
     ? [`"${b.pinpoint}"`, `이거 완전 내 얘기라 소름. 진짜 잘 맞아`, ``]

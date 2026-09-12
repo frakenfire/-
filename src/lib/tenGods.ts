@@ -22,16 +22,16 @@ export type TenGod =
   | 'jeongin'; // 정인 — 나를 먹이는 배움
 
 export const TEN_GOD_KO: Record<TenGod, string> = {
-  bijian: '비견',
-  geopjae: '겁재',
-  siksin: '식신',
-  sanggwan: '상관',
-  pyeonjae: '편재',
-  jeongjae: '정재',
-  pyeongwan: '편관',
-  jeonggwan: '정관',
-  pyeonin: '편인',
-  jeongin: '정인',
+  bijian: '닮은 기운',
+  geopjae: '겨루는 기운',
+  siksin: '표현하는 기운',
+  sanggwan: '튀는 기운',
+  pyeonjae: '기회 기운',
+  jeongjae: '모으는 기운',
+  pyeongwan: '밀어붙이는 기운',
+  jeonggwan: '규칙 기운',
+  pyeonin: '엉뚱한 기운',
+  jeongin: '배우는 기운',
 };
 
 /** 십신을 성격 축으로 묶은 다섯 무리 — 화면에서는 이 단위로 말하는 게 알아듣기 쉽다. */

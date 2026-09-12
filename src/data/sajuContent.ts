@@ -40,14 +40,14 @@ export const GROUP_READING: Record<GodGroup, { title: string; icon: string; body
 /** 신강 / 신약 — 좋고 나쁨이 아니라 '어떻게 써야 하는가'로 쓴다 */
 export const STRENGTH_READING: Record<'strong' | 'weak', { label: string; short: string; body: string; tip: string }> = {
   strong: {
-    label: '신강',
-    short: '에너지가 안에 꽉 찬 편',
+    label: '힘이 많은 편',
+    short: '안에서 밀고 나가요',
     body: '스스로 밀고 나가는 힘이 넉넉해요. 남에게 기대지 않아도 굴러가는 대신, 힘이 안에서 돌기만 하면 답답해져요.',
     tip: '쌓인 걸 밖으로 쓰는 통로를 만드는 게 좋아요. 만들거나, 나누거나, 움직이거나.',
   },
   weak: {
-    label: '신약',
-    short: '주변에서 받아 쓰는 편',
+    label: '힘을 받아 쓰는 편',
+    short: '함께일 때 잘돼요',
     body: '혼자보다 함께일 때 힘이 나요. 좋은 사람·좋은 자리에 있으면 실력이 몇 배로 나오는 유형이에요.',
     tip: '혼자 다 하려 하지 말고, 기댈 곳과 배울 곳을 곁에 두는 게 훨씬 빨라요.',
   },
@@ -72,5 +72,5 @@ export const USEFUL_READING: Record<Element, { what: string; how: string }> = {
 };
 
 export const ELEMENT_SHORT: Record<Element, string> = {
-  wood: '목', fire: '화', earth: '토', metal: '금', water: '수',
+  wood: '나무', fire: '불', earth: '흙', metal: '쇠', water: '물',
 };

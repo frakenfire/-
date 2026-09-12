@@ -103,7 +103,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
       {/* 2. 근거 — 여덟 글자. 한자만 두면 벽이라 아래 한글을 붙인다 */}
       <section className="sec">
         <div className="sec__head">
-          <h2 className="sec__title">내 사주 여덟 글자</h2>
+          <h2 className="sec__title">내 사주 글자</h2>
           <button type="button" className="sec__action" onClick={onEdit}>
             수정
           </button>
@@ -134,8 +134,8 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
           ))}
         </div>
         <p className="pillars-card__foot">
-          가운데 <b>일간({pillars.dayMaster.kor})</b>이 '나'예요. 나머지 글자는 전부 나와의
-          관계로 읽어요.
+          가운데 <b>{pillars.dayMaster.kor}</b>이 나예요. 다른 글자는 나를 둘러싼
+          것들이에요.
         </p>
         {pillars.corrections.notes.length > 0 ? (
           <ul className="pillars-corr">
@@ -150,7 +150,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
       {/* 3. 오행 저울 — 숫자를 그림으로. 지장간까지 풀어 센 값이다 */}
       <section className="sec">
         <div className="sec__head">
-          <h2 className="sec__title">내 안의 오행</h2>
+          <h2 className="sec__title">내 안의 다섯 기운</h2>
         </div>
         <div className="elbal-card">
         <ul className="elbal-list">
@@ -191,7 +191,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
       {/* 4. 어떻게 쓰는가 — 성격이 같은 풀이 셋을 한 덩어리로 묶는다 */}
       <section className="sec">
         <div className="sec__head">
-          <h2 className="sec__title">이 사주를 어떻게 쓰나요</h2>
+          <h2 className="sec__title">나는 이렇게 쓰면 좋아요</h2>
         </div>
       <div className="reading-card">
         <p className="reading-card__badge">
@@ -210,7 +210,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
 
       <div className="useful-card">
         <p className="useful-card__title">
-          나를 살리는 기운 · <b>{ELEMENT_KO[profile.usefulElement]}</b>
+          나에게 좋은 기운 · <b>{ELEMENT_KO[profile.usefulElement]}</b>
         </p>
         <p className="useful-card__what">{useful.what}이 필요해요</p>
         <p className="useful-card__how">{useful.how}</p>
@@ -222,7 +222,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
         이 사주로 오늘 쪽지 뽑기 
       </button>
       <button type="button" className="btn btn--secondary" onClick={share}>
-        내 일간 자랑하기 
+        내 사주 자랑하기 
       </button>
       {/* 개인정보를 받았으니 지우는 길도 같은 화면에 둔다 — 설정 깊숙이 숨기지 않는다 */}
       <div className="privacy-note">

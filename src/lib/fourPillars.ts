@@ -199,7 +199,7 @@ export function computeFourPillars(
   if (off.note) notes.push(off.note);
   if (trueSolar) {
     notes.push(
-      `태양의 실제 위치로 보정했어요 (${trueSolarMin >= 0 ? '+' : ''}${Math.round(trueSolarMin)}분)`,
+      `해 뜨는 시간에 맞춰 ${Math.abs(Math.round(trueSolarMin))}분 ${trueSolarMin >= 0 ? '늦게' : '일찍'} 봤어요`,
     );
   }
 

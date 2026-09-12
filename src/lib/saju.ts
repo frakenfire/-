@@ -30,11 +30,11 @@ function pickOne<T>(items: T[], seed: number): T {
 export type Element = 'wood' | 'fire' | 'earth' | 'metal' | 'water';
 
 export const ELEMENT_KO: Record<Element, string> = {
-  wood: '목',
-  fire: '화',
-  earth: '토',
-  metal: '금',
-  water: '수',
+  wood: '나무',
+  fire: '불',
+  earth: '흙',
+  metal: '쇠',
+  water: '물',
 };
 export const ELEMENT_EMOJI: Record<Element, string> = {
   wood: '',
@@ -227,9 +227,9 @@ export function elementFlow(dayEl: Element, myEl: Element): ElementFlow {
 // 두 오행의 상성(궁합용, 대칭) — 상생 / 상극 / 비화. 5행은 서로 항상 이 셋 중 하나.
 export type PairElementFlow = 'generate' | 'control' | 'same';
 export const PAIR_FLOW_KO: Record<PairElementFlow, string> = {
-  generate: '상생',
-  control: '상극',
-  same: '비화',
+  generate: '서로 돕는 사이',
+  control: '서로 자극하는 사이',
+  same: '같은 기운',
 };
 export function pairElementFlow(a: ZodiacId, b: ZodiacId): PairElementFlow {
   const ea = elementOfZodiac(a);
@@ -277,11 +277,11 @@ export function toneOf(score: number): SajuTone {
 export const REL_GLOSS: Record<BranchRelation, string> = {
   self: '같은 기운',
   selfPunish: '고집 겹침',
-  trine: '찰떡 조합',
-  union: '짝꿍 조합',
+  trine: '찰떡 사이',
+  union: '짝꿍 사이',
   clash: '부딪히는 날',
-  punish: '긴장 조심',
-  harm: '애증 기류',
+  punish: '살짝 긴장',
+  harm: '밀당 기류',
   break: '엇박 주의',
   none: '무난한 사이',
 };
@@ -299,9 +299,9 @@ export const REL_KO: Record<BranchRelation, string> = {
 };
 
 const TONE_WORD: Record<SajuTone, string> = {
-  great: '크게 트임',
-  good: '순조',
-  steady: '안정',
+  great: '아주 좋음',
+  good: '좋음',
+  steady: '잔잔함',
   caution: '조심',
 };
 
@@ -344,15 +344,15 @@ export const TONE_TITLE: Record<SajuTone, string[]> = {
 // 톤별 오늘의 사주 한 줄 — 날짜·띠 seed로 변주(같은 날/같은 띠는 고정)
 const HEADLINE: Record<SajuTone, string[]> = {
   great: [
-    '오늘 일진이 내 띠와 잘 맞아, 기운이 크게 트이는 날이에요.',
+    '오늘 날 기운이 내 띠와 잘 맞아, 크게 트이는 날이에요.',
     '흐름이 내 편인 날이에요. 미뤄둔 걸 꺼내기 좋아요.',
     '오늘은 결이 잘 맞아, 하려던 일에 힘이 실려요.',
-    '오늘 일진과 손발이 척척 맞아, 뭘 해도 수월한 날이에요.',
+    '오늘 날 기운과 손발이 척척 맞아, 뭘 해도 수월한 날이에요.',
     '기운이 활짝 열리는 날이에요. 한 걸음 크게 내딛기 좋아요.',
     '오늘은 나를 밀어주는 기운이라, 자신 있게 움직여도 돼요.',
   ],
   good: [
-    '오늘 일진과 내 띠가 무난히 어울려, 순조로운 날이에요.',
+    '오늘 날 기운과 내 띠가 무난히 어울려, 순조로운 날이에요.',
     '큰 굴곡 없이 부드럽게 흘러가는 기운이에요.',
     '오늘은 손발이 맞는 편이라 편하게 풀려요.',
     '오늘은 억지로 애쓰지 않아도 술술 이어지는 날이에요.',
@@ -368,7 +368,7 @@ const HEADLINE: Record<SajuTone, string[]> = {
     '오늘은 평소의 페이스를 지키면 무난한 날이에요.',
   ],
   caution: [
-    '오늘 일진이 내 띠와 부딪히는 편이라, 한 박자 늦추면 좋아요.',
+    '오늘 날 기운이 내 띠와 부딪히는 편이라, 한 박자 늦추면 좋아요.',
     '기운이 팽팽한 날이에요. 욱하는 순간만 피하면 무난해요.',
     '오늘은 밀어붙이기보다 지키는 쪽이 이득이에요.',
     '오늘은 살짝 어긋나기 쉬운 기운이라, 여유를 두면 좋아요.',

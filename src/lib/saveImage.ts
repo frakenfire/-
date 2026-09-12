@@ -210,7 +210,7 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
     ctx.stroke();
     ctx.fillStyle = '#6b7684';
     ctx.font = 'bold 20px ' + CARD_FONT;
-    ctx.fillText('오늘의 총운', cx, ringY - 20);
+    ctx.fillText('오늘 점수', cx, ringY - 20);
     ctx.fillStyle = accent;
     ctx.font = 'bold 68px ' + CARD_FONT;
     ctx.fillText(String(input.total), cx, ringY + 30);
