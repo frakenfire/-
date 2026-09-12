@@ -201,7 +201,7 @@ export function HomeScreen({
           onClick={onSaju}
         >
           <span className="saju-entry__icon" aria-hidden>
-            <Icon name={sajuBadge.icon} size={22} />
+            <Mascot size={32} accent={sajuBadge.hue} bare />
           </span>
           <span className="saju-entry__text">
             <span className="saju-entry__k">내 사주</span>
