@@ -127,16 +127,22 @@ export function ResultScreen({
       {/* 내가 뽑은 쪽지 — 이 앱의 정체성이자, 방금 한 선택의 보상.
           이게 없으면 19장 중 하나를 고른 의식이 결과에 아무 흔적도 남기지 않는다.
           (실제로 그동안 쪽지 이름이 결과 어디에도 안 나왔다) */}
-      <div className={`drawn drawn--${note.color}`}>
-        <span className="drawn__icon" aria-hidden>
-          <Mascot size={40} score={luck.total} bare />
-        </span>
-        <span className="drawn__text">
-          <span className="drawn__k">내가 뽑은 쪽지</span>
+      <div className={`drawn drawn--${note.color} score-hero`}>
+        <div className="score-hero__top">
+          <span className="score-hero__mascot" aria-hidden>
+            <Mascot size={88} score={luck.total} bare />
+          </span>
+          <div className="score-hero__num">
+            <span className="score-hero__k">오늘 점수</span>
+            <span className="score-hero__v"><b className="num">{shownTotal}</b>점</span>
+            <span className="score-hero__grade">{GRADE_KO[luck.grade] ?? luck.grade}</span>
+          </div>
+        </div>
+        <div className="score-hero__note">
+          <span className="drawn__k">내가 뽑은 쪽지 · <span className="drawn__kw">{note.keyword}</span></span>
           <strong className="drawn__name">{note.name}</strong>
           <span className="drawn__lead">{result.summaryLines[0]}</span>
-        </span>
-        <span className="drawn__kw">{note.keyword}</span>
+        </div>
       </div>
 
       {/* 브리핑 카드 */}
@@ -161,9 +167,6 @@ export function ResultScreen({
         <div className="briefing__chips">
           <span className="chip chip--type">
             <Icon name={note.icon} size={15} /> {result.title}
-          </span>
-          <span className="chip chip--score">
-            오늘 점수 <b className="num">{shownTotal}점</b> · {GRADE_KO[luck.grade] ?? luck.grade}
           </span>
           <span className={`rarity-badge rarity-badge--${rarity.tier}`}>
             {rarity.label}

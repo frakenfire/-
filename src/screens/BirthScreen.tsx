@@ -146,7 +146,7 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
           <span className="birth-peek__label">타고난 성격</span>
           <div className="birth-peek__row">
             <span className="birth-peek__icon" aria-hidden>
-              <Mascot size={34} accent={dm.hue} bare />
+              <Mascot size={64} accent={dm.hue} bare />
             </span>
             <div className="birth-peek__txt">
               <strong className="birth-peek__name">{dm.name}</strong>

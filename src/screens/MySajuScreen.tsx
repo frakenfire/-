@@ -86,7 +86,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
         <span className="dm-hero__cap">타고난 성격</span>
         <div className="dm-hero__row">
           <span className="dm-hero__icon" aria-hidden>
-            <Mascot size={40} accent={dm.hue} bare />
+            <Mascot size={88} accent={dm.hue} bare />
           </span>
           <h2 className="dm-hero__name">{dm.name}</h2>
         </div>

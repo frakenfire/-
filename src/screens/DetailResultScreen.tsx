@@ -40,7 +40,7 @@ export function DetailResultScreen({
     >
       <div className="report-hero">
         <span className="report-hero__mascot" aria-hidden>
-          <Mascot size={48} score={luck.total} bare />
+          <Mascot size={72} score={luck.total} bare />
         </span>
         <h2 className="report-hero__title">
           오늘은 <b>{topPick.label}</b>이 제일 좋아요

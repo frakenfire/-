@@ -586,8 +586,8 @@ strong {
 }
 .sec__title {
   margin: 0;
-  font-size: 17px;
-  line-height: 25.5px;
+  font-size: 20px;
+  line-height: 29px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--gray-900);
@@ -1223,9 +1223,9 @@ strong {
 }
 .report-hero__title {
   margin: 8px 0 6px;
-  font-size: 21px;
+  font-size: 24px;
   font-weight: 700;
-  line-height: 30px;
+  line-height: 33px;
   color: var(--gray-900);
   letter-spacing: -0.02em;
   word-break: keep-all;
@@ -1731,8 +1731,8 @@ strong {
   margin-left: 2px;
 }
 .compat-result__archetype {
-  font-size: 13px;
-  line-height: 19.5px;
+  font-size: 15px;
+  line-height: 22.5px;
   font-weight: 700;
   color: var(--brand-strong);
 
@@ -2182,7 +2182,7 @@ strong {
   display: flex;
   align-items: center;
   gap: var(--space-4);
-  min-height: 62px;
+  min-height: 72px;
   padding: var(--space-3) var(--space-4);
   background: none;
   text-align: left;
@@ -2198,12 +2198,12 @@ strong {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
+  width: 52px;
   color: var(--gray-800);
 }
 .mood-btn__label {
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 17px;
+  line-height: 25.5px;
   font-weight: 600;
   color: var(--gray-900);
 }
@@ -2656,8 +2656,8 @@ strong {
   align-items: center;
   gap: 6px;
   flex: 1;
-  font-size: 14px;
-  line-height: 21px;
+  font-size: 15px;
+  line-height: 22.5px;
   font-weight: 600;
   color: var(--gray-800);
 }
@@ -3294,17 +3294,20 @@ strong {
 }
 /* 입력 도중 미리보기 — 다 채우기 전에 '이게 나오는구나'가 와야 이탈이 준다 */
 .birth-peek {
-  margin: var(--space-2) 0 var(--space-6);
+  margin: var(--space-4) 0 var(--space-6);
   padding-top: var(--space-4);
-  border-top: 1px solid var(--gray-100);
+  border-top: 0;
   text-align: left;
+  background: var(--brand-soft);
+  border-radius: 20px;
+  padding: 20px;
 }
 .birth-peek__label {
   display: block;
   font-size: 13px;
   line-height: 19.5px;
   font-weight: 500;
-  color: var(--gray-600);
+  color: var(--gray-700) /* 파란 틴트 위 AA */;
 }
 .birth-peek__row {
   display: flex;
@@ -3324,16 +3327,16 @@ strong {
   min-width: 0;
 }
 .birth-peek__name {
-  font-size: 17px;
-  line-height: 25.5px;
+  font-size: 20px;
+  line-height: 29px;
   font-weight: 700;
   color: var(--gray-900);
 }
 .birth-peek__tag {
-  font-size: 14px;
-  line-height: 21px;
+  font-size: 15px;
+  line-height: 22.5px;
   font-weight: 500;
-  color: var(--gray-600);
+  color: var(--gray-700) /* 파란 틴트 위 AA */;
 }
 .birth-peek__pillars {
   display: block;
@@ -3368,26 +3371,28 @@ strong {
   align-items: flex-start;
   gap: 4px;
   margin-bottom: var(--space-6);
-  padding: var(--space-2) 0 var(--space-5);
-  border-bottom: 1px solid var(--gray-100);
+  padding: 24px 20px;
+  border-bottom: 0;
   text-align: left;
+  background: var(--brand-soft);
+  border-radius: 20px;
 }
  /* 일간 히어로만은 자기 오행 색을 쓴다 — 이 화면의 주인공이라서.
    상자는 두르지 않는다. */
 .dm-hero__cap {
   display: block;
-  font-size: 13px;
-  line-height: 19.5px;
+  font-size: 14px;
+  line-height: 21px;
   font-weight: 500;
-  color: var(--gray-600);
+  color: var(--gray-700) /* 파란 틴트 위 AA */;
   margin-bottom: 6px;
 }
 .qa {
   margin: 0;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: 17px;
+  line-height: 25.5px;
   font-weight: 500;
-  color: var(--gray-800);
+  color: var(--gray-900);
   word-break: keep-all;
 }
 .qa b {
@@ -3395,8 +3400,8 @@ strong {
 }
 .qa--sub {
   margin-top: 4px;
-  font-size: 14px;
-  line-height: 21px;
+  font-size: 15px;
+  line-height: 22.5px;
   color: var(--gray-600);
 }
 .qa + .dm-note {
@@ -3415,8 +3420,8 @@ strong {
 }
 .dm-hero__name {
   margin: 0;
-  font-size: 24px;
-  line-height: 33px;
+  font-size: 26px;
+  line-height: 35px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--gray-900);
@@ -3428,7 +3433,7 @@ strong {
   font-size: 15px;
   line-height: 22.5px;
   font-weight: 500;
-  color: var(--gray-600);
+  color: var(--gray-700) /* 파란 틴트 위 AA */;
 }
 .dm-hero__nature {
   margin: var(--space-3) 0 0;
@@ -4090,4 +4095,78 @@ strong {
   line-height: 25.5px;
   font-weight: 700;
   color: var(--gray-900);
+}
+
+/* ── 결과 점수 히어로: 화면에 들어오자마자 시선이 멈추는 한 덩어리 ── */
+.score-hero {
+  background: var(--brand-soft);
+  border: 0;
+  border-radius: 20px;
+  padding: 20px;
+  display: block;
+  box-shadow: none;
+}
+.score-hero__top {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.score-hero__mascot {
+  flex: none;
+  display: flex;
+}
+.score-hero__num {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.score-hero__k {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+  color: var(--gray-700);
+}
+.score-hero__v {
+  font-size: 20px;
+  line-height: 29px;
+  font-weight: 700;
+  color: var(--brand-strong);
+  letter-spacing: -0.02em;
+}
+.score-hero__v b {
+  font-size: 42px;
+  line-height: 52px;
+  font-weight: 700;
+}
+.score-hero__grade {
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+.score-hero__note {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(27, 100, 218, 0.12);
+}
+.score-hero .drawn__kw {
+  position: static;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 600;
+  color: var(--brand-strong);
+  background: none;
+  padding: 0;
+}
+.score-hero .drawn__name {
+  font-size: 20px;
+  line-height: 29px;
+}
+
+.score-hero .drawn__k,
+.score-hero .drawn__lead {
+  color: var(--gray-700); /* 파란 틴트 위 AA */
 }

@@ -111,7 +111,7 @@ export function MoodScreen({
         {MOODS.map((m) => (
           <button key={m.key} type="button" className="mood-btn" onClick={() => onSelect(m.key)}>
             <span className="mood-btn__emoji" aria-hidden>
-              <Mascot size={34} mood={MOOD_FACE[m.key]} bare />
+              <Mascot size={52} mood={MOOD_FACE[m.key]} bare />
             </span>
             <span className="mood-btn__label">{m.label}</span>
           </button>

@@ -573,8 +573,8 @@ async function run(browser) {
       const page = await newPage(browser);
       await drawTo(page, { topic, mood: '기분 좋아요' });
       const t = await bodyText(page);
-      check(t.includes(expect) && /오늘 점수 \d+점/.test(t), `[운세:${expect}] 결과 도달`,
-        (t.match(/오늘 점수 \d+점 · \S+/) || [''])[0]);
+      check(t.includes(expect) && /오늘 점수\s*\d+\s*점/.test(t), `[운세:${expect}] 결과 도달`,
+        (t.match(/오늘 점수\s*\d+\s*점\s*\S+/) || [''])[0]);
       check(t.includes('이렇게 보내요'), `[운세:${expect}] 하루 설계 노출`);
       if (topic === '이번 달의 나') {
         // 월간 화면인데 총평/한마디가 '하루' 단위로 말하면 안 된다
@@ -596,8 +596,8 @@ async function run(browser) {
       const page = await newPage(browser);
       await drawTo(page, { mood });
       const t = await bodyText(page);
-      check(/오늘 점수 \d+점/.test(t), `[기분:${mood}] 결과 도달`);
-      seen.add((t.match(/오늘 점수 \d+점 · \S+/) || [''])[0] + (t.match(/💌[^\n]*\n([^\n]+)/) || [])[1]);
+      check(/오늘 점수\s*\d+\s*점/.test(t), `[기분:${mood}] 결과 도달`);
+      seen.add((t.match(/오늘 점수\s*\d+\s*점\s*\S+/) || [''])[0] + (t.match(/💌[^\n]*\n([^\n]+)/) || [])[1]);
       await page.context().close();
     }
     check(seen.size >= 3, '[기분] 5종이 서로 다른 결과를 낸다', `서로 다른 결과 ${seen.size}종`);
@@ -646,7 +646,7 @@ async function run(browser) {
 
     await page.locator('button.app__nav-back').first().click();
     await wait(page, 900);
-    check(/오늘 점수 \d+점/.test(await bodyText(page)), '[심층] 뒤로가기 → 결과');
+    check(/오늘 점수\s*\d+\s*점/.test(await bodyText(page)), '[심층] 뒤로가기 → 결과');
 
     await page.getByText('다른 쪽지도 뽑아볼래요', { exact: false }).first().click();
     await wait(page, 2600);
@@ -718,7 +718,7 @@ async function run(browser) {
     page.on('pageerror', (e) => errs.push(e.message));
     page.__errs = errs;
     await drawTo(page, { zodiac: null });
-    check(/오늘 점수 \d+점/.test(await bodyText(page)), '[악조건] localStorage 차단에서도 결과까지 도달');
+    check(/오늘 점수\s*\d+\s*점/.test(await bodyText(page)), '[악조건] localStorage 차단에서도 결과까지 도달');
     check(errs.length === 0, '[악조건] localStorage 차단 시 예외 없음', errs.join(' | '));
     await ctx.close();
   }
@@ -739,7 +739,7 @@ async function run(browser) {
   {
     const page = await newPage(browser, { reducedMotion: 'reduce' });
     await drawTo(page);
-    check(/오늘 점수 \d+점/.test(await bodyText(page)), '[악조건] reduced-motion 에서 결과 도달');
+    check(/오늘 점수\s*\d+\s*점/.test(await bodyText(page)), '[악조건] reduced-motion 에서 결과 도달');
     await page.context().close();
   }
 

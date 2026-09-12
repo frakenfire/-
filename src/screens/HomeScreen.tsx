@@ -204,7 +204,7 @@ export function HomeScreen({
           onClick={onSaju}
         >
           <span className="saju-entry__icon" aria-hidden>
-            <Mascot size={32} accent={sajuBadge.hue} bare />
+            <Mascot size={44} accent={sajuBadge.hue} bare />
           </span>
           <span className="saju-entry__text">
             <span className="saju-entry__k">내 사주</span>
@@ -309,6 +309,7 @@ export function HomeScreen({
             return (
               <li key={r.animal} className={me ? 'rank-row rank-row--me' : 'rank-row'}>
                 <span className={`rank-row__no num${r.rank === 1 ? ' rank-row__no--first' : ''}`}>{r.rank}</span>
+                {z ? <ZodiacBadge zodiac={z} size={32} /> : null}
                 <span className="rank-row__name">
                   {z?.label}
                   {me ? ' (나)' : ''}
@@ -379,6 +380,7 @@ export function HomeScreen({
               return (
                 <li key={r.animal} className={me ? 'rank-row rank-row--me' : 'rank-row'}>
                   <span className="rank-row__no num">{r.rank}</span>
+                  {z ? <ZodiacBadge zodiac={z} size={32} /> : null}
                   <span className="rank-row__name">
                     {z?.label}
                     {me ? ' (나)' : ''}
