@@ -332,7 +332,7 @@ export function CompatScreen({
           <div className="compat-lock__score">?</div>
           <p className="compat-lock__title">오늘 우리 궁합, 몇 점일까요?</p>
           <p className="compat-lock__teaser">
-            케미 · 대화 · 갈등 관리 점수부터 오늘의 커플 유형, 잘 맞는 점과 팁까지 한 번에 나와요
+            케미, 대화, 안 싸우기 점수부터 오늘의 커플 유형, 잘 맞는 점과 팁까지 한 번에 나와요
           </p>
           <div className="btn-stack">
             <button type="button" className="btn btn--primary" disabled={busy} onClick={unlockByShare}>

@@ -158,7 +158,7 @@ export function HomeScreen({
         ) : (
           <>
             <p className="today-hook__line">
-              지금은 <b>‘{vibe.word}’</b> 기운이 좋아요
+              지금은 <b>{vibe.word}</b> 기운이 좋아요
             </p>
             <p className="today-hook__hint">{vibe.line}</p>
           </>
