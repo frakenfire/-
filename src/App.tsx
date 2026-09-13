@@ -45,7 +45,6 @@ import { MySajuScreen } from './screens/MySajuScreen.tsx';
 import { TopicScreen } from './screens/TopicScreen.tsx';
 import { computeFourPillars } from './lib/fourPillars.ts';
 import { tap } from './lib/haptic.ts';
-import { LUCKY_SONGS } from './data/luckySongs.ts';
 import { hashSeed } from './lib/dateSeed.ts';
 import { dailyForMe } from './lib/dailySaju.ts';
 import { analyzeSaju } from './lib/tenGods.ts';
@@ -672,7 +671,6 @@ export default function App() {
           onCopy={handleCopyResult}
           spin={spin}
           userName={birth?.name ?? null}
-          song={LUCKY_SONGS[hashSeed(`${dateKey}|song|${note.id}`) % LUCKY_SONGS.length]}
           onBack={() => setScreen('home')}
         />
       )}

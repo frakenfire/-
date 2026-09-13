@@ -6,8 +6,9 @@ import { Disclaimer } from '../components/Disclaimer.tsx';
 import { GRADE_KO } from '../lib/luck.ts';
 import { softBreak } from '../lib/softBreak.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
-import type { LuckySong } from '../data/luckySongs.ts';
 import { LUCKY_HEADS, PLAN_TITLES } from '../data/copy.ts';
+import { DAY_ANSWERS } from '../data/sajuAnswers.ts';
+import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 
 type Props = {
   result: FortuneResult;
@@ -16,14 +17,13 @@ type Props = {
   onShare: () => void;
   onCopy: () => void;
   userName: string | null;
-  song: LuckySong;
   spin?: number;
   onBack: () => void;
 };
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, onCopy, userName, song, spin = 0, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, onCopy, userName, spin = 0, onBack }: Props) {
   const { luck, dayPlan } = result;
   const isMonth = result.reading.scale === 'month';
 
@@ -77,47 +77,99 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, so
       <p className="result__headline">{softBreak(dayPlan.headline, 18)}</p>
       <p className="result__vibe">{dayPlan.vibe}</p>
 
-      {/* 2. 오늘의 행운 네 칸 */}
+      {/* 2. 네 가지 운 — 사랑·돈·일·건강 점수 */}
+      <div className="cat4">
+        <p className="cat4__head">{isMonth ? '이번 달 네 가지 운' : '오늘 네 가지 운'}</p>
+        <ul className="cat4__list">
+          {luck.categories.map((c) => (
+            <li key={c.key} className="cat4__row">
+              <span className="cat4__k">{c.label}</span>
+              <span className="cat4__bar"><i style={{ width: `${c.score}%` }} /></span>
+              <span className="cat4__v num">{c.score}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* 3. 오늘의 행운 여섯 칸 — 색깔·숫자·방향·시간·음식·행동 */}
       <div className="lucky4">
         <p className="lucky4__head">{isMonth ? '이번 달의 행운' : LUCKY_HEADS[spin % LUCKY_HEADS.length]}</p>
-        <div className="lucky4__grid">
+        <div className="lucky4__grid lucky4__grid--3">
           <div className="lucky4__tile">
             <span className="lucky4__swatch" style={{ background: luck.color.hex }} aria-hidden />
             <span className="lucky4__k">색깔</span>
             <strong className="lucky4__v">{luck.color.name}</strong>
-            <span className="lucky4__why">{luck.time}에 곁에 두면 좋아요</span>
           </div>
           <div className="lucky4__tile lucky4__tile--blue">
-            <span className="lucky4__icon" aria-hidden><Icon name="headphone" size={26} /></span>
-            <span className="lucky4__k">노래</span>
-            <strong className="lucky4__v">{song.title}</strong>
-            <span className="lucky4__why">{song.artist} · {song.why}</span>
+            <span className="lucky4__big num" aria-hidden>{luck.number}</span>
+            <span className="lucky4__k">숫자</span>
+            <strong className="lucky4__v">{luck.number}</strong>
           </div>
           <div className="lucky4__tile lucky4__tile--yellow">
-            <span className="lucky4__icon" aria-hidden><Icon name="target" size={26} /></span>
-            <span className="lucky4__k">행동</span>
-            <strong className="lucky4__v">{action}</strong>
-            <span className="lucky4__why">{luck.direction}으로 가면 더 좋아요</span>
+            <span className="lucky4__icon" aria-hidden><Icon name="compass" size={26} /></span>
+            <span className="lucky4__k">방향</span>
+            <strong className="lucky4__v">{luck.direction}</strong>
+          </div>
+          <div className="lucky4__tile lucky4__tile--blue">
+            <span className="lucky4__icon" aria-hidden><Icon name="clock" size={26} /></span>
+            <span className="lucky4__k">시간</span>
+            <strong className="lucky4__v">{luck.time}</strong>
           </div>
           <div className="lucky4__tile lucky4__tile--orange">
             <span className="lucky4__icon" aria-hidden><Icon name="bowl" size={26} /></span>
             <span className="lucky4__k">음식</span>
             <strong className="lucky4__v">{luck.food.name}</strong>
-            <span className="lucky4__why">{luck.food.why}</span>
           </div>
-        </div>
-        {/* 3. 공유 */}
-        <div className="share-row">
-          <button type="button" className="btn btn--primary share-row__btn" disabled={busy} onClick={onShare}>
-            카톡·메시지로 보내기
-          </button>
-          <button type="button" className="btn btn--secondary share-row__btn" disabled={busy} onClick={onCopy}>
-            복사하기
-          </button>
+          <div className="lucky4__tile lucky4__tile--yellow">
+            <span className="lucky4__icon" aria-hidden><Icon name="target" size={26} /></span>
+            <span className="lucky4__k">행동</span>
+            <strong className="lucky4__v">{action}</strong>
+          </div>
         </div>
       </div>
 
-      {/* 4. 오늘 이렇게 보내요 */}
+      {/* 4. 오늘 돈·사랑·일 — 사주를 넣은 사람 */}
+      {result.daily ? (
+        <div className="cat4">
+          <p className="cat4__head">오늘 나에게</p>
+          <ul className="mygod__qa">
+            <li><span className="mygod__qa-k">돈</span>{DAY_ANSWERS[result.daily.dayGodGroup].money}</li>
+            <li><span className="mygod__qa-k">사랑</span>{DAY_ANSWERS[result.daily.dayGodGroup].love}</li>
+            <li><span className="mygod__qa-k">일</span>{DAY_ANSWERS[result.daily.dayGodGroup].work}</li>
+          </ul>
+        </div>
+      ) : null}
+
+      {/* 5. 오늘 잘 맞는 띠 */}
+      <div className="cat4">
+        <p className="cat4__head">오늘 잘 맞는 띠</p>
+        <div className="match">
+          <div className="match__cell">
+            <span className="match__badge">잘 맞아요</span>
+            <ZodiacBadge zodiac={result.detail.match.good} size={44} tone="brand" />
+            <span className="match__label">{result.detail.match.good.label}</span>
+            <span className="match__hint">{result.detail.match.goodReason}</span>
+          </div>
+          <div className="match__cell">
+            <span className="match__badge match__badge--bad">살짝 조심</span>
+            <ZodiacBadge zodiac={result.detail.match.caution} size={44} />
+            <span className="match__label">{result.detail.match.caution.label}</span>
+            <span className="match__hint">{result.detail.match.cautionReason}</span>
+          </div>
+        </div>
+      </div>
+
+      {/* 6. 공유 */}
+      <div className="share-row">
+        <button type="button" className="btn btn--primary share-row__btn" disabled={busy} onClick={onShare}>
+          카톡·메시지로 보내기
+        </button>
+        <button type="button" className="btn btn--secondary share-row__btn" disabled={busy} onClick={onCopy}>
+          복사하기
+        </button>
+      </div>
+
+      {/* 7. 오늘 이렇게 보내요 */}
       <div className="plan">
         <p className="plan__title">{isMonth ? '이번 달, 이렇게 보내요' : PLAN_TITLES[(spin >> 1) % PLAN_TITLES.length]}</p>
         <ul className="plan__steps">

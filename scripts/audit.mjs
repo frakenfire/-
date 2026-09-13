@@ -531,7 +531,8 @@ async function run(browser) {
     await drawTo(page);
     await diagnose(page, '결과');
 
-    check((await page.locator('.lucky4__tile').count()) === 4, '[결과] 오늘의 행운 네 칸');
+    check((await page.locator('.lucky4__tile').count()) === 6, '[결과] 오늘의 행운 여섯 칸');
+    check((await page.locator('.cat4__row').count()) === 4, '[결과] 네 가지 운 점수');
     check((await page.locator('.share-row__btn').count()) === 2, '[결과] 공유·복사 두 버튼');
     await page.getByText('복사하기', { exact: false }).first().click();
     await wait(page, 600);

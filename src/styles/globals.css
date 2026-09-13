@@ -4922,3 +4922,61 @@ strong {
 }
 .faq .sec__head { margin-bottom: 8px; }
 .faq__card { min-height: 112px; }
+
+/* ── 결과: 네 가지 운 막대 ── */
+.cat4 { margin-top: 24px; }
+.cat4__head {
+  margin: 0 0 10px;
+  font-size: 20px;
+  line-height: 29px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.cat4__list { margin: 0; padding: 0; list-style: none; }
+.cat4__row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 36px;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+}
+.cat4__k { font-size: 15px; line-height: 22.5px; font-weight: 600; color: var(--gray-800); }
+.cat4__bar { height: 10px; border-radius: 999px; background: var(--gray-100); overflow: hidden; }
+.cat4__bar i { display: block; height: 100%; border-radius: 999px; background: var(--brand); transition: width 0.6s ease; }
+.cat4__v { font-size: 17px; line-height: 25.5px; font-weight: 700; color: var(--brand-strong); text-align: right; }
+.cat4 .mygod__qa { margin-top: 0; }
+.cat4 .match { margin-top: 4px; }
+
+/* 행운 여섯 칸: 3열, 칸은 작고 값은 크게 */
+.lucky4__grid--3 { grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+.lucky4__grid--3 .lucky4__tile { min-height: 118px; padding: 14px 12px; gap: 0; }
+.lucky4__grid--3 .lucky4__swatch,
+.lucky4__grid--3 .lucky4__icon { width: 32px; height: 32px; margin-bottom: 10px; }
+.lucky4__grid--3 .lucky4__icon svg { width: 26px; height: 26px; }
+.lucky4__grid--3 .lucky4__big {
+  display: block;
+  height: 37px;
+  margin-bottom: 6px;
+  font-size: 28px;
+  line-height: 37px;
+  font-weight: 700;
+  color: var(--brand-strong);
+}
+.lucky4__grid--3 .lucky4__v { font-size: 17px; line-height: 25.5px; }
+.lucky4 .share-row { display: none; }
+
+/* 쪽지 부채꼴: 덜 겹치게. 옆 장이 3분의 2는 보여야 뭘 고르는지 안다 */
+.note-fan { height: 236px; }
+.note-fan .note { width: 128px; margin-left: -64px; height: 208px; }
+.note-fan .note__seal { height: 76px; }
+.note-fan .note__seal svg { width: 72px; height: 72px; }
+.note-fan .note--facedown .note__hint { font-size: 15px; line-height: 22.5px; }
+@keyframes fan-cycle {
+  0%   { transform: translateX(-100px) rotate(-8deg) scale(0.92); z-index: 1; }
+  27%  { transform: translateX(-100px) rotate(-8deg) scale(0.92); z-index: 1; }
+  33%  { transform: translateX(0) rotate(0deg) scale(1); z-index: 3; }
+  60%  { transform: translateX(0) rotate(0deg) scale(1); z-index: 3; }
+  66%  { transform: translateX(100px) rotate(8deg) scale(0.92); z-index: 2; }
+  94%  { transform: translateX(100px) rotate(8deg) scale(0.92); z-index: 2; }
+  100% { transform: translateX(-100px) rotate(-8deg) scale(0.92); z-index: 1; }
+}
