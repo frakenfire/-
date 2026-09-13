@@ -58,6 +58,20 @@ export const YEAR_FLOW: Record<TenGod, { title: string; body: string }> = {
   jeongin: { title: '받고 채우는 해', body: '누군가 챙겨주는 해예요. 배우거나 기대는 게 이 해엔 게으름이 아니에요.' },
 };
 
+/** 달의 글자가 나에게 어떤 달인가. 내 사주 '올해' 아래 이번 달·다음 달 두 줄 */
+export const MONTH_FLOW: Record<TenGod, string> = {
+  bijian: '같이 하면 잘 풀리는 달이에요',
+  geopjae: '돈과 약속에 선을 긋는 달이에요',
+  siksin: '만들고 내놓기 좋은 달이에요',
+  sanggwan: '말이 앞서기 쉬운 달, 한 번 더 골라요',
+  pyeonjae: '움직인 만큼 들어오는 달이에요',
+  jeongjae: '숫자를 챙기면 남는 달이에요',
+  pyeongwan: '버거운 일이 나를 키우는 달이에요',
+  jeonggwan: '규칙대로 하면 인정받는 달이에요',
+  pyeonin: '배우고 정리하기 좋은 달이에요',
+  jeongin: '기대도 되는 달, 도움을 받아요',
+};
+
 /** 오늘의 기운이 돈·사랑·일에 어떻게 닿는가. 결과 화면 '오늘 내 사주' 가 답하는 세 줄 */
 export const DAY_ANSWERS: Record<'self' | 'output' | 'wealth' | 'authority' | 'support', { money: string; love: string; work: string }> = {
   self: {

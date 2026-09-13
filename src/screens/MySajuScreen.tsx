@@ -3,7 +3,7 @@ import { Mascot } from '../components/Mascot.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { computeFourPillars, type BirthInput } from '../lib/fourPillars.ts';
 import { analyzeSaju, balanceShape, tenGodOf } from '../lib/tenGods.ts';
-import { MONEY_STYLE, LOVE_STYLE, WORK_STYLE, YEAR_FLOW } from '../data/sajuAnswers.ts';
+import { MONEY_STYLE, LOVE_STYLE, WORK_STYLE, YEAR_FLOW, MONTH_FLOW } from '../data/sajuAnswers.ts';
 import { DAY_MASTER_BY_INDEX } from '../data/dayMaster.ts';
 import {
   STRENGTH_READING,
@@ -54,6 +54,12 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
   const sajuYear = now.getMonth() + 1 < 2 || (now.getMonth() + 1 === 2 && now.getDate() < 4) ? now.getFullYear() - 1 : now.getFullYear();
   const yearStem = (((sajuYear - 4) % 10) + 10) % 10;
   const yearFlow = YEAR_FLOW[tenGodOf(pillars.dayStem, yearStem)];
+  // 이번 달·다음 달의 글자 — 절기로 달이 바뀌니 오늘과 30일 뒤의 월주를 그대로 쓴다
+  const monthOf = (d: Date) =>
+    computeFourPillars({ year: d.getFullYear(), month: d.getMonth() + 1, day: d.getDate(), hour: 12 }).month.stem;
+  const next = new Date(now.getTime() + 30 * 86400000);
+  const thisMonth = MONTH_FLOW[tenGodOf(pillars.dayStem, monthOf(now))];
+  const nextMonth = MONTH_FLOW[tenGodOf(pillars.dayStem, monthOf(next))];
   // 나를 받쳐주는 기운의 사람 (나를 낳는 오행: 물→나무, 나무→불, 불→흙, 흙→쇠, 쇠→물)
   const SUPPORTER: Record<Element, Element> = { wood: 'water', fire: 'wood', earth: 'fire', metal: 'earth', water: 'metal' };
   const supporterEl = SUPPORTER[dmElement(pillars.dayStem)];
@@ -137,6 +143,16 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
         </div>
         <p className="qa"><b>{yearFlow.title}</b></p>
         <p className="qa qa--sub">{yearFlow.body}</p>
+        <ul className="month2">
+          <li className="month2__row">
+            <span className="month2__k">이번 달</span>
+            <span className="month2__v">{thisMonth}</span>
+          </li>
+          <li className="month2__row">
+            <span className="month2__k">다음 달</span>
+            <span className="month2__v">{nextMonth}</span>
+          </li>
+        </ul>
       </section>
 
       <section className="sec">

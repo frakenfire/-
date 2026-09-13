@@ -5180,3 +5180,15 @@ strong {
 }
 .lucky-extra__k { font-size: 14px; line-height: 21px; font-weight: 500; color: var(--gray-700); }
 .lucky-extra__v { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--gray-900); text-align: right; }
+
+/* 내 사주 · 올해 아래 이번 달·다음 달 두 줄 */
+.month2 { list-style: none; margin: 12px 0 0; padding: 0; }
+.month2__row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--gray-100);
+}
+.month2__k { font-size: 14px; line-height: 21px; font-weight: 700; color: var(--brand-strong); }
+.month2__v { font-size: 15px; line-height: 22.5px; font-weight: 500; color: var(--gray-800); word-break: keep-all; }
