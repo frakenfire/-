@@ -437,7 +437,7 @@ async function run(browser) {
       await page.getByText('오늘 쪽지 열어보기').first().click();
       await wait(page, 600);
       const pickText = await bodyText(page);
-      check(pickText.includes('쪽지 하나를 골라요'), '[흐름] 사주가 있으면 바로 쪽지 고르기');
+      check((await page.locator('[data-screen="pick"]').count()) === 1, '[흐름] 사주가 있으면 바로 쪽지 고르기');
       check((await page.locator('.pick-basis').count()) === 1, '[흐름] 무엇을 근거로 뽑는지 한 줄로 보임');
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);

@@ -88,6 +88,9 @@ export default function App() {
   // 자정을 넘겨도(앱을 계속 켜둬도) 날짜가 갱신되도록 state 로 관리하고,
   // 앱이 포그라운드로 돌아올 때마다 신뢰 가능한 '오늘'을 다시 확인한다.
   const [dateKey, setDateKey] = useState(() => todayKey());
+  // 회전 값 — 열 때마다, 뽑을 때마다 바뀐다. 결과 자체(점수·쪽지)는 날짜와 사주로 고정이고,
+  // 제목·한마디·힌트·질문답 같은 겉 문구만 이 값으로 돌아간다. 같은 말이 계속 나오지 않게.
+  const [spin, setSpin] = useState(() => hashSeed(String(Date.now())) % 100000);
   // 누르는 맛 — 버튼이면 어디든 손끝에 한 번
   useEffect(() => {
     const onDown = (e: PointerEvent) => {
@@ -343,6 +346,7 @@ export default function App() {
       setTodayReading(snapshot);
       logEvent('result_viewed', { fortuneType, engineVersion: generated.engineVersion });
       setScreen('result');
+      setSpin((v) => v + 7);
       // 기분 좋은 순간(대길·3일 스트릭)에 미니앱 리뷰를 한 번만 요청.
       // 실제로 리뷰 UI 가 뜬 경우에만 소진 처리(토스 밖에서 기회를 태우지 않게).
       const streakNow = peekStreak();
@@ -488,6 +492,7 @@ export default function App() {
   // 뽑기 시작 — 주제·기분은 묻지 않는다. 오늘의 나, 보통 기분이 기본이다.
   function startDraw(type: FortuneType = 'tomorrow') {
     markVisit(dateKey);
+    setSpin((v) => v + 1);
     setFortuneType(type);
     setMood((m) => m ?? 'soso');
     setScreen('pick');
@@ -592,6 +597,7 @@ export default function App() {
           yesterdayRecord={yesterdayRecord}
           todayReading={todayReading}
           zodiac={zodiac}
+          spin={spin}
           onZodiac={handleZodiac}
           onReopen={handleReopen}
           onCompat={() => setScreen('compat')}
@@ -647,6 +653,7 @@ export default function App() {
       {screen === 'pick' && (
         <NotePickScreen
           notes={shownNotes}
+          spin={spin + drawNonce * 13}
           busy={busy}
           openingId={busy ? note?.id : undefined}
           fortuneLabel={fortuneType ? FORTUNE_LABEL[fortuneType] : ''}
@@ -663,6 +670,7 @@ export default function App() {
           busy={busy}
           onShare={handleShare}
           onCopy={handleCopyResult}
+          spin={spin}
           userName={birth?.name ?? null}
           song={LUCKY_SONGS[hashSeed(`${dateKey}|song|${note.id}`) % LUCKY_SONGS.length]}
           onBack={() => setScreen('home')}
@@ -672,6 +680,7 @@ export default function App() {
       {screen === 'birth' && (
         <BirthScreen
           initial={birth}
+          spin={spin}
           inFlow={birthFromFlow}
           onSave={handleSaveBirth}
           onSkip={handleSkipBirth}

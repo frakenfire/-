@@ -7,6 +7,7 @@ import { GRADE_KO } from '../lib/luck.ts';
 import { softBreak } from '../lib/softBreak.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
 import type { LuckySong } from '../data/luckySongs.ts';
+import { LUCKY_HEADS, PLAN_TITLES } from '../data/copy.ts';
 
 type Props = {
   result: FortuneResult;
@@ -16,12 +17,13 @@ type Props = {
   onCopy: () => void;
   userName: string | null;
   song: LuckySong;
+  spin?: number;
   onBack: () => void;
 };
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, onCopy, userName, song, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, onCopy, userName, song, spin = 0, onBack }: Props) {
   const { luck, dayPlan } = result;
   const isMonth = result.reading.scale === 'month';
 
@@ -77,7 +79,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, so
 
       {/* 2. 오늘의 행운 네 칸 */}
       <div className="lucky4">
-        <p className="lucky4__head">{isMonth ? '이번 달의 행운' : '오늘의 행운'}</p>
+        <p className="lucky4__head">{isMonth ? '이번 달의 행운' : LUCKY_HEADS[spin % LUCKY_HEADS.length]}</p>
         <div className="lucky4__grid">
           <div className="lucky4__tile">
             <span className="lucky4__swatch" style={{ background: luck.color.hex }} aria-hidden />
@@ -117,7 +119,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, so
 
       {/* 4. 오늘 이렇게 보내요 */}
       <div className="plan">
-        <p className="plan__title">{isMonth ? '이번 달, 이렇게 보내요' : '오늘, 이렇게 보내요'}</p>
+        <p className="plan__title">{isMonth ? '이번 달, 이렇게 보내요' : PLAN_TITLES[(spin >> 1) % PLAN_TITLES.length]}</p>
         <ul className="plan__steps">
           {dayPlan.steps.map((s) => (
             <li className="plan__step" key={s.when}>

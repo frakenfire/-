@@ -24,12 +24,12 @@ function todayLabel(): string {
 }
 
 // 시간대를 고르고, 그 안에서 날짜 seed 로 문구를 골라 매일 다른 인사를 건넨다.
-function greeting(dateKey: string): string {
+function greeting(dateKey: string, spin: number): string {
   const h = new Date().getHours();
   const slot =
     h >= 5 && h < 11 ? 'morning' : h >= 11 && h < 17 ? 'afternoon' : h >= 17 && h < 22 ? 'evening' : 'night';
   const pool = GREETINGS[slot];
-  return pool[hashSeed(`greet|${dateKey}|${slot}`) % pool.length];
+  return pool[hashSeed(`greet|${dateKey}|${slot}` + '|' + spin) % pool.length];
 }
 
 type Props = {
@@ -43,6 +43,8 @@ type Props = {
   onCompat: () => void;
   /** 쪽지 뽑기 시작 — 주제 고르기(1단계)로 간다 */
   onStart: () => void;
+  /** 회전 값 — 겉 문구가 열 때마다 돌아간다 */
+  spin?: number;
   /** 손님이 사주 앱에서 자주 찾는 '이번 달 운세' 로 바로 */
   onStartMonth: () => void;
   onReset: () => void;
@@ -71,6 +73,7 @@ export function HomeScreen({
   onReopen,
   onCompat,
   onStart,
+  spin = 0,
   onStartMonth,
   onReset,
 }: Props) {
@@ -122,7 +125,7 @@ export function HomeScreen({
       {/* 첫 블록 — 상단 네비에 앱 이름이 이미 있어서, 큰 제목 자리는 앱 이름을
           반복하지 않고 '나에게 건네는 인사'가 차지한다. (예전엔 같은 글자가 두 번) */}
       <div className="home-hero">
-        <h1 className="h1">{softBreak(greeting(todayKey()))}</h1>
+        <h1 className="h1">{softBreak(greeting(todayKey(), spin))}</h1>
         {/* 날짜와 연속 기록은 제목 위 알약 두 개가 아니라 제목 밑 보조 한 줄이다.
             제목 위에 뭔가 있으면 헤더가 둘로 읽힌다. */}
         <p className="home-hero__sub">

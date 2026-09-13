@@ -16,7 +16,7 @@ export function softBreak(text: string, minLen = 14): string {
     pos += words[i].length + (i ? 1 : 0);
     let score = Math.abs(pos - mid);
     if (/[.!?]$/.test(words[i])) score -= 6;
-    else if (BAD_END.test(words[i])) score += 8;
+    else if (words[i].length <= 1 || BAD_END.test(words[i])) score += 8; // '이 시간' 의 '이' 뒤에서 끊지 않는다
     else if (GOOD_END.test(words[i])) score -= 3;
     if (score < bestScore) { bestScore = score; best = i; }
   }

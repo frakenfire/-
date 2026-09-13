@@ -12,6 +12,7 @@ type Props = {
   /** 뽑기 흐름 중이면 건너뛰기를 제공하고 단계 표시를 붙인다 */
   inFlow?: boolean;
   onSkip?: () => void;
+  spin?: number;
 };
 
 const NOW = new Date();

@@ -1,6 +1,6 @@
 import { AppLayout } from '../components/AppLayout.tsx';
 import { NoteCard } from '../components/NoteCard.tsx';
-import { NOTE_TEASERS } from '../data/copy.ts';
+import { NOTE_TEASERS, NOTE_PICK_TITLES, NOTE_PICK_LEADS, NOTE_PICK_HINTS, FAQ_POOL } from '../data/copy.ts';
 import { todayKey, hashSeed } from '../lib/dateSeed.ts';
 import type { Note } from '../types/fortune.ts';
 
@@ -22,19 +22,13 @@ type Props = {
   fortuneLabel: string;
   onPick: (note: Note) => void;
   onBack: () => void;
+  /** 회전 값 — 제목·한마디·힌트·질문답이 뽑을 때마다 돌아간다 */
+  spin?: number;
   /** 사주가 후보 선정에 반영됐는지 — 근거를 화면에서 밝힌다 */
   personal?: boolean;
 };
 
 // PRD §5.3 — 접힌 쪽지 3장 중 1장 선택. 선택 시 해당 쪽지가 펼쳐지는 모션.
-// 자주 묻는 것. 설득이 아니라 작동 방식만 말한다.
-const FAQ = [
-  { q: '세 장은 어떻게 골라지나요?', a: '오늘 날짜와 내 사주에 맞춰 골라요. 같은 날엔 같은 세 장이에요.' },
-  { q: '어떤 걸 눌러도 되나요?', a: '네. 셋 다 오늘 나에게 맞는 쪽지예요. 느낌 오는 걸 눌러요.' },
-  { q: '매일 바뀌나요?', a: '자정이 지나면 새 쪽지 세 장이 와요.' },
-  { q: '하루에 몇 번 뽑나요?', a: '한 번이 기본이에요. 결과에서 하나 더 열 수 있어요.' },
-  { q: '내 정보는 어디에 있나요?', a: '이 폰에만 있어요. 서버로 보내지 않아요.' },
-];
 
 export function NotePickScreen({
   notes,
@@ -44,13 +38,18 @@ export function NotePickScreen({
   onPick,
   onBack,
   personal = false,
+  spin = 0,
 }: Props) {
-  const teasers = pickTeasers(`${todayKey()}|${fortuneLabel}`);
+  const teasers = pickTeasers(`${todayKey()}|${fortuneLabel}|${spin}`);
+  const title = NOTE_PICK_TITLES[spin % NOTE_PICK_TITLES.length];
+  const lead = NOTE_PICK_LEADS[(spin >> 2) % NOTE_PICK_LEADS.length];
+  const hint = NOTE_PICK_HINTS[(spin >> 4) % NOTE_PICK_HINTS.length];
+  const FAQ = Array.from({ length: 5 }, (_, i) => FAQ_POOL[(spin + i * 3) % FAQ_POOL.length]);
 
   return (
     <AppLayout onBack={busy ? undefined : onBack} step={2} totalSteps={3}>
-      <h2 className="h2">쪽지 하나를 골라요</h2>
-      {personal ? <p className="pick-basis">오늘 기운과 <b>내 사주</b>에 맞춰 골라뒀어요</p> : null}
+      <h2 className="h2" data-screen="pick">{title}</h2>
+      <p className="pick-basis">{personal ? lead : '느낌 오는 걸 하나 고르면 돼요'}</p>
       <div className="note-stage">
       <div className={openingId ? "note-fan note-fan--opening" : "note-fan"}>
       <div className="note-row">
@@ -73,7 +72,7 @@ export function NotePickScreen({
         ))}
       </div>
       </div>
-      <p className="note-fan__hint">돌아가는 쪽지 중 하나를 톡 눌러요</p>
+      <p className="note-fan__hint">{hint}</p>
       </div>
 
       {/* 아래는 비워두지 않는다. 어떻게 뽑히는지, 자주 묻는 것 다섯 줄 */}
