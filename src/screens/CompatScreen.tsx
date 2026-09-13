@@ -9,6 +9,7 @@ import { ZODIACS, findZodiac, type ZodiacId, type Zodiac } from '../data/zodiac.
 import { STAR_SIGNS, findStarSign, type StarSignId } from '../data/starSign.ts';
 import { computeCompat, type CompatResult } from '../lib/compat.ts';
 import { computeStarCompat } from '../lib/starCompat.ts';
+import { copyText } from '../lib/share.ts';
 import { saveCompatCard } from '../lib/compatCard.ts';
 import { scoreColor, scoreTextColor } from '../lib/luck.ts';
 import {
@@ -181,14 +182,27 @@ export function CompatScreen({
     }
   }
 
-  async function brag() {
-    if (!myLabel || !friendLabel || !result) return;
+  function bragText() {
+    if (!myLabel || !friendLabel || !result) return '';
     const ohaeng = result.elements
       ? `\n${result.elements.aKo} × ${result.elements.bKo} = ${result.elements.flowKo} 조합`
       : '';
-    const text = `[오늘쪽지] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 · ${result.archetype} \n${myLabel.emoji}${myLabel.label} × ${friendLabel.emoji}${friendLabel.label}${ohaeng}\n"${result.headline}"\n너도 누구랑 몇 점인지 봐봐 `;
+    return `[오늘쪽지] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 · ${result.archetype}\n${myLabel.emoji}${myLabel.label} × ${friendLabel.emoji}${friendLabel.label}${ohaeng}\n"${result.headline}"\n너도 누구랑 몇 점인지 봐봐`;
+  }
+
+  async function brag() {
+    const text = bragText();
+    if (!text) return;
     const ok = await onShare(text);
-    onToast(ok ?'궁합 자랑 완료!' : '앗, 공유를 못 했어요');
+    onToast(ok ? '궁합 자랑 완료!' : '앗, 공유를 못 했어요');
+  }
+
+  // 카톡 대신 메모나 단톡방 아무 데나 붙이고 싶은 사람용. 결과 화면의 복사하기와 같은 동작.
+  async function copyBrag() {
+    const text = bragText();
+    if (!text) return;
+    const ok = await copyText(text);
+    onToast(ok ? '복사했어요. 카톡에 붙여넣으면 돼요' : '앗, 복사를 못 했어요');
   }
 
   // 스토리에 올리는 바이럴 카드 — 광고 없이(확산 우선) 바로 이미지 저장.
@@ -405,9 +419,14 @@ export function CompatScreen({
               </div>
             </div>
           </div>
-          <button type="button" className="btn btn--primary" onClick={brag}>
-            이 궁합 친구한테 자랑하기
-          </button>
+          <div className="share-row">
+            <button type="button" className="btn btn--primary share-row__btn" onClick={brag}>
+              카톡·메시지로 보내기
+            </button>
+            <button type="button" className="btn btn--secondary share-row__btn" onClick={copyBrag}>
+              복사하기
+            </button>
+          </div>
           <section className="sec" style={{ marginTop: 'var(--space-6)' }}>
             <div className="sec__head">
               <h2 className="sec__title">더 보기</h2>

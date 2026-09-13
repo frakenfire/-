@@ -5192,3 +5192,12 @@ strong {
 }
 .month2__k { font-size: 14px; line-height: 21px; font-weight: 700; color: var(--brand-strong); }
 .month2__v { font-size: 15px; line-height: 22.5px; font-weight: 500; color: var(--gray-800); word-break: keep-all; }
+
+/* 고른 쪽지는 확실히 들린다. 저사양 폰에서도 보이게 이동·그림자를 키운다 */
+.note-grid .note--picked {
+  transform: translateY(-10px) scale(1.06);
+  box-shadow: 0 14px 28px rgba(49, 130, 246, 0.28);
+  border-color: var(--brand);
+  border-width: 2px;
+}
+.note-grid .note--picked .note__no { transform: scale(1.1); }

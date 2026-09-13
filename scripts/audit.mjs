@@ -557,8 +557,9 @@ async function run(browser) {
     check(/\d+점/.test(c) && c.includes('케미'), '[궁합] 광고 언락 후 결과');
     await diagnose(page, '궁합');
 
-    for (const [label, expect] of [['이 궁합 친구한테 자랑하기', '궁합'], ['궁합 카드 이미지로 저장하기', '저장']]) {
-      await page.getByText(label, { exact: false }).first().click();
+    check((await page.locator('.share-row__btn').count()) === 2, '[궁합] 보내기·복사 두 버튼');
+    for (const [label, expect] of [['카톡·메시지로 보내기', '궁합'], ['복사하기', '복사'], ['궁합 카드 이미지로 저장하기', '저장']]) {
+      await page.getByText(label, { exact: true }).first().click();
       let toast = '(없음)';
       try {
         await page.locator('.toast').first().waitFor({ state: 'visible', timeout: 6000 });
