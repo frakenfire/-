@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { NoteCard } from '../components/NoteCard.tsx';
 import { NOTE_TEASERS, NOTE_PICK_TITLES, NOTE_PICK_LEADS, NOTE_PICK_HINTS, FAQ_POOL } from '../data/copy.ts';
@@ -44,7 +45,11 @@ export function NotePickScreen({
   const title = NOTE_PICK_TITLES[spin % NOTE_PICK_TITLES.length];
   const lead = NOTE_PICK_LEADS[(spin >> 2) % NOTE_PICK_LEADS.length];
   const hint = NOTE_PICK_HINTS[(spin >> 4) % NOTE_PICK_HINTS.length];
-  const FAQ = Array.from({ length: 5 }, (_, i) => FAQ_POOL[(spin + i * 3) % FAQ_POOL.length]);
+  const [faqIdx, setFaqIdx] = useState(() => spin % FAQ_POOL.length);
+  useEffect(() => {
+    const t = window.setInterval(() => setFaqIdx((i) => (i + 1) % FAQ_POOL.length), 4000);
+    return () => window.clearInterval(t);
+  }, []);
 
   return (
     <AppLayout onBack={busy ? undefined : onBack} step={2} totalSteps={3}>
@@ -79,15 +84,20 @@ export function NotePickScreen({
       <section className="sec faq">
         <div className="sec__head">
           <h2 className="sec__title">이렇게 뽑혀요</h2>
+          <span className="faq__count">{faqIdx + 1} / {FAQ_POOL.length}</span>
         </div>
-        <ul className="faq__list">
-          {FAQ.map((f) => (
-            <li key={f.q} className="faq__row">
-              <span className="faq__q">{f.q}</span>
-              <span className="faq__a">{f.a}</span>
-            </li>
-          ))}
-        </ul>
+        {/* 한 칸만 보이며 돌아간다. 4초마다 다음, 누르면 바로 다음 */}
+        <button type="button" className="faq__card" onClick={() => setFaqIdx((i) => (i + 1) % FAQ_POOL.length)}>
+          <span key={faqIdx} className="faq__inner">
+            <span className="faq__q">{FAQ_POOL[faqIdx].q}</span>
+            <span className="faq__a">{FAQ_POOL[faqIdx].a}</span>
+          </span>
+          <span className="faq__dots" aria-hidden>
+            {FAQ_POOL.map((f, i) => (
+              <i key={f.q} className={i === faqIdx ? 'faq__dot faq__dot--on' : 'faq__dot'} />
+            ))}
+          </span>
+        </button>
       </section>
 
       {/* 제목이 이미 '하나만 골라볼까요' 라고 묻는다. 바닥에 같은 말을 한 번 더

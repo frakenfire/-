@@ -4861,3 +4861,49 @@ strong {
   .note-fan .note-row > *:nth-child(2) { transform: translateX(0); z-index: 3; }
   .note-fan .note-row > *:nth-child(3) { transform: translateX(78px) rotate(12deg) scale(0.9); }
 }
+
+/* ── 이렇게 뽑혀요: 한 칸만 보이며 돌아간다 ── */
+.faq__count {
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+.faq__card {
+  display: block;
+  width: 100%;
+  min-height: 120px;
+  padding: 18px 20px 14px;
+  border-radius: 18px;
+  background: var(--gray-50);
+  text-align: left;
+  overflow: hidden;
+}
+.faq__card:active { background: var(--gray-100); }
+.faq__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  animation: faq-in 0.32s ease-out both;
+}
+@keyframes faq-in {
+  from { opacity: 0; transform: translateX(14px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.faq__dots {
+  display: flex;
+  gap: 5px;
+  margin-top: 14px;
+}
+.faq__dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--gray-300);
+}
+.faq__dot--on {
+  width: 14px;
+  border-radius: 3px;
+  background: var(--brand);
+}
+@media (prefers-reduced-motion: reduce) { .faq__inner { animation: none; } }
