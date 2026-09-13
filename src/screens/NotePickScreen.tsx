@@ -52,7 +52,7 @@ export function NotePickScreen({
       <h2 className="h2">쪽지 하나를 골라요</h2>
       {personal ? <p className="pick-basis">오늘 기운과 <b>내 사주</b>에 맞춰 골라뒀어요</p> : null}
       <div className="note-stage">
-      <div className="note-pouch">
+      <div className={openingId ? "note-fan note-fan--opening" : "note-fan"}>
       <div className="note-row">
         {notes.map((note, i) => (
           <NoteCard
@@ -72,8 +72,8 @@ export function NotePickScreen({
           />
         ))}
       </div>
-      <p className="note-pouch__hint">하나를 톡 눌러요</p>
       </div>
+      <p className="note-fan__hint">돌아가는 쪽지 중 하나를 톡 눌러요</p>
       </div>
 
       {/* 아래는 비워두지 않는다. 어떻게 뽑히는지, 자주 묻는 것 다섯 줄 */}

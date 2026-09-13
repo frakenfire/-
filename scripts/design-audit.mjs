@@ -224,7 +224,7 @@ async function run() {
   await page.getByText('오늘 쪽지 열어보기').first().click(); await w(900);
   await grab('쪽지 고르기');
 
-  await page.locator('[class*="note"]').first().click();
+  await page.locator('button.note').first().dispatchEvent('click');
   await page.waitForSelector('.drawn', { timeout: 20000 }); await w(1500);
   await grab('결과');
 

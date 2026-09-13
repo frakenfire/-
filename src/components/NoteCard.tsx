@@ -29,7 +29,6 @@ export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, on
       style={
         {
           '--tilt': `${tilt}deg`,
-          animationDelay: `${index * 80}ms`,
         } as CSSProperties
       }
       onClick={onClick}
