@@ -120,9 +120,15 @@ function collect() {
   out.oneSided = [...new Set(out.oneSided)];
   out.tintTiles = [...new Set(out.tintTiles)];
   out.dashed = [...new Set(out.dashed)];
-  // 최상위에 떠 있는 면의 수
+  // 최상위에 떠 있는 면의 수.
+  // 토스 홈 탭처럼 회색 바탕 위에 흰 구역 카드를 여러 장 쌓는 건 토스의 기본 문법이라 세지 않는다.
+  // 색이 칠해진 면(틴트·브랜드)만 '떠 있는 면'으로 본다. 그게 많으면 눈이 갈 곳이 없어진다.
   const body = document.querySelector('.app__body');
-  out.floatingList = body ? [...body.children].filter(isSurface)
+  const isWhiteCard = (e) => {
+    const bg = getComputedStyle(e).backgroundColor;
+    return bg === 'rgb(255, 255, 255)' && getComputedStyle(e).boxShadow !== 'none';
+  };
+  out.floatingList = body ? [...body.children].filter((e) => isSurface(e) && !isWhiteCard(e))
     .map((e) => (typeof e.className === 'string' ? e.className : '').split(' ')[0] || e.tagName) : [];
   out.floating = out.floatingList.length;
   return out;

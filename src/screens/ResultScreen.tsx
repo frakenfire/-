@@ -49,6 +49,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, no
   }, [luck.total]);
 
   const action = result.luckyPoint.split(' · ')[2] ?? result.luckyPoint;
+  const RING = 2 * Math.PI * 54;
 
   return (
     <AppLayout
@@ -63,11 +64,23 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, no
       {/* 1. 한눈 요약 */}
       <div className={`drawn drawn--${note.color} score-hero`}>
         <div className="score-hero__top">
-          <span className="score-hero__mascot" aria-hidden>
-            <Mascot size={96} score={luck.total} bare />
+          <span className="score-ring" aria-hidden>
+            <svg className="score-ring__svg" viewBox="0 0 120 120">
+              <circle className="score-ring__bg" cx="60" cy="60" r="54" />
+              <circle
+                className="score-ring__fg"
+                cx="60"
+                cy="60"
+                r="54"
+                style={{ strokeDasharray: RING, strokeDashoffset: RING * (1 - shownTotal / 100) }}
+              />
+            </svg>
+            <span className="score-hero__mascot">
+              <Mascot size={80} score={luck.total} bare />
+            </span>
           </span>
           <div className="score-hero__num">
-            <span className="score-hero__k">{userName ? `${userName}님의 오늘 점수` : '오늘 점수'}</span>
+            <span className="score-hero__k">{userName ? `${userName}님의 ${isMonth ? '이번 달' : '오늘'} 점수` : `${isMonth ? '이번 달' : '오늘'} 점수`}</span>
             <span className="score-hero__v"><b className="num">{shownTotal}</b>점</span>
             <span className="score-hero__grade">{GRADE_KO[luck.grade] ?? luck.grade}</span>
           </div>
@@ -98,7 +111,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, no
       <p className="result__vibe">{dayPlan.vibe}</p>
 
       {/* 2. 네 가지 운 — 사랑·돈·일·건강 점수 */}
-      <div className="cat4">
+      <div className="cat4 sec-card">
         <p className="cat4__head">{isMonth ? '이번 달 네 가지 운' : '오늘 네 가지 운'}</p>
         <ul className="cat4__list">
           {luck.categories.map((c) => (
@@ -113,7 +126,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, no
       </div>
 
       {/* 3. 오늘의 행운 여섯 칸 — 색깔·숫자·방향·시간·음식·행동 */}
-      <div className="lucky4">
+      <div className="lucky4 sec-card">
         <p className="lucky4__head">{isMonth ? '이번 달의 행운' : LUCKY_HEADS[spin % LUCKY_HEADS.length]}</p>
         <div className="lucky4__grid lucky4__grid--3">
           <div className="lucky4__tile">
@@ -147,11 +160,38 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, no
             <strong className="lucky4__v">{action}</strong>
           </div>
         </div>
+        <ul className="lucky-extra">
+          <li className="lucky-extra__row">
+            <span className="lucky-extra__k">챙길 물건</span>
+            <strong className="lucky-extra__v">{luck.item}</strong>
+          </li>
+          <li className="lucky-extra__row">
+            <span className="lucky-extra__k">{isMonth ? '이번 달 기운' : '오늘의 기운'}</span>
+            <strong className="lucky-extra__v">{luck.tag}</strong>
+          </li>
+        </ul>
       </div>
 
-      {/* 4. 오늘 돈·사랑·일 — 사주를 넣은 사람 */}
+      {/* 4. 오늘 이렇게 보내요 — 사주 앱의 개운법 자리 */}
+      <div className="plan sec-card sec-card--plan">
+        <p className="plan__title">{isMonth ? '이번 달, 이렇게 보내요' : PLAN_TITLES[(spin >> 1) % PLAN_TITLES.length]}</p>
+        <ul className="plan__steps">
+          {dayPlan.steps.map((s) => (
+            <li className="plan__step" key={s.when}>
+              <span className="plan__when">{s.when}</span>
+              <span className="plan__text">{s.text}</span>
+            </li>
+          ))}
+        </ul>
+        <div className="plan__hold">
+          <span className="plan__hold-k">{isMonth ? '이번 달은 접어둬요' : '오늘은 접어둬요'}</span>
+          <span className="plan__hold-v">{dayPlan.holdOff}</span>
+        </div>
+      </div>
+
+      {/* 5. 오늘 돈·사랑·일 — 사주를 넣은 사람 */}
       {result.daily ? (
-        <div className="cat4">
+        <div className="cat4 sec-card">
           <p className="cat4__head">오늘 나에게</p>
           <ul className="mygod__qa">
             <li><span className="mygod__qa-k">돈</span>{DAY_ANSWERS[result.daily.dayGodGroup].money}</li>
@@ -163,7 +203,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, no
 
       {/* 4.5 오늘 내 사주 — 한 토막 */}
       {result.daily ? (
-        <div className="cat4">
+        <div className="cat4 sec-card">
           <p className="cat4__head">오늘 내 사주</p>
           <p className="qa"><b>{result.daily.reading.title}</b></p>
           <p className="qa qa--sub">{result.daily.reading.body}</p>
@@ -172,7 +212,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, no
       ) : null}
 
       {/* 4.7 오늘의 풀이 — 전체·오전·오후·저녁·사람·마음 */}
-      <div className="cat4">
+      <div className="cat4 sec-card">
         <p className="cat4__head">{isMonth ? '이번 달 풀이' : '오늘의 풀이'}</p>
         <ul className="read6">
           {[
@@ -192,7 +232,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, no
       </div>
 
       {/* 5. 오늘 잘 맞는 띠 */}
-      <div className="cat4">
+      <div className="cat4 sec-card">
         <p className="cat4__head">오늘 잘 맞는 띠</p>
         <div className="match">
           <div className="match__cell">
@@ -218,23 +258,6 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, no
         <button type="button" className="btn btn--secondary share-row__btn" disabled={busy} onClick={onCopy}>
           복사하기
         </button>
-      </div>
-
-      {/* 7. 오늘 이렇게 보내요 */}
-      <div className="plan">
-        <p className="plan__title">{isMonth ? '이번 달, 이렇게 보내요' : PLAN_TITLES[(spin >> 1) % PLAN_TITLES.length]}</p>
-        <ul className="plan__steps">
-          {dayPlan.steps.map((s) => (
-            <li className="plan__step" key={s.when}>
-              <span className="plan__when">{s.when}</span>
-              <span className="plan__text">{s.text}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="plan__hold">
-          <span className="plan__hold-k">{isMonth ? '이번 달은 접어둬요' : '오늘은 접어둬요'}</span>
-          <span className="plan__hold-v">{dayPlan.holdOff}</span>
-        </div>
       </div>
 
       <Disclaimer />

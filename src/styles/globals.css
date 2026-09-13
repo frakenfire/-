@@ -5105,3 +5105,78 @@ strong {
 }
 .read6__k { font-size: 14px; line-height: 21px; font-weight: 700; color: var(--brand-strong); }
 .read6__v { font-size: 15px; line-height: 22.5px; font-weight: 500; color: var(--gray-800); word-break: keep-all; }
+
+/* ── 결과 화면: 점신·포스텔러·토스 운세가 공통으로 쓰는 순서를 따른다 ──
+   총운 게이지 → 네 가지 운 → 행운 요소 → 개운(오늘 이렇게) → 나에게 → 풀이 → 띠 → 공유 */
+.score-ring {
+  position: relative;
+  flex: none;
+  width: 112px;
+  height: 112px;
+}
+.score-ring__svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.score-ring__bg {
+  fill: none;
+  stroke: var(--white);
+  stroke-width: 9;
+}
+.score-ring__fg {
+  fill: none;
+  stroke: var(--brand);
+  stroke-width: 9;
+  stroke-linecap: round;
+}
+.score-ring .score-hero__mascot {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 회색 바탕 위 흰 카드: 구역이 한눈에 나뉘고 입체감이 생긴다 */
+.sec-card {
+  margin-top: 14px;
+  padding: 18px 18px 16px;
+  border-radius: 20px;
+  background: var(--white);
+  box-shadow: 0 6px 20px rgba(0, 23, 51, 0.06);
+}
+.cat4.sec-card { margin-top: 14px; }
+.lucky4.sec-card { margin-top: 14px; }
+.sec-card .cat4__head,
+.sec-card .lucky4__head { font-size: 18px; line-height: 27px; }
+.sec-card--plan { background: var(--white); padding: 18px; }
+.sec-card--plan .plan__title { font-size: 18px; line-height: 27px; color: var(--gray-900); }
+.lucky4__grid--3 .lucky4__tile {
+  background: var(--gray-50);
+  border-color: var(--gray-50);
+  box-shadow: none;
+}
+.lucky4__tile--blue { background: #e8f3ff; border-color: #e8f3ff; }
+.lucky4__tile--yellow { background: #fff9e7; border-color: #fff9e7; }
+.lucky4__tile--orange { background: #fff3e0; border-color: #fff3e0; }
+
+.lucky-extra {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.lucky-extra__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--gray-100);
+}
+.lucky-extra__k { font-size: 14px; line-height: 21px; font-weight: 500; color: var(--gray-700); }
+.lucky-extra__v { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--gray-900); text-align: right; }
