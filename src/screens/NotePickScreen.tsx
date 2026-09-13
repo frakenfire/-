@@ -9,7 +9,7 @@ import type { Note } from '../types/fortune.ts';
 function pickTeasers(seedKey: string): string[] {
   const pool = [...NOTE_TEASERS];
   const out: string[] = [];
-  for (let i = 0; i < 3; i += 1) {
+  for (let i = 0; i < 6; i += 1) {
     const idx = hashSeed(`${seedKey}|${i}`) % pool.length;
     out.push(pool.splice(idx, 1)[0]);
   }
@@ -21,7 +21,7 @@ type Props = {
   busy: boolean;
   openingId?: string;
   fortuneLabel: string;
-  onPick: (note: Note) => void;
+  onPick: (notes: Note[]) => void;
   onBack: () => void;
   /** 회전 값 — 제목·한마디·힌트·질문답이 뽑을 때마다 돌아간다 */
   spin?: number;
@@ -42,6 +42,21 @@ export function NotePickScreen({
   spin = 0,
 }: Props) {
   const teasers = pickTeasers(`${todayKey()}|${fortuneLabel}|${spin}`);
+  // 세 장을 고른다. 고른 순서가 결과의 자리(흐름·챙길 것·행운)가 된다.
+  const [picked, setPicked] = useState<string[]>([]);
+  function toggle(note: Note) {
+    if (busy) return;
+    setPicked((cur) => {
+      if (cur.includes(note.id)) return cur.filter((id) => id !== note.id);
+      if (cur.length >= 3) return cur;
+      const next = [...cur, note.id];
+      if (next.length === 3) {
+        const ordered = next.map((id) => notes.find((n) => n.id === id)!).filter(Boolean);
+        window.setTimeout(() => onPick(ordered), 260);
+      }
+      return next;
+    });
+  }
   const title = NOTE_PICK_TITLES[spin % NOTE_PICK_TITLES.length];
   const lead = NOTE_PICK_LEADS[(spin >> 2) % NOTE_PICK_LEADS.length];
   const hint = NOTE_PICK_HINTS[(spin >> 4) % NOTE_PICK_HINTS.length];
@@ -56,28 +71,29 @@ export function NotePickScreen({
       <h2 className="h2" data-screen="pick">{title}</h2>
       <p className="pick-basis">{personal ? lead : '느낌 오는 걸 하나 고르면 돼요'}</p>
       <div className="note-stage">
-      <div className={openingId ? "note-fan note-fan--opening" : "note-fan"}>
-      <div className="note-row">
-        {notes.map((note, i) => (
-          <NoteCard
-            key={note.id}
-            note={note}
-            faceDown
-            index={i}
-            teaser={teasers[i]}
-            state={
-              openingId
-                ? openingId === note.id
-                  ? 'opening'
-                  : 'dim'
-                : 'idle'
-            }
-            onClick={() => !busy && onPick(note)}
-          />
-        ))}
+      <div className="note-grid">
+        {notes.map((note, i) => {
+          const no = picked.indexOf(note.id) + 1;
+          return (
+            <NoteCard
+              key={note.id}
+              note={note}
+              faceDown
+              index={i}
+              teaser={teasers[i]}
+              pickNo={no || undefined}
+              state={openingId ? (picked.includes(note.id) ? 'opening' : 'dim') : 'idle'}
+              onClick={() => toggle(note)}
+            />
+          );
+        })}
       </div>
-      </div>
-      <p className="note-fan__hint">{hint}</p>
+      <p className="note-fan__hint">
+        {picked.length === 0 ? hint : picked.length < 3 ? `${picked.length}장 골랐어요. ${3 - picked.length}장 더` : '세 장 다 골랐어요'}
+      </p>
+      <span className="note-count" aria-hidden>
+        {[0, 1, 2].map((i) => <i key={i} className={i < picked.length ? 'note-count__dot note-count__dot--on' : 'note-count__dot'} />)}
+      </span>
       </div>
 
       {/* 아래는 비워두지 않는다. 어떻게 뽑히는지, 자주 묻는 것 다섯 줄 */}

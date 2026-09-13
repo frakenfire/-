@@ -8,6 +8,8 @@ import { softBreak } from '../lib/softBreak.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
 import { LUCKY_HEADS, PLAN_TITLES } from '../data/copy.ts';
 import { DAY_ANSWERS } from '../data/sajuAnswers.ts';
+import { NOTE_LEAD } from '../data/resultTemplates.ts';
+import { CATEGORY_INTERP, band } from '../data/detailContent.ts';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 
 type Props = {
@@ -17,13 +19,16 @@ type Props = {
   onShare: () => void;
   onCopy: () => void;
   userName: string | null;
+  /** 뽑은 세 장. 첫 장이 결과를 정하고, 둘째·셋째는 챙길 것과 행운이 된다 */
+  notes: Note[];
   spin?: number;
   onBack: () => void;
 };
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, onCopy, userName, spin = 0, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, onCopy, userName, notes, spin = 0, onBack }: Props) {
+  const ROLES = ['오늘의 흐름', '오늘 챙길 것', '오늘의 행운'];
   const { luck, dayPlan } = result;
   const isMonth = result.reading.scale === 'month';
 
@@ -74,6 +79,21 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
         </div>
       </div>
 
+      {/* 뽑은 세 장 — 순서가 자리다 */}
+      {notes.length > 1 ? (
+        <ul className="drawn3">
+          {notes.slice(0, 3).map((n, i) => (
+            <li key={n.id} className="drawn3__row">
+              <span className="drawn3__no num">{i + 1}</span>
+              <span className="drawn3__body">
+                <span className="drawn3__k">{ROLES[i]} · {n.name}</span>
+                <span className="drawn3__v">{NOTE_LEAD[n.id] ?? ''}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+
       <p className="result__headline">{softBreak(dayPlan.headline, 18)}</p>
       <p className="result__vibe">{dayPlan.vibe}</p>
 
@@ -82,10 +102,11 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
         <p className="cat4__head">{isMonth ? '이번 달 네 가지 운' : '오늘 네 가지 운'}</p>
         <ul className="cat4__list">
           {luck.categories.map((c) => (
-            <li key={c.key} className="cat4__row">
+            <li key={c.key} className="cat4__row cat4__row--rich">
               <span className="cat4__k">{c.label}</span>
               <span className="cat4__bar"><i style={{ width: `${c.score}%` }} /></span>
               <span className="cat4__v num">{c.score}</span>
+              <span className="cat4__why">{CATEGORY_INTERP[c.key]?.[band(c.score)] ?? ''}</span>
             </li>
           ))}
         </ul>
@@ -139,6 +160,36 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
           </ul>
         </div>
       ) : null}
+
+      {/* 4.5 오늘 내 사주 — 한 토막 */}
+      {result.daily ? (
+        <div className="cat4">
+          <p className="cat4__head">오늘 내 사주</p>
+          <p className="qa"><b>{result.daily.reading.title}</b></p>
+          <p className="qa qa--sub">{result.daily.reading.body}</p>
+          <p className="qa qa--sub">{result.daily.fitLine}</p>
+        </div>
+      ) : null}
+
+      {/* 4.7 오늘의 풀이 — 전체·오전·오후·저녁·사람·마음 */}
+      <div className="cat4">
+        <p className="cat4__head">{isMonth ? '이번 달 풀이' : '오늘의 풀이'}</p>
+        <ul className="read6">
+          {[
+            ['전체', result.reading.overall],
+            [isMonth ? '초반' : '오전', result.reading.morning],
+            [isMonth ? '중순' : '오후', result.reading.afternoon],
+            [isMonth ? '월말' : '저녁', result.reading.evening],
+            ['사람', result.reading.people],
+            ['마음', result.reading.mind],
+          ].map(([k, v]) => (
+            <li key={k} className="read6__row">
+              <span className="read6__k">{k}</span>
+              <span className="read6__v">{v}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {/* 5. 오늘 잘 맞는 띠 */}
       <div className="cat4">

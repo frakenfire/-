@@ -13,11 +13,13 @@ type Props = {
   state?: 'idle' | 'opening' | 'dim';
   /** 접힌 상태에서 보여줄 한 줄 (3장이 서로 다른 문구를 갖는다) */
   teaser?: string;
+  /** 뽑은 순서(1~3). 있으면 카드가 들리고 번호가 붙는다 */
+  pickNo?: number;
   onClick?: () => void;
 };
 
 // PRD §5.3 — 접힌 쪽지. 기울인 배치 + 순차 등장, 선택 시 펼쳐지는 모션.
-export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, onClick }: Props) {
+export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, pickNo, onClick }: Props) {
   const tilt = [-4, 0, 4][index % 3];
   const opening = state === 'opening';
   return (
@@ -25,7 +27,7 @@ export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, on
       type="button"
       /* 접힌 쪽지는 셋 다 같은 종이여야 한다. 색이 다르면 뒤집기 전부터
          서로 다른 것이 보여서, 고르는 게 아니라 색을 고르는 일이 된다. */
-      className={`note ${faceDown ? 'note--paper note--facedown' : NOTE_COLOR_CLASS[note.color]} note--${state}`}
+      className={`note ${faceDown ? 'note--paper note--facedown' : NOTE_COLOR_CLASS[note.color]} note--${state}${pickNo ? ' note--picked' : ''}`}
       style={
         {
           '--tilt': `${tilt}deg`,
@@ -34,6 +36,7 @@ export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, on
       onClick={onClick}
       aria-label={faceDown ? '쪽지 뽑기' : `${note.name} 쪽지`}
     >
+      {pickNo ? <span className="note__no num" aria-label={`${pickNo}번째`}>{pickNo}</span> : null}
       <span className="note__seal" aria-hidden>
         {opening ? (
           <Mascot size={40} mood="grin" bare />

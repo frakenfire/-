@@ -123,7 +123,7 @@ export default function App() {
   // 사주를 넣었으면 오늘 기운이 모자란/넘치는 쪽에 따라 후보가 기운다.
   const notePick = useMemo(
     () =>
-      pickNotesFor(NOTES, 3, {
+      pickNotesFor(NOTES, 6, {
         dateKey,
         fortuneType: fortuneType ?? '',
         mood: mood ?? '',
@@ -306,9 +306,12 @@ export default function App() {
     setStarSign(s);
   }
 
-  async function handlePick(picked: Note) {
-    if (busy || !fortuneType || !mood) return;
+  const [drawnNotes, setDrawnNotes] = useState<Note[]>([]);
+  async function handlePick(pickedAll: Note[]) {
+    const picked = pickedAll[0];
+    if (!picked || busy || !fortuneType || !mood) return;
     setNote(picked);
+    setDrawnNotes(pickedAll);
     setBusy(true);
     try {
       const generated = generateFortune({
@@ -669,6 +672,7 @@ export default function App() {
           busy={busy}
           onShare={handleShare}
           onCopy={handleCopyResult}
+          notes={drawnNotes.length ? drawnNotes : [note]}
           spin={spin}
           userName={birth?.name ?? null}
           onBack={() => setScreen('home')}

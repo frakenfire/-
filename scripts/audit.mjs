@@ -115,7 +115,7 @@ async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topi
     await wait(page, 500);
   }
   void topic; void mood;
-  await page.locator('button.note').first().dispatchEvent('click');
+  for (const k of [0, 1, 2]) { await page.locator('button.note').nth(k).dispatchEvent('click'); await new Promise((r) => setTimeout(r, 120)); }
   await wait(page, 4300); // 쪽지 열림 + 로딩 연출
 }
 
@@ -464,7 +464,7 @@ async function run(browser) {
       // 생년월일을 받아놓고 정작 뽑는 쪽지에 안 쓰면 "그래서 뭐가 달라졌지" 가 된다
       check((await page.locator('.pick-basis').count()) === 1,
         '[사주] 쪽지 후보에 사주가 쓰였음을 밝힘');
-      await page.locator('button.note').first().dispatchEvent('click');
+      for (const k of [0, 1, 2]) { await page.locator('button.note').nth(k).dispatchEvent('click'); await new Promise((r) => setTimeout(r, 120)); }
       await wait(page, 4300);
 
       const res = await bodyText(page);
