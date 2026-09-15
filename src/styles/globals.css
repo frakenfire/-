@@ -4487,6 +4487,7 @@ strong {
 }
 .compat-banner__icon--yellow { background: #fff9e7; color: #9c5d00; }
 .compat-banner__icon--pink { background: #ffeeee; color: #e45600; }
+.compat-banner__icon--blue { background: #e8f3ff; color: #1b64da; }
 .week-lock__icon {
   width: 40px;
   height: 40px;
@@ -5203,26 +5204,6 @@ strong {
 .note-grid .note--picked .note__no { transform: scale(1.1); }
 
 /* ── 고민 상담 ── */
-.concern-cta {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
-  margin-bottom: var(--space-5);
-  padding: 16px;
-  border: 0;
-  border-radius: 20px;
-  background: var(--brand-soft);
-  text-align: left;
-  cursor: pointer;
-  box-shadow: 0 6px 20px rgba(0, 23, 51, 0.06);
-}
-.concern-cta__art { flex: none; display: flex; }
-.concern-cta__text { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
-.concern-cta__k { font-size: 13px; line-height: 19.5px; font-weight: 600; color: var(--brand-strong); }
-.concern-cta__v { font-size: 18px; line-height: 27px; font-weight: 700; color: var(--gray-900); }
-.concern-cta__d { font-size: 13px; line-height: 19.5px; font-weight: 500; color: var(--gray-700); word-break: keep-all; }
-.concern-cta__chev { flex: none; font-size: 20px; line-height: 29px; color: var(--gray-700); }
 
 .ask-hero {
   display: flex;
@@ -5451,3 +5432,70 @@ strong {
   color: var(--brand-strong);
 }
 .todo3__v { font-size: 15px; line-height: 22.5px; font-weight: 500; color: var(--gray-800); word-break: keep-all; }
+
+/* 상담 결과 — 달 한 덩이 */
+.slot__head {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+.slot__k { font-size: 18px; line-height: 27px; font-weight: 700; color: var(--gray-900); }
+.slot__label { font-size: 14px; line-height: 21px; font-weight: 600; color: var(--gray-700); }
+.slot__band {
+  margin-left: auto;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 700;
+  color: var(--brand-strong);
+}
+.slot__outer {
+  margin: 0;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+.slot__inner {
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-800);
+  word-break: keep-all;
+}
+.slot__note {
+  margin: 10px 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--gray-100);
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
+
+.yline { list-style: none; margin: 0; padding: 0; }
+.yline__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 10px;
+  padding: 12px 0;
+  border-top: 1px solid var(--gray-100);
+}
+.yline__row:first-child { border-top: 0; padding-top: 2px; }
+.yline__k { font-size: 15px; line-height: 22.5px; font-weight: 500; color: var(--gray-700); }
+.yline__k b { font-weight: 700; color: var(--gray-900); }
+.yline__b { font-size: 13px; line-height: 19.5px; font-weight: 700; color: var(--brand-strong); text-align: right; }
+.yline__v {
+  grid-column: 1 / -1;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-800);
+  word-break: keep-all;
+}

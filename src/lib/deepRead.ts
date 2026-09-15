@@ -1,7 +1,8 @@
 import { DAY_MASTER_BY_INDEX } from '../data/dayMaster.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { TEN_GOD_KO } from './tenGods.ts';
-import { BAND_WORD, monthsAway, type TimingRead } from './timing.ts';
+import { BAND_WORD, monthsAway, type TimingRead, type TimingSlot } from './timing.ts';
+import { CONCERN_GOD, GOD_SCALE, INNER_GAP, INNER_SAME, REFRESH_NOTE } from '../data/concernReadings.ts';
 import type { FourPillars } from './fourPillars.ts';
 
 // 고민 하나에 대한 심층 답 — 결론, 시기, 근거, 할 일.
@@ -22,6 +23,14 @@ export type DeepRead = {
   caution: string;
   daeunLine: string;
   basis: string;
+  /** 달마다 한 덩이씩 — 이번 달, 좋은 달, 피할 달 */
+  slots: { k: string; label: string; band: string; outer: string; inner: string; note: string }[];
+  /** 올해와 내년 */
+  yearLines: { k: string; label: string; band: string; v: string }[];
+  /** 겉과 속이 같은지 */
+  innerNote: string;
+  /** 이 답이 언제 다시 계산되는지 */
+  refresh: string;
 };
 
 const HEADLINE: Record<ConcernKey, Record<Verdict, string>> = {
@@ -219,32 +228,70 @@ export function buildDeepRead(
 
   const why: { k: string; v: string }[] = [
     { k: '내 글자', v: `${dm.name}이에요. ${dm.tagline}` },
-    {
-      k: '올해',
-      v: `${TEN_GOD_KO[timing.years[0].tenGod]}이 도는 해예요`,
-    },
-    {
-      k: '이번 달',
-      v: `${TEN_GOD_KO[timing.thisMonth.tenGod]}이라 ${BAND_WORD[timing.thisMonth.band]}`,
-    },
+    { k: '올해', v: `${TEN_GOD_KO[timing.years[0].tenGod]}이 도는 해예요` },
+    { k: '겉 기운', v: `${TEN_GOD_KO[timing.thisMonth.tenGod]}이 들어와요` },
+    { k: '속 기운', v: `${TEN_GOD_KO[timing.thisMonth.branchGod]}이 깔려 있어요` },
+    { k: '십 년', v: timing.daeunSlot ? `${TEN_GOD_KO[timing.daeunSlot.tenGod]}이에요` : '아직 첫 대운 전이에요' },
   ];
 
   const cur = timing.daeun.current;
   const left = timing.daeun.yearsToNext;
   const daeunLine = cur
     ? `${cur.startAge}세부터 ${cur.endAge}세까지는 ${cur.kor} 대운이에요.` +
-      (timing.daeunSlot ? ` ${TEN_GOD_KO[timing.daeunSlot.tenGod]}이 십 년 배경으로 깔려요.` : '') +
+      (timing.daeunSlot
+        ? ` ${GOD_SCALE[timing.daeunSlot.tenGod].daeun} ${CONCERN_GOD[concernKey][timing.daeunSlot.tenGod].line}`
+        : '') +
       (left !== null && left > 0 ? ` 다음 대운까지 ${left}해 남았어요.` : '')
     : `첫 대운이 ${timing.daeun.startAge}세부터 들어와요. 그전까지는 태어난 자리의 기운을 그대로 써요.`;
+
+  // 달 한 덩이 — 겉(천간)과 속(지지)을 따로 대야 열두 달이 전부 다른 얼굴이 된다
+  const slotBlock = (k: string, slot: TimingSlot) => ({
+    k,
+    label: slot.label,
+    band: BAND_WORD[slot.band],
+    outer: GOD_SCALE[slot.tenGod].month,
+    inner: CONCERN_GOD[concernKey][slot.tenGod].line,
+    note: CONCERN_GOD[concernKey][slot.branchGod].line,
+  });
+
+  const slots = [
+    slotBlock('이번 달', timing.thisMonth),
+    ...(timing.bestMonth.label !== timing.thisMonth.label ? [slotBlock('가장 좋은 달', timing.bestMonth)] : []),
+    ...(timing.hardMonth.label !== timing.thisMonth.label ? [slotBlock('조심할 달', timing.hardMonth)] : []),
+  ];
+
+  const yearLines = timing.years.slice(0, 2).map((y, i) => ({
+    k: i === 0 ? '올해' : '내년',
+    label: y.label,
+    band: BAND_WORD[y.band],
+    v: `${GOD_SCALE[y.tenGod].year} ${CONCERN_GOD[concernKey][y.tenGod].line}`,
+  }));
+
+  // 할 일 셋 중 하나는 이번 달 글자에서, 하나는 가장 좋은 달 글자에서 뽑는다.
+  // 그래야 같은 고민이라도 달이 바뀌면 할 일이 바뀐다.
+  const actions = [
+    CONCERN_GOD[concernKey][timing.thisMonth.tenGod].act,
+    CONCERN_GOD[concernKey][timing.bestMonth.branchGod].act,
+    ACTIONS[concernKey][verdict][0],
+  ].filter((a, i, arr) => arr.indexOf(a) === i);
+  while (actions.length < 3) {
+    const extra = ACTIONS[concernKey][verdict].find((a) => !actions.includes(a));
+    if (!extra) break;
+    actions.push(extra);
+  }
 
   return {
     verdict,
     headline: HEADLINE[concernKey][verdict],
-    sub: VERDICT_SUB[verdict],
+    sub: `${CONCERN_GOD[concernKey][timing.thisMonth.tenGod].line} ${VERDICT_SUB[verdict]}`,
+    slots,
+    yearLines,
+    innerNote: timing.thisMonth.tenGod === timing.thisMonth.branchGod ? INNER_SAME : INNER_GAP,
+    refresh: REFRESH_NOTE,
     situationLine: option?.line ?? '',
     when,
     why,
-    actions: ACTIONS[concernKey][verdict],
+    actions: actions.slice(0, 3),
     caution: CAUTION[concernKey],
     daeunLine,
     basis: concern.basis,

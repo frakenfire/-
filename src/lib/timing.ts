@@ -1,5 +1,5 @@
 import { computeFourPillars, type BirthInput, type FourPillars } from './fourPillars.ts';
-import { tenGodOf, GOD_GROUP_OF, TEN_GOD_KO, type GodGroup, type TenGod } from './tenGods.ts';
+import { tenGodOf, mainHiddenStem, GOD_GROUP_OF, TEN_GOD_KO, type GodGroup, type TenGod } from './tenGods.ts';
 import { computeDaeun, type DaeunSet, type Gender } from './daeun.ts';
 import { CONCERN_FAVOR, LOVE_FAVOR_FEMALE, type ConcernKey } from '../data/concerns.ts';
 
@@ -17,7 +17,10 @@ export type TimingSlot = {
   /** 정렬과 비교용 */
   year: number;
   month: number | null;
+  /** 겉으로 드러나는 기운 (천간) */
   tenGod: TenGod;
+  /** 속에 깔린 기운 (지지의 주된 지장간) */
+  branchGod: TenGod;
   group: GodGroup;
   score: number;
   band: Band;
@@ -66,15 +69,22 @@ function scoreOf(group: GodGroup, tenGod: TenGod, favor: { good: GodGroup[]; ok:
 function slotOf(
   dayStem: number,
   stem: number,
+  branch: number,
   label: string,
   year: number,
   month: number | null,
   favor: { good: GodGroup[]; ok: GodGroup[]; hard: GodGroup[] },
 ): TimingSlot {
   const tenGod = tenGodOf(dayStem, stem);
+  const branchGod = tenGodOf(dayStem, mainHiddenStem(branch));
   const group = GOD_GROUP_OF[tenGod];
-  const { score, band } = scoreOf(group, tenGod, favor);
-  return { label, year, month, tenGod, group, score, band };
+  const base = scoreOf(group, tenGod, favor);
+  // 겉과 속이 같은 방향이면 더 세게, 엇갈리면 중간으로 당긴다.
+  // 천간만 보면 열두 달이 열 칸으로 뭉쳐서 달마다의 차이가 안 보인다.
+  const inner = scoreOf(GOD_GROUP_OF[branchGod], branchGod, favor);
+  const score = Math.round(base.score * 0.65 + inner.score * 0.35);
+  const band: Band = score >= 84 ? 'good' : score <= 60 ? 'hard' : 'ok';
+  return { label, year, month, tenGod, branchGod, group, score, band };
 }
 
 /** 사주로 치는 해의 천간. 입춘 전이면 지난해로 본다. */
@@ -82,9 +92,15 @@ export function yearStemOf(sajuYear: number): number {
   return (((sajuYear - 4) % 10) + 10) % 10;
 }
 
-/** 그 달의 월간. 절기로 갈리므로 만세력을 그대로 돌린다. */
-function monthStemOf(y: number, m: number): number {
-  return computeFourPillars({ year: y, month: m, day: 15, hour: 12 }).month.stem;
+/** 그 달의 월주. 절기로 갈리므로 만세력을 그대로 돌린다. */
+function monthPillarOf(y: number, m: number): { stem: number; branch: number } {
+  const p = computeFourPillars({ year: y, month: m, day: 15, hour: 12 }).month;
+  return { stem: p.stem, branch: p.branch };
+}
+
+/** 그 해의 지지 */
+export function yearBranchOf(sajuYear: number): number {
+  return (((sajuYear - 4) % 12) + 12) % 12;
 }
 
 export function computeTiming(
@@ -100,14 +116,14 @@ export function computeTiming(
   const daeun = computeDaeun(input, pillars, gender ?? 'male', now);
 
   const daeunSlot = daeun.current
-    ? slotOf(dayStem, daeun.current.stem, `${daeun.current.startAge}세부터`, 0, null, favor)
+    ? slotOf(dayStem, daeun.current.stem, daeun.current.branch, `${daeun.current.startAge}세부터`, 0, null, favor)
     : null;
 
   const y0 = now.getFullYear();
   const beforeIpchun = now.getMonth() + 1 < 2 || (now.getMonth() + 1 === 2 && now.getDate() < 4);
   const sajuYear = beforeIpchun ? y0 - 1 : y0;
   const years: TimingSlot[] = [0, 1, 2].map((i) =>
-    slotOf(dayStem, yearStemOf(sajuYear + i), `${sajuYear + i}년`, sajuYear + i, null, favor),
+    slotOf(dayStem, yearStemOf(sajuYear + i), yearBranchOf(sajuYear + i), `${sajuYear + i}년`, sajuYear + i, null, favor),
   );
 
   const months: TimingSlot[] = [];
@@ -115,7 +131,8 @@ export function computeTiming(
     const d = new Date(y0, now.getMonth() + i, 15);
     const y = d.getFullYear();
     const m = d.getMonth() + 1;
-    months.push(slotOf(dayStem, monthStemOf(y, m), `${y}년 ${m}월`, y, m, favor));
+    const mp = monthPillarOf(y, m);
+    months.push(slotOf(dayStem, mp.stem, mp.branch, `${y}년 ${m}월`, y, m, favor));
   }
 
   // 같은 점수면 빠른 쪽을 고른다. 기다리라는 말은 짧을수록 좋다.

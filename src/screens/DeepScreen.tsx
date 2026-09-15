@@ -80,6 +80,36 @@ export function DeepScreen({ concernKey, read, timing, userName, busy, onShare, 
         <p className="mflow__foot">막대가 높은 달이 이 고민에 힘이 붙는 달이에요.</p>
       </div>
 
+      {/* 3.5 달마다 풀이 — 이번 달, 좋은 달, 조심할 달 */}
+      {read.slots.map((sl) => (
+        <div key={sl.k} className="sec-card">
+          <p className="slot__head">
+            <span className="slot__k">{sl.k}</span>
+            <span className="slot__label">{sl.label}</span>
+            <span className="slot__band">{sl.band}</span>
+          </p>
+          <p className="slot__outer">{sl.outer}</p>
+          <p className="slot__inner">{sl.inner}</p>
+          <p className="slot__note">속으로는 이래요. {sl.note}</p>
+        </div>
+      ))}
+
+      {/* 3.7 올해와 내년 */}
+      <div className="sec-card">
+        <p className="cat4__head">올해와 내년</p>
+        <ul className="yline">
+          {read.yearLines.map((y) => (
+            <li key={y.k} className="yline__row">
+              <span className="yline__k">
+                {y.k} <b>{y.label}</b>
+              </span>
+              <span className="yline__b">{y.band}</span>
+              <span className="yline__v">{y.v}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+
       {/* 4. 십 년 배경 */}
       <div className="sec-card">
         <p className="cat4__head">지금 지나는 십 년</p>
@@ -98,6 +128,12 @@ export function DeepScreen({ concernKey, read, timing, userName, busy, onShare, 
           ))}
         </ul>
         <p className="mflow__foot">{read.basis}</p>
+        <p className="mflow__foot">{read.innerNote}</p>
+      </div>
+
+      <div className="sec-card">
+        <p className="cat4__head">이 답은 언제 바뀌나요</p>
+        <p className="qa qa--sub">{read.refresh}</p>
       </div>
 
       {/* 6. 할 일 */}

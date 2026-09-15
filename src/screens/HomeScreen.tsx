@@ -184,20 +184,6 @@ export function HomeScreen({
         </button>
       </div>
 
-      {/* 고민 상담 — 사람들이 사주 앱에 실제로 묻는 건 '언제' 다.
-          쪽지가 오늘 하루라면 이건 몇 달에서 십 년을 본다. 그래서 히어로 바로 밑이다. */}
-      <button type="button" className="concern-cta" onClick={onConcern}>
-        <span className="concern-cta__art" aria-hidden>
-          <Mascot size={56} mood="calm" bare />
-        </span>
-        <span className="concern-cta__text">
-          <span className="concern-cta__k">고민 상담</span>
-          <strong className="concern-cta__v">요즘 뭐가 고민이에요?</strong>
-          <span className="concern-cta__d">일, 돈, 연애 중에 하나 고르면 언제가 좋을지 짚어줘요</span>
-        </span>
-        <span className="concern-cta__chev" aria-hidden>›</span>
-      </button>
-
       {/* 내 사주 — 이 앱에서 가장 개인적인 값이라 홈 상단에 둔다.
           아직 안 만든 사람에겐 '띠로는 12분의 1'이라는 이유를 대고 부른다. */}
       {sajuBadge ? (
@@ -413,6 +399,14 @@ export function HomeScreen({
         <span className="compat-banner__body">
           <span className="compat-banner__title">이번 달 내 운세는?</span>
           <span className="compat-banner__desc">1주차부터 4주차까지 흐름이 나와요</span>
+        </span>
+        <span className="compat-banner__cta">보러가기 ›</span>
+      </button>
+      <button type="button" className="compat-banner" onClick={onConcern}>
+        <span className="compat-banner__icon compat-banner__icon--blue" aria-hidden><Icon name="chat" /></span>
+        <span className="compat-banner__body">
+          <span className="compat-banner__title">요즘 뭐가 고민이에요?</span>
+          <span className="compat-banner__desc">일, 돈, 연애 중에 고르면 언제가 좋을지 나와요</span>
         </span>
         <span className="compat-banner__cta">보러가기 ›</span>
       </button>
