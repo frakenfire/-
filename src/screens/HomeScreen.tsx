@@ -41,6 +41,8 @@ type Props = {
   onZodiac: (id: ZodiacId) => void;
   onReopen: () => void;
   onCompat: () => void;
+  /** 고민 상담 — 주제를 고르면 그 얘기만 깊게 풀어준다 */
+  onConcern: () => void;
   /** 쪽지 뽑기 시작 — 주제 고르기(1단계)로 간다 */
   onStart: () => void;
   /** 회전 값 — 겉 문구가 열 때마다 돌아간다 */
@@ -63,6 +65,7 @@ export function HomeScreen({
   weekUnlocked,
   sajuBadge,
   onSaju,
+  onConcern,
   onUnlockWeek,
   onShareWeek,
   rarityCounts,
@@ -180,6 +183,20 @@ export function HomeScreen({
           {drawn ? '하나 더 열어보기' : '오늘 쪽지 열어보기'}
         </button>
       </div>
+
+      {/* 고민 상담 — 사람들이 사주 앱에 실제로 묻는 건 '언제' 다.
+          쪽지가 오늘 하루라면 이건 몇 달에서 십 년을 본다. 그래서 히어로 바로 밑이다. */}
+      <button type="button" className="concern-cta" onClick={onConcern}>
+        <span className="concern-cta__art" aria-hidden>
+          <Mascot size={56} mood="calm" bare />
+        </span>
+        <span className="concern-cta__text">
+          <span className="concern-cta__k">고민 상담</span>
+          <strong className="concern-cta__v">요즘 뭐가 고민이에요?</strong>
+          <span className="concern-cta__d">일, 돈, 연애 중에 하나 고르면 언제가 좋을지 짚어줘요</span>
+        </span>
+        <span className="concern-cta__chev" aria-hidden>›</span>
+      </button>
 
       {/* 내 사주 — 이 앱에서 가장 개인적인 값이라 홈 상단에 둔다.
           아직 안 만든 사람에겐 '띠로는 12분의 1'이라는 이유를 대고 부른다. */}

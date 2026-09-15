@@ -8,6 +8,13 @@ import { generateFortune } from './lib/generateFortune.ts';
 import { luckPercentile } from './lib/luck.ts';
 import { showRewardAd, isRewarded, isUnsupportedFreePass, adResultMessage } from './lib/ads.ts';
 import { buildShareText, shareBriefing, shareForUnlock, copyText, shareMessage } from './lib/share.ts';
+import { ConcernScreen } from './screens/ConcernScreen.tsx';
+import { ConcernAskScreen } from './screens/ConcernAskScreen.tsx';
+import { DeepScreen } from './screens/DeepScreen.tsx';
+import { computeTiming } from './lib/timing.ts';
+import { buildDeepRead } from './lib/deepRead.ts';
+import type { ConcernKey } from './data/concerns.ts';
+import { findConcern } from './data/concerns.ts';
 import { AppLayout } from './components/AppLayout.tsx';
 import { saveResultCard } from './lib/saveImage.ts';
 import {
@@ -50,7 +57,9 @@ import { dailyForMe } from './lib/dailySaju.ts';
 import { analyzeSaju } from './lib/tenGods.ts';
 import { DAY_MASTER_BY_INDEX } from './data/dayMaster.ts';
 
-type ScreenName = 'home' | 'mood' | 'pick' | 'reveal' | 'result' | 'detail' | 'compat' | 'birth' | 'saju' | 'topic';
+type ScreenName =
+  | 'home' | 'mood' | 'pick' | 'reveal' | 'result' | 'detail' | 'compat' | 'birth' | 'saju' | 'topic'
+  | 'concern' | 'concernAsk' | 'deep';
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -118,6 +127,8 @@ export default function App() {
     () => (birth ? parseBirth(birth.date, birth.time) : null),
     [birth],
   );
+  // 사주 여덟 글자 — 상담과 홈 배지가 같은 계산을 두 번 하지 않게 여기서 한 번만 세운다.
+  const pillars = useMemo(() => (birthInput ? computeFourPillars(birthInput) : null), [birthInput]);
 
   // 오늘 내 앞에 놓이는 쪽지 세 장 — 날짜·운세종류·기분에 더해 생년월일까지 반영한다.
   // 사주를 넣었으면 오늘 기운이 모자란/넘치는 쪽에 따라 후보가 기운다.
@@ -491,6 +502,65 @@ export default function App() {
   const [birthFromFlow, setBirthFromFlow] = useState(false);
   const [skipBirth, setSkipBirth] = useState(() => loadSkipBirth());
 
+  // 고민 상담 — 주제를 고르고, 상황을 좁히고, 생년월일을 받은 뒤 시기를 답으로 준다.
+  const [concernKey, setConcernKey] = useState<ConcernKey | null>(null);
+  const [concernOption, setConcernOption] = useState<string | null>(null);
+  // 생년월일을 받으러 갔다가 돌아올 곳
+  const [birthNext, setBirthNext] = useState<'draw' | 'saju' | 'deep'>('saju');
+
+  const deep = useMemo(() => {
+    if (!concernKey || !birthInput || !pillars) return null;
+    const timing = computeTiming(birthInput, pillars, birth?.gender ?? null, concernKey);
+    return { timing, read: buildDeepRead(pillars, timing, concernKey, concernOption) };
+  }, [concernKey, concernOption, birthInput, pillars, birth?.gender]);
+
+  function openConcern() {
+    markVisit(dateKey);
+    setConcernKey(null);
+    setConcernOption(null);
+    setScreen('concern');
+  }
+
+  function handleConcern(key: ConcernKey) {
+    setConcernKey(key);
+    setConcernOption(null);
+    setScreen('concernAsk');
+  }
+
+  function handleConcernOption(optionKey: string) {
+    setConcernOption(optionKey);
+    if (birthInput) {
+      logEvent('deep_opened', { concern: concernKey ?? '', option: optionKey });
+      setScreen('deep');
+    } else {
+      setBirthNext('deep');
+      setScreen('birth');
+    }
+  }
+
+  function deepShareText(): string {
+    if (!deep || !concernKey) return '';
+    const c = findConcern(concernKey);
+    const best = deep.read.when.find((w) => w.k === '가장 좋은 때');
+    return `[오늘쪽지] 내 ${c.label} 상담\n${deep.read.headline}\n${best ? `${best.k}: ${best.v}` : ''}\n너도 생년월일만 넣으면 바로 나와요`;
+  }
+
+  async function handleDeepShare() {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const out = await shareMessage(deepShareText(), '/');
+      flash(out === 'shared' ? '보냈어요' : out === 'copied' ? '복사했어요. 카톡에 붙여넣으면 돼요' : '앗, 공유를 못 했어요');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function handleDeepCopy() {
+    const ok = await copyText(deepShareText());
+    flash(ok ? '복사했어요. 카톡에 붙여넣으면 돼요' : '앗, 복사를 못 했어요');
+  }
+
   // 뽑기 시작 — 주제·기분은 묻지 않는다. 오늘의 나, 보통 기분이 기본이다.
   function startDraw(type: FortuneType = 'tomorrow') {
     markVisit(dateKey);
@@ -504,9 +574,11 @@ export default function App() {
     setBirth(b);
     saveBirth(b);
     logEvent('birth_saved', { hasTime: b.time !== null, viaFlow: birthFromFlow });
-    if (birthFromFlow) startDraw();
+    if (birthNext === 'deep') setScreen('deep');
+    else if (birthFromFlow) startDraw();
     else setScreen('saju');
     setBirthFromFlow(false);
+    setBirthNext('saju');
   }
 
   // 생년월일 없이 그냥 뽑고 싶은 사람도 있다. 막지 않는다.
@@ -520,14 +592,13 @@ export default function App() {
 
   // 홈에 보여줄 일간 배지 — 사주를 세운 사람에게는 '내 것'이 홈에서 바로 보여야 한다.
   const sajuBadge = useMemo(() => {
-    if (!birthInput) return null;
-    const pillars = computeFourPillars(birthInput);
+    if (!birthInput || !pillars) return null;
     const dm = DAY_MASTER_BY_INDEX[pillars.dayStem];
     // 오늘 기운이 돈·사랑·일에 어떻게 닿는지 홈에서 바로 보여주기 위한 묶음
     const group = dailyForMe(dateKey, pillars, analyzeSaju(pillars)).dayGodGroup;
     // 한자는 붙이지 않는다. '壬 큰 물' 은 읽는 사람 대부분에게 앞 글자가 장벽이다.
     return { icon: dm.icon, name: dm.name, hue: dm.hue, group };
-  }, [birthInput, dateKey]);
+  }, [birthInput, pillars, dateKey]);
 
   // 사주를 세우면 띠는 이미 정해진다(그것도 입춘 기준이라 더 정확하다).
   // 그런데도 홈이 "내 띠를 고르면…"이라고 물으면 유저는 "방금 넣었는데?" 가 된다.
@@ -603,6 +674,7 @@ export default function App() {
           onZodiac={handleZodiac}
           onReopen={handleReopen}
           onCompat={() => setScreen('compat')}
+          onConcern={openConcern}
           sajuBadge={sajuBadge}
           onSaju={() => setScreen(birth ? 'saju' : 'birth')}
           onStart={() => {
@@ -683,10 +755,11 @@ export default function App() {
         <BirthScreen
           initial={birth}
           spin={spin}
-          inFlow={birthFromFlow}
+          inFlow={birthFromFlow || birthNext === 'deep'}
+          ctaLabel={birthNext === 'deep' ? '내 시기 보기' : undefined}
           onSave={handleSaveBirth}
-          onSkip={handleSkipBirth}
-          onBack={() => setScreen(birth ? 'saju' : 'home')}
+          onSkip={birthNext === 'deep' ? undefined : handleSkipBirth}
+          onBack={() => setScreen(birthNext === 'deep' ? 'concernAsk' : birth ? 'saju' : 'home')}
         />
       )}
 
@@ -750,6 +823,35 @@ export default function App() {
           onAdUnlock={handleCompatAdUnlock}
           onShare={shareForUnlock}
           onToast={flash}
+        />
+      )}
+
+      {screen === 'concern' && (
+        <ConcernScreen
+          userName={birth?.name ?? null}
+          onSelect={handleConcern}
+          onBack={() => setScreen('home')}
+        />
+      )}
+
+      {screen === 'concernAsk' && concernKey && (
+        <ConcernAskScreen
+          concernKey={concernKey}
+          onSelect={handleConcernOption}
+          onBack={() => setScreen('concern')}
+        />
+      )}
+
+      {screen === 'deep' && concernKey && deep && (
+        <DeepScreen
+          concernKey={concernKey}
+          read={deep.read}
+          timing={deep.timing}
+          userName={birth?.name ?? null}
+          busy={busy}
+          onShare={handleDeepShare}
+          onCopy={handleDeepCopy}
+          onBack={() => setScreen('concernAsk')}
         />
       )}
 

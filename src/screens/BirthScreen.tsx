@@ -11,6 +11,8 @@ type Props = {
   onBack: () => void;
   /** 뽑기 흐름 중이면 건너뛰기를 제공하고 단계 표시를 붙인다 */
   inFlow?: boolean;
+  /** 아래 버튼 문구. 흐름마다 다음에 볼 게 다르다 */
+  ctaLabel?: string;
   onSkip?: () => void;
   spin?: number;
 };
@@ -34,7 +36,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 //  - 기기 로케일을 따라가 한국 사용자에게 '03/15/1994' 로 보인다.
 //  - 피커에서 고른 값이 앱으로 안 넘어와, 화면엔 값이 있는데 버튼만 죽었다.
 // 그래서 굴려서 고르는 피커를 직접 쓴다. 굴려도 되고 눌러도 된다.
-export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }: Props) {
+export function BirthScreen({ initial, onSave, onBack, inFlow = false, ctaLabel, onSkip }: Props) {
   const init = initial ? parseBirth(initial.date, initial.time) : null;
 
   const [year, setYear] = useState(init?.year ?? 1995);
@@ -44,6 +46,7 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
   const [hour24, setHour24] = useState(init?.hour ?? 12);
   const [minute, setMinute] = useState(init?.minute ?? 0);
   const [name, setName] = useState(initial?.name ?? '');
+  const [gender, setGender] = useState<'male' | 'female' | null>(initial?.gender ?? null);
 
   // 월이 바뀌면 일수가 줄 수 있다 (1/31 → 2월). 없는 날짜가 남지 않게 잘라준다.
   const maxDay = daysIn(year, month);
@@ -85,9 +88,15 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
         <button
           type="button"
           className="btn btn--primary"
-          onClick={() => input && onSave(name.trim() ? { date: dateStr, time: timeStr, name: name.trim() } : { date: dateStr, time: timeStr })}
+          onClick={() => {
+            if (!input) return;
+            const b: StoredBirth = { date: dateStr, time: timeStr };
+            if (name.trim()) b.name = name.trim();
+            if (gender) b.gender = gender;
+            onSave(b);
+          }}
         >
-          {inFlow ? '쪽지 열어보기' : '내 사주 보기'}
+          {ctaLabel ?? (inFlow ? '쪽지 열어보기' : '내 사주 보기')}
         </button>
       }
     >
@@ -107,6 +116,24 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, onSkip }:
           onChange={(e) => setName(e.target.value)}
         />
       </label>
+
+      <div className="field">
+        <span className="field__k">성별</span>
+        <div className="seg">
+          {([['female', '여자'], ['male', '남자']] as const).map(([k, label]) => (
+            <button
+              key={k}
+              type="button"
+              className={`seg__btn${gender === k ? ' seg__btn--on' : ''}`}
+              aria-pressed={gender === k}
+              onClick={() => setGender(gender === k ? null : k)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <span className="field__hint">십 년 단위 운이 성별로 갈려요. 안 골라도 오늘 운세는 나와요.</span>
+      </div>
 
       <div className="wheel-group">
           <span className="wheel-group__k">생년월일</span>

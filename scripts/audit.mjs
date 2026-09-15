@@ -540,6 +540,41 @@ async function run(browser) {
     await page.context().close();
   }
 
+  // ── 고민 상담 — 고민 고르기 → 상황 → 시기 ──
+  {
+    const page = await newPage(browser);
+    await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+    await wait(page, 500);
+    await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).first().click();
+    await wait(page, 500);
+    check((await page.locator('.concern-row').count()) === 6, '[상담] 고민 여섯 가지');
+    await page.getByText('일과 이직', { exact: true }).first().click();
+    await wait(page, 500);
+    check((await page.locator('.opt-row').count()) === 4, '[상담] 상황 네 가지');
+    await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click();
+    await wait(page, 500);
+    // 생년월일이 없으면 이 자리에서 받는다
+    if (await page.getByText('언제 태어났어요?', { exact: false }).count()) {
+      await page.getByText('여자', { exact: true }).first().click();
+      await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
+      await page.getByRole('button', { name: '내 시기 보기' }).first().click();
+    }
+    await page.waitForSelector('.deep-hero', { timeout: 20000 });
+    await wait(page, 600);
+    const dt = await bodyText(page);
+    check(/언제가 좋을까요/.test(dt), '[상담] 시기 구역 노출');
+    check((await page.locator('.when4__row').count()) === 4, '[상담] 시기 네 줄');
+    check((await page.locator('.mflow__col').count()) === 12, '[상담] 열두 달 막대');
+    check((await page.locator('.todo3__row').count()) === 3, '[상담] 할 일 세 가지');
+    check(/\d+세부터 \d+세까지|첫 대운이/.test(dt), '[상담] 십 년 대운 노출');
+    check(/년 \d+월/.test(dt), '[상담] 답이 달로 나옴');
+    await diagnose(page, '상담');
+    await page.getByText('복사하기', { exact: true }).first().click();
+    await wait(page, 600);
+    check(/복사/.test(await bodyText(page)), '[상담] 복사하기 동작');
+    await page.context().close();
+  }
+
   // 7. 궁합 — 띠 / 별자리 / 언락 2종 / 카드 액션 / 관계 저장
   {
     const page = await newPage(browser);

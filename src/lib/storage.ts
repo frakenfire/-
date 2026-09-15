@@ -368,6 +368,8 @@ export type StoredBirth = {
   time: string | null;
   /** 결과에 부를 이름. 없어도 된다 */
   name?: string;
+  /** 대운의 방향이 성별로 갈린다. 안 고르면 대운은 순행으로 세운다 */
+  gender?: 'male' | 'female';
 };
 // 생년월일 없이 보고 싶어요 — 한 번 고르면 다시 묻지 않는다
 const SKIP_BIRTH_KEY = 'tomorrowNoteSkipBirth';
