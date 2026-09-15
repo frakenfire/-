@@ -219,7 +219,7 @@ async function run() {
   await page.getByText('오늘 쪽지 열어보기').first().click(); await w(700);
   await grab('생년월일');
   await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click(); await w(300);
-  await page.getByText('쪽지 열어보기', { exact: false }).first().click(); await w(900);
+  await page.getByRole('button', { name: '다음' }).first().click(); await w(900);
   await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);
   await page.locator('.saju-entry--done').first().click(); await w(900);
   await grab('내 사주');
@@ -228,6 +228,10 @@ async function run() {
   await grab('홈(사주 후)');
 
   await page.getByText('오늘 쪽지 열어보기').first().click(); await w(900);
+  if (await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).count()) {
+    await page.getByText('일과 이직', { exact: true }).first().click(); await w(600);
+    await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click(); await w(900);
+  }
   await grab('쪽지 고르기');
 
   for (const k of [0, 1, 2]) { await page.locator('button.note').nth(k).dispatchEvent('click'); await new Promise((r) => setTimeout(r, 120)); }

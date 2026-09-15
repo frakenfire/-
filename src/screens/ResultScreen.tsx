@@ -11,6 +11,10 @@ import { DAY_ANSWERS } from '../data/sajuAnswers.ts';
 import { NOTE_LEAD } from '../data/resultTemplates.ts';
 import { CATEGORY_INTERP, band } from '../data/detailContent.ts';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
+import { DeepSections } from '../components/DeepSections.tsx';
+import type { ConcernKey } from '../data/concerns.ts';
+import type { DeepRead } from '../lib/deepRead.ts';
+import type { TimingRead } from '../lib/timing.ts';
 
 type Props = {
   result: FortuneResult;
@@ -22,12 +26,14 @@ type Props = {
   /** 뽑은 세 장. 첫 장이 결과를 정하고, 둘째·셋째는 챙길 것과 행운이 된다 */
   notes: Note[];
   spin?: number;
+  /** 고민을 고르고 들어왔으면 그 답을 결과 안에 같이 낸다 */
+  deep?: { concernKey: ConcernKey; read: DeepRead; timing: TimingRead } | null;
   onBack: () => void;
 };
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, onCopy, userName, notes, spin = 0, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, onCopy, userName, notes, spin = 0, deep = null, onBack }: Props) {
   const ROLES = ['오늘의 흐름', '오늘 챙길 것', '오늘의 행운'];
   const { luck, dayPlan } = result;
   const isMonth = result.reading.scale === 'month';
@@ -107,6 +113,19 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, no
         </ul>
       ) : null}
 
+      {/* 고민 답 — 이 흐름의 주인공. 뽑은 쪽지 바로 다음에 온다 */}
+      {deep ? (
+        <div className="deep-block">
+          <DeepSections
+            concernKey={deep.concernKey}
+            read={deep.read}
+            timing={deep.timing}
+            userName={userName}
+            compact
+          />
+        </div>
+      ) : null}
+
       <p className="result__headline">{softBreak(dayPlan.headline, 18)}</p>
       <p className="result__vibe">{dayPlan.vibe}</p>
 
@@ -172,64 +191,71 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, no
         </ul>
       </div>
 
-      {/* 4. 오늘 이렇게 보내요 — 사주 앱의 개운법 자리 */}
-      <div className="plan sec-card sec-card--plan">
-        <p className="plan__title">{isMonth ? '이번 달, 이렇게 보내요' : PLAN_TITLES[(spin >> 1) % PLAN_TITLES.length]}</p>
-        <ul className="plan__steps">
-          {dayPlan.steps.map((s) => (
-            <li className="plan__step" key={s.when}>
-              <span className="plan__when">{s.when}</span>
-              <span className="plan__text">{s.text}</span>
-            </li>
-          ))}
-        </ul>
-        <div className="plan__hold">
-          <span className="plan__hold-k">{isMonth ? '이번 달은 접어둬요' : '오늘은 접어둬요'}</span>
-          <span className="plan__hold-v">{dayPlan.holdOff}</span>
+      {/* 고민 답이 들어온 흐름에서는 아래 네 구역이 그 답과 겹친다.
+          같은 말을 두 번 하면 긴 화면만 남고 아무도 안 읽는다. */}
+      {deep ? null : (
+        <>
+        {/* 4. 오늘 이렇게 보내요 — 사주 앱의 개운법 자리 */}
+        <div className="plan sec-card sec-card--plan">
+          <p className="plan__title">{isMonth ? '이번 달, 이렇게 보내요' : PLAN_TITLES[(spin >> 1) % PLAN_TITLES.length]}</p>
+          <ul className="plan__steps">
+            {dayPlan.steps.map((s) => (
+              <li className="plan__step" key={s.when}>
+                <span className="plan__when">{s.when}</span>
+                <span className="plan__text">{s.text}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="plan__hold">
+            <span className="plan__hold-k">{isMonth ? '이번 달은 접어둬요' : '오늘은 접어둬요'}</span>
+            <span className="plan__hold-v">{dayPlan.holdOff}</span>
+          </div>
         </div>
-      </div>
 
-      {/* 5. 오늘 돈·사랑·일 — 사주를 넣은 사람 */}
-      {result.daily ? (
+        {/* 5. 오늘 돈·사랑·일 — 사주를 넣은 사람 */}
+        {result.daily ? (
+          <div className="cat4 sec-card">
+            <p className="cat4__head">오늘 나에게</p>
+            <ul className="mygod__qa">
+              <li><span className="mygod__qa-k">돈</span>{DAY_ANSWERS[result.daily.dayGodGroup].money}</li>
+              <li><span className="mygod__qa-k">사랑</span>{DAY_ANSWERS[result.daily.dayGodGroup].love}</li>
+              <li><span className="mygod__qa-k">일</span>{DAY_ANSWERS[result.daily.dayGodGroup].work}</li>
+            </ul>
+          </div>
+        ) : null}
+
+        {/* 4.5 오늘 내 사주 — 한 토막 */}
+        {result.daily ? (
+          <div className="cat4 sec-card">
+            <p className="cat4__head">오늘 내 사주</p>
+            <p className="qa"><b>{result.daily.reading.title}</b></p>
+            <p className="qa qa--sub">{result.daily.reading.body}</p>
+            <p className="qa qa--sub">{result.daily.fitLine}</p>
+          </div>
+        ) : null}
+
+        {/* 4.7 오늘의 풀이 — 전체·오전·오후·저녁·사람·마음 */}
         <div className="cat4 sec-card">
-          <p className="cat4__head">오늘 나에게</p>
-          <ul className="mygod__qa">
-            <li><span className="mygod__qa-k">돈</span>{DAY_ANSWERS[result.daily.dayGodGroup].money}</li>
-            <li><span className="mygod__qa-k">사랑</span>{DAY_ANSWERS[result.daily.dayGodGroup].love}</li>
-            <li><span className="mygod__qa-k">일</span>{DAY_ANSWERS[result.daily.dayGodGroup].work}</li>
+          <p className="cat4__head">{isMonth ? '이번 달 풀이' : '오늘의 풀이'}</p>
+          <ul className="read6">
+            {[
+              ['전체', result.reading.overall],
+              [isMonth ? '초반' : '오전', result.reading.morning],
+              [isMonth ? '중순' : '오후', result.reading.afternoon],
+              [isMonth ? '월말' : '저녁', result.reading.evening],
+              ['사람', result.reading.people],
+              ['마음', result.reading.mind],
+            ].map(([k, v]) => (
+              <li key={k} className="read6__row">
+                <span className="read6__k">{k}</span>
+                <span className="read6__v">{v}</span>
+              </li>
+            ))}
           </ul>
         </div>
-      ) : null}
 
-      {/* 4.5 오늘 내 사주 — 한 토막 */}
-      {result.daily ? (
-        <div className="cat4 sec-card">
-          <p className="cat4__head">오늘 내 사주</p>
-          <p className="qa"><b>{result.daily.reading.title}</b></p>
-          <p className="qa qa--sub">{result.daily.reading.body}</p>
-          <p className="qa qa--sub">{result.daily.fitLine}</p>
-        </div>
-      ) : null}
-
-      {/* 4.7 오늘의 풀이 — 전체·오전·오후·저녁·사람·마음 */}
-      <div className="cat4 sec-card">
-        <p className="cat4__head">{isMonth ? '이번 달 풀이' : '오늘의 풀이'}</p>
-        <ul className="read6">
-          {[
-            ['전체', result.reading.overall],
-            [isMonth ? '초반' : '오전', result.reading.morning],
-            [isMonth ? '중순' : '오후', result.reading.afternoon],
-            [isMonth ? '월말' : '저녁', result.reading.evening],
-            ['사람', result.reading.people],
-            ['마음', result.reading.mind],
-          ].map(([k, v]) => (
-            <li key={k} className="read6__row">
-              <span className="read6__k">{k}</span>
-              <span className="read6__v">{v}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+        </>
+      )}
 
       {/* 5. 오늘 잘 맞는 띠 */}
       <div className="cat4 sec-card">

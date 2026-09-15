@@ -67,7 +67,7 @@ export function NotePickScreen({
   }, []);
 
   return (
-    <AppLayout onBack={busy ? undefined : onBack} step={2} totalSteps={3}>
+    <AppLayout onBack={busy ? undefined : onBack} step={4} totalSteps={4}>
       <h2 className="h2" data-screen="pick">{title}</h2>
       <p className="pick-basis">{personal ? lead : '느낌 오는 걸 하나 고르면 돼요'}</p>
       <div className="note-stage">

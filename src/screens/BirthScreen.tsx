@@ -83,7 +83,7 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, ctaLabel,
     <AppLayout
       onBack={onBack}
       step={inFlow ? 1 : undefined}
-      totalSteps={inFlow ? 3 : undefined}
+      totalSteps={inFlow ? 4 : undefined}
       bottom={
         <button
           type="button"

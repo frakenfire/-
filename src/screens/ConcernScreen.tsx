@@ -7,13 +7,15 @@ type Props = {
   userName: string | null;
   onSelect: (key: ConcernKey) => void;
   onBack: () => void;
+  /** 쪽지 뽑기 흐름 안이면 네 단계 중 두 번째다 */
+  inFlow?: boolean;
 };
 
 // 상담 1단계 — 요즘 뭐가 고민인지 하나만 고른다.
 // 한 화면에 질문 하나. 고른 뒤에 상황을 한 번 더 좁히고, 그다음에 생년월일을 받는다.
-export function ConcernScreen({ userName, onSelect, onBack }: Props) {
+export function ConcernScreen({ userName, onSelect, onBack, inFlow = false }: Props) {
   return (
-    <AppLayout onBack={onBack} step={1} totalSteps={3}>
+    <AppLayout onBack={onBack} step={inFlow ? 2 : 1} totalSteps={inFlow ? 4 : 3}>
       <div className="ask-hero">
         <span className="ask-hero__art" aria-hidden>
           <Mascot size={72} mood="calm" bare />

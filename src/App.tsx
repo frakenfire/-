@@ -506,7 +506,9 @@ export default function App() {
   const [concernKey, setConcernKey] = useState<ConcernKey | null>(null);
   const [concernOption, setConcernOption] = useState<string | null>(null);
   // 생년월일을 받으러 갔다가 돌아올 곳
-  const [birthNext, setBirthNext] = useState<'draw' | 'saju' | 'deep'>('saju');
+  const [birthNext, setBirthNext] = useState<'draw' | 'saju' | 'deep' | 'concern'>('saju');
+  // 쪽지 뽑기 흐름 안에서 고민을 묻는 중인가. 아니면 '더 해보기' 로 들어온 단독 상담인가.
+  const [concernInFlow, setConcernInFlow] = useState(false);
 
   const deep = useMemo(() => {
     if (!concernKey || !birthInput || !pillars) return null;
@@ -518,6 +520,7 @@ export default function App() {
     markVisit(dateKey);
     setConcernKey(null);
     setConcernOption(null);
+    setConcernInFlow(false);
     setScreen('concern');
   }
 
@@ -529,10 +532,11 @@ export default function App() {
 
   function handleConcernOption(optionKey: string) {
     setConcernOption(optionKey);
-    if (birthInput) {
-      logEvent('deep_opened', { concern: concernKey ?? '', option: optionKey });
-      setScreen('deep');
-    } else {
+    logEvent('deep_opened', { concern: concernKey ?? '', option: optionKey, inFlow: concernInFlow });
+    // 뽑기 흐름이면 쪽지를 고르러 가고, 단독 상담이면 답으로 바로 간다.
+    if (concernInFlow) setScreen('pick');
+    else if (birthInput) setScreen('deep');
+    else {
       setBirthNext('deep');
       setScreen('birth');
     }
@@ -561,13 +565,17 @@ export default function App() {
     flash(ok ? '복사했어요. 카톡에 붙여넣으면 돼요' : '앗, 복사를 못 했어요');
   }
 
-  // 뽑기 시작 — 주제·기분은 묻지 않는다. 오늘의 나, 보통 기분이 기본이다.
+  // 뽑기 시작 — 이름·성별을 받고, 고민과 보고 싶은 부분을 물은 뒤에 쪽지를 고른다.
+  // 기분은 묻지 않는다. 보통 기분이 기본이다.
   function startDraw(type: FortuneType = 'tomorrow') {
     markVisit(dateKey);
     setSpin((v) => v + 1);
     setFortuneType(type);
     setMood((m) => m ?? 'soso');
-    setScreen('pick');
+    setConcernKey(null);
+    setConcernOption(null);
+    setConcernInFlow(true);
+    setScreen('concern');
   }
 
   function handleSaveBirth(b: StoredBirth) {
@@ -575,7 +583,7 @@ export default function App() {
     saveBirth(b);
     logEvent('birth_saved', { hasTime: b.time !== null, viaFlow: birthFromFlow });
     if (birthNext === 'deep') setScreen('deep');
-    else if (birthFromFlow) startDraw();
+    else if (birthNext === 'concern' || birthFromFlow) startDraw();
     else setScreen('saju');
     setBirthFromFlow(false);
     setBirthNext('saju');
@@ -681,7 +689,7 @@ export default function App() {
             if (birthInput || skipBirth) {
               startDraw();
             } else {
-              setBirthFromFlow(true);
+              setBirthNext('concern');
               setScreen('birth');
             }
           }}
@@ -689,7 +697,7 @@ export default function App() {
             if (birthInput || skipBirth) {
               handleType('month');
             } else {
-              setBirthFromFlow(true);
+              setBirthNext('concern');
               setScreen('birth');
             }
           }}
@@ -747,6 +755,7 @@ export default function App() {
           notes={drawnNotes.length ? drawnNotes : [note]}
           spin={spin}
           userName={birth?.name ?? null}
+          deep={concernKey && deep ? { concernKey, read: deep.read, timing: deep.timing } : null}
           onBack={() => setScreen('home')}
         />
       )}
@@ -755,11 +764,13 @@ export default function App() {
         <BirthScreen
           initial={birth}
           spin={spin}
-          inFlow={birthFromFlow || birthNext === 'deep'}
-          ctaLabel={birthNext === 'deep' ? '내 시기 보기' : undefined}
+          inFlow={birthFromFlow || birthNext === 'deep' || birthNext === 'concern'}
+          ctaLabel={birthNext === 'deep' ? '내 시기 보기' : birthNext === 'concern' || birthFromFlow ? '다음' : undefined}
           onSave={handleSaveBirth}
           onSkip={birthNext === 'deep' ? undefined : handleSkipBirth}
-          onBack={() => setScreen(birthNext === 'deep' ? 'concernAsk' : birth ? 'saju' : 'home')}
+          onBack={() =>
+            setScreen(birthNext === 'deep' ? 'concernAsk' : birthNext === 'concern' || birthFromFlow ? 'home' : birth ? 'saju' : 'home')
+          }
         />
       )}
 
@@ -831,6 +842,7 @@ export default function App() {
           userName={birth?.name ?? null}
           onSelect={handleConcern}
           onBack={() => setScreen('home')}
+          inFlow={concernInFlow}
         />
       )}
 
@@ -839,6 +851,7 @@ export default function App() {
           concernKey={concernKey}
           onSelect={handleConcernOption}
           onBack={() => setScreen('concern')}
+          inFlow={concernInFlow}
         />
       )}
 

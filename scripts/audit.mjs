@@ -106,13 +106,19 @@ async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topi
   await page.goto(URL_BASE, { waitUntil: 'networkidle' });
   await wait(page, 400);
   if (zodiac) await setZodiac(page, zodiac);
-  // 흐름: (생년월일) → 주제 → 기분 → 쪽지. 생년월일은 건너뛸 수 있다.
+  // 흐름 다섯 장: 홈 → 이름·성별·생년월일 → 고민 → 자세히 → 쪽지 → 결과.
+  // 주제와 기분은 묻지 않는다.
   await page.getByText('오늘 쪽지 열어보기').first().click();
   await wait(page, 600);
-  // 흐름은 네 장: 홈 → 이름·생년월일(없이 보기 가능) → 쪽지 → 결과. 주제·기분은 묻지 않는다.
   if (await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).count()) {
     await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click();
+    await wait(page, 600);
+  }
+  if (await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).count()) {
+    await page.getByText('일과 이직', { exact: true }).first().click();
     await wait(page, 500);
+    await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click();
+    await wait(page, 600);
   }
   void topic; void mood;
   for (const k of [0, 1, 2]) { await page.locator('button.note').nth(k).dispatchEvent('click'); await new Promise((r) => setTimeout(r, 120)); }
@@ -378,7 +384,7 @@ async function run(browser) {
       await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
       await wait(page, 400);
 
-      await page.getByText('쪽지 열어보기', { exact: false }).first().click();
+      await page.getByRole('button', { name: '다음' }).first().click();
       await wait(page, 900);
       // 저장됐으면 홈의 '내 사주' 행으로 사주 화면에 들어간다
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
@@ -436,8 +442,15 @@ async function run(browser) {
       await wait(page, 500);
       await page.getByText('오늘 쪽지 열어보기').first().click();
       await wait(page, 600);
+      // 사주가 있으면 생년월일은 건너뛰고 고민부터 묻는다
+      check((await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).count()) > 0,
+        '[흐름] 사주가 있으면 생년월일을 다시 묻지 않는다');
+      await page.getByText('일과 이직', { exact: true }).first().click();
+      await wait(page, 500);
+      await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click();
+      await wait(page, 700);
       const pickText = await bodyText(page);
-      check((await page.locator('[data-screen="pick"]').count()) === 1, '[흐름] 사주가 있으면 바로 쪽지 고르기');
+      check((await page.locator('[data-screen="pick"]').count()) === 1, '[흐름] 고민을 고르면 쪽지 고르기로');
       check((await page.locator('.pick-basis').count()) === 1, '[흐름] 무엇을 근거로 뽑는지 한 줄로 보임');
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
@@ -460,7 +473,14 @@ async function run(browser) {
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
       await page.getByText('오늘 쪽지 열어보기').first().click();
-      await wait(page, 600);
+      await wait(page, 700);
+      // 사주가 있어도 고민은 묻는다. 고민이 결과의 절반이기 때문이다.
+      check((await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).count()) > 0,
+        '[사주] 사주가 있어도 고민을 묻는다');
+      await page.getByText('일과 이직', { exact: true }).first().click();
+      await wait(page, 500);
+      await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click();
+      await wait(page, 700);
       // 생년월일을 받아놓고 정작 뽑는 쪽지에 안 쓰면 "그래서 뭐가 달라졌지" 가 된다
       check((await page.locator('.pick-basis').count()) === 1,
         '[사주] 쪽지 후보에 사주가 쓰였음을 밝힘');
@@ -468,7 +488,8 @@ async function run(browser) {
       await wait(page, 4300);
 
       const res = await bodyText(page);
-      check(/오늘 점수\s*\d+\s*점/.test(await bodyText(page)), '[사주결과] 결과 도달');
+      check(/오늘 점수\s*\d+\s*점/.test(res), '[사주결과] 결과 도달');
+      check(/언제가 좋을까요/.test(res), '[사주결과] 고민 답이 결과 안에 들어감');
       await diagnose(page, '사주결과');
 
       // 개인정보를 받았으면 지우는 길이 앱 안에 있어야 한다 (설정 깊숙이 숨기지 않는다)
@@ -490,7 +511,7 @@ async function run(browser) {
       const gone = await page.evaluate(() => window.localStorage.getItem('tomorrowNoteBirth'));
       check(gone === null, '[사주] 삭제 후 저장소에 생년월일이 남지 않음', String(gone));
     } catch (e) {
-      bad('[사주] 경로', e.message.split('\n')[0]);
+      bad('[사주] 경로', e.message.split('\n').slice(0, 4).join(' | '));
     }
     await page.context().close();
   }
