@@ -108,13 +108,14 @@ async function setZodiac(page, label = '개띠') {
 
 // 궁합과 이번 달은 홈이 아니라 결과 화면 아래에 있다. 결과까지 간 다음 누른다.
 async function goCompat(page) {
-  // 띠를 미리 심어두면 궁합의 '나' 가 이미 정해져 고르기 화면이 안 열린다
-  await drawTo(page, { zodiac: null });
+  // 생년월일을 넣으면 궁합의 '나' 가 이미 정해져 고르기 화면이 안 열린다.
+  // 궁합 자체를 보는 점검이므로 아무것도 넣지 않은 사람으로 간다.
+  await drawTo(page, { zodiac: null, noBirth: true });
   await page.getByText('오늘 우리 궁합', { exact: false }).first().click();
   await wait(page, 700);
 }
 
-async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topic = null } = {}) {
+async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topic = null, noBirth = false } = {}) {
   await page.goto(URL_BASE, { waitUntil: 'networkidle' });
   await wait(page, 400);
   if (zodiac) await setZodiac(page, zodiac);
@@ -122,7 +123,14 @@ async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topi
   // 주제와 기분은 묻지 않는다.
   await page.locator('.today-hook__cta').first().click();
   await wait(page, 600);
-  if (await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).count()) {
+  // 저장돼 있어도 이름·생년월일 화면은 한 번 거친다. 고칠 기회를 주는 자리다.
+  if (noBirth && (await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).count())) {
+    await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click();
+    await wait(page, 600);
+  } else if (await page.getByRole('button', { name: '다음' }).count()) {
+    await page.getByRole('button', { name: '다음' }).first().click();
+    await wait(page, 600);
+  } else if (await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).count()) {
     await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click();
     await wait(page, 600);
   }
@@ -451,9 +459,11 @@ async function run(browser) {
       await wait(page, 500);
       await page.locator('.today-hook__cta').first().click();
       await wait(page, 600);
-      // 사주가 있으면 생년월일은 건너뛰고 고민부터 묻는다
-      check((await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).count()) > 0,
-        '[흐름] 사주가 있으면 생년월일을 다시 묻지 않는다');
+      // 사주가 있어도 이름·생년월일 화면을 한 번 거친다 (값은 채워져 있다)
+      check((await page.getByText('언제 태어났어요?', { exact: false }).count()) > 0,
+        '[흐름] 뽑기 전에 이름·생년월일을 먼저 받는다');
+      await page.getByRole('button', { name: '다음' }).first().click();
+      await wait(page, 700);
       await page.getByText('일과 이직', { exact: true }).first().click();
       await wait(page, 500);
       await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click();
@@ -486,6 +496,8 @@ async function run(browser) {
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
       await page.locator('.today-hook__cta').first().click();
+      await wait(page, 700);
+      await page.getByRole('button', { name: '다음' }).first().click();
       await wait(page, 700);
       // 사주가 있어도 고민은 묻는다. 고민이 결과의 절반이기 때문이다.
       check((await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).count()) > 0,
@@ -616,8 +628,18 @@ async function run(browser) {
     await goCompat(page);
     check((await bodyText(page)).includes('별자리 궁합'), '[궁합] 첫 화면에서 별자리로 전환 가능');
 
-    await page.locator('.zodiac-chip', { hasText: '개띠' }).first().click(); await wait(page, 500);
-    await page.locator('.zodiac-chip', { hasText: '범띠' }).first().click(); await wait(page, 1200);
+    // 생년월일을 넣고 온 사람은 '나' 가 이미 정해져 있어 피커가 닫혀 있다. 슬롯을 눌러 연다.
+    const pickZ = async (label) => {
+      if ((await page.locator('.zodiac-chip').count()) === 0) {
+        await page.locator('.compat-pick').last().click();
+        await wait(page, 500);
+      }
+      await page.locator('.zodiac-chip', { hasText: label }).first().click();
+      await wait(page, 700);
+    };
+    await pickZ('개띠');
+    await pickZ('범띠');
+    await wait(page, 700);
     await page.getByText('광고 보고 결과 열기', { exact: false }).first().click();
     await wait(page, 3200);
     const c = await bodyText(page);
@@ -646,8 +668,18 @@ async function run(browser) {
     const page = await newPage(browser);
     await goCompat(page);
     await page.getByText('별자리 궁합', { exact: false }).first().click(); await wait(page, 700);
-    await page.locator('button', { hasText: '사자자리' }).first().click(); await wait(page, 800);
-    await page.locator('button', { hasText: '물병자리' }).first().click(); await wait(page, 1400);
+    // 생년월일로 별자리가 이미 정해져 있으면 피커가 닫혀 있다
+    const pickS = async (label) => {
+      if ((await page.locator('button', { hasText: label }).count()) === 0) {
+        await page.locator('.compat-pick').last().click();
+        await wait(page, 500);
+      }
+      await page.locator('button', { hasText: label }).first().click();
+      await wait(page, 900);
+    };
+    await pickS('사자자리');
+    await pickS('물병자리');
+    await wait(page, 700);
     const u = page.getByText('광고 보고 결과 열기', { exact: false }).first();
     if (await u.count()) { await u.click(); await wait(page, 3200); }
     const t = await bodyText(page);

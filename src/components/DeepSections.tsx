@@ -62,13 +62,14 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         <ul className="mflow">
           {timing.months.map((m, i) => (
             <li key={m.label} className={`mflow__col mflow__col--${m.band}`}>
-              <span className="mflow__bar" style={{ height: `${Math.round((m.score / max) * 56) + 8}px` }} />
-              <span className="mflow__m num">{m.month}</span>
-              {i === 0 ? <span className="mflow__now">지금</span> : null}
+              <span className="mflow__barbox">
+                <span className="mflow__bar" style={{ height: `${Math.round((m.score / max) * 56) + 8}px` }} />
+              </span>
+              <span className={`mflow__m num${i === 0 ? ' mflow__m--now' : ''}`}>{m.month}</span>
             </li>
           ))}
         </ul>
-        <p className="mflow__foot">막대가 높은 달이 이 고민에 힘이 붙는 달이에요.</p>
+        <p className="mflow__foot">맨 왼쪽이 이번 달이에요. 막대가 높은 달에 이 고민이 풀려요.</p>
       </div>
 
       {read.slots.map((sl) => (

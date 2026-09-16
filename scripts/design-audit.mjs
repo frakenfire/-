@@ -259,6 +259,7 @@ async function run() {
 
   // 궁합은 결과 화면 아래 '더 보기' 에서만 들어간다. 결과까지 다시 간다.
   await page.locator('.today-hook__cta').first().click(); await w(700);
+  await page.getByRole('button', { name: '다음' }).first().click(); await w(800);
   await page.getByText('일과 이직', { exact: true }).first().click(); await w(600);
   await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click(); await w(800);
   await page.locator('button.note').first().dispatchEvent('click');

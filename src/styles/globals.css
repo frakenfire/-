@@ -5669,3 +5669,50 @@ strong {
 /* '더 보기' 줄: 보러가기 글씨가 본문을 밀어 제목이 두 줄로 꺾였다 */
 .sec--card .compat-banner__cta { flex: none; }
 .sec--card .compat-banner__body { min-width: 0; }
+
+/* 열두 달 막대: 칸마다 막대·달·표시를 같은 세 줄에 맞춘다.
+   예전엔 '지금' 이 첫 칸에만 붙어서 그 칸만 키가 커지고 아래 줄이 어긋났다. */
+.mflow {
+  align-items: stretch;
+  height: auto;
+}
+.mflow__col {
+  display: grid;
+  grid-template-rows: 64px 19.5px 19.5px;
+  justify-items: center;
+  gap: 4px;
+}
+.mflow__barbox {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+.mflow__now { min-height: 19.5px; }
+
+/* 결과 카드 안 글자 크기를 한 벌로 맞춘다.
+   제목 18, 본문 15, 곁말 13. 카드마다 다른 크기가 섞여 있었다. */
+.sec-card .cat4__head,
+.sec-card .slot__k,
+.sec--card .sec__title { font-size: 18px; line-height: 27px; font-weight: 700; }
+.sec-card .qa,
+.sec-card .qa--sub,
+.sec-card .slot__inner,
+.sec-card .read6__v,
+.sec-card .todo3__v,
+.sec-card .yline__v,
+.sec-card .deep-situation,
+.sec-card .result__vibe { font-size: 15px; line-height: 22.5px; }
+.sec-card .slot__outer { font-size: 16px; line-height: 24px; }
+.sec-card .mflow__foot,
+.sec-card .slot__note,
+.sec-card .plan__hold-v { font-size: 13px; line-height: 19.5px; }
+.sec-card .read6__k,
+.sec-card .when4__k,
+.sec-card .yline__k { font-size: 14px; line-height: 21px; }
+
+/* '지금' 을 따로 한 줄 두면 첫 칸에만 꼬리표가 달려 왼쪽이 허전해진다.
+   이번 달은 숫자에 색을 줘서 표시하고, 설명은 아래 한 줄이 맡는다. */
+.mflow__col { grid-template-rows: 64px 19.5px; }
+.mflow__m--now { color: var(--brand-strong); font-weight: 700; }

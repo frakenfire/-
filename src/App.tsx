@@ -632,12 +632,8 @@ export default function App() {
           spin={spin}
           onReopen={handleReopen}
           onStart={() => {
-            if (birthInput || skipBirth) {
-              startDraw();
-            } else {
-              setBirthNext('concern');
-              setScreen('birth');
-            }
+            setBirthNext('concern');
+            setScreen('birth');
           }}
           onReset={handleReset}
         />
