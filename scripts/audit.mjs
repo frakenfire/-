@@ -106,6 +106,14 @@ async function setZodiac(page, label = '개띠') {
   await wait(page, 400);
 }
 
+// 궁합과 이번 달은 홈이 아니라 결과 화면 아래에 있다. 결과까지 간 다음 누른다.
+async function goCompat(page) {
+  // 띠를 미리 심어두면 궁합의 '나' 가 이미 정해져 고르기 화면이 안 열린다
+  await drawTo(page, { zodiac: null });
+  await page.getByText('오늘 우리 궁합', { exact: false }).first().click();
+  await wait(page, 700);
+}
+
 async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topic = null } = {}) {
   await page.goto(URL_BASE, { waitUntil: 'networkidle' });
   await wait(page, 400);
@@ -270,10 +278,9 @@ async function run(browser) {
     const TARGETS = [
       ['시작하기', '오늘 쪽지 열어보기', '언제 태어났어요'],
       ['띠 서열 공유', '단톡방에 던지기', '오늘의 띠 서열'],
-      ['궁합 배너', '오늘 우리 궁합', '친구 궁합'],
       ['데이터 삭제', '내 데이터 전체 삭제', '네, 전부 지울게요'],
     ];
-    // 주제 화면은 네 장 흐름에서 뺐다. 이번 달은 홈의 '이번 달 내 운세는?' 행으로만 간다.
+    // 궁합과 이번 달은 홈에서 뺐다. 결과 화면 아래 '더 보기' 에만 있다.
 
     for (const [name, needle, expect] of TARGETS) {
       const page = await newPage(browser);
@@ -604,10 +611,7 @@ async function run(browser) {
   // 7. 궁합 — 띠 / 별자리 / 언락 2종 / 카드 액션 / 관계 저장
   {
     const page = await newPage(browser);
-    await page.goto(URL_BASE, { waitUntil: 'networkidle' });
-    await wait(page, 400);
-    await page.getByText('오늘 우리 궁합', { exact: false }).first().click();
-    await wait(page, 700);
+    await goCompat(page);
     check((await bodyText(page)).includes('별자리 궁합'), '[궁합] 첫 화면에서 별자리로 전환 가능');
 
     await page.locator('.zodiac-chip', { hasText: '개띠' }).first().click(); await wait(page, 500);
@@ -638,9 +642,7 @@ async function run(browser) {
   // 7-b. 별자리 궁합 단독 관통
   {
     const page = await newPage(browser);
-    await page.goto(URL_BASE, { waitUntil: 'networkidle' });
-    await wait(page, 400);
-    await page.getByText('오늘 우리 궁합', { exact: false }).first().click(); await wait(page, 700);
+    await goCompat(page);
     await page.getByText('별자리 궁합', { exact: false }).first().click(); await wait(page, 700);
     await page.locator('button', { hasText: '사자자리' }).first().click(); await wait(page, 800);
     await page.locator('button', { hasText: '물병자리' }).first().click(); await wait(page, 1400);
@@ -732,9 +734,9 @@ async function run(browser) {
   {
     const BACKS = [
       ['생년월일', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); }, '오늘의 띠 서열'],
-      ['쪽지 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); await wait(p, 500); await p.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click(); }, '오늘의 띠 서열'],
+      ['고민 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); await wait(p, 500); await p.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click(); }, '오늘의 띠 서열'],
       ['결과', async (p) => { await drawTo(p); }, '오늘의 띠 서열'],
-      ['궁합', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 우리 궁합', { exact: false }).first().click(); }, '오늘의 띠 서열'],
+      ['궁합', async (p) => { await goCompat(p); }, '오늘 점수'],
     ];
     for (const [name, prep, expect] of BACKS) {
       const page = await newPage(browser);

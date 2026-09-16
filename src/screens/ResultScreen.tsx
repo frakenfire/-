@@ -28,12 +28,15 @@ type Props = {
   spin?: number;
   /** 고민을 고르고 들어왔으면 그 답을 결과 안에 같이 낸다 */
   deep?: { concernKey: ConcernKey; read: DeepRead; timing: TimingRead } | null;
+  /** 결과를 본 다음에만 권하는 것들. 홈은 쪽지 뽑기 하나로 비워뒀다 */
+  onCompat: () => void;
+  onMonth: () => void;
   onBack: () => void;
 };
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, onCopy, userName, notes, spin = 0, deep = null, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, onCopy, userName, notes, spin = 0, deep = null, onCompat, onMonth, onBack }: Props) {
   const ROLES = ['오늘의 흐름', '오늘 챙길 것', '오늘의 행운'];
   const { luck, dayPlan } = result;
   const isMonth = result.reading.scale === 'month';
@@ -285,6 +288,31 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, no
           복사하기
         </button>
       </div>
+
+      {/* 더 보기 — 결과를 본 사람에게만 권한다. 처음 온 사람에겐 고를 게 많으면 안 된다 */}
+      <section className="sec">
+        <div className="sec__head">
+          <h2 className="sec__title">더 보기</h2>
+        </div>
+        <div className="rowlist">
+          <button type="button" className="compat-banner" onClick={onMonth}>
+            <span className="compat-banner__icon compat-banner__icon--yellow" aria-hidden><Icon name="calendar" /></span>
+            <span className="compat-banner__body">
+              <span className="compat-banner__title">이번 달 내 운세는?</span>
+              <span className="compat-banner__desc">1주차부터 4주차까지 흐름이 나와요</span>
+            </span>
+            <span className="compat-banner__cta">보러가기 ›</span>
+          </button>
+          <button type="button" className="compat-banner" onClick={onCompat}>
+            <span className="compat-banner__icon compat-banner__icon--pink" aria-hidden><Icon name="heart" /></span>
+            <span className="compat-banner__body">
+              <span className="compat-banner__title">오늘 우리 궁합, 몇 점일까?</span>
+              <span className="compat-banner__desc">띠 또는 별자리만 고르면 바로 나와요</span>
+            </span>
+            <span className="compat-banner__cta">보러가기 ›</span>
+          </button>
+        </div>
+      </section>
 
       <Disclaimer />
     </AppLayout>

@@ -239,7 +239,7 @@ async function run() {
   await grab('결과');
 
 
-  await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);
+  // 궁합은 결과 화면 아래 '더 보기' 에서만 들어간다
   await page.getByText('오늘 우리 궁합', { exact: false }).first().click(); await w(700);
   await grab('궁합(고르기 전)');
   // 사주가 있으면 '나'가 이미 정해져 피커가 안 열려 있다. 슬롯을 눌러 연다.

@@ -632,20 +632,11 @@ export default function App() {
           zodiac={zodiac}
           spin={spin}
           onReopen={handleReopen}
-          onCompat={() => setScreen('compat')}
           sajuBadge={sajuBadge}
           onSaju={() => setScreen(birth ? 'saju' : 'birth')}
           onStart={() => {
             if (birthInput || skipBirth) {
               startDraw();
-            } else {
-              setBirthNext('concern');
-              setScreen('birth');
-            }
-          }}
-          onStartMonth={() => {
-            if (birthInput || skipBirth) {
-              handleType('month');
             } else {
               setBirthNext('concern');
               setScreen('birth');
@@ -706,6 +697,8 @@ export default function App() {
           spin={spin}
           userName={birth?.name ?? null}
           deep={concernKey && deep ? { concernKey, read: deep.read, timing: deep.timing } : null}
+          onCompat={() => setScreen('compat')}
+          onMonth={() => (birthInput || skipBirth ? handleType('month') : (setBirthNext('concern'), setScreen('birth')))}
           onBack={() => setScreen('home')}
         />
       )}

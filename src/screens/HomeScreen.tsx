@@ -40,13 +40,10 @@ type Props = {
   todayReading: TodayReading | null;
   zodiac: Zodiac | null;
   onReopen: () => void;
-  onCompat: () => void;
   /** 쪽지 뽑기 시작 — 주제 고르기(1단계)로 간다 */
   onStart: () => void;
   /** 회전 값 — 겉 문구가 열 때마다 돌아간다 */
   spin?: number;
-  /** 손님이 사주 앱에서 자주 찾는 '이번 달 운세' 로 바로 */
-  onStartMonth: () => void;
   onReset: () => void;
   /** 주간 캘린더 — 스트릭 3일 이상이면 무료, 아니면 광고로 연다 */
   weekUnlocked: boolean;
@@ -70,10 +67,8 @@ export function HomeScreen({
   todayReading,
   zodiac,
   onReopen,
-  onCompat,
   onStart,
   spin = 0,
-  onStartMonth,
   onReset,
 }: Props) {
   const yNote = yesterdayRecord ? findNote(yesterdayRecord.noteId) : null;
@@ -330,30 +325,6 @@ export function HomeScreen({
         </div>
       </section>
 
-      {/* 더 해보기 — 성격이 같은 '이동' 줄들은 한 덩어리로 묶는다.
-          따로 떨어진 카드 두 장은 '더미'로, 묶인 목록은 '메뉴'로 읽힌다. */}
-      <section className="sec">
-        <div className="sec__head">
-          <h2 className="sec__title">더 해보기</h2>
-        </div>
-        <div className="rowlist">
-      <button type="button" className="compat-banner" onClick={onStartMonth}>
-        <span className="compat-banner__icon compat-banner__icon--yellow" aria-hidden><Icon name="calendar" /></span>
-        <span className="compat-banner__body">
-          <span className="compat-banner__title">이번 달 내 운세는?</span>
-          <span className="compat-banner__desc">1주차부터 4주차까지 흐름이 나와요</span>
-        </span>
-        <span className="compat-banner__cta">보러가기 ›</span>
-      </button>
-      <button type="button" className="compat-banner" onClick={onCompat}>
-        <span className="compat-banner__icon compat-banner__icon--pink" aria-hidden><Icon name="heart" /></span>
-        <span className="compat-banner__body">
-          <span className="compat-banner__title">오늘 우리 궁합, 몇 점일까?</span>
-          <span className="compat-banner__desc">띠 또는 별자리만 고르면 바로 나와요</span>
-        </span>
-        <span className="compat-banner__cta">보러가기 ›</span>
-      </button>
-
       {/* 이 답은 이렇게 나와요 — 찍는 게 아니라 계산한다는 걸 밝히는 자리.
           적중률 같은 숫자는 쓰지 않는다. 증명할 수 없는 숫자 한 줄이 나머지 전부의 신뢰를 깎는다. */}
       <section className="sec how">
@@ -391,8 +362,6 @@ export function HomeScreen({
           <span className="reopen-card__cta">다시 읽기 ›</span>
         </button>
       ) : null}
-        </div>
-      </section>
 
       {rarityCounts.legendary + rarityCounts.epic + rarityCounts.rare > 0 || (yesterdayRecord && yNote) ? (
         <section className="sec">
