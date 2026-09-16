@@ -1,21 +1,18 @@
 import { AppLayout } from '../components/AppLayout.tsx';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
-import { Icon, type IconName } from '../components/Icon.tsx';
+import { Icon } from '../components/Icon.tsx';
 import { Mascot } from '../components/Mascot.tsx';
 import { FORTUNE_LABEL } from '../data/fortuneTypes.ts';
 import { findNote } from '../data/notes.ts';
 import { GREETINGS } from '../data/copy.ts';
 import { HOW_ROWS, HOW_HEAD, HOW_LEAD, HOW_FOOT } from '../data/howItWorks.ts';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { todayVibe } from '../lib/dayVibe.ts';
 import { todayKey, hashSeed } from '../lib/dateSeed.ts';
 import { sajuToday, iljinOf, dailyZodiacRanking } from '../lib/saju.ts';
 import { shareMessage, buildRankingShareText } from '../lib/share.ts';
 import { softBreak } from '../lib/softBreak.ts';
-import { computeWeekAhead, buildWeekShareText, type WeekDay } from '../lib/weekAhead.ts';
 import { findZodiac, type Zodiac, type ZodiacId } from '../data/zodiac.ts';
-import { DAY_ANSWERS } from '../data/sajuAnswers.ts';
-import type { GodGroup } from '../lib/tenGods.ts';
 import type { StoredResult, TodayReading, RarityCounts } from '../lib/storage.ts';
 
 function todayLabel(): string {
@@ -45,23 +42,11 @@ type Props = {
   /** 회전 값 — 겉 문구가 열 때마다 돌아간다 */
   spin?: number;
   onReset: () => void;
-  /** 주간 캘린더 — 스트릭 3일 이상이면 무료, 아니면 광고로 연다 */
-  weekUnlocked: boolean;
-  /** 사주를 이미 세웠으면 일간 배지, 아니면 null */
-  sajuBadge: { icon: IconName; name: string; hue: string; group: GodGroup } | null;
-  onSaju: () => void;
-  onUnlockWeek: () => void;
-  onShareWeek: (text: string) => void;
 };
 
 // 홈 — '클릭해서 시작'하는 호기심 히어로(물음표)를 중심으로 정리.
 export function HomeScreen({
   streak,
-  weekUnlocked,
-  sajuBadge,
-  onSaju,
-  onUnlockWeek,
-  onShareWeek,
   rarityCounts,
   yesterdayRecord,
   todayReading,
@@ -76,10 +61,6 @@ export function HomeScreen({
   const drawn = todayReading?.result ?? null;
   // 주간 캘린더는 띠가 있어야 계산된다. 잠금 상태에서도 미리 계산해두면
   // 해금 순간 바로 그려져 '열었는데 빈 화면' 이 없다.
-  const week = useMemo(
-    () => (zodiac ? computeWeekAhead(todayKey(), zodiac.id) : null),
-    [zodiac],
-  );
   const [shared, setShared] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
   const vibe = todayVibe(todayKey());
@@ -173,102 +154,6 @@ export function HomeScreen({
         </button>
       </div>
 
-      {/* 내 사주 — 이 앱에서 가장 개인적인 값이라 홈 상단에 둔다.
-          아직 안 만든 사람에겐 '띠로는 12분의 1'이라는 이유를 대고 부른다. */}
-      {sajuBadge ? (
-        <button
-          type="button"
-          className="saju-entry saju-entry--done"
-          style={{ ['--saju-hue' as string]: sajuBadge.hue }}
-          onClick={onSaju}
-        >
-          <span className="saju-entry__icon" aria-hidden>
-            <Mascot size={44} accent={sajuBadge.hue} bare />
-          </span>
-          <span className="saju-entry__text">
-            <span className="saju-entry__k">내 사주</span>
-            <strong className="saju-entry__v">{sajuBadge.name}</strong>
-          </span>
-          <span className="saju-entry__chev" aria-hidden>›</span>
-        </button>
-      ) : null}
-
-      {/* 오늘 나에게 — 사주 있는 사람이 홈에서 바로 보고 싶은 것: 오늘 돈·사랑·일 */}
-      {sajuBadge ? (
-        <section className="sec">
-          <div className="sec__head">
-            <h2 className="sec__title">오늘 나에게</h2>
-          </div>
-          <ul className="mygod__qa mygod__qa--home">
-            <li><span className="mygod__qa-k">돈</span>{DAY_ANSWERS[sajuBadge.group].money}</li>
-            <li><span className="mygod__qa-k">사랑</span>{DAY_ANSWERS[sajuBadge.group].love}</li>
-            <li><span className="mygod__qa-k">일</span>{DAY_ANSWERS[sajuBadge.group].work}</li>
-          </ul>
-        </section>
-      ) : null}
-
-      {/* 이번 주 운세 캘린더 — 스트릭에 줄 보상이자, 좋은 날을 미리 알려
-          그날 다시 오게 만드는 리텐션 장치. 잠금 해제는 스트릭(무료) 또는 광고. */}
-      {zodiac ? (
-        <section className="sec">
-          <div className="sec__head">
-            <h2 className="sec__title">이번 주 내 운세</h2>
-            {weekUnlocked ? (
-              <button
-                type="button"
-                className="sec__action"
-                onClick={() => onShareWeek(buildWeekShareText(week!, zodiac.label, zodiac.emoji))}
-              >
-                공유
-              </button>
-            ) : null}
-          </div>
-          <div className="week-card">
-          {weekUnlocked && week ? (
-            <>
-              <p className="week-card__headline">{week.headline}</p>
-              <ol className="week-list">
-                {week.days.map((d: WeekDay) => (
-                  <li
-                    key={d.dateKey}
-                    className={`week-row week-row--${d.tone}${d.isToday ? ' week-row--today' : ''}${
-                      d.dateKey === week.best.dateKey ? ' week-row--best' : ''
-                    }`}
-                  >
-                    <span className="week-row__day">
-                      {d.weekday}
-                      {d.isToday ? <i>오늘</i> : null}
-                    </span>
-                    <span className="week-row__date">{d.short}</span>
-                    <span className="week-row__rel">{d.relationGloss}</span>
-                    <span className="week-row__tone">{d.toneWord}</span>
-                  </li>
-                ))}
-              </ol>
-              {week.caution ? (
-                <p className="week-card__foot">
-                   {week.caution.isToday ?'오늘' : `${week.caution.weekday}요일`}은 한 박자 천천히 가면 좋아요
-                </p>
-              ) : null}
-            </>
-          ) : (
-            <button type="button" className="week-lock" onClick={onUnlockWeek}>
-              <span className="week-lock__icon" aria-hidden><Icon name="calendar" size={20} /></span>
-              <span className="week-lock__text">
-                <span className="week-lock__title">앞으로 7일, 언제가 좋은 날일까요?</span>
-                <span className="week-lock__desc">
-                  {streak >= 3
-                    ? `${streak}일 연속 달성, 이번 주 캘린더가 무료로 열려요`
-                    : `${3 - streak}일만 더 연속 뽑으면 무료로 열려요 · 지금 보려면 광고`}
-                </span>
-              </span>
-              <span className="week-lock__cta">{streak >= 3 ? '무료로 열기' : '미리보기'}</span>
-            </button>
-          )}
-          </div>
-        </section>
-      ) : null}
-
       {/* 오늘의 12띠 서열 — 사주(일진) 기반 매일 갈리는 랭킹. 단톡방 도발 공유의 핵 */}
       <section className="sec">
         <div className="sec__head">
@@ -356,7 +241,7 @@ export function HomeScreen({
           <span className="reopen-card__body">
             <span className="reopen-card__label">오늘 받은 편지</span>
             <span className="reopen-card__text">
-              {todayReading.result.title} · 총운 {todayReading.result.luck.total}점
+              {todayReading.result.title} · 오늘 점수 {todayReading.result.luck.total}점
             </span>
           </span>
           <span className="reopen-card__cta">다시 읽기 ›</span>

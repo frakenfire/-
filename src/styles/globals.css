@@ -5547,3 +5547,7 @@ strong {
   color: var(--gray-700);
   word-break: keep-all;
 }
+
+/* 본문에 버튼을 두 개 세우면 서로 붙는다. .btn 에는 바깥 여백이 없어서다.
+   화면마다 손으로 여백을 넣으면 반드시 한 군데를 빠뜨리므로 규칙으로 막는다. */
+.app__body > .btn + .btn { margin-top: 10px; }

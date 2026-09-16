@@ -120,7 +120,7 @@ async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topi
   if (zodiac) await setZodiac(page, zodiac);
   // 흐름 다섯 장: 홈 → 이름·성별·생년월일 → 고민 → 자세히 → 쪽지 → 결과.
   // 주제와 기분은 묻지 않는다.
-  await page.getByText('오늘 쪽지 열어보기').first().click();
+  await page.locator('.today-hook__cta').first().click();
   await wait(page, 600);
   if (await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).count()) {
     await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click();
@@ -306,7 +306,7 @@ async function run(browser) {
     await wait(page, 500);
     try {
       await setZodiac(page, '쥐띠');
-      await wait(page, 700);
+      await drawTo(page, { zodiac: null });
 
       const locked = await bodyText(page);
       check(locked.includes('이번 주 내 운세'), '[주간] 띠 선택 후 캘린더 카드 노출');
@@ -337,9 +337,9 @@ async function run(browser) {
 
       await diagnose(page, '주간(열림)');
 
-      // 새로고침해도 같은 주 안에서는 열린 채로 남아야 한다
-      await page.reload({ waitUntil: 'networkidle' });
-      await wait(page, 1000);
+      // 새로고침해도 같은 주 안에서는 열린 채로 남아야 한다.
+      // 캘린더는 결과 화면에 있으니 다시 뽑아서 확인한다.
+      await drawTo(page, { zodiac: null });
       check((await page.locator('.week-row').count()) === 7, '[주간] 새로고침 후에도 열린 상태 유지');
       check((await page.locator('.sec__action').count()) >= 1, '[주간] 해제 후 공유 버튼 노출');
     } catch (e) {
@@ -397,8 +397,7 @@ async function run(browser) {
       await page.getByRole('button', { name: '다음' }).first().click();
       await wait(page, 900);
       // 저장됐으면 홈의 '내 사주' 행으로 사주 화면에 들어간다
-      await page.goto(URL_BASE, { waitUntil: 'networkidle' });
-      await wait(page, 600);
+      await drawTo(page, { zodiac: null });
       await page.locator('.saju-entry--done').first().click();
       await wait(page, 1200);
 
@@ -439,18 +438,19 @@ async function run(browser) {
       // 수정 화면엔 기존 값이 채워져 있어야 한다 (처음부터 다시 입력시키면 안 된다)
       check((await bodyText(page)).includes('2024년 2월 4일'), '[사주] 수정 시 기존 값 유지');
 
-      // 새로고침해도 사주가 남고, 홈 진입점이 내 일간으로 바뀌어야 한다
+      // 새로고침해도 사주가 남고, 홈은 쪽지 뽑기만 남아 있어야 한다
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 800);
-      check((await page.locator('.saju-entry--done').count()) === 1,
-        '[사주] 새로고침 후 홈에 내 일간 배지 노출');
+      const homeQuiet = await bodyText(page);
+      check(!homeQuiet.includes('내 사주') && !homeQuiet.includes('오늘 나에게') && !homeQuiet.includes('이번 주 내 운세'),
+        '[홈] 사주·운세는 정보를 넣은 뒤에만 나온다');
       // 홈의 첫 CTA 는 언제나 쪽지 뽑기여야 한다 (사주가 주인공을 뺏으면 안 된다)
       const firstCta = await page.locator('.today-hook__cta').first().innerText();
-      check(/쪽지/.test(firstCta), '[쪽지] 홈 첫 CTA 는 쪽지 뽑기', firstCta.trim());
+      check(/쪽지|열어보기/.test(firstCta), '[쪽지] 홈 첫 CTA 는 쪽지 뽑기', firstCta.trim());
       // 기분 화면에서도 띠·별자리를 다시 묻지 않아야 한다 — 같은 목적의 입력이 세 갈래면 컨셉이 흐려진다
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
-      await page.getByText('오늘 쪽지 열어보기').first().click();
+      await page.locator('.today-hook__cta').first().click();
       await wait(page, 600);
       // 사주가 있으면 생년월일은 건너뛰고 고민부터 묻는다
       check((await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).count()) > 0,
@@ -471,18 +471,21 @@ async function run(browser) {
         (homeAfter.match(/.{0,20}내 띠를 고르면.{0,20}/) || [''])[0]);
       check((await page.locator('.me-rank').count()) === 1,
         '[사주] 사주에서 딴 띠가 서열 카드에 반영됨');
+      // 주간 캘린더는 결과 화면에 있다. 사주에서 딴 띠로 거기서 열리는지 본다.
+      await drawTo(page, { zodiac: null });
       check((await page.locator('.week-card').count()) === 1,
         '[사주] 띠가 채워져 주간 캘린더도 열림');
-
+      check((await page.locator('.saju-entry--done').count()) === 1,
+        '[사주] 결과에 내 사주 행이 붙음');
       await page.locator('.saju-entry--done').first().click();
       await wait(page, 1000);
-      check((await bodyText(page)).includes('내 사주 글자'), '[사주] 홈 배지 → 사주 화면 복귀');
+      check((await bodyText(page)).includes('내 사주 글자'), '[사주] 결과의 사주 행 → 사주 화면');
 
       // 사주를 넣은 사람의 '오늘 결과'가 실제로 개인 기준으로 바뀌는가.
       // 여기가 안 바뀌면 사주 화면만 따로 놀고, 매일 보는 결과는 여전히 띠 12분의 1이다.
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
-      await page.getByText('오늘 쪽지 열어보기').first().click();
+      await page.locator('.today-hook__cta').first().click();
       await wait(page, 700);
       // 사주가 있어도 고민은 묻는다. 고민이 결과의 절반이기 때문이다.
       check((await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).count()) > 0,
@@ -503,8 +506,7 @@ async function run(browser) {
       await diagnose(page, '사주결과');
 
       // 개인정보를 받았으면 지우는 길이 앱 안에 있어야 한다 (설정 깊숙이 숨기지 않는다)
-      await page.goto(URL_BASE, { waitUntil: 'networkidle' });
-      await wait(page, 600);
+      await drawTo(page, { zodiac: null });
       await page.locator('.saju-entry--done').first().click();
       await wait(page, 900);
       check((await bodyText(page)).includes('서버로 보내지 않고'),
@@ -515,7 +517,7 @@ async function run(browser) {
       await page.getByText('네, 지울게요', { exact: false }).first().click();
       await wait(page, 900);
       check((await page.locator('.saju-entry--done').count()) === 0,
-        '[사주] 삭제 후 홈 배지가 사라짐');
+        '[사주] 삭제 후 사주 행이 사라짐');
       check(/열어보기/.test(await bodyText(page)),
         '[사주] 삭제 후 홈으로 되돌아감');
       const gone = await page.evaluate(() => window.localStorage.getItem('tomorrowNoteBirth'));

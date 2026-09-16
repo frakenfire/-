@@ -117,6 +117,24 @@ function collect() {
       if (d > out.depth) out.depth = d;
     }
   }
+  // 나란히 선 버튼이 서로 붙어 있는가 — 여백 0 은 한 덩어리로 읽혀서 누를 곳을 헷갈리게 한다
+  out.stuck = [];
+  // 목록 줄(휠 항목·이동 행)은 구분선으로 나뉘어 붙어 있는 게 정상이다. 큰 버튼만 본다.
+  for (const el of document.querySelectorAll('.btn')) {
+    const next = el.nextElementSibling;
+    if (!next || !next.matches('.btn')) continue;
+    const a = el.getBoundingClientRect();
+    const b = next.getBoundingClientRect();
+    // 세로로 쌓인 경우만 본다 (가로로 나란한 건 격자라 gap 이 따로 있다)
+    if (b.top < a.bottom - 1) continue;
+    const gap = b.top - a.bottom;
+    if (gap < 6) {
+      const cls = (typeof el.className === 'string' ? el.className : '').split(' ')[0] || el.tagName;
+      out.stuck.push(`${cls}[${Math.round(gap)}px]`);
+    }
+  }
+  out.stuck = [...new Set(out.stuck)];
+
   out.oneSided = [...new Set(out.oneSided)];
   out.tintTiles = [...new Set(out.tintTiles)];
   out.dashed = [...new Set(out.dashed)];
@@ -179,6 +197,7 @@ function auditScreen(name, data) {
   check(data.depth <= 2, `[${name}] 면 중첩 2겹 이하`, `${data.depth}겹`);
   // 10) 떠 있는 면이 세 장을 넘으면 '카드 더미' 로 읽힌다
   check(data.floating <= 3, `[${name}] 떠 있는 면 3장 이하`, `${data.floating}장: ${data.floatingList.join(' ')}`);
+  check(data.stuck.length === 0, `[${name}] 버튼끼리 붙어 있지 않음`, data.stuck.join(' '));
 }
 
 async function run() {
@@ -216,18 +235,11 @@ async function run() {
   await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);
   await grab('홈(사주 전)');
 
-  await page.getByText('오늘 쪽지 열어보기').first().click(); await w(700);
+  // 흐름 그대로: 생년월일 → 고민 → 상황 → 쪽지 → 결과
+  await page.locator('.today-hook__cta').first().click(); await w(700);
   await grab('생년월일');
   await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click(); await w(300);
   await page.getByRole('button', { name: '다음' }).first().click(); await w(900);
-  await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);
-  await page.locator('.saju-entry--done').first().click(); await w(900);
-  await grab('내 사주');
-
-  await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);
-  await grab('홈(사주 후)');
-
-  await page.getByText('오늘 쪽지 열어보기').first().click(); await w(900);
   await grab('고민 고르기');
   await page.getByText('일과 이직', { exact: true }).first().click(); await w(700);
   await grab('상황 질문');
@@ -238,8 +250,19 @@ async function run() {
   await page.waitForSelector('.drawn', { timeout: 20000 }); await w(1500);
   await grab('결과');
 
+  // 내 사주 행은 결과 화면에 있다
+  await page.locator('.saju-entry--done').first().click(); await w(900);
+  await grab('내 사주');
 
-  // 궁합은 결과 화면 아래 '더 보기' 에서만 들어간다
+  await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);
+  await grab('홈(사주 후)');
+
+  // 궁합은 결과 화면 아래 '더 보기' 에서만 들어간다. 결과까지 다시 간다.
+  await page.locator('.today-hook__cta').first().click(); await w(700);
+  await page.getByText('일과 이직', { exact: true }).first().click(); await w(600);
+  await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click(); await w(800);
+  await page.locator('button.note').first().dispatchEvent('click');
+  await page.waitForSelector('.drawn', { timeout: 20000 }); await w(1400);
   await page.getByText('오늘 우리 궁합', { exact: false }).first().click(); await w(700);
   await grab('궁합(고르기 전)');
   // 사주가 있으면 '나'가 이미 정해져 피커가 안 열려 있다. 슬롯을 눌러 연다.

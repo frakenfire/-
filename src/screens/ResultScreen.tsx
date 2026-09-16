@@ -11,6 +11,10 @@ import { DAY_ANSWERS } from '../data/sajuAnswers.ts';
 import { CATEGORY_INTERP, band } from '../data/detailContent.ts';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { DeepSections } from '../components/DeepSections.tsx';
+import { WeekCard } from '../components/WeekCard.tsx';
+import type { GodGroup } from '../lib/tenGods.ts';
+import type { IconName } from '../components/Icon.tsx';
+import type { Zodiac } from '../data/zodiac.ts';
 import type { ConcernKey } from '../data/concerns.ts';
 import type { DeepRead } from '../lib/deepRead.ts';
 import type { TimingRead } from '../lib/timing.ts';
@@ -25,6 +29,14 @@ type Props = {
   spin?: number;
   /** 고민을 고르고 들어왔으면 그 답을 결과 안에 같이 낸다 */
   deep?: { concernKey: ConcernKey; read: DeepRead; timing: TimingRead } | null;
+  /** 생년월일을 넣은 사람에게만 보이는 것들. 홈에 두면 '내 것' 이 아니다 */
+  sajuBadge: { icon: IconName; name: string; hue: string; group: GodGroup } | null;
+  onSaju: () => void;
+  zodiac: Zodiac | null;
+  streak: number;
+  weekUnlocked: boolean;
+  onUnlockWeek: () => void;
+  onShareWeek: (text: string) => void;
   /** 결과를 본 다음에만 권하는 것들. 홈은 쪽지 뽑기 하나로 비워뒀다 */
   onCompat: () => void;
   onMonth: () => void;
@@ -33,7 +45,7 @@ type Props = {
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, onCopy, userName, spin = 0, deep = null, onCompat, onMonth, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, onCopy, userName, spin = 0, deep = null, sajuBadge, onSaju, zodiac, streak, weekUnlocked, onUnlockWeek, onShareWeek, onCompat, onMonth, onBack }: Props) {
   const { luck, dayPlan } = result;
   const isMonth = result.reading.scale === 'month';
 
@@ -269,6 +281,47 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
           복사하기
         </button>
       </div>
+
+      {/* 내 사주 · 오늘 나에게 · 이번 주 — 전부 생년월일을 넣어야 의미가 있는 것들.
+          그래서 홈이 아니라 결과를 받은 이 자리에 둔다. */}
+      {sajuBadge ? (
+        <>
+          <button
+            type="button"
+            className="saju-entry saju-entry--done"
+            style={{ ['--saju-hue' as string]: sajuBadge.hue }}
+            onClick={onSaju}
+          >
+            <span className="saju-entry__icon" aria-hidden>
+              <Mascot size={44} accent={sajuBadge.hue} bare />
+            </span>
+            <span className="saju-entry__text">
+              <span className="saju-entry__k">내 사주</span>
+              <strong className="saju-entry__v">{sajuBadge.name}</strong>
+            </span>
+            <span className="saju-entry__chev" aria-hidden>›</span>
+          </button>
+
+          <section className="sec">
+            <div className="sec__head">
+              <h2 className="sec__title">오늘 나에게</h2>
+            </div>
+            <ul className="mygod__qa mygod__qa--home">
+              <li><span className="mygod__qa-k">돈</span>{DAY_ANSWERS[sajuBadge.group].money}</li>
+              <li><span className="mygod__qa-k">사랑</span>{DAY_ANSWERS[sajuBadge.group].love}</li>
+              <li><span className="mygod__qa-k">일</span>{DAY_ANSWERS[sajuBadge.group].work}</li>
+            </ul>
+          </section>
+        </>
+      ) : null}
+
+      <WeekCard
+        zodiac={zodiac}
+        streak={streak}
+        unlocked={weekUnlocked}
+        onUnlock={onUnlockWeek}
+        onShare={onShareWeek}
+      />
 
       {/* 더 보기 — 결과를 본 사람에게만 권한다. 처음 온 사람에겐 고를 게 많으면 안 된다 */}
       <section className="sec">
