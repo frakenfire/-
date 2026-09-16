@@ -5499,3 +5499,60 @@ strong {
   color: var(--gray-800);
   word-break: keep-all;
 }
+
+/* ── 이 답은 이렇게 나와요 ── */
+.how { margin-top: var(--space-6); }
+.how__lead {
+  margin: 0 0 14px;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
+.how__list { list-style: none; margin: 0; padding: 0; }
+.how__row {
+  display: grid;
+  grid-template-columns: 22px 28px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  padding: 14px 0;
+  border-top: 1px solid var(--gray-100);
+}
+.how__row:first-child { border-top: 0; padding-top: 2px; }
+.how__no {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+.how__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+}
+.how__body { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.how__title { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--gray-900); }
+.how__text {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
+.how__foot {
+  margin: 14px 0 0;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--gray-50);
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}

@@ -5,6 +5,7 @@ import { Mascot } from '../components/Mascot.tsx';
 import { FORTUNE_LABEL } from '../data/fortuneTypes.ts';
 import { findNote } from '../data/notes.ts';
 import { GREETINGS } from '../data/copy.ts';
+import { HOW_ROWS, HOW_HEAD, HOW_LEAD, HOW_FOOT } from '../data/howItWorks.ts';
 import { useMemo, useState } from 'react';
 import { todayVibe } from '../lib/dayVibe.ts';
 import { todayKey, hashSeed } from '../lib/dateSeed.ts';
@@ -12,7 +13,7 @@ import { sajuToday, iljinOf, dailyZodiacRanking } from '../lib/saju.ts';
 import { shareMessage, buildRankingShareText } from '../lib/share.ts';
 import { softBreak } from '../lib/softBreak.ts';
 import { computeWeekAhead, buildWeekShareText, type WeekDay } from '../lib/weekAhead.ts';
-import { findZodiac, ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac.ts';
+import { findZodiac, type Zodiac, type ZodiacId } from '../data/zodiac.ts';
 import { DAY_ANSWERS } from '../data/sajuAnswers.ts';
 import type { GodGroup } from '../lib/tenGods.ts';
 import type { StoredResult, TodayReading, RarityCounts } from '../lib/storage.ts';
@@ -38,11 +39,8 @@ type Props = {
   yesterdayRecord: StoredResult | null;
   todayReading: TodayReading | null;
   zodiac: Zodiac | null;
-  onZodiac: (id: ZodiacId) => void;
   onReopen: () => void;
   onCompat: () => void;
-  /** 고민 상담 — 주제를 고르면 그 얘기만 깊게 풀어준다 */
-  onConcern: () => void;
   /** 쪽지 뽑기 시작 — 주제 고르기(1단계)로 간다 */
   onStart: () => void;
   /** 회전 값 — 겉 문구가 열 때마다 돌아간다 */
@@ -65,14 +63,12 @@ export function HomeScreen({
   weekUnlocked,
   sajuBadge,
   onSaju,
-  onConcern,
   onUnlockWeek,
   onShareWeek,
   rarityCounts,
   yesterdayRecord,
   todayReading,
   zodiac,
-  onZodiac,
   onReopen,
   onCompat,
   onStart,
@@ -89,8 +85,6 @@ export function HomeScreen({
     () => (zodiac ? computeWeekAhead(todayKey(), zodiac.id) : null),
     [zodiac],
   );
-  const [pick, setPick] = useState<'zodiac' | 'star' | null>(null);
-  const [rankOpen, setRankOpen] = useState(false);
   const [shared, setShared] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
   const vibe = todayVibe(todayKey());
@@ -296,7 +290,7 @@ export function HomeScreen({
         {/* 순위는 목록이다. 타일 세 장을 나란히 세우면 '카드 더미' 로 읽히고,
             4위부터는 어차피 목록이라 위아래 모양이 달라진다. 처음부터 한 목록으로. */}
         <ol className="rank-list rank-list--top">
-          {ranking.slice(0, 3).map((r) => {
+          {ranking.slice(0, 5).map((r) => {
             const z = findZodiac(r.animal);
             const me = zodiac?.id === r.animal;
             return (
@@ -332,57 +326,6 @@ export function HomeScreen({
               <b className="num">{myRank.rank}</b>위<i>/12</i>
             </span>
           </div>
-        ) : (
-          <button
-            type="button"
-            className="lucky-today__set"
-            onClick={() => setPick((v) => (v === 'zodiac' ? null : 'zodiac'))}
-          >
-            내 띠 고르면 오늘 몇 위인지 바로 나와요 {pick === 'zodiac' ?'' : ''}
-          </button>
-        )}
-        {!zodiac && pick === 'zodiac' ? (
-          <div className="zodiac-grid zodiac-grid--full me-grid">
-            {ZODIACS.map((z) => (
-              <button
-                key={z.id}
-                type="button"
-                className="zodiac-chip"
-                onClick={() => {
-                  onZodiac(z.id);
-                  // 포디움(1~3위) 밖이면 전체 목록을 자동으로 펼쳐,
-                  // 방금 고른 내 띠가 어디 있는지 바로 보이게 한다.
-                  const mine = ranking.find((row) => row.animal === z.id);
-                  if (mine && mine.rank > 3) setRankOpen(true);
-                }}
-              >
-{z.label}
-              </button>
-            ))}
-          </div>
-        ) : null}
-
-        <button type="button" className="rank-card__more" onClick={() => setRankOpen((v) => !v)}>
-          {rankOpen ?'접기' : '4위부터 꼴찌까지 보기'}
-        </button>
-        {rankOpen ? (
-          <ol className="rank-list">
-            {ranking.slice(3).map((r) => {
-              const z = findZodiac(r.animal);
-              const me = zodiac?.id === r.animal;
-              return (
-                <li key={r.animal} className={me ? 'rank-row rank-row--me' : 'rank-row'}>
-                  <span className="rank-row__no num">{r.rank}</span>
-                  {z ? <ZodiacBadge zodiac={z} size={32} /> : null}
-                  <span className="rank-row__name">
-                    {z?.label}
-                    {me ? ' (나)' : ''}
-                  </span>
-                  <span className={`rank-row__tone rank-row__tone--${r.tone}`}>{r.toneWord}</span>
-                </li>
-              );
-            })}
-          </ol>
         ) : null}
         </div>
       </section>
@@ -402,14 +345,6 @@ export function HomeScreen({
         </span>
         <span className="compat-banner__cta">보러가기 ›</span>
       </button>
-      <button type="button" className="compat-banner" onClick={onConcern}>
-        <span className="compat-banner__icon compat-banner__icon--blue" aria-hidden><Icon name="chat" /></span>
-        <span className="compat-banner__body">
-          <span className="compat-banner__title">요즘 뭐가 고민이에요?</span>
-          <span className="compat-banner__desc">일, 돈, 연애 중에 고르면 언제가 좋을지 나와요</span>
-        </span>
-        <span className="compat-banner__cta">보러가기 ›</span>
-      </button>
       <button type="button" className="compat-banner" onClick={onCompat}>
         <span className="compat-banner__icon compat-banner__icon--pink" aria-hidden><Icon name="heart" /></span>
         <span className="compat-banner__body">
@@ -418,6 +353,28 @@ export function HomeScreen({
         </span>
         <span className="compat-banner__cta">보러가기 ›</span>
       </button>
+
+      {/* 이 답은 이렇게 나와요 — 찍는 게 아니라 계산한다는 걸 밝히는 자리.
+          적중률 같은 숫자는 쓰지 않는다. 증명할 수 없는 숫자 한 줄이 나머지 전부의 신뢰를 깎는다. */}
+      <section className="sec how">
+        <div className="sec__head">
+          <h2 className="sec__title">{HOW_HEAD}</h2>
+        </div>
+        <p className="how__lead">{HOW_LEAD}</p>
+        <ol className="how__list">
+          {HOW_ROWS.map((r, i) => (
+            <li key={r.title} className="how__row">
+              <span className="how__no num" aria-hidden>{i + 1}</span>
+              <span className="how__icon" aria-hidden><Icon name={r.icon} size={18} /></span>
+              <span className="how__body">
+                <strong className="how__title">{r.title}</strong>
+                <span className="how__text">{r.body}</span>
+              </span>
+            </li>
+          ))}
+        </ol>
+        <p className="how__foot">{HOW_FOOT}</p>
+      </section>
 
       {/* 오늘 받은 편지 다시 읽기 */}
       {todayReading ? (

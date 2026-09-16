@@ -10,11 +10,9 @@ import { showRewardAd, isRewarded, isUnsupportedFreePass, adResultMessage } from
 import { buildShareText, shareBriefing, shareForUnlock, copyText, shareMessage } from './lib/share.ts';
 import { ConcernScreen } from './screens/ConcernScreen.tsx';
 import { ConcernAskScreen } from './screens/ConcernAskScreen.tsx';
-import { DeepScreen } from './screens/DeepScreen.tsx';
 import { computeTiming } from './lib/timing.ts';
 import { buildDeepRead } from './lib/deepRead.ts';
 import type { ConcernKey } from './data/concerns.ts';
-import { findConcern } from './data/concerns.ts';
 import { AppLayout } from './components/AppLayout.tsx';
 import { saveResultCard } from './lib/saveImage.ts';
 import {
@@ -59,7 +57,7 @@ import { DAY_MASTER_BY_INDEX } from './data/dayMaster.ts';
 
 type ScreenName =
   | 'home' | 'mood' | 'pick' | 'reveal' | 'result' | 'detail' | 'compat' | 'birth' | 'saju' | 'topic'
-  | 'concern' | 'concernAsk' | 'deep';
+  | 'concern' | 'concernAsk';
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -281,14 +279,6 @@ export default function App() {
     }
   }
 
-  function handleZodiac(id: ZodiacId) {
-    const z = findZodiac(id);
-    if (!z) return;
-    const saved = saveMyZodiac(id);
-    setZodiac(z);
-    flash(saved ? `${z.emoji} ${z.label} 저장! 오늘 일진이랑 얼마나 맞는지 홈에서 봐요` : '앗, 저장을 못 했어요');
-  }
-
   function flash(msg: string) {
     setToast(msg);
     window.setTimeout(() => setToast((cur) => (cur === msg ? null : cur)), 1800);
@@ -506,7 +496,7 @@ export default function App() {
   const [concernKey, setConcernKey] = useState<ConcernKey | null>(null);
   const [concernOption, setConcernOption] = useState<string | null>(null);
   // 생년월일을 받으러 갔다가 돌아올 곳
-  const [birthNext, setBirthNext] = useState<'draw' | 'saju' | 'deep' | 'concern'>('saju');
+  const [birthNext, setBirthNext] = useState<'draw' | 'saju' | 'concern'>('saju');
   // 쪽지 뽑기 흐름 안에서 고민을 묻는 중인가. 아니면 '더 해보기' 로 들어온 단독 상담인가.
   const [concernInFlow, setConcernInFlow] = useState(false);
 
@@ -516,14 +506,6 @@ export default function App() {
     return { timing, read: buildDeepRead(pillars, timing, concernKey, concernOption) };
   }, [concernKey, concernOption, birthInput, pillars, birth?.gender]);
 
-  function openConcern() {
-    markVisit(dateKey);
-    setConcernKey(null);
-    setConcernOption(null);
-    setConcernInFlow(false);
-    setScreen('concern');
-  }
-
   function handleConcern(key: ConcernKey) {
     setConcernKey(key);
     setConcernOption(null);
@@ -532,37 +514,8 @@ export default function App() {
 
   function handleConcernOption(optionKey: string) {
     setConcernOption(optionKey);
-    logEvent('deep_opened', { concern: concernKey ?? '', option: optionKey, inFlow: concernInFlow });
-    // 뽑기 흐름이면 쪽지를 고르러 가고, 단독 상담이면 답으로 바로 간다.
-    if (concernInFlow) setScreen('pick');
-    else if (birthInput) setScreen('deep');
-    else {
-      setBirthNext('deep');
-      setScreen('birth');
-    }
-  }
-
-  function deepShareText(): string {
-    if (!deep || !concernKey) return '';
-    const c = findConcern(concernKey);
-    const best = deep.read.when.find((w) => w.k === '가장 좋은 때');
-    return `[오늘쪽지] 내 ${c.label} 상담\n${deep.read.headline}\n${best ? `${best.k}: ${best.v}` : ''}\n너도 생년월일만 넣으면 바로 나와요`;
-  }
-
-  async function handleDeepShare() {
-    if (busy) return;
-    setBusy(true);
-    try {
-      const out = await shareMessage(deepShareText(), '/');
-      flash(out === 'shared' ? '보냈어요' : out === 'copied' ? '복사했어요. 카톡에 붙여넣으면 돼요' : '앗, 공유를 못 했어요');
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function handleDeepCopy() {
-    const ok = await copyText(deepShareText());
-    flash(ok ? '복사했어요. 카톡에 붙여넣으면 돼요' : '앗, 복사를 못 했어요');
+    logEvent('concern_picked', { concern: concernKey ?? '', option: optionKey });
+    setScreen('pick');
   }
 
   // 뽑기 시작 — 이름·성별을 받고, 고민과 보고 싶은 부분을 물은 뒤에 쪽지를 고른다.
@@ -582,8 +535,7 @@ export default function App() {
     setBirth(b);
     saveBirth(b);
     logEvent('birth_saved', { hasTime: b.time !== null, viaFlow: birthFromFlow });
-    if (birthNext === 'deep') setScreen('deep');
-    else if (birthNext === 'concern' || birthFromFlow) startDraw();
+    if (birthNext === 'concern' || birthFromFlow) startDraw();
     else setScreen('saju');
     setBirthFromFlow(false);
     setBirthNext('saju');
@@ -679,10 +631,8 @@ export default function App() {
           todayReading={todayReading}
           zodiac={zodiac}
           spin={spin}
-          onZodiac={handleZodiac}
           onReopen={handleReopen}
           onCompat={() => setScreen('compat')}
-          onConcern={openConcern}
           sajuBadge={sajuBadge}
           onSaju={() => setScreen(birth ? 'saju' : 'birth')}
           onStart={() => {
@@ -764,13 +714,11 @@ export default function App() {
         <BirthScreen
           initial={birth}
           spin={spin}
-          inFlow={birthFromFlow || birthNext === 'deep' || birthNext === 'concern'}
-          ctaLabel={birthNext === 'deep' ? '내 시기 보기' : birthNext === 'concern' || birthFromFlow ? '다음' : undefined}
+          inFlow={birthFromFlow || birthNext === 'concern'}
+          ctaLabel={birthNext === 'concern' || birthFromFlow ? '다음' : undefined}
           onSave={handleSaveBirth}
-          onSkip={birthNext === 'deep' ? undefined : handleSkipBirth}
-          onBack={() =>
-            setScreen(birthNext === 'deep' ? 'concernAsk' : birthNext === 'concern' || birthFromFlow ? 'home' : birth ? 'saju' : 'home')
-          }
+          onSkip={handleSkipBirth}
+          onBack={() => setScreen(birthNext === 'concern' || birthFromFlow ? 'home' : birth ? 'saju' : 'home')}
         />
       )}
 
@@ -855,18 +803,6 @@ export default function App() {
         />
       )}
 
-      {screen === 'deep' && concernKey && deep && (
-        <DeepScreen
-          concernKey={concernKey}
-          read={deep.read}
-          timing={deep.timing}
-          userName={birth?.name ?? null}
-          busy={busy}
-          onShare={handleDeepShare}
-          onCopy={handleDeepCopy}
-          onBack={() => setScreen('concernAsk')}
-        />
-      )}
 
       {toast && <div className="toast">{toast}</div>}
     </>

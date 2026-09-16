@@ -95,11 +95,15 @@ async function pickBirth(page, { year, month, day, ampm, hour, minute }) {
   await wait(page, 400);
 }
 
+// 홈에서 띠를 직접 고르는 줄은 없앴다. 이제 띠는 생년월일에서 나오거나 궁합에서 정해진다.
+// 점검의 사전 조건이므로 저장소에 바로 심고 새로고침한다.
+const ZODIAC_ID = { 쥐띠: 'rat', 소띠: 'ox', 범띠: 'tiger', 토끼띠: 'rabbit', 용띠: 'dragon', 뱀띠: 'snake',
+  말띠: 'horse', 양띠: 'sheep', 원숭이띠: 'monkey', 닭띠: 'rooster', 개띠: 'dog', 돼지띠: 'pig' };
 async function setZodiac(page, label = '개띠') {
-  await page.getByText('내 띠 고르면', { exact: false }).first().click();
-  await wait(page, 250);
-  await page.locator('button', { hasText: label }).first().click();
-  await wait(page, 300);
+  const id = ZODIAC_ID[label];
+  await page.evaluate((v) => window.localStorage.setItem('tomorrowNoteZodiac', v), id);
+  await page.reload({ waitUntil: 'networkidle' });
+  await wait(page, 400);
 }
 
 async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topic = null } = {}) {
@@ -266,7 +270,6 @@ async function run(browser) {
     const TARGETS = [
       ['시작하기', '오늘 쪽지 열어보기', '언제 태어났어요'],
       ['띠 서열 공유', '단톡방에 던지기', '오늘의 띠 서열'],
-      ['4위부터 보기', '4위부터 꼴찌까지 보기', '오늘의 띠 서열'],
       ['궁합 배너', '오늘 우리 궁합', '친구 궁합'],
       ['데이터 삭제', '내 데이터 전체 삭제', '네, 전부 지울게요'],
     ];
@@ -561,26 +564,28 @@ async function run(browser) {
     await page.context().close();
   }
 
-  // ── 고민 상담 — 고민 고르기 → 상황 → 시기 ──
+  // ── 고민 상담 — 쪽지 흐름 안에서 고민 고르기 → 상황 → 결과 ──
   {
     const page = await newPage(browser);
     await page.goto(URL_BASE, { waitUntil: 'networkidle' });
     await wait(page, 500);
-    await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).first().click();
-    await wait(page, 500);
+    await page.getByText('오늘 쪽지 열어보기').first().click();
+    await wait(page, 600);
+    // 생년월일이 없으면 이 자리에서 받는다
+    if (await page.getByText('언제 태어났어요?', { exact: false }).count()) {
+      await page.getByText('여자', { exact: true }).first().click();
+      await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
+      await page.getByRole('button', { name: '다음' }).first().click();
+      await wait(page, 700);
+    }
     check((await page.locator('.concern-row').count()) === 6, '[상담] 고민 여섯 가지');
     await page.getByText('일과 이직', { exact: true }).first().click();
     await wait(page, 500);
     check((await page.locator('.opt-row').count()) === 4, '[상담] 상황 네 가지');
     await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click();
-    await wait(page, 500);
-    // 생년월일이 없으면 이 자리에서 받는다
-    if (await page.getByText('언제 태어났어요?', { exact: false }).count()) {
-      await page.getByText('여자', { exact: true }).first().click();
-      await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
-      await page.getByRole('button', { name: '내 시기 보기' }).first().click();
-    }
-    await page.waitForSelector('.deep-hero', { timeout: 20000 });
+    await wait(page, 600);
+    for (const k of [0, 1, 2]) { await page.locator('button.note').nth(k).dispatchEvent('click'); await new Promise((r) => setTimeout(r, 120)); }
+    await page.waitForSelector('.deep-hero', { timeout: 25000 });
     await wait(page, 600);
     const dt = await bodyText(page);
     check(/언제가 좋을까요/.test(dt), '[상담] 시기 구역 노출');
@@ -719,7 +724,7 @@ async function run(browser) {
     await page.getByText('네, 전부 지울게요', { exact: false }).first().click();
     await wait(page, 1500);
     const t = await bodyText(page);
-    check(!t.includes('오늘 받은 편지') && t.includes('내 띠 고르면'), '[삭제] 초기 상태로 복귀');
+    check(!t.includes('오늘 받은 편지') && t.includes('오늘 쪽지 열어보기'), '[삭제] 초기 상태로 복귀');
     await page.context().close();
   }
 

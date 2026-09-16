@@ -228,31 +228,16 @@ async function run() {
   await grab('홈(사주 후)');
 
   await page.getByText('오늘 쪽지 열어보기').first().click(); await w(900);
-  if (await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).count()) {
-    await page.getByText('일과 이직', { exact: true }).first().click(); await w(600);
-    await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click(); await w(900);
-  }
+  await grab('고민 고르기');
+  await page.getByText('일과 이직', { exact: true }).first().click(); await w(700);
+  await grab('상황 질문');
+  await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click(); await w(900);
   await grab('쪽지 고르기');
 
   for (const k of [0, 1, 2]) { await page.locator('button.note').nth(k).dispatchEvent('click'); await new Promise((r) => setTimeout(r, 120)); }
   await page.waitForSelector('.drawn', { timeout: 20000 }); await w(1500);
   await grab('결과');
 
-
-  // 고민 상담 — 고민 고르기 · 상황 질문 · 심층 결과
-  await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);
-  await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).first().click(); await w(700);
-  await grab('고민 고르기');
-  await page.getByText('일과 이직', { exact: true }).first().click(); await w(600);
-  await grab('상황 질문');
-  await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click(); await w(700);
-  if (await page.getByText('언제 태어났어요?', { exact: false }).count()) {
-    await page.getByText('여자', { exact: true }).first().click(); await w(200);
-    await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click(); await w(200);
-    await page.getByRole('button', { name: '내 시기 보기' }).first().click(); await w(900);
-  }
-  await page.waitForSelector('.deep-hero', { timeout: 20000 }); await w(600);
-  await grab('상담 결과');
 
   await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);
   await page.getByText('오늘 우리 궁합', { exact: false }).first().click(); await w(700);
