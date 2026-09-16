@@ -307,12 +307,11 @@ export default function App() {
     setStarSign(s);
   }
 
-  const [drawnNotes, setDrawnNotes] = useState<Note[]>([]);
   async function handlePick(pickedAll: Note[]) {
+    // 한 장만 고른다. 배열로 받는 건 화면 쪽 신호 모양을 그대로 쓰기 위해서다.
     const picked = pickedAll[0];
     if (!picked || busy || !fortuneType || !mood) return;
     setNote(picked);
-    setDrawnNotes(pickedAll);
     setBusy(true);
     try {
       const generated = generateFortune({
@@ -693,7 +692,6 @@ export default function App() {
           busy={busy}
           onShare={handleShare}
           onCopy={handleCopyResult}
-          notes={drawnNotes.length ? drawnNotes : [note]}
           spin={spin}
           userName={birth?.name ?? null}
           deep={concernKey && deep ? { concernKey, read: deep.read, timing: deep.timing } : null}

@@ -234,7 +234,7 @@ async function run() {
   await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click(); await w(900);
   await grab('쪽지 고르기');
 
-  for (const k of [0, 1, 2]) { await page.locator('button.note').nth(k).dispatchEvent('click'); await new Promise((r) => setTimeout(r, 120)); }
+  await page.locator('button.note').first().dispatchEvent('click');
   await page.waitForSelector('.drawn', { timeout: 20000 }); await w(1500);
   await grab('결과');
 

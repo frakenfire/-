@@ -8,7 +8,6 @@ import { softBreak } from '../lib/softBreak.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
 import { LUCKY_HEADS, PLAN_TITLES } from '../data/copy.ts';
 import { DAY_ANSWERS } from '../data/sajuAnswers.ts';
-import { NOTE_LEAD } from '../data/resultTemplates.ts';
 import { CATEGORY_INTERP, band } from '../data/detailContent.ts';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { DeepSections } from '../components/DeepSections.tsx';
@@ -23,8 +22,6 @@ type Props = {
   onShare: () => void;
   onCopy: () => void;
   userName: string | null;
-  /** 뽑은 세 장. 첫 장이 결과를 정하고, 둘째·셋째는 챙길 것과 행운이 된다 */
-  notes: Note[];
   spin?: number;
   /** 고민을 고르고 들어왔으면 그 답을 결과 안에 같이 낸다 */
   deep?: { concernKey: ConcernKey; read: DeepRead; timing: TimingRead } | null;
@@ -36,8 +33,7 @@ type Props = {
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, onCopy, userName, notes, spin = 0, deep = null, onCompat, onMonth, onBack }: Props) {
-  const ROLES = ['오늘의 흐름', '오늘 챙길 것', '오늘의 행운'];
+export function ResultScreen({ result, note, busy, onShare, onCopy, userName, spin = 0, deep = null, onCompat, onMonth, onBack }: Props) {
   const { luck, dayPlan } = result;
   const isMonth = result.reading.scale === 'month';
 
@@ -100,21 +96,6 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, no
           <span className="drawn__lead">{result.summaryLines[0]}</span>
         </div>
       </div>
-
-      {/* 뽑은 세 장 — 순서가 자리다 */}
-      {notes.length > 1 ? (
-        <ul className="drawn3">
-          {notes.slice(0, 3).map((n, i) => (
-            <li key={n.id} className="drawn3__row">
-              <span className="drawn3__no num">{i + 1}</span>
-              <span className="drawn3__body">
-                <span className="drawn3__k">{ROLES[i]} · {n.name}</span>
-                <span className="drawn3__v">{NOTE_LEAD[n.id] ?? ''}</span>
-              </span>
-            </li>
-          ))}
-        </ul>
-      ) : null}
 
       {/* 고민 답 — 이 흐름의 주인공. 뽑은 쪽지 바로 다음에 온다 */}
       {deep ? (

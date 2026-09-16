@@ -5042,14 +5042,6 @@ strong {
   font-weight: 700;
   text-align: center;
 }
-.note-count {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 8px;
-}
-.note-count__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gray-200); }
-.note-count__dot--on { background: var(--brand); }
 
 /* ── 결과: 뽑은 세 장, 운 설명, 풀이 ── */
 .drawn3 {
@@ -5201,7 +5193,6 @@ strong {
   border-color: var(--brand);
   border-width: 2px;
 }
-.note-grid .note--picked .note__no { transform: scale(1.1); }
 
 /* ── 고민 상담 ── */
 
