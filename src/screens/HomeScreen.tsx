@@ -10,9 +10,8 @@ import { useState } from 'react';
 import { todayVibe } from '../lib/dayVibe.ts';
 import { todayKey, hashSeed } from '../lib/dateSeed.ts';
 import { sajuToday, iljinOf, dailyZodiacRanking } from '../lib/saju.ts';
-import { shareMessage, buildRankingShareText } from '../lib/share.ts';
 import { softBreak } from '../lib/softBreak.ts';
-import { findZodiac, type Zodiac, type ZodiacId } from '../data/zodiac.ts';
+import { findZodiac, type Zodiac } from '../data/zodiac.ts';
 import type { StoredResult, TodayReading, RarityCounts } from '../lib/storage.ts';
 
 function todayLabel(): string {
@@ -61,37 +60,13 @@ export function HomeScreen({
   const drawn = todayReading?.result ?? null;
   // 주간 캘린더는 띠가 있어야 계산된다. 잠금 상태에서도 미리 계산해두면
   // 해금 순간 바로 그려져 '열었는데 빈 화면' 이 없다.
-  const [shared, setShared] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
   const vibe = todayVibe(todayKey());
   const drawnName = todayReading ? findNote(todayReading.noteId)?.name ?? null : null;
   const iljin = iljinOf(todayKey());
   const saju = zodiac ? sajuToday(todayKey(), zodiac.id) : null;
   const ranking = dailyZodiacRanking(todayKey());
-  const myRank = zodiac ? ranking.find((r) => r.animal === zodiac.id) ?? null : null;
 
-  async function shareRanking() {
-    const z = (id: ZodiacId) => findZodiac(id);
-    const row = (r: (typeof ranking)[number]) => ({
-      label: z(r.animal)?.label ?? '',
-      emoji: z(r.animal)?.emoji ?? '',
-      toneWord: r.toneWord,
-    });
-    const text = buildRankingShareText({
-      dateLabel: todayLabel(),
-      top3: ranking.slice(0, 3).map(row),
-      last: row(ranking[ranking.length - 1]),
-      me:
-        myRank && zodiac
-          ? { label: zodiac.label, emoji: zodiac.emoji, rank: myRank.rank, gloss: myRank.relationGloss }
-          : null,
-    });
-    const outcome = await shareMessage(text);
-    if (outcome === 'copied') {
-      setShared(true);
-      window.setTimeout(() => setShared(false), 2600);
-    }
-  }
 
   return (
     <AppLayout>
@@ -154,59 +129,26 @@ export function HomeScreen({
         </button>
       </div>
 
-      {/* 오늘의 12띠 서열 — 사주(일진) 기반 매일 갈리는 랭킹. 단톡방 도발 공유의 핵 */}
+      {/* 오늘의 띠 서열 — 매일 갈리는 열두 띠 순위. 아직 아무것도 안 넣은 사람도
+          볼 수 있는 유일한 콘텐츠라 '내 띠' 를 아는 척하지 않는다. 순위만 보여준다. */}
       <section className="sec">
         <div className="sec__head">
           <h2 className="sec__title">오늘의 띠 서열</h2>
-          <button type="button" className="sec__action sec__action--go" onClick={shareRanking}>
-            {shared ?'복사됨' : '단톡방에 던지기'}
-          </button>
         </div>
         <div className="rank-card">
-        {shared ? (
-          <p className="rank-card__copied">서열표 복사 완료! 단톡방에 붙여넣기만 하면 돼요</p>
-        ) : null}
-
-        {/* 순위는 목록이다. 타일 세 장을 나란히 세우면 '카드 더미' 로 읽히고,
-            4위부터는 어차피 목록이라 위아래 모양이 달라진다. 처음부터 한 목록으로. */}
-        <ol className="rank-list rank-list--top">
-          {ranking.slice(0, 5).map((r) => {
-            const z = findZodiac(r.animal);
-            const me = zodiac?.id === r.animal;
-            return (
-              <li key={r.animal} className={me ? 'rank-row rank-row--me' : 'rank-row'}>
-                <span className={`rank-row__no num${r.rank === 1 ? ' rank-row__no--first' : ''}`}>{r.rank}</span>
-                {z ? <ZodiacBadge zodiac={z} size={32} /> : null}
-                <span className="rank-row__name">
-                  {z?.label}
-                  {me ? ' (나)' : ''}
-                </span>
-                <span className={`rank-row__tone rank-row__tone--${r.tone}`}>{r.toneWord}</span>
-              </li>
-            );
-          })}
-        </ol>
-
-        {myRank && zodiac ? (
-          /* 누른 직후 '내 것'이 한눈에 보여야 한다 — 이모지 + 큰 순위 숫자 카드.
-             예전엔 회색 한 줄 텍스트라 방금 고른 결과가 어디 있는지 안 보였다. */
-          <div className={`me-rank${myRank.rank <= 3 ? ' me-rank--top' : ''}`}>
-            <ZodiacBadge zodiac={zodiac} size={44} tone="brand" />
-            <span className="me-rank__body">
-              <span className="me-rank__title">내 {zodiac.label}, 오늘</span>
-              <span className="me-rank__sub">
-                {myRank.rank === 1
-                  ?'1위! 단톡방 자랑각이에요'
-                  : myRank.rank <= 3
-                    ? '포디움에 올랐어요 · 기분 좋게 시작해요'
-                    : `${myRank.relationGloss} · 기운 ${myRank.toneWord}`}
-              </span>
-            </span>
-            <span className="me-rank__rank">
-              <b className="num">{myRank.rank}</b>위<i>/12</i>
-            </span>
-          </div>
-        ) : null}
+          <ol className="rank-list rank-list--top">
+            {ranking.slice(0, 5).map((r) => {
+              const z = findZodiac(r.animal);
+              return (
+                <li key={r.animal} className="rank-row">
+                  <span className={`rank-row__no num${r.rank === 1 ? ' rank-row__no--first' : ''}`}>{r.rank}</span>
+                  {z ? <ZodiacBadge zodiac={z} size={32} /> : null}
+                  <span className="rank-row__name">{z?.label}</span>
+                  <span className={`rank-row__tone rank-row__tone--${r.tone}`}>{r.toneWord}</span>
+                </li>
+              );
+            })}
+          </ol>
         </div>
       </section>
 

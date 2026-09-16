@@ -1,3 +1,4 @@
+import { luckyWhen } from '../lib/luckyWhen.ts';
 import type { LuckSet } from '../lib/luck.ts';
 import { Icon } from './Icon.tsx';
 
@@ -29,7 +30,7 @@ export function LuckySetGrid({
         </div>
         <div className="lucky-cell">
           <span className="lucky-cell__k">좋은 시간</span>
-          <span className="lucky-cell__v">{luck.time}</span>
+          <span className="lucky-cell__v">{luckyWhen(luck.time).label}</span>
         </div>
         <div className="lucky-cell">
           <span className="lucky-cell__k">행운 방향</span>

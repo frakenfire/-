@@ -5,6 +5,7 @@ import { AppLayout } from '../components/AppLayout.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
 import { GRADE_KO } from '../lib/luck.ts';
 import { softBreak } from '../lib/softBreak.ts';
+import { luckyWhen } from '../lib/luckyWhen.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
 import { LUCKY_HEADS, PLAN_TITLES } from '../data/copy.ts';
 import { DAY_ANSWERS } from '../data/sajuAnswers.ts';
@@ -67,6 +68,8 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
 
   const action = result.luckyPoint.split(' · ')[2] ?? result.luckyPoint;
   const RING = 2 * Math.PI * 54;
+  // 이미 지나간 때를 오늘의 행운이라고 띄우지 않는다
+  const when = luckyWhen(luck.time);
 
   return (
     <AppLayout
@@ -162,7 +165,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
           <div className="lucky4__tile lucky4__tile--blue">
             <span className="lucky4__icon" aria-hidden><Icon name="clock" size={26} /></span>
             <span className="lucky4__k">시간</span>
-            <strong className="lucky4__v">{luck.time}</strong>
+            <strong className="lucky4__v">{when.label}</strong>
           </div>
           <div className="lucky4__tile lucky4__tile--orange">
             <span className="lucky4__icon" aria-hidden><Icon name="bowl" size={26} /></span>

@@ -277,7 +277,6 @@ async function run(browser) {
   {
     const TARGETS = [
       ['시작하기', '오늘 쪽지 열어보기', '언제 태어났어요'],
-      ['띠 서열 공유', '단톡방에 던지기', '오늘의 띠 서열'],
       ['데이터 삭제', '내 데이터 전체 삭제', '네, 전부 지울게요'],
     ];
     // 궁합과 이번 달은 홈에서 뺐다. 결과 화면 아래 '더 보기' 에만 있다.
@@ -469,8 +468,9 @@ async function run(browser) {
       const homeAfter = await bodyText(page);
       check(!homeAfter.includes('내 띠를 고르면'), '[사주] 사주가 있으면 띠를 다시 묻지 않음',
         (homeAfter.match(/.{0,20}내 띠를 고르면.{0,20}/) || [''])[0]);
-      check((await page.locator('.me-rank').count()) === 1,
-        '[사주] 사주에서 딴 띠가 서열 카드에 반영됨');
+      // 홈 서열은 '내 띠' 를 아는 척하지 않는다. 아무것도 안 넣은 사람과 같은 화면이어야 한다.
+      check((await page.locator('.me-rank').count()) === 0,
+        '[홈] 서열에 내 띠 표시가 없음');
       // 주간 캘린더는 결과 화면에 있다. 사주에서 딴 띠로 거기서 열리는지 본다.
       await drawTo(page, { zodiac: null });
       check((await page.locator('.week-card').count()) === 1,
