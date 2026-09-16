@@ -25,18 +25,24 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
   return (
     <>
       <div className={`deep-hero deep-hero--${read.verdict}${compact ? ' deep-hero--compact' : ''}`}>
+        <div className="deep-hero__main">
+          <span className="deep-hero__tag">
+            <Icon name={concern.icon} size={14} /> {userName ? `${userName}님의 ${concern.label}` : concern.label}
+          </span>
+          <strong className="deep-hero__head">{softBreak(read.headline, 14)}</strong>
+          <span className="deep-hero__sub">{read.sub}</span>
+          <span className="deep-hero__badge">{VERDICT_WORD[read.verdict]}</span>
+        </div>
         <span className="deep-hero__art" aria-hidden>
-          <Mascot size={compact ? 64 : 80} mood={read.verdict === 'wait' ? 'calm' : 'grin'} bare />
+          <Mascot size={compact ? 56 : 72} mood={read.verdict === 'wait' ? 'calm' : 'grin'} bare />
         </span>
-        <span className="deep-hero__tag">
-          <Icon name={concern.icon} size={14} /> {userName ? `${userName}님의 ${concern.label}` : concern.label}
-        </span>
-        <strong className="deep-hero__head">{softBreak(read.headline, 16)}</strong>
-        <span className="deep-hero__sub">{read.sub}</span>
-        <span className="deep-hero__badge">{VERDICT_WORD[read.verdict]}</span>
       </div>
 
-      {read.situationLine ? <p className="deep-situation">{read.situationLine}</p> : null}
+      {read.situationLine ? (
+        <div className="sec-card">
+          <p className="deep-situation">{read.situationLine}</p>
+        </div>
+      ) : null}
 
       <div className="sec-card">
         <p className="cat4__head">언제가 좋을까요</p>

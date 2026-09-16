@@ -21,7 +21,7 @@ export function WeekCard({ zodiac, streak, unlocked, onUnlock, onShare }: Props)
   const week = computeWeekAhead(todayKey(), zodiac.id);
 
   return (
-    <section className="sec">
+    <section className="sec sec--card">
       <div className="sec__head">
         <h2 className="sec__title">이번 주 내 운세</h2>
         {unlocked && week ? (

@@ -5551,3 +5551,121 @@ strong {
 /* 본문에 버튼을 두 개 세우면 서로 붙는다. .btn 에는 바깥 여백이 없어서다.
    화면마다 손으로 여백을 넣으면 반드시 한 군데를 빠뜨리므로 규칙으로 막는다. */
 .app__body > .btn + .btn { margin-top: 10px; }
+
+/* ── 결과 화면 레이아웃 정리 ──
+   고친 것: 결론 카드의 죽은 여백, 카드 밖에 떠 있던 문장, 칸마다 다른 배경,
+   세 줄로 터지던 행동 칸, 화면 한가운데 있던 공유 줄. */
+
+/* 결론 카드: 글 왼쪽, 마스코트 오른쪽 위. 예전엔 마스코트가 바닥에 있는데
+   글에만 오른쪽 여백을 잡아둬서 제목이 일찍 꺾이고 가운데가 비었다. */
+.deep-hero {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 14px;
+}
+.deep-hero__main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+  flex: 1;
+}
+.deep-hero__art {
+  position: static;
+  flex: none;
+  display: flex;
+  opacity: 1;
+}
+.deep-hero__head {
+  margin-top: 6px;
+  padding-right: 0;
+  font-size: 22px;
+  line-height: 31px;
+}
+.deep-hero__sub {
+  padding-right: 0;
+}
+.deep-hero__badge { margin-top: 10px; }
+.deep-situation { margin: 0; }
+
+/* 구역은 전부 같은 흰 카드 위에 선다. 어떤 건 카드, 어떤 건 맨바닥이면
+   같은 무게의 내용이 다른 급으로 읽힌다. */
+.sec--card {
+  margin-top: 14px;
+  padding: 18px;
+  border-radius: 20px;
+  background: var(--white);
+  box-shadow: 0 6px 20px rgba(0, 23, 51, 0.06);
+}
+.sec--card .sec__head { margin-bottom: 10px; }
+.sec--card .sec__title { font-size: 18px; line-height: 27px; }
+.sec--card .week-card { margin-top: 0; }
+.sec--card .rowlist { margin-top: 0; }
+
+/* 카드 안에 들어간 하루 한 줄 */
+.sec-card > .result__headline { margin: 0; }
+.sec-card > .result__vibe { margin: 8px 0 0; }
+
+/* 행동 칸이 세 줄로 터지면서 줄 전체 높이를 끌어올렸다.
+   값은 두 줄까지만 쓰고, 길면 글자를 한 단계 줄인다. */
+.lucky4__grid--3 .lucky4__tile {
+  justify-content: flex-start;
+  min-height: 132px;
+}
+.lucky4__grid--3 .lucky4__v {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+/* 점수 카드: 고리를 조금 줄이고 숫자 쪽으로 무게를 옮긴다 */
+.score-ring { width: 96px; height: 96px; }
+.score-hero__top { gap: 14px; }
+
+/* 행동은 한 줄짜리 칸으로 뺀다. 여섯 칸 안에 넣으면 문장이 잘린다. */
+.lucky-act {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 16px;
+  background: var(--brand-soft);
+}
+.lucky-act__icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--white);
+  color: var(--brand-strong);
+}
+.lucky-act__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.lucky-act__k { font-size: 13px; line-height: 19.5px; font-weight: 600; color: var(--brand-strong); }
+.lucky-act__v {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+.lucky-extra { margin-top: 4px; }
+
+/* 고리 안의 마스코트가 테두리를 넘지 않게 */
+.score-ring .score-hero__mascot svg { width: 60px; height: 60px; }
+
+/* 구역 사이 회색 띠는 카드가 아닌 화면에서 구역을 가르는 장치다.
+   흰 카드 안에 들어가면 카드를 가로지르는 줄이 되어버린다. */
+.sec--card::before,
+.sec--card + .sec--card::before { content: none; }
+.sec--card { margin-bottom: 0; }
+
+/* '더 보기' 줄: 보러가기 글씨가 본문을 밀어 제목이 두 줄로 꺾였다 */
+.sec--card .compat-banner__cta { flex: none; }
+.sec--card .compat-banner__body { min-width: 0; }

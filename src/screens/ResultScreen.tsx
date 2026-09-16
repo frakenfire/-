@@ -96,7 +96,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
               />
             </svg>
             <span className="score-hero__mascot">
-              <Mascot size={80} score={luck.total} bare />
+              <Mascot size={60} score={luck.total} bare />
             </span>
           </span>
           <div className="score-hero__num">
@@ -125,8 +125,10 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
         </div>
       ) : null}
 
-      <p className="result__headline">{softBreak(dayPlan.headline, 18)}</p>
-      <p className="result__vibe">{dayPlan.vibe}</p>
+      <div className="sec-card">
+        <p className="result__headline">{softBreak(dayPlan.headline, 18)}</p>
+        <p className="result__vibe">{dayPlan.vibe}</p>
+      </div>
 
       {/* 2. 네 가지 운 — 사랑·돈·일·건강 점수 */}
       <div className="cat4 sec-card">
@@ -173,16 +175,20 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
             <strong className="lucky4__v">{luck.food.name}</strong>
           </div>
           <div className="lucky4__tile lucky4__tile--yellow">
-            <span className="lucky4__icon" aria-hidden><Icon name="target" size={26} /></span>
-            <span className="lucky4__k">행동</span>
-            <strong className="lucky4__v">{action}</strong>
+            <span className="lucky4__icon" aria-hidden><Icon name="gift" size={26} /></span>
+            <span className="lucky4__k">물건</span>
+            <strong className="lucky4__v">{luck.item}</strong>
           </div>
         </div>
+        {/* 행동은 문장이라 칸에 넣으면 잘린다. 잘린 행동은 아무 쓸모가 없으니 한 줄로 뺀다. */}
+        <div className="lucky-act">
+          <span className="lucky-act__icon" aria-hidden><Icon name="target" size={20} /></span>
+          <span className="lucky-act__text">
+            <span className="lucky-act__k">오늘 이거 하나</span>
+            <strong className="lucky-act__v">{action}</strong>
+          </span>
+        </div>
         <ul className="lucky-extra">
-          <li className="lucky-extra__row">
-            <span className="lucky-extra__k">챙길 물건</span>
-            <strong className="lucky-extra__v">{luck.item}</strong>
-          </li>
           <li className="lucky-extra__row">
             <span className="lucky-extra__k">{isMonth ? '이번 달 기운' : '오늘의 기운'}</span>
             <strong className="lucky-extra__v">{luck.tag}</strong>
@@ -276,15 +282,6 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
       </div>
 
       {/* 6. 공유 */}
-      <div className="share-row">
-        <button type="button" className="btn btn--primary share-row__btn" disabled={busy} onClick={onShare}>
-          카톡·메시지로 보내기
-        </button>
-        <button type="button" className="btn btn--secondary share-row__btn" disabled={busy} onClick={onCopy}>
-          복사하기
-        </button>
-      </div>
-
       {/* 내 사주 · 오늘 나에게 · 이번 주 — 전부 생년월일을 넣어야 의미가 있는 것들.
           그래서 홈이 아니라 결과를 받은 이 자리에 둔다. */}
       {sajuBadge ? (
@@ -305,7 +302,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
             <span className="saju-entry__chev" aria-hidden>›</span>
           </button>
 
-          <section className="sec">
+          <section className="sec sec--card">
             <div className="sec__head">
               <h2 className="sec__title">오늘 나에게</h2>
             </div>
@@ -327,7 +324,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
       />
 
       {/* 더 보기 — 결과를 본 사람에게만 권한다. 처음 온 사람에겐 고를 게 많으면 안 된다 */}
-      <section className="sec">
+      <section className="sec sec--card">
         <div className="sec__head">
           <h2 className="sec__title">더 보기</h2>
         </div>
@@ -336,20 +333,29 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
             <span className="compat-banner__icon compat-banner__icon--yellow" aria-hidden><Icon name="calendar" /></span>
             <span className="compat-banner__body">
               <span className="compat-banner__title">이번 달 내 운세는?</span>
-              <span className="compat-banner__desc">1주차부터 4주차까지 흐름이 나와요</span>
+              <span className="compat-banner__desc">주차별 흐름이 나와요</span>
             </span>
             <span className="compat-banner__cta">보러가기 ›</span>
           </button>
           <button type="button" className="compat-banner" onClick={onCompat}>
             <span className="compat-banner__icon compat-banner__icon--pink" aria-hidden><Icon name="heart" /></span>
             <span className="compat-banner__body">
-              <span className="compat-banner__title">오늘 우리 궁합, 몇 점일까?</span>
-              <span className="compat-banner__desc">띠 또는 별자리만 고르면 바로 나와요</span>
+              <span className="compat-banner__title">오늘 우리 궁합은?</span>
+              <span className="compat-banner__desc">띠만 고르면 바로 나와요</span>
             </span>
             <span className="compat-banner__cta">보러가기 ›</span>
           </button>
         </div>
       </section>
+
+      <div className="share-row">
+        <button type="button" className="btn btn--primary share-row__btn" disabled={busy} onClick={onShare}>
+          카톡·메시지로 보내기
+        </button>
+        <button type="button" className="btn btn--secondary share-row__btn" disabled={busy} onClick={onCopy}>
+          복사하기
+        </button>
+      </div>
 
       <Disclaimer />
     </AppLayout>
