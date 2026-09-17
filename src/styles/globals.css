@@ -6569,3 +6569,6 @@ strong {
   color: var(--gray-600);
   word-break: keep-all;
 }
+
+/* 이 안에서는 줄이 안 끊긴다 — 명사 가운데서 끊기면 읽는 속도가 떨어진다 */
+.nowrap { white-space: nowrap; }

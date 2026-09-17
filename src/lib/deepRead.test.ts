@@ -79,7 +79,9 @@ test('모든 고민에서 문장이 비지 않는다', () => {
       assert.ok(r.slots.every((s) => s.outer && s.good && s.care));
       assert.equal(r.yearLines.length, 2);
       assert.ok(r.daeunLine.length > 20);
-      assert.equal(r.why.length, 5);
+      // 같은 십성이 겹친 층은 한 줄로 묶이므로 줄 수는 2~5 사이다
+      assert.ok(r.why.length >= 2 && r.why.length <= 5, `근거가 ${r.why.length}줄`);
+      for (const w of r.why) assert.ok(w.k.length > 1 && w.v.length > 10, `근거 ${w.k} 비었음`);
     }
   }
 });

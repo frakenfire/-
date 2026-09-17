@@ -117,9 +117,15 @@ async function goCompat(page) {
 async function fillName(page, who = '김한별') {
   const box = page.locator('.field__input').first();
   if ((await box.count()) === 0) return;
-  if ((await box.inputValue()).trim().length >= 2) return;
-  await box.fill(who);
-  await wait(page, 200);
+  if ((await box.inputValue()).trim().length < 2) {
+    await box.fill(who);
+    await wait(page, 200);
+  }
+  // 성별도 십 년 흐름의 방향을 가르므로 필수다
+  if ((await page.locator('.seg__btn--on').count()) === 0) {
+    await page.getByRole('button', { name: '여자' }).first().click();
+    await wait(page, 200);
+  }
 }
 
 // 상세는 접혀 있다. 안을 보는 점검 전에 다 펴놓는다.
@@ -131,7 +137,7 @@ async function openFolds(page) {
   await wait(page, 400);
 }
 
-async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topic = null, noBirth = false } = {}) {
+async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topic = null } = {}) {
   await page.goto(URL_BASE, { waitUntil: 'networkidle' });
   await wait(page, 400);
   if (zodiac) await setZodiac(page, zodiac);
@@ -140,15 +146,10 @@ async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topi
   await page.locator('.today-hook__cta').first().click();
   await wait(page, 600);
   // 저장돼 있어도 이름·생년월일 화면은 한 번 거친다. 고칠 기회를 주는 자리다.
-  if (noBirth && (await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).count())) {
-    await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click();
-    await wait(page, 600);
-  } else if (await page.getByRole('button', { name: '다음' }).count()) {
+  // 이 앱의 답은 전부 명식에서 나오므로 건너뛰는 길은 없앴다.
+  if (await page.getByRole('button', { name: '다음' }).count()) {
     await fillName(page);
     await page.getByRole('button', { name: '다음' }).first().click();
-    await wait(page, 600);
-  } else if (await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).count()) {
-    await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click();
     await wait(page, 600);
   }
   if (await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).count()) {
@@ -640,8 +641,10 @@ async function run(browser) {
     check(/\d+점/.test(c) && c.includes('케미'), '[궁합] 광고 언락 후 결과');
     await diagnose(page, '궁합');
 
-    check((await page.locator('.share-row__btn').count()) === 2, '[궁합] 보내기·복사 두 버튼');
-    for (const [label, expect] of [['카톡·메시지로 보내기', '궁합'], ['복사하기', '복사'], ['궁합 카드 이미지로 저장하기', '저장']]) {
+    // 결과 화면과 같은 규칙 - 공유가 안 되는 환경에서는 알아서 복사로 떨어지므로
+    // 같은 일을 하는 버튼을 둘 세우지 않는다
+    check((await page.locator('.share-row__btn').count()) === 0, '[궁합] 같은 공유 버튼이 겹치지 않음');
+    for (const [label, expect] of [['친구한테 보내기', '궁합'], ['궁합 카드 이미지로 저장하기', '저장']]) {
       await page.getByText(label, { exact: true }).first().click();
       let toast = '(없음)';
       try {
@@ -773,7 +776,7 @@ async function run(browser) {
     const BACKS = [
       ['생년월일', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); }, '오늘의 띠 서열'],
       // 뒤로가기는 홈이 아니라 '한 단계 앞' 으로 가야 한다
-      ['고민 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); await wait(p, 500); await p.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click(); }, '언제 태어났어요'],
+      ['고민 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); await wait(p, 500); await fillName(p); await p.getByRole('button', { name: '다음' }).first().click(); }, '언제 태어났어요'],
       ['결과', async (p) => { await drawTo(p); }, '이렇게 뽑혀요'],
       ['궁합', async (p) => { await goCompat(p); }, '점수'],
     ];

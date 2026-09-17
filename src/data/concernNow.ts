@@ -278,7 +278,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
       month: '이번 달은 자기 전 화면 시간이 길어져요. 여기부터 줄이면 회복이 붙어요.',
     },
     jeongin: {
-      decade: '쉬어야 채워지는 십 년이에요. 잠이 제일 큰 약이에요.',
+      decade: '쉬어야 채워지는 십 년이에요. 버티는 것으로는 안 되고 비워야 돌아와요.',
       year: '올해는 남을 챙기다 내 회복을 미루기 쉬운 해예요. 순서를 바꿔야 해요.',
       month: '이번 달은 약속 하나만 줄여도 달라져요. 그 시간에 눕는 게 이득이에요.',
     },
@@ -330,7 +330,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
       month: '이번 달은 답을 오늘 정하고 싶어져요. 짧게 끊고 밖으로 나가는 편이 나아요.',
     },
     jeongin: {
-      decade: '받아들여질 때 채워지는 십 년이에요. 곁에 있는 사람이 크게 작용해요.',
+      decade: '받아들여질 때 채워지는 십 년이에요. 혼자 정리하려 들수록 오래 걸려요.',
       year: '올해는 배우고 이해하는 것이 마음을 잡아주는 해예요. 알면 덜 흔들려요.',
       month: '이번 달은 다 받아주다 소진되기 쉬워요. 거절도 마음 관리예요.',
     },

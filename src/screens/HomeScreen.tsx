@@ -86,8 +86,14 @@ export function HomeScreen({
               </>
             ) : (
               <>
+                {/* '지금은 안정 / 기운이 좋아요' 로 명사 가운데가 끊기면 안 읽힌다.
+                    기운 이름과 서술을 한 덩이로 묶어 그 안에서는 안 끊기게 한다. */}
                 <p className="today-hook__line">
-                  지금은 <b>{vibe.word}</b> 기운이 좋아요
+                  지금은{' '}
+                  <span className="nowrap">
+                    <b>{vibe.word}</b> 기운
+                  </span>
+                  이 좋아요
                 </p>
                 <p className="today-hook__hint">{vibe.line}</p>
               </>

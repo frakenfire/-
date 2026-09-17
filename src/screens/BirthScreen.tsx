@@ -15,7 +15,6 @@ type Props = {
   inFlow?: boolean;
   /** 아래 버튼 문구. 흐름마다 다음에 볼 게 다르다 */
   ctaLabel?: string;
-  onSkip?: () => void;
   spin?: number;
 };
 
@@ -38,7 +37,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 //  - 기기 로케일을 따라가 한국 사용자에게 '03/15/1994' 로 보인다.
 //  - 피커에서 고른 값이 앱으로 안 넘어와, 화면엔 값이 있는데 버튼만 죽었다.
 // 그래서 굴려서 고르는 피커를 직접 쓴다. 굴려도 되고 눌러도 된다.
-export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, ctaLabel, onSkip }: Props) {
+export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, ctaLabel }: Props) {
   const init = initial ? parseBirth(initial.date, initial.time) : null;
 
   const [year, setYear] = useState(init?.year ?? 1995);
@@ -51,6 +50,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
   const [gender, setGender] = useState<'male' | 'female' | null>(initial?.gender ?? null);
   const [confirmClear, setConfirmClear] = useState(false);
   const [nameWarn, setNameWarn] = useState(false);
+  const [genderWarn, setGenderWarn] = useState(false);
 
   // 월이 바뀌면 일수가 줄 수 있다 (1/31 → 2월). 없는 날짜가 남지 않게 잘라준다.
   const maxDay = daysIn(year, month);
@@ -100,9 +100,11 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
               setNameWarn(true);
               return;
             }
-            const b: StoredBirth = { date: dateStr, time: timeStr, name: name.trim() };
-            if (gender) b.gender = gender;
-            onSave(b);
+            if (!gender) {
+              setGenderWarn(true);
+              return;
+            }
+            onSave({ date: dateStr, time: timeStr, name: name.trim(), gender });
           }}
         >
           {ctaLabel ?? (inFlow ? '쪽지 열어보기' : '내 사주 보기')}
@@ -143,13 +145,20 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
               type="button"
               className={`seg__btn${gender === k ? ' seg__btn--on' : ''}`}
               aria-pressed={gender === k}
-              onClick={() => setGender(gender === k ? null : k)}
+              onClick={() => {
+                setGender(gender === k ? null : k);
+                if (genderWarn) setGenderWarn(false);
+              }}
             >
               {label}
             </button>
           ))}
         </div>
-        <span className="field__hint">십 년 단위 운이 성별로 갈려요. 안 골라도 오늘 운세는 나와요.</span>
+        <span className="field__hint">
+          {genderWarn
+            ? '성별을 골라주세요. 십 년 흐름이 앞으로 가는지 뒤로 가는지가 여기서 갈려요.'
+            : '십 년 흐름의 방향이 성별로 갈려요.'}
+        </span>
       </div>
 
       <div className="wheel-group">
@@ -207,13 +216,6 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
             무엇이 빠지는지 한 문장. */}
         {unknownTime ? <p className="birth-hint">시각 없이 세 기둥으로 봐요.</p> : null}
       </div>
-
-      {inFlow && onSkip ? (
-        <button type="button" className="birth-unknown birth-skip" onClick={onSkip} aria-pressed={false}>
-          <span className="birth-unknown__box" aria-hidden />
-          생년월일 없이 보고 싶어요
-        </button>
-      ) : null}
 
       {notice ? <p className="birth-warn">{notice}</p> : null}
 

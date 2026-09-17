@@ -291,7 +291,7 @@ export const NATAL_SHAPE: Record<ConcernKey, Record<GodGroup, ShapeRow>> = {
     authority: {
       inflow: '해야 할 게 분명할 때 채워져요. 기준이 있으면 편해요.',
       grow: '지킨 약속이 쌓일 때 단단해져요. 나와의 약속도 같아요.',
-      rise: '지킨 약속이 쌓일 때 회복돼요. 나와의 약속도 같아요.',
+      rise: '지킨 약속이 쌓일 때 회복돼요. 작은 것부터 지켜야 시작이 붙어요.',
       leak: '기준을 못 지켰을 때 빠져요. 남보다 나를 더 몰아붙여요.',
       trap: '자책으로 끝내는 것. 고칠 한 가지만 정하면 돼요.',
     },

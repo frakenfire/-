@@ -384,26 +384,32 @@ export function buildDeepRead(
   const todayGod = tenGodOf(pillars.dayStem, todayPillar.stem) as TenGod;
 
   // 근거 줄은 이름만 대면 아무 뜻이 없다. 이름 옆에 그게 무슨 뜻인지 한 문장을 붙인다.
+  //
+  // 시기가 달라도 십성이 같으면 읽는 말도 같다. 줄을 따로 세우면 같은 문장이 두 번
+  // 나가므로, 같은 기운이 겹친 층은 한 줄로 묶는다. 겹쳤다는 것 자체가 정보다.
+  const layers: { k: string; god: TenGod | null }[] = [
+    { k: '십 년', god: timing.daeunSlot ? timing.daeunSlot.tenGod : null },
+    { k: '올해', god: timing.years[0].tenGod },
+    { k: '이번 달', god: timing.thisMonth.tenGod },
+    { k: '오늘', god: todayGod },
+  ];
+  const grouped = new Map<TenGod, string[]>();
+  for (const l of layers) {
+    if (!l.god) continue;
+    grouped.set(l.god, [...(grouped.get(l.god) ?? []), l.k]);
+  }
   const why: { k: string; v: string }[] = [
-    { k: '내 글자', v: `${dm.name}이에요. ${dm.tagline}` },
-    {
-      k: '올해',
-      v: `${TEN_GOD_KO[timing.years[0].tenGod]}이 돌아요. ${GOD_SCALE[timing.years[0].tenGod].year}`,
-    },
-    {
-      k: '이번 달',
-      v: `${TEN_GOD_KO[timing.thisMonth.tenGod]}이 들어와요. ${GOD_SCALE[timing.thisMonth.tenGod].month}`,
-    },
-    {
-      k: '오늘',
-      v: `${TEN_GOD_KO[todayGod]}이 들어와요. ${CONCERN_GOD[concernKey][todayGod].line}`,
-    },
-    {
-      k: '십 년',
-      v: timing.daeunSlot
-        ? `${TEN_GOD_KO[timing.daeunSlot.tenGod]}을 지나요. ${GOD_SCALE[timing.daeunSlot.tenGod].daeun}`
-        : '아직 첫 십 년이 시작되기 전이라 태어난 자리를 그대로 봐요.',
-    },
+    { k: '내 글자', v: `${dm.name}이에요. ${dm.tagline.replace(/\.?$/, '.')}` },
+    ...[...grouped.entries()].map(([god, ks]) => ({
+      k: ks.join(', '),
+      v:
+        ks.length > 1
+          ? `${TEN_GOD_KO[god]}이 겹쳐요. ${GOD_PULL[god]}으로 읽었어요. 층이 겹치면 그 방향이 더 또렷해져요.`
+          : `${TEN_GOD_KO[god]}이 들어와요. ${GOD_PULL[god]}으로 읽었어요.`,
+    })),
+    ...(timing.daeunSlot
+      ? []
+      : [{ k: '십 년', v: '아직 첫 십 년이 시작되기 전이라 태어난 자리를 그대로 봐요.' }]),
   ];
 
   // 명식을 그대로 펼친다. 용어가 나오면 바로 옆에 뜻을 붙인다.
@@ -629,7 +635,7 @@ export function buildDeepRead(
     decision,
     now,
     headline: HEADLINE[concernKey][verdict],
-    sub: `${CONCERN_GOD[concernKey][timing.thisMonth.tenGod].line} ${VERDICT_SUB[verdict]}`,
+    sub: `${GOD_SCALE[timing.thisMonth.tenGod].month} ${VERDICT_SUB[verdict]}`,
     slots,
     monthSlots,
     yearLines,

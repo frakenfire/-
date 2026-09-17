@@ -239,8 +239,9 @@ async function run() {
   await page.locator('.today-hook__cta').first().click(); await w(700);
   await grab('생년월일');
   await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click(); await w(300);
-  // 이름도 계산에 들어가므로 빈 채로는 다음으로 못 넘어간다
+  // 이름과 성별 둘 다 계산에 들어가므로 빈 채로는 다음으로 못 넘어간다
   await page.locator('.field__input').first().fill('김한별'); await w(300);
+  await page.getByRole('button', { name: '여자' }).first().click(); await w(300);
   await page.getByRole('button', { name: '다음' }).first().click(); await w(900);
   await grab('고민 고르기');
   await page.getByText('일과 이직', { exact: true }).first().click(); await w(700);

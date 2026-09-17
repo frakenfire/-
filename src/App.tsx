@@ -20,7 +20,7 @@ import {
   incrementDailyDrawCount,
   markVisit,
   updateStreak,
-  peekStreak, loadSkipBirth, saveSkipBirth } from './lib/storage.ts';
+  peekStreak, loadSkipBirth } from './lib/storage.ts';
 import { clearAllData } from './lib/storage.ts';
 import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError, askReview } from './lib/toss.ts';
 import { findZodiac } from './data/zodiac.ts';
@@ -467,15 +467,6 @@ export default function App() {
     setBirthNext('saju');
   }
 
-  // 생년월일 없이 그냥 뽑고 싶은 사람도 있다. 막지 않는다.
-  function handleSkipBirth() {
-    logEvent('birth_skipped', {});
-    saveSkipBirth(true);
-    setSkipBirth(true);
-    setBirthFromFlow(false);
-    startDraw();
-  }
-
   // 홈에 보여줄 일간 배지 — 사주를 세운 사람에게는 '내 것'이 홈에서 바로 보여야 한다.
   const sajuBadge = useMemo(() => {
     if (!birthInput || !pillars) return null;
@@ -621,7 +612,6 @@ export default function App() {
           ctaLabel={birthNext === 'concern' || birthFromFlow ? '다음' : undefined}
           onSave={handleSaveBirth}
           onClear={birth ? handleDeleteBirth : undefined}
-          onSkip={handleSkipBirth}
           onBack={() => goBack()}
         />
       )}
