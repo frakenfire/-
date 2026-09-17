@@ -45,7 +45,9 @@ export type TimingRead = {
   thisMonth: TimingSlot;
 };
 
-function favorOf(concern: ConcernKey, gender: Gender | null) {
+export type Favor = { good: GodGroup[]; ok: GodGroup[]; hard: GodGroup[] };
+
+export function favorOf(concern: ConcernKey, gender: Gender | null): Favor {
   if (concern === 'love' && gender === 'female') {
     return {
       good: [...LOVE_FAVOR_FEMALE.good] as GodGroup[],
@@ -57,7 +59,7 @@ function favorOf(concern: ConcernKey, gender: Gender | null) {
   return { good: [...f.good], ok: [...f.ok], hard: [...f.hard] };
 }
 
-function scoreOf(group: GodGroup, tenGod: TenGod, favor: { good: GodGroup[]; ok: GodGroup[]; hard: GodGroup[] }): { score: number; band: Band } {
+export function scoreOf(group: GodGroup, tenGod: TenGod, favor: Favor): { score: number; band: Band } {
   // 같은 무리 안에서도 정(正)이 편(偏)보다 순하게 들어온다. 한 칸 차이를 준다.
   const gentle = ['jeongjae', 'jeonggwan', 'jeongin', 'siksin', 'bijian'].includes(tenGod);
   if (favor.good.includes(group)) return { score: gentle ? 92 : 86, band: 'good' };
@@ -66,14 +68,14 @@ function scoreOf(group: GodGroup, tenGod: TenGod, favor: { good: GodGroup[]; ok:
   return { score: gentle ? 70 : 65, band: 'ok' };
 }
 
-function slotOf(
+export function slotOf(
   dayStem: number,
   stem: number,
   branch: number,
   label: string,
   year: number,
   month: number | null,
-  favor: { good: GodGroup[]; ok: GodGroup[]; hard: GodGroup[] },
+  favor: Favor,
 ): TimingSlot {
   const tenGod = tenGodOf(dayStem, stem);
   const branchGod = tenGodOf(dayStem, mainHiddenStem(branch));

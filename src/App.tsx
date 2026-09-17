@@ -12,7 +12,8 @@ import { ConcernScreen } from './screens/ConcernScreen.tsx';
 import { ConcernAskScreen } from './screens/ConcernAskScreen.tsx';
 import { computeTiming } from './lib/timing.ts';
 import { buildDeepRead } from './lib/deepRead.ts';
-import type { ConcernKey } from './data/concerns.ts';
+import { computeFourScores } from './lib/concernScore.ts';
+import { findConcern, type ConcernKey } from './data/concerns.ts';
 import { AppLayout } from './components/AppLayout.tsx';
 import { saveResultCard } from './lib/saveImage.ts';
 import {
@@ -377,8 +378,11 @@ export default function App() {
     const brag = luckPercentile(result.luck.total);
     const r = await shareBriefing({
       title: result.title,
-      score: result.luck.total,
-      headline: result.dayPlan.headline,
+      topic: deep && concernKey ? findConcern(concernKey).label : undefined,
+      score: deep ? deep.read.score.total : result.luck.total,
+      headline: deep ? deep.read.headline : result.dayPlan.headline,
+      bestWhen: deep ? deep.timing.bestMonth.label : undefined,
+      careWhen: deep ? deep.timing.hardMonth.label : undefined,
       doItem: result.dayPlan.steps[0].text,
       dontItem: result.dayPlan.holdOff,
       // 자랑거리일 때만 공유 문구에 넣는다 — "상위 90% " 를 친구에게 보내는 건
@@ -424,11 +428,18 @@ export default function App() {
   // 쪽지 뽑기 흐름 안에서 고민을 묻는 중인가. 아니면 '더 해보기' 로 들어온 단독 상담인가.
   const [concernInFlow, setConcernInFlow] = useState(false);
 
+  // 네 가지 운도 같은 점수 엔진에서 뽑는다. 난수로 흩뿌리면 바로 위 고민 점수와
+  // 숫자가 어긋나고, 그 순간 둘 다 못 믿을 숫자가 된다.
+  const chartScores = useMemo(() => {
+    if (!birthInput || !pillars) return null;
+    return computeFourScores(birthInput, pillars, birth?.gender ?? null, dateKey);
+  }, [birthInput, pillars, birth?.gender, dateKey]);
+
   const deep = useMemo(() => {
     if (!concernKey || !birthInput || !pillars) return null;
     const timing = computeTiming(birthInput, pillars, birth?.gender ?? null, concernKey);
-    return { timing, read: buildDeepRead(pillars, timing, concernKey, concernOption) };
-  }, [concernKey, concernOption, birthInput, pillars, birth?.gender]);
+    return { timing, read: buildDeepRead(pillars, timing, concernKey, concernOption, dateKey) };
+  }, [concernKey, concernOption, birthInput, pillars, birth?.gender, dateKey]);
 
   function handleConcern(key: ConcernKey) {
     setConcernKey(key);
@@ -616,6 +627,7 @@ export default function App() {
           sajuBadge={sajuBadge}
           onSaju={() => setScreen(birth ? 'saju' : 'birth')}
           zodiac={zodiac}
+          chartScores={chartScores}
           onShareWeek={handleShareWeek}
           onCompat={() => setScreen('compat')}
           onMonth={() => (birthInput || skipBirth ? handleType('month') : (setBirthNext('concern'), setScreen('birth')))}

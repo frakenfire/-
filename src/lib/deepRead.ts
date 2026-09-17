@@ -3,6 +3,12 @@ import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { TEN_GOD_KO } from './tenGods.ts';
 import { BAND_WORD, monthsAway, type TimingRead, type TimingSlot } from './timing.ts';
 import { CONCERN_GOD, GOD_SCALE, REFRESH_NOTE } from '../data/concernReadings.ts';
+import { computeConcernScore, scoreVerdictLine, type ConcernScore } from './concernScore.ts';
+import { NATAL_SHAPE, SHAPE_LABELS, type ShapeRow } from '../data/natalShape.ts';
+import { CONCERN_DAY } from '../data/concernDay.ts';
+import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
+import { DECADE_AREAS, GOD_KEYWORD, type DecadeAreas } from '../data/decadeAreas.ts';
+import { GOD_GROUP_OF } from './tenGods.ts';
 import type { FourPillars } from './fourPillars.ts';
 
 // 고민 하나에 대한 심층 답 — 결론, 시기, 근거, 할 일.
@@ -12,6 +18,16 @@ export type Verdict = 'now' | 'soon' | 'wait';
 
 export type DeepRead = {
   verdict: Verdict;
+  /** 명식에서 계산된 이 고민의 점수 — 날짜 seed 가 아니라 여덟 글자에서 나온다 */
+  score: ConcernScore;
+  /** 점수와 결론을 한 문장으로 묶은 줄 */
+  scoreLine: string;
+  /** 평생 안 바뀌는 바탕 — 나는 원래 어떤 사람인가 */
+  shape: ShapeRow & { head: string; rows: { k: string; v: string }[] };
+  /** 오늘 하루의 행동. 고른 주제에 일진을 대어 뽑는다 */
+  today: { doIt: string; avoid: string; hold: string | null };
+  /** 왜 지금 이 고민이 커졌는지 — 십 년, 올해, 이번 달을 겹쳐 본다 */
+  now: { head: string; situation: string; rows: { k: string; label: string; v: string }[] };
   headline: string;
   sub: string;
   situationLine: string;
@@ -22,9 +38,17 @@ export type DeepRead = {
   actions: string[];
   caution: string;
   daeunLine: string;
+  /** 지금 지나는 십 년을 체감되는 자리로 쪼갠 것 */
+  decade: { span: string; head: string; rows: { k: string; v: string }[]; next: string | null } | null;
+  /** 올해와 내년을 맞대 놓은 표 */
+  yearCompare: { k: string; thisYear: string; nextYear: string }[];
+  /** 두 해의 차이를 한 문장으로 */
+  yearGap: string;
   basis: string;
   /** 달마다 한 덩이씩 — 이번 달, 좋은 달, 피할 달 */
   slots: { k: string; label: string; band: string; outer: string; good: string; care: string }[];
+  /** 열두 달 전부. 막대를 눌렀을 때 그 달의 풀이를 바로 펴 준다 */
+  monthSlots: { label: string; month: number; band: string; outer: string; good: string; care: string }[];
   /** 올해와 내년 */
   yearLines: { k: string; label: string; band: string; v: string }[];
   /** 이 답이 언제 다시 계산되는지 */
@@ -189,17 +213,73 @@ export function buildDeepRead(
   timing: TimingRead,
   concernKey: ConcernKey,
   optionKey: string | null,
+  dateKey: string,
 ): DeepRead {
   const concern = findConcern(concernKey);
   const dm = DAY_MASTER_BY_INDEX[pillars.dayStem];
   const away = monthsAway(timing.bestMonth, timing.months);
 
+  const score = computeConcernScore(pillars, timing, dateKey);
+
+  // 결론과 점수가 따로 놀면 둘 다 못 믿을 말이 된다.
+  // 62점인데 '지금 움직여도 돼요' 가 뜨면 그 화면은 그걸로 끝이다.
+  // 그래서 '지금' 은 이번 달이 열려 있고 총점도 받쳐줄 때만 쓴다.
   let verdict: Verdict;
-  if (timing.thisMonth.band === 'good') verdict = 'now';
+  if (timing.thisMonth.band === 'good' && score.total >= 74) verdict = 'now';
   else if (timing.bestMonth.band === 'good' && away <= 3) verdict = 'soon';
   else verdict = 'wait';
 
   const option = concern.options.find((o) => o.key === optionKey) ?? null;
+
+  const shapeRow = NATAL_SHAPE[concernKey][GOD_GROUP_OF[score.natalTopGod]];
+  const lab = SHAPE_LABELS[concernKey];
+  // 오늘 칸이 버거울 때만 '미뤄도 돼요' 를 낸다. 늘 띄우면 접어두라는 말만 쌓인다.
+  const dayAct = CONCERN_DAY[concernKey][score.dayGod];
+  const today = {
+    doIt: dayAct.doIt,
+    avoid: dayAct.avoid,
+    hold: score.dayBand === 'hard' ? dayAct.hold : null,
+  };
+
+  // 지금 이 고민이 왜 커졌는지. 십 년이 배경을 깔고, 올해가 방향을 정하고,
+  // 이번 달이 눈앞에 밀어놓는다. 세 칸을 따로 두면 사용자가 제 상황을 짚어 읽는다.
+  const nowRows = [
+    timing.daeunSlot
+      ? {
+          k: '지금 지나는 십 년',
+          label: timing.daeun.current ? `${timing.daeun.current.startAge}세부터` : '',
+          v: CONCERN_NOW[concernKey][timing.daeunSlot.tenGod].decade,
+        }
+      : null,
+    {
+      k: '올해',
+      label: timing.years[0].label,
+      v: CONCERN_NOW[concernKey][timing.years[0].tenGod].year,
+    },
+    {
+      k: '이번 달',
+      label: timing.thisMonth.label,
+      v: CONCERN_NOW[concernKey][timing.thisMonth.tenGod].month,
+    },
+  ].filter((r): r is { k: string; label: string; v: string } => r !== null);
+
+  const now = {
+    head: NOW_HEAD[concernKey],
+    situation: option?.line ?? '',
+    rows: nowRows,
+  };
+
+  const shape = {
+    ...shapeRow,
+    head: lab.head,
+    rows: [
+      { k: lab.inflow, v: shapeRow.inflow },
+      { k: lab.grow, v: shapeRow.grow },
+      { k: lab.rise, v: shapeRow.rise },
+      { k: lab.leak, v: shapeRow.leak },
+      { k: lab.trap, v: shapeRow.trap },
+    ],
+  };
 
   const when: { k: string; v: string; band?: string }[] = [
     {
@@ -254,6 +334,47 @@ export function buildDeepRead(
       (left !== null && left > 0 ? ` 다음 십 년으로 넘어가기까지 ${left}년 남았어요.` : '')
     : `${timing.daeun.startAge}세부터 첫 십 년이 시작돼요. 그전까지는 태어난 자리의 기운을 그대로 써요.`;
 
+  // 십 년을 자리별로 쪼갠다. '틀을 깨는 십 년입니다' 로 끝내면 아무것도 안 남는다.
+  const areas: DecadeAreas | null = timing.daeunSlot ? DECADE_AREAS[timing.daeunSlot.tenGod] : null;
+  const decade =
+    cur && areas
+      ? {
+          span: `${cur.startAge}세부터 ${cur.endAge}세까지`,
+          head: areas.head,
+          rows: [
+            { k: '일', v: areas.work },
+            { k: '돈', v: areas.money },
+            { k: '사람', v: areas.people },
+            { k: '몸', v: areas.body },
+            { k: '이 십 년의 숙제', v: areas.task },
+          ],
+          next:
+            left !== null && left > 0
+              ? `${left}년 뒤에 다음 십 년으로 넘어가요. 그때가 되면 여기 적힌 배경 자체가 바뀌어요.`
+              : null,
+        }
+      : null;
+
+  // 올해와 내년은 따로 설명만 하면 뭐가 다른지 안 보인다. 같은 줄에 맞대 놓는다.
+  const [y0, y1] = timing.years;
+  const yearCompare = [
+    { k: '한 해의 결', thisYear: GOD_KEYWORD[y0.tenGod], nextYear: GOD_KEYWORD[y1.tenGod] },
+    {
+      k: '유리하게 쓰는 법',
+      thisYear: CONCERN_GOD[concernKey][y0.tenGod].good,
+      nextYear: CONCERN_GOD[concernKey][y1.tenGod].good,
+    },
+    {
+      k: '조심할 것',
+      thisYear: CONCERN_GOD[concernKey][y0.branchGod].care,
+      nextYear: CONCERN_GOD[concernKey][y1.branchGod].care,
+    },
+  ];
+  const yearGap =
+    y0.tenGod === y1.tenGod
+      ? `올해와 내년의 결이 비슷해요. 흐름이 이어지는 구간이라 올해 잡아둔 것이 내년에 그대로 굴러가요.`
+      : `올해가 ${GOD_KEYWORD[y0.tenGod]}에 가까운 해라면, 내년은 ${GOD_KEYWORD[y1.tenGod]}에 가까운 해예요.`;
+
   // 달 한 덩이 — 겉(천간)과 속(지지)을 따로 대야 열두 달이 전부 다른 얼굴이 된다
   const slotBlock = (k: string, slot: TimingSlot) => ({
     k,
@@ -269,6 +390,15 @@ export function buildDeepRead(
     ...(timing.bestMonth.label !== timing.thisMonth.label ? [slotBlock('가장 좋은 달', timing.bestMonth)] : []),
     ...(timing.hardMonth.label !== timing.thisMonth.label ? [slotBlock('조심할 달', timing.hardMonth)] : []),
   ];
+
+  const monthSlots = timing.months.map((m) => ({
+    label: m.label,
+    month: m.month ?? 0,
+    band: BAND_WORD[m.band],
+    outer: GOD_SCALE[m.tenGod].month,
+    good: CONCERN_GOD[concernKey][m.tenGod].good,
+    care: CONCERN_GOD[concernKey][m.branchGod].care,
+  }));
 
   const yearLines = timing.years.slice(0, 2).map((y, i) => ({
     k: i === 0 ? '올해' : '내년',
@@ -292,9 +422,15 @@ export function buildDeepRead(
 
   return {
     verdict,
+    score,
+    scoreLine: scoreVerdictLine(score, concernKey),
+    shape,
+    today,
+    now,
     headline: HEADLINE[concernKey][verdict],
     sub: `${CONCERN_GOD[concernKey][timing.thisMonth.tenGod].line} ${VERDICT_SUB[verdict]}`,
     slots,
+    monthSlots,
     yearLines,
     refresh: REFRESH_NOTE,
     situationLine: option?.line ?? '',
@@ -303,6 +439,9 @@ export function buildDeepRead(
     actions: actions.slice(0, 3),
     caution: CAUTION[concernKey],
     daeunLine,
+    decade,
+    yearCompare,
+    yearGap,
     basis: concern.basis,
   };
 }

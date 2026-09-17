@@ -505,7 +505,7 @@ async function run(browser) {
       await wait(page, 4300);
 
       const res = await bodyText(page);
-      check(/오늘 점수\s*\d+\s*점/.test(res), '[사주결과] 결과 도달');
+      check(/(오늘|일과 이직|돈|연애|사람 관계|몸과 컨디션|마음) 점수\s*\d+\s*점/.test(res), '[사주결과] 결과 도달');
       check(/언제가 좋을까요/.test(res), '[사주결과] 고민 답이 결과 안에 들어감');
       await diagnose(page, '사주결과');
 
@@ -693,7 +693,7 @@ async function run(browser) {
     page.on('pageerror', (e) => errs.push(e.message));
     page.__errs = errs;
     await drawTo(page, { zodiac: null });
-    check(/오늘 점수\s*\d+\s*점/.test(await bodyText(page)), '[악조건] localStorage 차단에서도 결과까지 도달');
+    check(/점수\s*\d+\s*점/.test(await bodyText(page)), '[악조건] localStorage 차단에서도 결과까지 도달');
     check(errs.length === 0, '[악조건] localStorage 차단 시 예외 없음', errs.join(' | '));
     await ctx.close();
   }
@@ -714,7 +714,7 @@ async function run(browser) {
   {
     const page = await newPage(browser, { reducedMotion: 'reduce' });
     await drawTo(page);
-    check(/오늘 점수\s*\d+\s*점/.test(await bodyText(page)), '[악조건] reduced-motion 에서 결과 도달');
+    check(/점수\s*\d+\s*점/.test(await bodyText(page)), '[악조건] reduced-motion 에서 결과 도달');
     await page.context().close();
   }
 
@@ -770,7 +770,7 @@ async function run(browser) {
       // 뒤로가기는 홈이 아니라 '한 단계 앞' 으로 가야 한다
       ['고민 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); await wait(p, 500); await p.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click(); }, '언제 태어났어요'],
       ['결과', async (p) => { await drawTo(p); }, '이렇게 뽑혀요'],
-      ['궁합', async (p) => { await goCompat(p); }, '오늘 점수'],
+      ['궁합', async (p) => { await goCompat(p); }, '점수'],
     ];
     for (const [name, prep, expect] of BACKS) {
       const page = await newPage(browser);

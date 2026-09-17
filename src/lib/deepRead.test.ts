@@ -8,9 +8,13 @@ import { CONCERNS, type ConcernKey } from '../data/concerns.ts';
 const INPUT = { year: 1992, month: 3, day: 3, hour: 20 };
 const P = computeFourPillars(INPUT);
 
+function dayKey(at: Date): string {
+  return `${at.getFullYear()}-${String(at.getMonth() + 1).padStart(2, '0')}-${String(at.getDate()).padStart(2, '0')}`;
+}
+
 function read(at: Date, concern: ConcernKey = 'work', gender: 'male' | 'female' = 'female') {
   const t = computeTiming(INPUT, P, gender, concern, at);
-  return { t, r: buildDeepRead(P, t, concern, 'stay') };
+  return { t, r: buildDeepRead(P, t, concern, 'stay', dayKey(at)) };
 }
 
 test('같은 달 안에서는 같은 답이 나온다', () => {
@@ -47,7 +51,7 @@ test('고민이 다르면 답도 다르다', () => {
   const seen = new Set<string>();
   for (const c of CONCERNS) {
     const t = computeTiming(INPUT, P, 'female', c.key, at);
-    const r = buildDeepRead(P, t, c.key, null);
+    const r = buildDeepRead(P, t, c.key, null, '2026-09-15');
     seen.add(r.sub + r.slots[0].good);
   }
   assert.equal(seen.size, CONCERNS.length);
@@ -65,7 +69,7 @@ test('모든 고민에서 문장이 비지 않는다', () => {
   for (const c of CONCERNS) {
     for (const o of c.options) {
       const t = computeTiming(INPUT, P, 'male', c.key, at);
-      const r = buildDeepRead(P, t, c.key, o.key);
+      const r = buildDeepRead(P, t, c.key, o.key, '2026-11-20');
       assert.ok(r.headline.length > 4, `${c.key}/${o.key} 결론 비었음`);
       assert.ok(r.sub.length > 10);
       assert.ok(r.situationLine.length > 10);
@@ -85,4 +89,60 @@ test('할 일에 같은 문장이 두 번 나오지 않는다', () => {
     const { r } = read(new Date(Date.UTC(2026, m, 15, 3)), 'money');
     assert.equal(new Set(r.actions).size, r.actions.length, `${m + 1}월에 중복`);
   }
+});
+
+test('결론과 점수가 서로 어긋나지 않는다', () => {
+  const at = new Date('2026-09-17T12:00:00+09:00');
+  for (const c of CONCERNS) {
+    for (const gender of ['male', 'female'] as const) {
+      const t = computeTiming(INPUT, P, gender, c.key, at);
+      const r = buildDeepRead(P, t, c.key, null, '2026-09-17');
+      if (r.verdict === 'now') {
+        assert.ok(r.score.total >= 74, `${c.key} 지금이라면서 ${r.score.total}점`);
+      }
+      assert.ok(r.scoreLine.includes(String(r.score.total)), `${c.key} 점수 줄에 숫자가 없음`);
+    }
+  }
+});
+
+test('타고난 구조는 네 줄이 다 차 있다', () => {
+  const at = new Date('2026-09-17T12:00:00+09:00');
+  for (const c of CONCERNS) {
+    const t = computeTiming(INPUT, P, 'female', c.key, at);
+    const r = buildDeepRead(P, t, c.key, null, '2026-09-17');
+    assert.equal(r.shape.rows.length, 5);
+    for (const row of r.shape.rows) {
+      assert.ok(row.k.length > 2, `${c.key} 제목 비었음`);
+      assert.ok(row.v.length > 12, `${c.key} ${row.k} 내용 비었음`);
+    }
+  }
+});
+
+test('지금 왜 이 고민이 커졌나 칸이 다 차 있다', () => {
+  const at = new Date('2026-09-17T12:00:00+09:00');
+  for (const c of CONCERNS) {
+    for (const o of c.options) {
+      const t = computeTiming(INPUT, P, 'female', c.key, at);
+      const r = buildDeepRead(P, t, c.key, o.key, '2026-09-17');
+      assert.ok(r.now.head.length > 5, `${c.key} 제목 비었음`);
+      assert.ok(r.now.rows.length >= 2, `${c.key} 칸이 ${r.now.rows.length}개뿐`);
+      for (const row of r.now.rows) assert.ok(row.v.length > 15, `${c.key} ${row.k} 비었음`);
+      // 세 칸이 같은 말을 반복하면 읽을 이유가 없다
+      assert.equal(new Set(r.now.rows.map((x) => x.v)).size, r.now.rows.length, `${c.key} 같은 문장 반복`);
+    }
+  }
+});
+
+test('오늘 행동은 고른 주제에서 나온다', () => {
+  const at = new Date('2026-09-17T12:00:00+09:00');
+  const seen = new Set<string>();
+  for (const c of CONCERNS) {
+    const t = computeTiming(INPUT, P, 'female', c.key, at);
+    const r = buildDeepRead(P, t, c.key, null, '2026-09-17');
+    assert.ok(r.today.doIt.length > 8, `${c.key} 오늘 할 일 비었음`);
+    assert.ok(r.today.avoid.length > 8, `${c.key} 오늘 피할 것 비었음`);
+    seen.add(r.today.doIt);
+  }
+  // 주제가 여섯 개인데 같은 행동이 돌아오면 주제를 물은 뜻이 없다
+  assert.equal(seen.size, CONCERNS.length);
 });

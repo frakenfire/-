@@ -12,12 +12,33 @@ export type ShareBriefing = {
   dontItem: string; // 오늘은 접어둬요
   brag?: string; // "상위 8%" 자랑 문구
   pinpoint?: string; // 콕 집은 한마디 — '어떻게 알았지' 후킹 라인
+  /** 고민을 골라 뽑았으면 그 이름 — '돈', '연애' */
+  topic?: string;
+  /** '2027년 1월' */
+  bestWhen?: string;
+  /** '2027년 5월' */
+  careWhen?: string;
 };
 
 // 'shared' 실제 공유됨 / 'copied' 공유 미지원이라 문구 복사 / 'cancelled' 사용자가 취소 / 'failed' 실패
 export type ShareOutcome = 'shared' | 'copied' | 'cancelled' | 'failed';
 
 export function buildShareText(b: ShareBriefing): string {
+  // 고민을 골라 뽑았으면 전체 리포트가 아니라 맨 위 쪽지 한 장만 보낸다.
+  // 받는 사람이 읽을 건 '무슨 주제로 몇 점이고 언제가 좋은가' 까지다.
+  // 생년월일과 명식은 절대 넣지 않는다 - 단톡방에 던져지는 글이다.
+  if (b.topic) {
+    return [
+      `오늘쪽지 · ${b.topic} ${b.score}점`,
+      ``,
+      `"${b.headline}"`,
+      ``,
+      ...(b.bestWhen ? [`좋은 때: ${b.bestWhen}`] : []),
+      ...(b.careWhen ? [`조심할 때: ${b.careWhen}`] : []),
+      ``,
+      `너는 몇 점 나오는지 봐봐`,
+    ].join('\n');
+  }
   const head = b.brag
     ? `오늘쪽지 · ${b.title} · 오늘 점수 ${b.score}점 (${b.brag}) `
     : `오늘쪽지 · ${b.title} (오늘 점수 ${b.score}점)`;

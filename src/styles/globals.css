@@ -5684,9 +5684,11 @@ strong {
 }
 .mflow__col {
   display: grid;
-  grid-template-rows: 64px 19.5px 19.5px;
-  justify-items: center;
+  grid-template-rows: 64px 19.5px;
   gap: 4px;
+  align-items: end;
+  justify-items: center;
+  min-width: 0;
 }
 .mflow__barbox {
   display: flex;
@@ -5851,4 +5853,278 @@ strong {
   line-height: 21px;
   font-weight: 500;
   color: var(--gray-700);
+}
+
+/* 점수 근거 — 무엇이 몇 점이고 그게 총점의 몇 몫인지 한 줄에 다 보인다 */
+.why-score__lead {
+  margin: 0 0 12px;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 600;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+.why-score { list-style: none; margin: 0; padding: 0; }
+.why-score__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px 30px 34px;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 0;
+  border-top: 1px solid var(--gray-100);
+}
+.why-score__row:first-child { border-top: 0; }
+.why-score__k {
+  min-width: 0;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
+  color: var(--gray-900);
+}
+.why-score__label {
+  display: block;
+  font-style: normal;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+.why-score__bar {
+  display: block;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--gray-100);
+  overflow: hidden;
+}
+.why-score__bar i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--gray-400);
+}
+.why-score__row--good .why-score__bar i { background: var(--score-high); }
+.why-score__row--hard .why-score__bar i { background: var(--score-low); }
+.why-score__v {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 700;
+  color: var(--gray-900);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.why-score__w {
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--gray-600);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 타고난 구조 — 네 줄이 한 덩이로 읽혀야 한다 */
+.shape4 { list-style: none; margin: 0; padding: 0; }
+.shape4__row {
+  padding: 11px 0;
+  border-top: 1px solid var(--gray-100);
+}
+.shape4__row:first-child { border-top: 0; padding-top: 0; }
+.shape4__k {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 700;
+  color: var(--brand-strong);
+}
+.shape4__v {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-800);
+  word-break: keep-all;
+}
+
+/* 여기부터는 재미 영역이라는 것을 한 줄로 갈라준다 */
+.fun-head {
+  margin: 26px 0 -4px;
+  padding-top: 20px;
+  border-top: 1px solid var(--gray-100);
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+
+/* 차트 위를 문질러 달을 고른다. 막대 하나는 22px 라 버튼으로 두면 옆 달이 눌린다. */
+.mflow {
+  touch-action: pan-y;
+  cursor: pointer;
+  user-select: none;
+}
+.mflow__col--on .mflow__bar { outline: 2px solid var(--brand-strong); outline-offset: 1px; }
+.mflow__col--on .mflow__m { color: var(--brand-strong); font-weight: 700; }
+
+/* 고른 달 한 덩이 */
+.mpick {
+  margin-top: 12px;
+  padding-top: 14px;
+  border-top: 1px solid var(--gray-100);
+}
+.mpick__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+}
+/* 정확히 집어야 할 때 쓰는 좌우 버튼 — 손가락이 닿는 면을 44px 로 준다 */
+.mpick__step {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  margin: -10px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: var(--gray-50);
+  font-size: 18px;
+  line-height: 27px;
+  font-weight: 700;
+  color: var(--gray-800);
+  cursor: pointer;
+}
+.mpick__step:last-child { margin-left: auto; }
+/* 끝에 닿았을 때도 읽을 수 있어야 한다 - 흐리게만 하면 글자가 배경에 묻힌다 */
+.mpick__step:disabled {
+  background: none;
+  color: var(--gray-600);
+  cursor: default;
+}
+.mpick__label { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--gray-900); }
+.mpick__band { font-size: 13px; line-height: 19.5px; font-weight: 600; color: var(--gray-600); }
+.mpick__line {
+  margin: 0 0 10px;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-800);
+  word-break: keep-all;
+}
+
+/* 지금 왜 이 고민이 커졌나 — 십 년, 올해, 이번 달을 한 칸씩 쌓는다 */
+.nowlist { list-style: none; margin: 14px 0 0; padding: 0; }
+.nowlist__row {
+  padding: 11px 0;
+  border-top: 1px solid var(--gray-100);
+}
+.nowlist__row:first-child { border-top: 0; padding-top: 0; }
+.nowlist__k {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 3px;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 700;
+  color: var(--brand-strong);
+}
+.nowlist__label {
+  font-style: normal;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+.nowlist__v {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-800);
+  word-break: keep-all;
+}
+
+/* 올해와 내년을 같은 줄에 맞대 놓는 표 */
+.ycmp {
+  width: 100%;
+  margin-top: 14px;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+.ycmp th,
+.ycmp td {
+  padding: 9px 6px;
+  border-top: 1px solid var(--gray-100);
+  text-align: left;
+  vertical-align: top;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-800);
+  word-break: keep-all;
+}
+.ycmp thead th {
+  border-top: 0;
+  padding-top: 0;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 700;
+  color: var(--brand-strong);
+}
+.ycmp tbody th {
+  width: 78px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+  color: var(--gray-600);
+}
+.ycmp__gap {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--gray-100);
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 600;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+
+/* 지금 지나는 십 년을 자리별로 쪼갠 목록 */
+.dec__span {
+  margin: 0;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+.dec__head {
+  margin: 2px 0 12px;
+  font-size: 17px;
+  line-height: 25.5px;
+  font-weight: 700;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+.dec { list-style: none; margin: 0; padding: 0; }
+.dec__row {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid var(--gray-100);
+}
+.dec__row:first-child { border-top: 0; padding-top: 0; }
+.dec__k {
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 700;
+  color: var(--brand-strong);
+}
+.dec__v {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-800);
+  word-break: keep-all;
 }

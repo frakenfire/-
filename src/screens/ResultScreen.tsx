@@ -17,7 +17,11 @@ import { WeekCard } from '../components/WeekCard.tsx';
 import type { GodGroup } from '../lib/tenGods.ts';
 import type { IconName } from '../components/Icon.tsx';
 import type { Zodiac } from '../data/zodiac.ts';
-import type { ConcernKey } from '../data/concerns.ts';
+import { findConcern, type ConcernKey } from '../data/concerns.ts';
+import type { Band } from '../lib/timing.ts';
+
+// 고민 점수의 등급말 - 숫자 옆에 한 단어가 있어야 '이게 높은 건가' 가 안 생긴다
+const BAND_LABEL: Record<Band, string> = { good: '열려 있어요', ok: '무난해요', hard: '지킬 때예요' };
 import type { DeepRead } from '../lib/deepRead.ts';
 import type { TimingRead } from '../lib/timing.ts';
 
@@ -37,6 +41,8 @@ type Props = {
   zodiac: Zodiac | null;
   onShareWeek: (text: string) => void;
   /** 결과를 본 다음에만 권하는 것들. 홈은 쪽지 뽑기 하나로 비워뒀다 */
+  /** 명식에서 계산된 네 가지 운 점수. 생년월일이 없으면 null */
+  chartScores?: Record<'love' | 'money' | 'work' | 'health', number> | null;
   onCompat: () => void;
   onMonth: () => void;
   onBack: () => void;
@@ -44,9 +50,14 @@ type Props = {
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, onCopy, userName, spin = 0, deep = null, sajuBadge, onSaju, zodiac, onShareWeek, onCompat, onMonth, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, onCopy, userName, spin = 0, deep = null, sajuBadge, onSaju, zodiac, chartScores = null, onShareWeek, onCompat, onMonth, onBack }: Props) {
   const { luck, dayPlan } = result;
   const isMonth = result.reading.scale === 'month';
+  // 고민을 골라 들어왔으면 맨 위 점수는 그 고민의 점수다. 명식에서 계산된 값이라
+  // 오늘 점수(날짜 seed 기반)보다 이 화면이 하는 말과 더 붙는다.
+  const concernLabel = deep ? findConcern(deep.concernKey).label : null;
+  const headScore = deep ? deep.read.score.total : luck.total;
+  const headGrade = deep ? BAND_LABEL[deep.read.score.band] : (GRADE_KO[luck.grade] ?? luck.grade);
 
   // 점수 카운트업 — 0에서 차오르며 '뽑힌' 느낌
   const [shownTotal, setShownTotal] = useState(0);
@@ -57,12 +68,12 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
     const tick = (t: number) => {
       const p = Math.min(1, (t - t0) / dur);
       const eased = 1 - Math.pow(1 - p, 3);
-      setShownTotal(Math.round(eased * luck.total));
+      setShownTotal(Math.round(eased * headScore));
       if (p < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [luck.total]);
+  }, [headScore]);
 
   const RING = 2 * Math.PI * 54;
   // 이미 지나간 때를 오늘의 행운이라고 띄우지 않는다
@@ -93,13 +104,16 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
               />
             </svg>
             <span className="score-hero__mascot">
-              <Mascot size={60} score={luck.total} bare />
+              <Mascot size={60} score={headScore} bare />
             </span>
           </span>
           <div className="score-hero__num">
-            <span className="score-hero__k">{userName ? `${userName}님의 ${isMonth ? '이번 달' : '오늘'} 점수` : `${isMonth ? '이번 달' : '오늘'} 점수`}</span>
+            <span className="score-hero__k">
+              {userName ? `${userName}님의 ` : ''}
+              {concernLabel ?? (isMonth ? '이번 달' : '오늘')} 점수
+            </span>
             <span className="score-hero__v"><b className="num">{shownTotal}</b>점</span>
-            <span className="score-hero__grade">{GRADE_KO[luck.grade] ?? luck.grade}</span>
+            <span className="score-hero__grade">{headGrade}</span>
           </div>
         </div>
         <div className="score-hero__note">
@@ -109,35 +123,57 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
         </div>
       </div>
 
-      {/* 오늘 이건 하고 이건 피해요 — 사람들이 사주 앱에서 제일 먼저 찾는 것.
-          '흐름이 좋아요' 로 끝내지 않고 할 것과 피할 것을 한 줄씩 못 박는다. */}
-      <div className="sec-card">
-        <p className="cat4__head">{isMonth ? '이번 달은 이렇게' : '오늘은 이렇게'}</p>
-        <p className="today2__line">{softBreak(dayPlan.headline, 18)}</p>
-        <p className="today2__vibe">{dayPlan.vibe}</p>
-        <ul className="today2">
-          <li className="today2__row today2__row--do">
-            <span className="today2__k">하면 좋아요</span>
-            <Sentences className="today2__v" text={result.daily?.reading.doThis ?? result.dos[0]} />
-          </li>
-          <li className="today2__row today2__row--dont">
-            <span className="today2__k">피하세요</span>
-            <Sentences className="today2__v" text={result.daily?.reading.avoid ?? result.dont} />
-          </li>
-          <li className="today2__row today2__row--hold">
-            <span className="today2__k">{isMonth ? '이번 달은 접어둬요' : '오늘은 접어둬요'}</span>
-            <Sentences className="today2__v" text={dayPlan.holdOff} />
-          </li>
-        </ul>
-        <ol className="today3">
-          {dayPlan.steps.map((st) => (
-            <li className="today3__row" key={st.when}>
-              <span className="today3__when">{st.when}</span>
-              <Sentences className="today3__text" text={st.text} />
+      {/* 오늘은 이렇게 — 주제를 골라 들어왔으면 그 주제 얘기만 한다.
+          일과 이직을 물어본 사람에게 물 많이 마시라는 말을 하면 거기서 끝이다. */}
+      {deep ? (
+        <div className="sec-card">
+          <p className="cat4__head">오늘은 이렇게</p>
+          <ul className="today2">
+            <li className="today2__row today2__row--do">
+              <span className="today2__k">하면 좋아요</span>
+              <Sentences className="today2__v" text={deep.read.today.doIt} />
             </li>
-          ))}
-        </ol>
-      </div>
+            <li className="today2__row today2__row--dont">
+              <span className="today2__k">피하세요</span>
+              <Sentences className="today2__v" text={deep.read.today.avoid} />
+            </li>
+            {deep.read.today.hold ? (
+              <li className="today2__row today2__row--hold">
+                <span className="today2__k">오늘은 미뤄도 돼요</span>
+                <Sentences className="today2__v" text={deep.read.today.hold} />
+              </li>
+            ) : null}
+          </ul>
+        </div>
+      ) : (
+        <div className="sec-card">
+          <p className="cat4__head">{isMonth ? '이번 달은 이렇게' : '오늘은 이렇게'}</p>
+          <p className="today2__line">{softBreak(dayPlan.headline, 18)}</p>
+          <p className="today2__vibe">{dayPlan.vibe}</p>
+          <ul className="today2">
+            <li className="today2__row today2__row--do">
+              <span className="today2__k">하면 좋아요</span>
+              <Sentences className="today2__v" text={result.daily?.reading.doThis ?? result.dos[0]} />
+            </li>
+            <li className="today2__row today2__row--dont">
+              <span className="today2__k">피하세요</span>
+              <Sentences className="today2__v" text={result.daily?.reading.avoid ?? result.dont} />
+            </li>
+            <li className="today2__row today2__row--hold">
+              <span className="today2__k">{isMonth ? '이번 달은 접어둬요' : '오늘은 접어둬요'}</span>
+              <Sentences className="today2__v" text={dayPlan.holdOff} />
+            </li>
+          </ul>
+          <ol className="today3">
+            {dayPlan.steps.map((st) => (
+              <li className="today3__row" key={st.when}>
+                <span className="today3__when">{st.when}</span>
+                <Sentences className="today3__text" text={st.text} />
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
 
       {/* 고민 답 — 뽑은 쪽지와 오늘 할 일 다음에 온다 */}
       {deep ? (
@@ -152,18 +188,95 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
         </div>
       ) : null}
 
+      {/* 고민 답이 들어온 흐름에서는 아래 네 구역이 그 답과 겹친다.
+          같은 말을 두 번 하면 긴 화면만 남고 아무도 안 읽는다. */}
+      {deep ? null : (
+        <>
+        {/* 4.5 오늘 내 사주 — 한 토막 */}
+        {result.daily ? (
+          <div className="cat4 sec-card">
+            <p className="cat4__head">오늘 내 사주</p>
+            <p className="qa"><b>{result.daily.reading.title}</b></p>
+            <Sentences className="qa qa--sub" text={result.daily.reading.body} />
+            <Sentences className="qa qa--sub" text={result.daily.fitLine} />
+          </div>
+        ) : null}
+
+        {/* 4.7 오늘의 풀이 — 전체·오전·오후·저녁·사람·마음 */}
+        <div className="cat4 sec-card">
+          <p className="cat4__head">{isMonth ? '이번 달 풀이' : '오늘의 풀이'}</p>
+          <ul className="read6">
+            {[
+              ['전체', result.reading.overall],
+              [isMonth ? '초반' : '오전', result.reading.morning],
+              [isMonth ? '중순' : '오후', result.reading.afternoon],
+              [isMonth ? '월말' : '저녁', result.reading.evening],
+              ['사람', result.reading.people],
+              ['마음', result.reading.mind],
+            ].map(([k, v]) => (
+              <li key={k} className="read6__row">
+                <span className="read6__k">{k}</span>
+                <Sentences className="read6__v" text={String(v)} />
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        </>
+      )}
+
+      {/* 6. 공유 */}
+      {/* 내 사주 · 오늘 나에게 · 이번 주 — 전부 생년월일을 넣어야 의미가 있는 것들.
+          그래서 홈이 아니라 결과를 받은 이 자리에 둔다. */}
+      {sajuBadge ? (
+        <>
+          <button
+            type="button"
+            className="saju-entry saju-entry--done"
+            style={{ ['--saju-hue' as string]: sajuBadge.hue }}
+            onClick={onSaju}
+          >
+            <span className="saju-entry__icon" aria-hidden>
+              <Mascot size={44} accent={sajuBadge.hue} bare />
+            </span>
+            <span className="saju-entry__text">
+              <span className="saju-entry__k">내 사주</span>
+              <strong className="saju-entry__v">{sajuBadge.name}</strong>
+            </span>
+            <span className="saju-entry__chev" aria-hidden>›</span>
+          </button>
+
+          <section className="sec sec--card">
+            <div className="sec__head">
+              <h2 className="sec__title">오늘 나에게</h2>
+            </div>
+            <ul className="mygod__qa mygod__qa--home">
+              <li><span className="mygod__qa-k">돈</span>{DAY_ANSWERS[sajuBadge.group].money}</li>
+              <li><span className="mygod__qa-k">사랑</span>{DAY_ANSWERS[sajuBadge.group].love}</li>
+              <li><span className="mygod__qa-k">일</span>{DAY_ANSWERS[sajuBadge.group].work}</li>
+            </ul>
+          </section>
+        </>
+      ) : null}
+
+      {/* 재미로 하나 더 — 여기부터는 사주 계산이 아니다. 본 풀이 사이에 끼우면
+          색깔과 음식이 분석 행세를 하게 되므로 아래로 내려 따로 묶는다. */}
+      <p className="fun-head">재미로 하나 더</p>
       {/* 2. 네 가지 운 — 사랑·돈·일·건강 점수 */}
       <div className="cat4 sec-card">
         <p className="cat4__head">{isMonth ? '이번 달 네 가지 운' : '오늘 네 가지 운'}</p>
         <ul className="cat4__list">
-          {luck.categories.map((c) => (
+          {luck.categories.map((c0) => {
+            const c = chartScores ? { ...c0, score: chartScores[c0.key as keyof typeof chartScores] ?? c0.score } : c0;
+            return (
             <li key={c.key} className="cat4__row cat4__row--rich">
               <span className="cat4__k">{c.label}</span>
               <span className="cat4__bar"><i style={{ width: `${c.score}%` }} /></span>
               <span className="cat4__v num">{c.score}</span>
               <span className="cat4__why"><Sentences text={CATEGORY_INTERP[c.key]?.[band(c.score)] ?? ''} /></span>
             </li>
-          ))}
+            );
+          })}
         </ul>
       </div>
 
@@ -210,43 +323,6 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
         </ul>
       </div>
 
-      {/* 고민 답이 들어온 흐름에서는 아래 네 구역이 그 답과 겹친다.
-          같은 말을 두 번 하면 긴 화면만 남고 아무도 안 읽는다. */}
-      {deep ? null : (
-        <>
-        {/* 4.5 오늘 내 사주 — 한 토막 */}
-        {result.daily ? (
-          <div className="cat4 sec-card">
-            <p className="cat4__head">오늘 내 사주</p>
-            <p className="qa"><b>{result.daily.reading.title}</b></p>
-            <Sentences className="qa qa--sub" text={result.daily.reading.body} />
-            <Sentences className="qa qa--sub" text={result.daily.fitLine} />
-          </div>
-        ) : null}
-
-        {/* 4.7 오늘의 풀이 — 전체·오전·오후·저녁·사람·마음 */}
-        <div className="cat4 sec-card">
-          <p className="cat4__head">{isMonth ? '이번 달 풀이' : '오늘의 풀이'}</p>
-          <ul className="read6">
-            {[
-              ['전체', result.reading.overall],
-              [isMonth ? '초반' : '오전', result.reading.morning],
-              [isMonth ? '중순' : '오후', result.reading.afternoon],
-              [isMonth ? '월말' : '저녁', result.reading.evening],
-              ['사람', result.reading.people],
-              ['마음', result.reading.mind],
-            ].map(([k, v]) => (
-              <li key={k} className="read6__row">
-                <span className="read6__k">{k}</span>
-                <Sentences className="read6__v" text={String(v)} />
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        </>
-      )}
-
       {/* 5. 오늘 잘 맞는 띠 */}
       <div className="cat4 sec-card">
         <p className="cat4__head">오늘 잘 맞는 띠</p>
@@ -265,40 +341,6 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
           </div>
         </div>
       </div>
-
-      {/* 6. 공유 */}
-      {/* 내 사주 · 오늘 나에게 · 이번 주 — 전부 생년월일을 넣어야 의미가 있는 것들.
-          그래서 홈이 아니라 결과를 받은 이 자리에 둔다. */}
-      {sajuBadge ? (
-        <>
-          <button
-            type="button"
-            className="saju-entry saju-entry--done"
-            style={{ ['--saju-hue' as string]: sajuBadge.hue }}
-            onClick={onSaju}
-          >
-            <span className="saju-entry__icon" aria-hidden>
-              <Mascot size={44} accent={sajuBadge.hue} bare />
-            </span>
-            <span className="saju-entry__text">
-              <span className="saju-entry__k">내 사주</span>
-              <strong className="saju-entry__v">{sajuBadge.name}</strong>
-            </span>
-            <span className="saju-entry__chev" aria-hidden>›</span>
-          </button>
-
-          <section className="sec sec--card">
-            <div className="sec__head">
-              <h2 className="sec__title">오늘 나에게</h2>
-            </div>
-            <ul className="mygod__qa mygod__qa--home">
-              <li><span className="mygod__qa-k">돈</span>{DAY_ANSWERS[sajuBadge.group].money}</li>
-              <li><span className="mygod__qa-k">사랑</span>{DAY_ANSWERS[sajuBadge.group].love}</li>
-              <li><span className="mygod__qa-k">일</span>{DAY_ANSWERS[sajuBadge.group].work}</li>
-            </ul>
-          </section>
-        </>
-      ) : null}
 
       <WeekCard zodiac={zodiac} onShare={onShareWeek} />
 
