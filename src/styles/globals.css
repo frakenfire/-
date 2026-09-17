@@ -4520,9 +4520,9 @@ strong {
 
 /* 쪽지 화면: 마스코트 + 쪽지 석 장 + 한 줄을 남은 공간 가운데에 */
 .note-stage {
-  flex: 1 1 auto;
-  justify-content: center;
-  padding: 8px 0 24px;
+  flex: 0 0 auto;
+  justify-content: flex-start;
+  padding: 4px 0 20px;
 }
 .note-stage__mascot {
   display: flex;
@@ -4586,9 +4586,9 @@ strong {
 
 /* ── 쪽지 석 장: 가로로 긴 봉투 세 줄. 작은 카드 셋보다 크고, 누르기 쉽다 ── */
 .note-stage {
-  flex: 1 1 auto;
-  justify-content: center;
-  padding: 8px 0 24px;
+  flex: 0 0 auto;
+  justify-content: flex-start;
+  padding: 4px 0 20px;
 }
 .note-row {
   flex-direction: column;
@@ -5716,3 +5716,22 @@ strong {
    이번 달은 숫자에 색을 줘서 표시하고, 설명은 아래 한 줄이 맡는다. */
 .mflow__col { grid-template-rows: 64px 19.5px; }
 .mflow__m--now { color: var(--brand-strong); font-weight: 700; }
+
+/* ── 쪽지 고르기 화면 정리 ──
+   기울기를 준 여섯 장이 격자 안에서는 줄이 안 맞는 것처럼 보였다.
+   부채꼴로 겹쳐 있을 때 쓰던 장치라, 격자에서는 뗀다. */
+.note-grid .note {
+  transform: rotate(0deg);
+  --tilt: 0deg;
+}
+.note-grid .note--idle {
+  animation: note-in 0.34s ease both, note-float 3.4s ease-in-out 0.6s infinite;
+}
+
+/* 제목과 한마디 사이, 한마디와 쪽지 사이 간격을 줄여 위쪽 빈 곳을 없앤다 */
+[data-screen="pick"] { margin-bottom: 6px; }
+.pick-basis { font-size: 15px; line-height: 22.5px; margin-top: 6px; }
+.note-grid { margin-top: 4px; }
+
+/* 고르는 화면의 글자 한 벌: 제목 24, 한마디 15, 힌트 14, 질문답 15와 14 */
+.note-fan__hint { font-size: 14px; line-height: 21px; }

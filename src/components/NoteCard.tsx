@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react';
 import { Icon } from './Icon.tsx';
 import { Mascot } from './Mascot.tsx';
 import type { Note } from '../types/fortune.ts';
@@ -17,9 +16,11 @@ type Props = {
   onClick?: () => void;
 };
 
-// PRD §5.3 — 접힌 쪽지. 기울인 배치 + 순차 등장, 선택 시 펼쳐지는 모션.
+// 접힌 쪽지. 순차 등장, 고르면 펼쳐지는 모션.
+//
+// 예전엔 장마다 몇 도씩 기울여 뒀다. 부채꼴로 겹쳐 놓을 때 쓰던 장치인데,
+// 지금처럼 격자에 세우면 기울어진 장만 자리를 더 차지해서 줄이 안 맞아 보인다.
 export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, onClick }: Props) {
-  const tilt = [-4, 0, 4][index % 3];
   const opening = state === 'opening';
   return (
     <button
@@ -27,11 +28,6 @@ export function NoteCard({ note, faceDown, index = 0, state = 'idle', teaser, on
       /* 접힌 쪽지는 셋 다 같은 종이여야 한다. 색이 다르면 뒤집기 전부터
          서로 다른 것이 보여서, 고르는 게 아니라 색을 고르는 일이 된다. */
       className={`note ${faceDown ? 'note--paper note--facedown' : NOTE_COLOR_CLASS[note.color]} note--${state}`}
-      style={
-        {
-          '--tilt': `${tilt}deg`,
-        } as CSSProperties
-      }
       onClick={onClick}
       aria-label={faceDown ? '쪽지 뽑기' : `${note.name} 쪽지`}
     >
