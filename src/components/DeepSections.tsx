@@ -363,6 +363,22 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         ) : null}
         <Sentences className="mflow__foot" text={read.chart.gongmang} />
 
+        {read.name ? (
+          <>
+            <p className="cat4__head cat4__head--sub">이름이 싣는 기운</p>
+            <ul className="nameel">
+              {read.name.letters.map((l, i) => (
+                <li key={`${l.ch}${i}`} className="nameel__box">
+                  <span className="nameel__ch">{l.ch}</span>
+                  <span className="nameel__el">{l.el}</span>
+                </li>
+              ))}
+            </ul>
+            <Sentences className="qa qa--sub" text={read.name.verdict} />
+            <p className="mflow__foot">한글 소리를 다섯 기운으로 갈라서 봐요. 한자는 안 받으니 획수는 세지 않아요.</p>
+          </>
+        ) : null}
+
         <p className="cat4__head cat4__head--sub">이 주제에서 본 자리</p>
         <Sentences className="qa qa--sub" text={read.chart.focus} />
       </div>

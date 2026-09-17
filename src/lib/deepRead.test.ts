@@ -195,3 +195,36 @@ test('명식 기둥마다 십이운성 단계가 붙는다', () => {
     assert.ok(x.k.length > 2 && x.v.length > 10, `${x.k} 설명 비었음`);
   }
 });
+
+test('이름을 넣으면 이름 칸이 생기고, 안 넣으면 없다', () => {
+  const t = computeTiming(INPUT, P, 'female', 'work', new Date('2026-09-17T12:00:00+09:00'));
+  const withName = buildDeepRead(P, t, 'work', null, '2026-09-17', '김한별');
+  const without = buildDeepRead(P, t, 'work', null, '2026-09-17', null);
+  assert.ok(withName.name, '이름을 넣었는데 칸이 없음');
+  assert.equal(without.name, null);
+  assert.equal(withName.name!.letters.length, 3);
+});
+
+test('이름이 다르면 이름 풀이도 다르다', () => {
+  const t = computeTiming(INPUT, P, 'female', 'work', new Date('2026-09-17T12:00:00+09:00'));
+  const seen = new Set(
+    ['김한별', '이윤섭', '박지훈', '최서연'].map(
+      (n) => buildDeepRead(P, t, 'work', null, '2026-09-17', n).name!.letters.map((l) => l.el).join(','),
+    ),
+  );
+  assert.ok(seen.size >= 3, `이름 넷이 ${seen.size} 가지로만 갈림`);
+});
+
+test('이름 판정이 앞뒤로 어긋나지 않는다', () => {
+  const t = computeTiming(INPUT, P, 'female', 'work', new Date('2026-09-17T12:00:00+09:00'));
+  for (const n of ['김한별', '이윤섭', '박지훈', '최서연', '정하늘', '가나아', '가아마']) {
+    const r = buildDeepRead(P, t, 'work', null, '2026-09-17', n);
+    const v = r.name!.verdict;
+    // 되돌려준다고 해놓고 실어 나르지 않는다고 하면 둘 다 못 믿을 말이 된다
+    assert.ok(
+      !(/되돌려주는/.test(v) && /않아요|아니에요/.test(v)),
+      `${n}: 한 문장 안에서 말이 뒤집힘 — ${v}`,
+    );
+    assert.ok(v.length > 30, `${n}: 판정이 너무 짧음`);
+  }
+});

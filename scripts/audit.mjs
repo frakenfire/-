@@ -113,6 +113,15 @@ async function goCompat(page) {
   await wait(page, 1000);
 }
 
+// 이름도 계산에 들어가므로 빈 채로는 다음으로 못 넘어간다. 있으면 채운다.
+async function fillName(page, who = '김한별') {
+  const box = page.locator('.field__input').first();
+  if ((await box.count()) === 0) return;
+  if ((await box.inputValue()).trim().length >= 2) return;
+  await box.fill(who);
+  await wait(page, 200);
+}
+
 // 상세는 접혀 있다. 안을 보는 점검 전에 다 펴놓는다.
 async function openFolds(page) {
   for (const b of await page.locator('.fold__head').all()) {
@@ -135,6 +144,7 @@ async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topi
     await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click();
     await wait(page, 600);
   } else if (await page.getByRole('button', { name: '다음' }).count()) {
+    await fillName(page);
     await page.getByRole('button', { name: '다음' }).first().click();
     await wait(page, 600);
   } else if (await page.getByText('생년월일 없이 보고 싶어요', { exact: false }).count()) {
@@ -400,6 +410,7 @@ async function run(browser) {
       await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
       await wait(page, 400);
 
+      await fillName(page);
       await page.getByRole('button', { name: '다음' }).first().click();
       await wait(page, 900);
       // 명식 표(네 기둥·오행·강약)는 리포트 안으로 들어갈 자리다. 별도 화면은 없앴다.
@@ -421,6 +432,7 @@ async function run(browser) {
       // 사주가 있어도 이름·생년월일 화면을 한 번 거친다 (값은 채워져 있다)
       check((await page.getByText('언제 태어났어요?', { exact: false }).count()) > 0,
         '[흐름] 뽑기 전에 이름·생년월일을 먼저 받는다');
+      await fillName(page);
       await page.getByRole('button', { name: '다음' }).first().click();
       await wait(page, 700);
       await page.getByText('일과 이직', { exact: true }).first().click();
@@ -453,6 +465,7 @@ async function run(browser) {
       await wait(page, 500);
       await page.locator('.today-hook__cta').first().click();
       await wait(page, 700);
+      await fillName(page);
       await page.getByRole('button', { name: '다음' }).first().click();
       await wait(page, 700);
       // 사주가 있어도 고민은 묻는다. 고민이 결과의 절반이기 때문이다.
@@ -572,6 +585,7 @@ async function run(browser) {
     if (await page.getByText('언제 태어났어요?', { exact: false }).count()) {
       await page.getByText('여자', { exact: true }).first().click();
       await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
+      await fillName(page);
       await page.getByRole('button', { name: '다음' }).first().click();
       await wait(page, 700);
     }

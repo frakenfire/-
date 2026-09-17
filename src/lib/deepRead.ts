@@ -15,6 +15,7 @@ import { ELEMENT_KO, STEMS, BRANCHES, type Element } from './saju.ts';
 import {
   unseongOf, UNSEONG_KO, branchRelations, RELATION_KO, sinsalOf, SINSAL_KO, gongmangOf,
 } from './sinsal.ts';
+import { readNameSound, FLOW_KO } from './nameSound.ts';
 import { computeFourPillars, type FourPillars } from './fourPillars.ts';
 
 // 이 주제를 볼 때 무엇을 보는지 - 명리 이름 대신 뜻으로 말한다
@@ -69,6 +70,14 @@ export type DeepRead = {
     /** 비어 있는 두 글자 */
     gongmang: string;
   };
+  /** 이름이 실어 나르는 기운. 이름을 안 넣었으면 null */
+  name: {
+    letters: { ch: string; el: string }[];
+    flow: string;
+    /** 이름의 기운이 내 명식에 어떻게 닿는가 */
+    verdict: string;
+    fills: boolean;
+  } | null;
   /** 오늘 글자가 내 글자와 어떻게 만나는가 — 날마다 바뀌는 자리 */
   todayMeet: {
     pillar: string;
@@ -258,6 +267,7 @@ export function buildDeepRead(
   concernKey: ConcernKey,
   optionKey: string | null,
   dateKey: string,
+  userName?: string | null,
 ): DeepRead {
   const concern = findConcern(concernKey);
   const dm = DAY_MASTER_BY_INDEX[pillars.dayStem];
@@ -456,6 +466,38 @@ export function buildDeepRead(
     gongmang,
   };
 
+  // 이름도 계산에 들어간다. 한글 소리를 다섯 기운으로 갈라, 그 기운이 명식에서
+  // 모자란 자리를 채우는지 본다. 한자를 안 받으므로 획수는 세지 않는다.
+  const sound = userName ? readNameSound(userName) : null;
+  const nameRead = sound
+    ? (() => {
+        // 실린 기운과 배열을 따로 말하면 '되돌려줘요' 뒤에 '실어 나르지 않아요' 가
+        // 붙는다. 한 문장으로 묶어야 앞뒤가 안 어긋난다.
+        const fills = sound.elements.includes(prof.usefulElement);
+        const smooth = sound.flow === 'smooth';
+        const blocked = sound.flow === 'blocked';
+        const need = ELEMENT_KO[prof.usefulElement];
+        let verdict: string;
+        if (fills && smooth) {
+          verdict = `이름이 ${need} 기운을 싣고, 소리도 앞에서 뒤로 순하게 흘러요. 명식에서 치우친 자리를 이름이 제대로 되돌려주는 배열이에요.`;
+        } else if (fills && blocked) {
+          verdict = `이름에 ${need} 기운은 들어 있어요. 다만 글자끼리 부딪히는 배열이라, 기운이 닿기는 해도 세게 밀어주지는 않아요.`;
+        } else if (fills) {
+          verdict = `이름이 ${need} 기운을 싣고 있어요. 배열은 순한 자리와 부딪히는 자리가 섞여 있어 무난한 쪽이에요.`;
+        } else if (smooth) {
+          verdict = `이름 소리는 순하게 이어져요. 다만 명식이 아쉬워하는 ${need} 기운은 담겨 있지 않아, 이름이 채워주는 역할은 아니에요.`;
+        } else {
+          verdict = `이름은 ${ELEMENT_KO[sound.lead]} 기운을 가장 두껍게 실어요. 명식이 아쉬워하는 ${need} 쪽은 아니라, 이름으로 뭘 바꾸려 하기보다 때를 고르는 쪽이 빨라요.`;
+        }
+        return {
+          letters: sound.letters.map((l) => ({ ch: l.ch, el: ELEMENT_KO[l.el] })),
+          flow: FLOW_KO[sound.flow],
+          verdict,
+          fills,
+        };
+      })()
+    : null;
+
   // 오늘 글자가 내 글자와 어떻게 만나는가. 매일 바뀌는 자리라 다시 볼 이유가 된다.
   const meetSpots: { k: string; b: number }[] = [
     { k: '태어난 해', b: pillars.year.branch },
@@ -598,6 +640,7 @@ export function buildDeepRead(
     actions: actions.slice(0, 3),
     caution: CAUTION[concernKey],
     chart,
+    name: nameRead,
     todayMeet,
     daeunLine,
     decade,

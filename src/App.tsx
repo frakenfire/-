@@ -429,8 +429,8 @@ export default function App() {
   const deep = useMemo(() => {
     if (!concernKey || !birthInput || !pillars) return null;
     const timing = computeTiming(birthInput, pillars, birth?.gender ?? null, concernKey);
-    return { timing, read: buildDeepRead(pillars, timing, concernKey, concernOption, dateKey) };
-  }, [concernKey, concernOption, birthInput, pillars, birth?.gender, dateKey]);
+    return { timing, read: buildDeepRead(pillars, timing, concernKey, concernOption, dateKey, birth?.name ?? null) };
+  }, [concernKey, concernOption, birthInput, pillars, birth?.gender, birth?.name, dateKey]);
 
   function handleConcern(key: ConcernKey) {
     setConcernKey(key);

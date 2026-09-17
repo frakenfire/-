@@ -50,6 +50,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
   const [name, setName] = useState(initial?.name ?? '');
   const [gender, setGender] = useState<'male' | 'female' | null>(initial?.gender ?? null);
   const [confirmClear, setConfirmClear] = useState(false);
+  const [nameWarn, setNameWarn] = useState(false);
 
   // 월이 바뀌면 일수가 줄 수 있다 (1/31 → 2월). 없는 날짜가 남지 않게 잘라준다.
   const maxDay = daysIn(year, month);
@@ -93,8 +94,13 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
           className="btn btn--primary"
           onClick={() => {
             if (!input) return;
-            const b: StoredBirth = { date: dateStr, time: timeStr };
-            if (name.trim()) b.name = name.trim();
+            // 이름도 계산에 들어간다. 빈 채로 넘기면 이름 칸이 통째로 빠지므로 막는다.
+            // 버튼을 잠그지는 않는다 — 안 눌리면 '왜 안 되지' 로 멈춘다. 눌러서 알려준다.
+            if (name.trim().length < 2) {
+              setNameWarn(true);
+              return;
+            }
+            const b: StoredBirth = { date: dateStr, time: timeStr, name: name.trim() };
             if (gender) b.gender = gender;
             onSave(b);
           }}
@@ -114,10 +120,18 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
           type="text"
           inputMode="text"
           maxLength={10}
-          placeholder="부를 이름 (안 써도 돼요)"
+          placeholder="한글 이름"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            setName(e.target.value);
+            if (nameWarn) setNameWarn(false);
+          }}
         />
+        <span className="field__hint">
+          {nameWarn
+            ? '이름을 두 글자 이상 넣어주세요. 이름 소리도 계산에 들어가요.'
+            : '이름 소리를 다섯 기운으로 갈라 사주와 같이 봐요.'}
+        </span>
       </label>
 
       <div className="field">
