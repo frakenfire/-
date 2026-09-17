@@ -27,7 +27,7 @@ import {
 } from './saju.ts';
 import { tenGodOf, mainHiddenStem, GOD_GROUP_OF, type TenGod, type GodGroup, type SajuProfile } from './tenGods.ts';
 import { TEN_GOD_DAY, NEEDED_LINE } from '../data/tenGodDay.ts';
-import { pickFreshIndex } from './pickFresh.ts';
+import { pickIndex } from './pickFresh.ts';
 import type { FourPillars } from './fourPillars.ts';
 
 export type NeedFit = 'needed' | 'excess' | 'neutral';
@@ -152,16 +152,15 @@ export function dailyForMe(dateKey: string, pillars: FourPillars, profile: SajuP
   const tone = personalToneOf(personalScore(fit, relation, hitsUseful));
 
   // 십신은 10개뿐이라 문장이 하나면 열흘마다 같은 말이 돌아온다.
-  // 축마다 다른 나눗수를 써 조합이 갈리게 하고, 직전에 본 문장은 피한다.
+  // 축마다 다른 나눗수를 써 조합이 갈리게 한다. 날짜와 일간만 보므로 하루 안에서는 고정이다.
   const pool = TEN_GOD_DAY[dayGod];
   const seed = hashSeed(`me|${dateKey}|${pillars.dayStem}|${pillars.day.branch}`);
-  const pick = (arr: string[], div: number, key: string) =>
-    arr[pickFreshIndex(Math.abs(Math.trunc(seed / div)), arr.length, key)];
+  const pick = (arr: string[], div: number) => arr[pickIndex(Math.trunc(seed / div), arr.length)];
   const reading = {
-    title: pick(pool.titles, 1, `god:title:${dayGod}`),
-    body: pick(pool.bodies, 3, `god:body:${dayGod}`),
-    doThis: pick(pool.doThis, 7, `god:do:${dayGod}`),
-    avoid: pick(pool.avoid, 11, `god:avoid:${dayGod}`),
+    title: pick(pool.titles, 1),
+    body: pick(pool.bodies, 3),
+    doThis: pick(pool.doThis, 7),
+    avoid: pick(pool.avoid, 11),
   };
 
   const myElement = pillars.dayMaster.el;

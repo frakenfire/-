@@ -8,7 +8,7 @@ import { softBreak } from '../lib/softBreak.ts';
 import { Sentences } from '../components/Sentences.tsx';
 import { luckyWhen } from '../lib/luckyWhen.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
-import { LUCKY_HEADS, PLAN_TITLES } from '../data/copy.ts';
+import { LUCKY_HEADS } from '../data/copy.ts';
 import { DAY_ANSWERS } from '../data/sajuAnswers.ts';
 import { CATEGORY_INTERP, band } from '../data/detailContent.ts';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
@@ -35,9 +35,6 @@ type Props = {
   sajuBadge: { icon: IconName; name: string; hue: string; group: GodGroup } | null;
   onSaju: () => void;
   zodiac: Zodiac | null;
-  streak: number;
-  weekUnlocked: boolean;
-  onUnlockWeek: () => void;
   onShareWeek: (text: string) => void;
   /** 결과를 본 다음에만 권하는 것들. 홈은 쪽지 뽑기 하나로 비워뒀다 */
   onCompat: () => void;
@@ -47,7 +44,7 @@ type Props = {
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, onCopy, userName, spin = 0, deep = null, sajuBadge, onSaju, zodiac, streak, weekUnlocked, onUnlockWeek, onShareWeek, onCompat, onMonth, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, onCopy, userName, spin = 0, deep = null, sajuBadge, onSaju, zodiac, onShareWeek, onCompat, onMonth, onBack }: Props) {
   const { luck, dayPlan } = result;
   const isMonth = result.reading.scale === 'month';
 
@@ -67,7 +64,6 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
     return () => cancelAnimationFrame(raf);
   }, [luck.total]);
 
-  const action = result.luckyPoint.split(' · ')[2] ?? result.luckyPoint;
   const RING = 2 * Math.PI * 54;
   // 이미 지나간 때를 오늘의 행운이라고 띄우지 않는다
   const when = luckyWhen(luck.time);
@@ -113,7 +109,37 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
         </div>
       </div>
 
-      {/* 고민 답 — 이 흐름의 주인공. 뽑은 쪽지 바로 다음에 온다 */}
+      {/* 오늘 이건 하고 이건 피해요 — 사람들이 사주 앱에서 제일 먼저 찾는 것.
+          '흐름이 좋아요' 로 끝내지 않고 할 것과 피할 것을 한 줄씩 못 박는다. */}
+      <div className="sec-card">
+        <p className="cat4__head">{isMonth ? '이번 달은 이렇게' : '오늘은 이렇게'}</p>
+        <p className="today2__line">{softBreak(dayPlan.headline, 18)}</p>
+        <p className="today2__vibe">{dayPlan.vibe}</p>
+        <ul className="today2">
+          <li className="today2__row today2__row--do">
+            <span className="today2__k">하면 좋아요</span>
+            <Sentences className="today2__v" text={result.daily?.reading.doThis ?? result.dos[0]} />
+          </li>
+          <li className="today2__row today2__row--dont">
+            <span className="today2__k">피하세요</span>
+            <Sentences className="today2__v" text={result.daily?.reading.avoid ?? result.dont} />
+          </li>
+          <li className="today2__row today2__row--hold">
+            <span className="today2__k">{isMonth ? '이번 달은 접어둬요' : '오늘은 접어둬요'}</span>
+            <Sentences className="today2__v" text={dayPlan.holdOff} />
+          </li>
+        </ul>
+        <ol className="today3">
+          {dayPlan.steps.map((st) => (
+            <li className="today3__row" key={st.when}>
+              <span className="today3__when">{st.when}</span>
+              <Sentences className="today3__text" text={st.text} />
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      {/* 고민 답 — 뽑은 쪽지와 오늘 할 일 다음에 온다 */}
       {deep ? (
         <div className="deep-block">
           <DeepSections
@@ -125,11 +151,6 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
           />
         </div>
       ) : null}
-
-      <div className="sec-card">
-        <p className="result__headline">{softBreak(dayPlan.headline, 18)}</p>
-        <p className="result__vibe">{dayPlan.vibe}</p>
-      </div>
 
       {/* 2. 네 가지 운 — 사랑·돈·일·건강 점수 */}
       <div className="cat4 sec-card">
@@ -181,14 +202,6 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
             <strong className="lucky4__v">{luck.item}</strong>
           </div>
         </div>
-        {/* 행동은 문장이라 칸에 넣으면 잘린다. 잘린 행동은 아무 쓸모가 없으니 한 줄로 뺀다. */}
-        <div className="lucky-act">
-          <span className="lucky-act__icon" aria-hidden><Icon name="target" size={20} /></span>
-          <span className="lucky-act__text">
-            <span className="lucky-act__k">오늘 이거 하나</span>
-            <strong className="lucky-act__v">{action}</strong>
-          </span>
-        </div>
         <ul className="lucky-extra">
           <li className="lucky-extra__row">
             <span className="lucky-extra__k">{isMonth ? '이번 달 기운' : '오늘의 기운'}</span>
@@ -201,42 +214,13 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
           같은 말을 두 번 하면 긴 화면만 남고 아무도 안 읽는다. */}
       {deep ? null : (
         <>
-        {/* 4. 오늘 이렇게 보내요 — 사주 앱의 개운법 자리 */}
-        <div className="plan sec-card sec-card--plan">
-          <p className="plan__title">{isMonth ? '이번 달, 이렇게 보내요' : PLAN_TITLES[(spin >> 1) % PLAN_TITLES.length]}</p>
-          <ul className="plan__steps">
-            {dayPlan.steps.map((s) => (
-              <li className="plan__step" key={s.when}>
-                <span className="plan__when">{s.when}</span>
-                <span className="plan__text">{s.text}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="plan__hold">
-            <span className="plan__hold-k">{isMonth ? '이번 달은 접어둬요' : '오늘은 접어둬요'}</span>
-            <span className="plan__hold-v">{dayPlan.holdOff}</span>
-          </div>
-        </div>
-
-        {/* 5. 오늘 돈·사랑·일 — 사주를 넣은 사람 */}
-        {result.daily ? (
-          <div className="cat4 sec-card">
-            <p className="cat4__head">오늘 나에게</p>
-            <ul className="mygod__qa">
-              <li><span className="mygod__qa-k">돈</span>{DAY_ANSWERS[result.daily.dayGodGroup].money}</li>
-              <li><span className="mygod__qa-k">사랑</span>{DAY_ANSWERS[result.daily.dayGodGroup].love}</li>
-              <li><span className="mygod__qa-k">일</span>{DAY_ANSWERS[result.daily.dayGodGroup].work}</li>
-            </ul>
-          </div>
-        ) : null}
-
         {/* 4.5 오늘 내 사주 — 한 토막 */}
         {result.daily ? (
           <div className="cat4 sec-card">
             <p className="cat4__head">오늘 내 사주</p>
             <p className="qa"><b>{result.daily.reading.title}</b></p>
-            <p className="qa qa--sub">{result.daily.reading.body}</p>
-            <p className="qa qa--sub">{result.daily.fitLine}</p>
+            <Sentences className="qa qa--sub" text={result.daily.reading.body} />
+            <Sentences className="qa qa--sub" text={result.daily.fitLine} />
           </div>
         ) : null}
 
@@ -254,7 +238,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
             ].map(([k, v]) => (
               <li key={k} className="read6__row">
                 <span className="read6__k">{k}</span>
-                <span className="read6__v">{v}</span>
+                <Sentences className="read6__v" text={String(v)} />
               </li>
             ))}
           </ul>
@@ -316,13 +300,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
         </>
       ) : null}
 
-      <WeekCard
-        zodiac={zodiac}
-        streak={streak}
-        unlocked={weekUnlocked}
-        onUnlock={onUnlockWeek}
-        onShare={onShareWeek}
-      />
+      <WeekCard zodiac={zodiac} onShare={onShareWeek} />
 
       {/* 더 보기 — 결과를 본 사람에게만 권한다. 처음 온 사람에겐 고를 게 많으면 안 된다 */}
       <section className="sec sec--card">

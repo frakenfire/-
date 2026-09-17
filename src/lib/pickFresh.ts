@@ -52,3 +52,17 @@ export function pickFreshIndex(seed: number, len: number, storageKey: string): n
 export function pickFresh<T>(arr: T[], seed: number, storageKey: string): T {
   return arr[pickFreshIndex(seed, arr.length, storageKey)];
 }
+
+// 회피 이력 없는 순수 픽 — 같은 입력이면 언제 몇 번을 뽑아도 같은 답이 나온다.
+//
+// 회피 이력은 "어제와 다른 문장"을 위해 만들었는데, 같은 날 두 번 뽑을 때도
+// 이력이 갱신돼서 5분 만에 문장이 갈아엎히는 부작용이 있었다. 날짜가 이미
+// seed 에 들어 있으니 날마다 달라지는 건 seed 가 책임지고, 여기서는 안 흔든다.
+export function pickIndex(seed: number, len: number): number {
+  if (len <= 1) return 0;
+  return Math.abs(Math.trunc(seed)) % len;
+}
+
+export function pickOne<T>(arr: T[], seed: number): T {
+  return arr[pickIndex(seed, arr.length)];
+}

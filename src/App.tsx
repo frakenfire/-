@@ -6,7 +6,7 @@ import { todayKey } from './lib/dateSeed.ts';
 import { pickNotesFor } from './lib/pickNotes.ts';
 import { generateFortune } from './lib/generateFortune.ts';
 import { luckPercentile } from './lib/luck.ts';
-import { showRewardAd, isRewarded, isUnsupportedFreePass, adResultMessage } from './lib/ads.ts';
+import { showRewardAd, isRewarded, isUnsupportedFreePass } from './lib/ads.ts';
 import { buildShareText, shareBriefing, shareForUnlock, copyText, shareMessage } from './lib/share.ts';
 import { ConcernScreen } from './screens/ConcernScreen.tsx';
 import { ConcernAskScreen } from './screens/ConcernAskScreen.tsx';
@@ -26,7 +26,7 @@ import { findZodiac } from './data/zodiac.ts';
 import type { Zodiac, ZodiacId } from './data/zodiac.ts';
 import { findStarSign } from './data/starSign.ts';
 import type { StarSign, StarSignId } from './data/starSign.ts';
-import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, hasAskedReview, markReviewAsked, isWeekUnlocked, unlockWeek, loadBirth, saveBirth, clearBirth,
+import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, hasAskedReview, markReviewAsked, loadBirth, saveBirth, clearBirth,
   type StoredBirth } from './lib/storage.ts';
 
 import { HomeScreen } from './screens/HomeScreen.tsx';
@@ -226,7 +226,6 @@ export default function App() {
   useEffect(() => {
     if (lastSyncedDate.current === dateKey) return;
     lastSyncedDate.current = dateKey;
-    setWeekUnlocked(isWeekUnlocked(dateKey));
     setStreak(peekStreak());
     // 어제 뽑은 결과 화면을 띄워둔 채 자정을 넘겼다면 홈으로 되돌린다.
     setResult(null);
@@ -350,30 +349,6 @@ export default function App() {
     }
   }
 
-  // 보상형 광고 게이트 — 'rewarded'(광고 완주) 또는 'unsupported'(광고 미지원
-  // 구버전 토스에 대한 명시적 무료 정책)일 때만 기능을 연다. dismissed/failed 는 막는다.
-  async function runRewardGate(
-    placement: 'detail' | 'saveImage' | 'retry',
-    onUnlock: () => void | Promise<void>,
-  ) {
-    if (busy) return;
-    setBusy(true);
-    try {
-      const result = await showRewardAd(placement);
-      logEvent('reward_ad', { placement, status: result.status });
-      if (isRewarded(result) || isUnsupportedFreePass(result)) {
-        await onUnlock();
-      } else {
-        flash(adResultMessage(result) || '앗, 잠시 후 다시 시도해요');
-      }
-    } catch (e) {
-      reportError(`rewardGate:${placement}`, e);
-      flash('앗, 문제가 생겼어요. 다시 시도해 주세요');
-    } finally {
-      setBusy(false);
-    }
-  }
-
   // 오늘 받은 편지 다시 읽기 (스냅샷 그대로 복원)
 
 
@@ -422,28 +397,6 @@ export default function App() {
     if (!result) return;
     const ok = await copyText(result.detail.charm);
     flash(ok ?'한 줄 복사 완료!' : '앗, 복사를 못 했어요');
-  }
-
-  // 결과 카드 저장 = 바이럴 공유 자산이라 광고 게이팅 없이 무료로(확산 우선).
-  // 주간 캘린더 해금 — 스트릭 3일 이상이면 무료, 아니면 보상형 광고.
-  // (습관이 붙은 유저는 보상으로 돌려주고, 아직인 유저에게선 광고 수익이 난다)
-  const [weekUnlocked, setWeekUnlocked] = useState(() => isWeekUnlocked(todayKey()));
-
-  async function handleUnlockWeek() {
-    if (busy) return;
-    if (streak >= 3) {
-      unlockWeek(dateKey);
-      setWeekUnlocked(true);
-      logEvent('week_unlock', { via: 'streak', streak });
-      flash(`${streak}일 연속 보상! 이번 주 캘린더가 열렸어요 `);
-      return;
-    }
-    await runRewardGate('retry', () => {
-      unlockWeek(dateKey);
-      setWeekUnlocked(true);
-      logEvent('week_unlock', { via: 'ad', streak });
-      flash('이번 주 캘린더가 열렸어요');
-    });
   }
 
   async function handleShareWeek(text: string) {
@@ -663,9 +616,6 @@ export default function App() {
           sajuBadge={sajuBadge}
           onSaju={() => setScreen(birth ? 'saju' : 'birth')}
           zodiac={zodiac}
-          streak={streak}
-          weekUnlocked={weekUnlocked}
-          onUnlockWeek={handleUnlockWeek}
           onShareWeek={handleShareWeek}
           onCompat={() => setScreen('compat')}
           onMonth={() => (birthInput || skipBirth ? handleType('month') : (setBirthNext('concern'), setScreen('birth')))}

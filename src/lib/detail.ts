@@ -1,7 +1,7 @@
 import type { CategoryScore, LuckSet } from './luck.ts';
 import { ZODIACS, type Zodiac, type ZodiacId } from '../data/zodiac.ts';
 import { zodiacRelation } from './saju.ts';
-import { pickFresh } from './pickFresh.ts';
+import { pickOne } from './pickFresh.ts';
 import {
   BAND_TAG,
   CATEGORY_INTERP,
@@ -43,7 +43,7 @@ export function computeDetail(seed: number, luck: LuckSet, zodiac?: ZodiacId | n
 
   // 종합 총평 — 4개 항목 카드를 따로 보지 않아도, 리포트가 요약해준다.
   const gap = topPick.score - watchOut.score;
-  const summary = pickFresh(SUMMARY_TEMPLATES, seed / 29, 'detail:summary')
+  const summary = pickOne(SUMMARY_TEMPLATES, seed / 29)
     .replace('{top}', topPick.label)
     .replace('{watch}', watchOut.label)
     .replace('{gap}', String(gap));
@@ -74,21 +74,21 @@ export function computeDetail(seed: number, luck: LuckSet, zodiac?: ZodiacId | n
     cautionIdx = Math.abs(Math.trunc(seed / 37) + 6) % ZODIACS.length;
     if (cautionIdx === goodIdx) cautionIdx = (cautionIdx + 1) % ZODIACS.length;
   }
-  const goodReason = pickFresh(MATCH_GOOD_REASONS, seed / 41, 'detail:matchGood');
-  const cautionReason = pickFresh(MATCH_CAUTION_REASONS, seed / 43, 'detail:matchCaution');
+  const goodReason = pickOne(MATCH_GOOD_REASONS, seed / 41);
+  const cautionReason = pickOne(MATCH_CAUTION_REASONS, seed / 43);
 
-  const mission = pickFresh(MISSION_TEMPLATES, seed / 13, 'detail:mission')
+  const mission = pickOne(MISSION_TEMPLATES, seed / 13)
     .replace('{time}', luck.time)
     .replace('{color}', luck.color.name)
     .replace('{dir}', luck.direction)
     .replace('{item}', luck.item)
     .replace('{food}', luck.food.name);
 
-  const numberUse = pickFresh(NUMBER_HINTS, seed / 19, 'detail:numberUse').replace(
+  const numberUse = pickOne(NUMBER_HINTS, seed / 19).replace(
     '{n}',
     String(luck.number),
   );
-  const charm = pickFresh(CHARMS, seed / 23, 'detail:charm');
+  const charm = pickOne(CHARMS, seed / 23);
 
   return {
     ranked,

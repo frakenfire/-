@@ -204,12 +204,12 @@ export function buildDeepRead(
   const when: { k: string; v: string; band?: string }[] = [
     {
       k: '이번 달',
-      v: `${TEN_GOD_KO[timing.thisMonth.tenGod]}이 들어와요`,
+      v: timing.thisMonth.label,
       band: BAND_WORD[timing.thisMonth.band],
     },
     {
       k: '가장 좋은 때',
-      v: away === 0 ? `${timing.bestMonth.label}, 바로 지금이에요` : `${timing.bestMonth.label}, ${away}달 뒤예요`,
+      v: away === 0 ? `${timing.bestMonth.label}, 바로 이번 달이에요` : `${timing.bestMonth.label}, ${away}달 뒤`,
       band: BAND_WORD[timing.bestMonth.band],
     },
     {
@@ -224,22 +224,35 @@ export function buildDeepRead(
     },
   ];
 
+  // 근거 줄은 이름만 대면 아무 뜻이 없다. 이름 옆에 그게 무슨 뜻인지 한 문장을 붙인다.
   const why: { k: string; v: string }[] = [
     { k: '내 글자', v: `${dm.name}이에요. ${dm.tagline}` },
-    { k: '올해', v: `${TEN_GOD_KO[timing.years[0].tenGod]}이 도는 해예요` },
-    { k: '이번 달', v: `${TEN_GOD_KO[timing.thisMonth.tenGod]}이 들어와요` },
-    { k: '십 년', v: timing.daeunSlot ? `${TEN_GOD_KO[timing.daeunSlot.tenGod]}이에요` : '아직 첫 대운 전이에요' },
+    {
+      k: '올해',
+      v: `${TEN_GOD_KO[timing.years[0].tenGod]}이 돌아요. ${GOD_SCALE[timing.years[0].tenGod].year}`,
+    },
+    {
+      k: '이번 달',
+      v: `${TEN_GOD_KO[timing.thisMonth.tenGod]}이 들어와요. ${GOD_SCALE[timing.thisMonth.tenGod].month}`,
+    },
+    {
+      k: '십 년',
+      v: timing.daeunSlot
+        ? `${TEN_GOD_KO[timing.daeunSlot.tenGod]}을 지나요. ${GOD_SCALE[timing.daeunSlot.tenGod].daeun}`
+        : '아직 첫 십 년이 시작되기 전이라 태어난 자리를 그대로 봐요.',
+    },
   ];
 
   const cur = timing.daeun.current;
   const left = timing.daeun.yearsToNext;
+  // 대운 이름(기묘 같은 것)을 그대로 쓰면 아무 뜻이 없다. 무슨 기운인지로 말한다.
   const daeunLine = cur
-    ? `${cur.startAge}세부터 ${cur.endAge}세까지는 ${cur.kor} 대운이에요.` +
+    ? `${cur.startAge}세부터 ${cur.endAge}세까지가 지금 지나는 십 년이에요.` +
       (timing.daeunSlot
         ? ` ${GOD_SCALE[timing.daeunSlot.tenGod].daeun} ${CONCERN_GOD[concernKey][timing.daeunSlot.tenGod].line}`
         : '') +
-      (left !== null && left > 0 ? ` 다음 대운까지 ${left}해 남았어요.` : '')
-    : `첫 대운이 ${timing.daeun.startAge}세부터 들어와요. 그전까지는 태어난 자리의 기운을 그대로 써요.`;
+      (left !== null && left > 0 ? ` 다음 십 년으로 넘어가기까지 ${left}년 남았어요.` : '')
+    : `${timing.daeun.startAge}세부터 첫 십 년이 시작돼요. 그전까지는 태어난 자리의 기운을 그대로 써요.`;
 
   // 달 한 덩이 — 겉(천간)과 속(지지)을 따로 대야 열두 달이 전부 다른 얼굴이 된다
   const slotBlock = (k: string, slot: TimingSlot) => ({

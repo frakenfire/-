@@ -84,11 +84,11 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           <ul className="slot__pts">
             <li className="slot__pt slot__pt--good">
               <span className="slot__pt-k">좋아요</span>
-              <span className="slot__pt-v">{sl.good}</span>
+              <Sentences className="slot__pt-v" text={sl.good} />
             </li>
             <li className="slot__pt slot__pt--care">
               <span className="slot__pt-k">조심해요</span>
-              <span className="slot__pt-v">{sl.care}</span>
+              <Sentences className="slot__pt-v" text={sl.care} />
             </li>
           </ul>
         </div>
@@ -120,7 +120,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           {read.why.map((w) => (
             <li key={w.k} className="read6__row">
               <span className="read6__k">{w.k}</span>
-              <span className="read6__v">{w.v}</span>
+              <Sentences className="read6__v" text={w.v} />
             </li>
           ))}
         </ul>
@@ -138,7 +138,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           {read.actions.map((a, i) => (
             <li key={a} className="todo3__row">
               <span className="todo3__no num">{i + 1}</span>
-              <span className="todo3__v">{a}</span>
+              <Sentences className="todo3__v" text={a} />
             </li>
           ))}
         </ol>

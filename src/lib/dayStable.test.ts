@@ -60,3 +60,30 @@ test('쪽지가 다르면 읽는 말은 달라진다', () => {
   const texts = NOTES.slice(0, 6).map((note) => generateFortune({ ...base, note }).summaryLines.join(' '));
   assert.ok(new Set(texts).size >= 3, '쪽지를 바꿔도 문장이 거의 같으면 뽑는 의미가 없다');
 });
+
+test('같은 날 다른 쪽지를 뽑아도 오늘 할 일과 하루 풀이는 그대로다', () => {
+  const keys = NOTES.slice(0, 8).map((note) => {
+    const r = generateFortune({ ...base, note });
+    return [
+      r.dayPlan.headline,
+      r.dayPlan.vibe,
+      r.dayPlan.holdOff,
+      r.dayPlan.steps.map((s) => `${s.when}:${s.text}`).join('/'),
+      r.reading.morning,
+      r.reading.afternoon,
+      r.reading.evening,
+      r.reading.people,
+      r.reading.mind,
+    ].join('|');
+  });
+  assert.equal(new Set(keys).size, 1);
+});
+
+test('같은 쪽지를 연달아 뽑으면 글자 하나까지 같다', () => {
+  const note = NOTES[0];
+  const a = generateFortune({ ...base, note });
+  const b = generateFortune({ ...base, note });
+  const c = generateFortune({ ...base, note });
+  assert.deepEqual(JSON.parse(JSON.stringify(b)), JSON.parse(JSON.stringify(a)));
+  assert.deepEqual(JSON.parse(JSON.stringify(c)), JSON.parse(JSON.stringify(a)));
+});

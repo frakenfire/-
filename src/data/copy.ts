@@ -107,7 +107,7 @@ export const BIRTH_LEADS = [
   '시각을 몰라도 돼요. 날짜만으로도 봐요.',
   '한 번 넣어두면 다시 묻지 않아요.',
 ];
-export const LUCKY_HEADS = ['오늘의 행운', '오늘 챙길 것', '오늘의 행운 세트', '오늘 이거 하나면'];
+export const LUCKY_HEADS = ['오늘의 행운', '오늘 챙길 것', '오늘 이건 챙겨요', '오늘의 행운 여섯 가지'];
 export const PLAN_TITLES = ['오늘, 이렇게 보내요', '오늘의 하루 설계', '아침부터 저녁까지', '오늘은 이렇게'];
 
 export const NOTE_PICK = {

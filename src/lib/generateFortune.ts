@@ -18,7 +18,7 @@ import { NOTE_LEAD, TEMPLATES } from '../data/resultTemplates.ts';
 import { NOTE_DIRECTION, directionOfText, conflicts } from '../data/noteDirection.ts';
 import { MOOD_PINPOINT, MOOD_MIND } from '../data/moodEcho.ts';
 import { PLANS, moodGroup } from '../data/dayDesign.ts';
-import { pickFreshIndex } from './pickFresh.ts';
+import { pickIndex } from './pickFresh.ts';
 import {
   AFTERNOON_READINGS,
   EVENING_READINGS,
@@ -89,7 +89,7 @@ export function generateFortune(input: FortuneInput): FortuneResult {
     (v) => !conflicts(noteDir, directionOfText(`${v.summary.join(' ')} ${v.flow} ${v.good}`)),
   );
   const variants = fitting.length > 0 ? fitting : all;
-  const variant = variants[pickFreshIndex(seed, variants.length, `tpl:${fortuneType}:${noteDir}`)];
+  const variant = variants[pickIndex(seed, variants.length)];
 
   const lead = NOTE_LEAD[note.id] ?? '오늘의 쪽지가 도착했어요.';
   // 오늘 일진×내 띠 사주 — 띠가 있으면 사주 톤이 총운의 구간을 정한다(로직 일관성).
@@ -117,7 +117,7 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const isMonth = fortuneType === 'month';
   const moodPool = MOOD_PINPOINT[mood] ?? [variant.pinpoint];
   // 회피 이력은 기분 풀 하나에 대해 한 번만 갱신한다(키 하나 = 풀 하나).
-  const moodIdx = pickFreshIndex(Math.abs(Math.trunc(seed / 7)), moodPool.length, `pin:${mood}`);
+  const moodIdx = pickIndex(Math.trunc(seed / 7), moodPool.length);
   // 편지는 어떤 주제로 뽑았든 '오늘 쓴 편지'라 기분 풀을 그대로 쓰되,
   // 본문에 나온 한마디와는 다른 줄을 골라 같은 문장이 두 번 보이지 않게 한다.
   const letterHighlight =
@@ -141,8 +141,9 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   // 결과의 주인공이라 직전과 같은 설계가 연달아 나오지 않게 별도로 회피한다.
   const state = moodGroup(mood);
   const cell = PLANS[fortuneType][state];
-  const planSeed = Math.abs(Math.trunc(seed / 13));
-  const dayPlan = cell[pickFreshIndex(planSeed, cell.length, `plan:${fortuneType}:${state}`)];
+  // 오늘의 설계는 '오늘의 나'에서 나온다 — 쪽지를 바꿔 뽑아도 할 일은 그대로다.
+  const planSeed = Math.trunc(daySeed / 13);
+  const dayPlan = cell[pickIndex(planSeed, cell.length)];
 
   // 에픽 이상이면 요정의 특별 한마디를 편지에 담는다.
   const rarityLine = RARITY_LINE[rarity.tier];
@@ -158,22 +159,18 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   // 하루 풀이: 등급 해설 + 시간대·사람·마음 해석을 seed 로 조합.
   // 서로 다른 소수로 나눠 섹션 간 조합이 매일 갈라지게 하고, 섹션마다
   // 직전과 다른 문장이 나오도록 독립된 회피 이력을 둔다.
-  const pickReading = (arr: string[], div: number, key: string) =>
-    arr[pickFreshIndex(Math.abs(Math.trunc(seed / div)), arr.length, key)];
+  // 하루 풀이도 날짜 seed 로 고정한다. 오전·오후·저녁은 쪽지가 아니라 오늘의 몫이다.
+  const pickReading = (arr: string[], div: number) => arr[pickIndex(Math.trunc(daySeed / div), arr.length)];
   const reading = {
-    overall: `${pickReading(
-      (isMonth ? GRADE_READING_MONTH : GRADE_READING)[luck.grade] ?? GRADE_READING['평'],
-      5,
-      `read:grade:${isMonth}:${luck.grade}`,
-    )}
+    overall: `${pickReading((isMonth ? GRADE_READING_MONTH : GRADE_READING)[luck.grade] ?? GRADE_READING['평'], 5)}
 ${variant.flow}`,
     // month 타입은 초반/중순/월말 풀로, 나머지는 오전/오후/저녁 풀로.
-    morning: pickReading(isMonth ? MONTH_EARLY_READINGS : MORNING_READINGS, 3, `read:morning:${isMonth}`),
-    afternoon: pickReading(isMonth ? MONTH_MID_READINGS : AFTERNOON_READINGS, 11, `read:afternoon:${isMonth}`),
-    evening: pickReading(isMonth ? MONTH_LATE_READINGS : EVENING_READINGS, 17, `read:evening:${isMonth}`),
-    people: pickReading(isMonth ? MONTH_PEOPLE_READINGS : PEOPLE_READINGS, 23, `read:people:${isMonth}`),
+    morning: pickReading(isMonth ? MONTH_EARLY_READINGS : MORNING_READINGS, 3),
+    afternoon: pickReading(isMonth ? MONTH_MID_READINGS : AFTERNOON_READINGS, 11),
+    evening: pickReading(isMonth ? MONTH_LATE_READINGS : EVENING_READINGS, 17),
+    people: pickReading(isMonth ? MONTH_PEOPLE_READINGS : PEOPLE_READINGS, 23),
     // 마음 관리 — 방금 고른 기분 전용 풀(무드 에코). 기분마다 회피 이력을 분리.
-    mind: pickReading(MOOD_MIND[mood] ?? MIND_READINGS, 31, `read:mind:${mood}`),
+    mind: pickReading(MOOD_MIND[mood] ?? MIND_READINGS, 31),
     scale: (isMonth ? 'month' : 'day') as 'day' | 'month',
   };
 
