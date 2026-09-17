@@ -8,8 +8,11 @@ function hasBatchim(word: string): boolean {
   return (code - 0xac00) % 28 !== 0;
 }
 
-/** kind 는 '은는' '이가' '을를' '와과' 중 하나 */
-export function withJosa(word: string, kind: '은는' | '이가' | '을를' | '와과'): string {
+/**
+ * kind 는 '받침 있을 때 + 없을 때' 순서다. 과/와 는 받침 있는 쪽이 '과' 라
+ * '과와' 로 적는다. 순서를 뒤집으면 '오과 미가' 같은 말이 나온다.
+ */
+export function withJosa(word: string, kind: '은는' | '이가' | '을를' | '과와'): string {
   const [withB, withoutB] = [kind[0], kind[1]];
   return `${word}${hasBatchim(word) ? withB : withoutB}`;
 }

@@ -79,7 +79,7 @@ test('모든 고민에서 문장이 비지 않는다', () => {
       assert.ok(r.slots.every((s) => s.outer && s.good && s.care));
       assert.equal(r.yearLines.length, 2);
       assert.ok(r.daeunLine.length > 20);
-      assert.equal(r.why.length, 4);
+      assert.equal(r.why.length, 5);
     }
   }
 });
@@ -145,4 +145,53 @@ test('오늘 행동은 고른 주제에서 나온다', () => {
   }
   // 주제가 여섯 개인데 같은 행동이 돌아오면 주제를 물은 뜻이 없다
   assert.equal(seen.size, CONCERNS.length);
+});
+
+test('근거에 내 명식이 그대로 펼쳐진다', () => {
+  const at = new Date('2026-09-17T12:00:00+09:00');
+  const t = computeTiming(INPUT, P, 'female', 'work', at);
+  const r = buildDeepRead(P, t, 'work', null, '2026-09-17');
+  // 시각까지 넣었으면 네 기둥
+  assert.equal(r.chart.pillars.length, 4);
+  assert.equal(r.chart.pillars.filter((c) => c.me).length, 1, '나를 뜻하는 기둥이 하나여야 한다');
+  for (const c of r.chart.pillars) {
+    assert.ok(c.stem.length > 0 && c.branch.length > 0, `${c.k} 글자가 비었음`);
+  }
+  assert.equal(r.chart.elements.length, 5);
+  const sum = r.chart.elements.reduce((a, e) => a + e.pct, 0);
+  assert.ok(Math.abs(sum - 100) <= 2, `오행 합이 ${sum}%`);
+  assert.equal(r.chart.elements.filter((e) => e.mine).length, 1);
+  for (const k of ['dayMaster', 'strength', 'season', 'useful', 'focus', 'today'] as const) {
+    assert.ok(r.chart[k].length > 15, `${k} 가 비었음`);
+  }
+});
+
+test('날이 바뀌면 오늘 줄이 바뀌고, 명식은 그대로다', () => {
+  const t = computeTiming(INPUT, P, 'female', 'work', new Date('2026-09-17T12:00:00+09:00'));
+  const a = buildDeepRead(P, t, 'work', null, '2026-09-17');
+  const b = buildDeepRead(P, t, 'work', null, '2026-09-18');
+  assert.notEqual(a.chart.today, b.chart.today, '오늘 줄이 어제와 같으면 매일 볼 이유가 없다');
+  assert.notEqual(a.today.doIt, b.today.doIt, '오늘 할 일이 어제와 같으면 안 된다');
+  assert.deepEqual(a.chart.pillars, b.chart.pillars, '명식은 날이 바뀌어도 그대로여야 한다');
+  assert.deepEqual(a.chart.elements, b.chart.elements);
+});
+
+test('오늘 글자와 내 글자가 만나는 자리가 날마다 바뀐다', () => {
+  const t = computeTiming(INPUT, P, 'female', 'work', new Date('2026-09-17T12:00:00+09:00'));
+  const days = ['2026-09-17', '2026-09-18', '2026-09-19', '2026-09-20', '2026-09-21'];
+  const seen = new Set(days.map((d) => {
+    const r = buildDeepRead(P, t, 'work', null, d);
+    return `${r.todayMeet.pillar}|${r.todayMeet.step}|${r.todayMeet.rows.map((x) => x.k + x.rel).join(',')}`;
+  }));
+  assert.equal(seen.size, days.length, '닷새가 다 달라야 매일 볼 이유가 생긴다');
+});
+
+test('명식 기둥마다 십이운성 단계가 붙는다', () => {
+  const t = computeTiming(INPUT, P, 'female', 'work', new Date('2026-09-17T12:00:00+09:00'));
+  const r = buildDeepRead(P, t, 'work', null, '2026-09-17');
+  for (const c of r.chart.pillars) assert.ok(c.step.length > 2, `${c.k} 단계 비었음`);
+  assert.ok(r.chart.gongmang.includes('비어 있어요'));
+  for (const x of r.chart.sinsal) {
+    assert.ok(x.k.length > 2 && x.v.length > 10, `${x.k} 설명 비었음`);
+  }
 });

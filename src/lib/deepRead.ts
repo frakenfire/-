@@ -2,15 +2,29 @@ import { DAY_MASTER_BY_INDEX } from '../data/dayMaster.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { TEN_GOD_KO } from './tenGods.ts';
 import { BAND_WORD, monthsAway, type TimingRead, type TimingSlot } from './timing.ts';
-import { CONCERN_GOD, GOD_SCALE, REFRESH_NOTE } from '../data/concernReadings.ts';
+import { CONCERN_GOD, GOD_SCALE, GOD_PULL, REFRESH_NOTE } from '../data/concernReadings.ts';
 import { computeConcernScore, scoreVerdictLine, type ConcernScore } from './concernScore.ts';
+import { withJosa } from './josa.ts';
 import { NATAL_SHAPE, SHAPE_LABELS, type ShapeRow } from '../data/natalShape.ts';
 import { CONCERN_DAY } from '../data/concernDay.ts';
 import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
 import { DECADE_AREAS, GOD_KEYWORD, type DecadeAreas } from '../data/decadeAreas.ts';
 import { DECISION, STANCE_WORD, WHEN_ACT, type Stance } from '../data/decision.ts';
-import { GOD_GROUP_OF } from './tenGods.ts';
-import type { FourPillars } from './fourPillars.ts';
+import { GOD_GROUP_OF, analyzeSaju, tenGodOf, mainHiddenStem, type GodGroup, type TenGod } from './tenGods.ts';
+import { ELEMENT_KO, STEMS, BRANCHES, type Element } from './saju.ts';
+import {
+  unseongOf, UNSEONG_KO, branchRelations, RELATION_KO, sinsalOf, SINSAL_KO, gongmangOf,
+} from './sinsal.ts';
+import { computeFourPillars, type FourPillars } from './fourPillars.ts';
+
+// 이 주제를 볼 때 무엇을 보는지 - 명리 이름 대신 뜻으로 말한다
+const FAVOR_WORD: Record<GodGroup, string> = {
+  self: '나를 세우는 자리',
+  output: '꺼내 보이는 자리',
+  wealth: '거두는 자리',
+  authority: '자리와 규칙',
+  support: '받쳐주고 배우는 자리',
+};
 
 // 고민 하나에 대한 심층 답 — 결론, 시기, 근거, 할 일.
 // 모든 문장은 규칙에서 나온다. 같은 생년월일과 같은 고민이면 언제 봐도 같은 답이다.
@@ -38,6 +52,33 @@ export type DeepRead = {
   when: { k: string; v: string; band?: string; act?: string }[];
   /** 왜 그렇게 봤는지 */
   why: { k: string; v: string }[];
+  /** 내 명식 여덟 글자 — 근거를 그대로 펼쳐 보인다 */
+  chart: {
+    pillars: { k: string; stem: string; branch: string; god: string; step: string; me: boolean }[];
+    dayMaster: string;
+    elements: { el: string; pct: number; mine: boolean }[];
+    strength: string;
+    season: string;
+    useful: string;
+    /** 이 주제에서 실제로 본 자리 */
+    focus: string;
+    /** 오늘 일진 한 줄 — 여기가 날마다 바뀐다 */
+    today: string;
+    /** 타고난 별 — 조견표로 대조한 것만 */
+    sinsal: { k: string; at: string; v: string }[];
+    /** 비어 있는 두 글자 */
+    gongmang: string;
+  };
+  /** 오늘 글자가 내 글자와 어떻게 만나는가 — 날마다 바뀌는 자리 */
+  todayMeet: {
+    pillar: string;
+    step: string;
+    stepLine: string;
+    /** 원국 각 자리와의 관계 */
+    rows: { k: string; rel: string; v: string }[];
+    /** 아무 관계도 없을 때 쓸 한 줄 */
+    quiet: string | null;
+  };
   actions: string[];
   caution: string;
   daeunLine: string;
@@ -328,6 +369,10 @@ export function buildDeepRead(
     },
   ];
 
+  const [cy, cm, cd] = dateKey.split('-').map((n) => Number.parseInt(n, 10));
+  const todayPillar = computeFourPillars({ year: cy, month: cm, day: cd, hour: 12 }).day;
+  const todayGod = tenGodOf(pillars.dayStem, todayPillar.stem) as TenGod;
+
   // 근거 줄은 이름만 대면 아무 뜻이 없다. 이름 옆에 그게 무슨 뜻인지 한 문장을 붙인다.
   const why: { k: string; v: string }[] = [
     { k: '내 글자', v: `${dm.name}이에요. ${dm.tagline}` },
@@ -340,12 +385,101 @@ export function buildDeepRead(
       v: `${TEN_GOD_KO[timing.thisMonth.tenGod]}이 들어와요. ${GOD_SCALE[timing.thisMonth.tenGod].month}`,
     },
     {
+      k: '오늘',
+      v: `${TEN_GOD_KO[todayGod]}이 들어와요. ${CONCERN_GOD[concernKey][todayGod].line}`,
+    },
+    {
       k: '십 년',
       v: timing.daeunSlot
         ? `${TEN_GOD_KO[timing.daeunSlot.tenGod]}을 지나요. ${GOD_SCALE[timing.daeunSlot.tenGod].daeun}`
         : '아직 첫 십 년이 시작되기 전이라 태어난 자리를 그대로 봐요.',
     },
   ];
+
+  // 명식을 그대로 펼친다. 용어가 나오면 바로 옆에 뜻을 붙인다.
+  const prof = analyzeSaju(pillars);
+  const chartPillars = [
+    { k: '태어난 해', p: pillars.year, me: false },
+    { k: '태어난 달', p: pillars.month, me: false },
+    { k: '태어난 날', p: pillars.day, me: true },
+    ...(pillars.hour ? [{ k: '태어난 시각', p: pillars.hour, me: false }] : []),
+  ].map(({ k, p, me }) => ({
+    k,
+    stem: STEMS[p.stem].kor,
+    branch: BRANCHES[p.branch].kor,
+    god: TEN_GOD_KO[tenGodOf(pillars.dayStem, mainHiddenStem(p.branch)) as TenGod],
+    step: UNSEONG_KO[unseongOf(pillars.dayStem, p.branch)].word,
+    me,
+  }));
+
+  const myEl = pillars.dayMaster.el;
+  const elements = (Object.keys(prof.balance) as Element[]).map((el) => ({
+    el: ELEMENT_KO[el],
+    pct: Math.round(prof.balance[el] * 100),
+    mine: el === myEl,
+  }));
+
+  // 이 주제에서 실제로 본 자리 — 원국 여덟 글자 중 몇 개가 그 자리인지 센다
+  const favorNames = timing.favor.good.map((g) => FAVOR_WORD[g]).join(', ');
+  const focusCount = prof.gods.filter((g) => timing.favor.good.includes(GOD_GROUP_OF[g.god])).length;
+  const focus =
+    focusCount > 0
+      ? `${withJosa(concern.label, '은는')} ${favorNames}로 봐요. 태어난 여덟 글자 중 ${focusCount}개가 거기 걸려 있어서 바탕은 ${focusCount >= 3 ? '두꺼운' : '얇은'} 편이에요.`
+      : `${withJosa(concern.label, '은는')} ${favorNames}로 봐요. 태어난 글자에는 그 자리가 없어서, 해와 달이 들어올 때 열리는 구조예요.`;
+
+  const chartToday = `내 글자에 대면 ${TEN_GOD_KO[todayGod]}이라, ${GOD_PULL[todayGod]}이에요.`;
+
+  // 조견표로 대조만 하는 것들. 해석을 고르지 않으니 누가 계산해도 같다.
+  const stars = sinsalOf(pillars).map((x) => ({
+    k: SINSAL_KO[x.key].word,
+    at: x.at,
+    v: SINSAL_KO[x.key].line,
+  }));
+  const [g1, g2] = gongmangOf(pillars.day.ganzhi);
+  const gongmang = `${withJosa(BRANCHES[g1].kor, '과와')} ${withJosa(BRANCHES[g2].kor, '이가')} 비어 있어요. 이 두 글자가 들어오는 해와 달에는 손에 잡히는 결과가 덜 남아요.`;
+
+  const chart = {
+    pillars: chartPillars,
+    dayMaster: `${pillars.dayMaster.kor}, 다섯 기운 중 ${ELEMENT_KO[myEl]}에 속해요. ${dm.tagline.replace(/\.?$/, '.')}`,
+    elements,
+    strength:
+      prof.strength === 'strong'
+        ? '내 힘이 많은 편이에요. 밀고 나가는 쪽이 맞고, 도움을 더 받으면 오히려 무거워져요.'
+        : '내 힘을 받아 쓰는 편이에요. 혼자 밀기보다 배우고 기대는 쪽이 결과가 좋아요.',
+    season: prof.hasSeasonalSupport
+      ? '태어난 달이 나를 돕는 자리예요. 계절이 내 편이라 기본 체력이 있는 구조예요.'
+      : '태어난 달이 나를 돕지는 않아요. 그래서 때를 고르는 게 더 중요해져요.',
+    useful: `${ELEMENT_KO[prof.usefulElement]} 기운이 들어올 때 치우침이 풀려요.`,
+    focus,
+    today: chartToday,
+    sinsal: stars,
+    gongmang,
+  };
+
+  // 오늘 글자가 내 글자와 어떻게 만나는가. 매일 바뀌는 자리라 다시 볼 이유가 된다.
+  const meetSpots: { k: string; b: number }[] = [
+    { k: '태어난 해', b: pillars.year.branch },
+    { k: '태어난 달', b: pillars.month.branch },
+    { k: '태어난 날', b: pillars.day.branch },
+    ...(pillars.hour ? [{ k: '태어난 시각', b: pillars.hour.branch }] : []),
+  ];
+  const meetRows: { k: string; rel: string; v: string }[] = [];
+  for (const spot of meetSpots) {
+    for (const rel of branchRelations(todayPillar.branch, spot.b)) {
+      meetRows.push({ k: withJosa(spot.k, '과와'), rel: RELATION_KO[rel].word, v: RELATION_KO[rel].line });
+    }
+  }
+  const todayStep = unseongOf(pillars.dayStem, todayPillar.branch);
+  const todayMeet = {
+    pillar: `${STEMS[todayPillar.stem].kor}${BRANCHES[todayPillar.branch].kor}`,
+    step: UNSEONG_KO[todayStep].word,
+    stepLine: UNSEONG_KO[todayStep].line,
+    rows: meetRows,
+    quiet:
+      meetRows.length === 0
+        ? '오늘 글자는 내 여덟 글자 중 어느 것과도 엮이지 않아요. 흔들림이 적은 날이라 하던 대로 가면 돼요.'
+        : null,
+  };
 
   const cur = timing.daeun.current;
   const left = timing.daeun.yearsToNext;
@@ -463,6 +597,8 @@ export function buildDeepRead(
     why,
     actions: actions.slice(0, 3),
     caution: CAUTION[concernKey],
+    chart,
+    todayMeet,
     daeunLine,
     decade,
     yearCompare,

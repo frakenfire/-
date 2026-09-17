@@ -554,9 +554,10 @@ async function run(browser) {
     const hints = await page.locator('.fold__hint').allInnerTexts();
     check(hints.length === 3 && hints.every((h) => h.trim().length > 6),
       '[결정] 접힌 덩이마다 안내 한 줄', hints.join(' / '));
-    await page.getByText('쪽지 문구 복사하기', { exact: false }).first().click();
-    await wait(page, 600);
-    check(/복사/.test(await bodyText(page)), '[결과] 복사하기 동작');
+    // 복사 버튼은 없앴다. shareMessage 가 공유 못 하는 환경에서 알아서 복사로 떨어지므로
+    // 같은 일을 하는 버튼을 둘 세울 이유가 없었다.
+    check((await page.getByText('복사하기', { exact: false }).count()) === 0,
+      '[결과] 공유와 같은 일을 하는 복사 버튼이 따로 없음');
     await page.context().close();
   }
 
@@ -596,9 +597,8 @@ async function run(browser) {
     check(/\d+세부터 \d+세까지|첫 대운이/.test(dt), '[상담] 십 년 대운 노출');
     check(/년 \d+월/.test(dt), '[상담] 답이 달로 나옴');
     await diagnose(page, '상담');
-    await page.getByText('쪽지 문구 복사하기', { exact: true }).first().click();
-    await wait(page, 600);
-    check(/복사/.test(await bodyText(page)), '[상담] 복사하기 동작');
+    check((await page.getByText('복사하기', { exact: false }).count()) === 0,
+      '[상담] 공유와 같은 일을 하는 복사 버튼이 따로 없음');
     await page.context().close();
   }
 

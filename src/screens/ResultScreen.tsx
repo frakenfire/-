@@ -27,14 +27,12 @@ type Props = {
   note: Note;
   busy: boolean;
   onShare: () => void;
-  onCopy: () => void;
   userName: string | null;
   spin?: number;
   /** 고민을 고르고 들어왔으면 그 답을 결과 안에 같이 낸다 */
   deep?: { concernKey: ConcernKey; read: DeepRead; timing: TimingRead } | null;
   zodiac: Zodiac | null;
   onShareWeek: (text: string) => void;
-  /** 결과를 본 다음에만 권하는 것들. 홈은 쪽지 뽑기 하나로 비워뒀다 */
   /** 명식에서 계산된 네 가지 운 점수. 생년월일이 없으면 null */
   chartScores?: Record<'love' | 'money' | 'work' | 'health', number> | null;
   onBack: () => void;
@@ -42,7 +40,7 @@ type Props = {
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, onCopy, userName, spin = 0, deep = null, zodiac, chartScores = null, onShareWeek, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, deep = null, zodiac, chartScores = null, onShareWeek, onBack }: Props) {
   const { luck, dayPlan } = result;
   const isMonth = result.reading.scale === 'month';
   // 고민을 골라 들어왔으면 맨 위 점수는 그 고민의 점수다. 명식에서 계산된 값이라
@@ -317,10 +315,6 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
       </div>
 
       <WeekCard zodiac={zodiac} onShare={onShareWeek} />
-
-      <button type="button" className="btn btn--ghost" disabled={busy} onClick={onCopy}>
-        쪽지 문구 복사하기
-      </button>
 
       <Disclaimer />
 

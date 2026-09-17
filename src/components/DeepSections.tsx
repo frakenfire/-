@@ -298,6 +298,98 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           ))}
         </ul>
         <p className="mflow__foot">{read.basis}</p>
+      </div>
+
+      {/* 명식을 그대로 펼친다. 근거를 안 보여주면 '아무 말이나 하는 앱' 이 된다. */}
+      <div className="sec-card">
+        <p className="cat4__head">내 명식 여덟 글자</p>
+        <ul className="chart8">
+          {read.chart.pillars.map((c) => (
+            <li key={c.k} className={`chart8__col${c.me ? ' chart8__col--me' : ''}`}>
+              <span className="chart8__k">{c.k}</span>
+              <span className="chart8__stem">{c.stem}</span>
+              <span className="chart8__branch">{c.branch}</span>
+              <span className="chart8__god">{c.god}</span>
+              <span className="chart8__step">{c.step}</span>
+            </li>
+          ))}
+        </ul>
+        <ul className="read6 read6--tight">
+          <li className="read6__row">
+            <span className="read6__k">나를 뜻하는 글자</span>
+            <Sentences className="read6__v" text={read.chart.dayMaster} />
+          </li>
+          <li className="read6__row">
+            <span className="read6__k">힘의 균형</span>
+            <Sentences className="read6__v" text={read.chart.strength} />
+          </li>
+          <li className="read6__row">
+            <span className="read6__k">태어난 달</span>
+            <Sentences className="read6__v" text={read.chart.season} />
+          </li>
+          <li className="read6__row">
+            <span className="read6__k">채워주는 기운</span>
+            <Sentences className="read6__v" text={read.chart.useful} />
+          </li>
+        </ul>
+
+        <p className="cat4__head cat4__head--sub">다섯 기운의 비중</p>
+        <ul className="elbar">
+          {read.chart.elements.map((e) => (
+            <li key={e.el} className={`elbar__row${e.mine ? ' elbar__row--me' : ''}`}>
+              <span className="elbar__k">{e.el}</span>
+              <span className="elbar__bar"><i style={{ width: `${Math.min(100, e.pct * 2)}%` }} /></span>
+              <span className="elbar__v num">{e.pct}%</span>
+            </li>
+          ))}
+        </ul>
+        <p className="mflow__foot">별표가 붙은 줄이 나를 뜻하는 기운이에요. 지지는 속에 든 글자까지 풀어서 셌어요.</p>
+
+        {read.chart.sinsal.length > 0 ? (
+          <>
+            <p className="cat4__head cat4__head--sub">타고난 별</p>
+            <ul className="read6 read6--tight">
+              {read.chart.sinsal.map((x) => (
+                <li key={x.k} className="read6__row">
+                  <span className="read6__k">
+                    {x.k}
+                    <i className="read6__at">{x.at}</i>
+                  </span>
+                  <Sentences className="read6__v" text={x.v} />
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
+        <Sentences className="mflow__foot" text={read.chart.gongmang} />
+
+        <p className="cat4__head cat4__head--sub">이 주제에서 본 자리</p>
+        <Sentences className="qa qa--sub" text={read.chart.focus} />
+      </div>
+
+      {/* 오늘 글자와 내 글자가 만나는 자리. 매일 바뀌므로 다시 볼 이유가 된다. */}
+      <div className="sec-card">
+        <p className="cat4__head">오늘 글자와 내 글자</p>
+        <p className="meet__pillar">
+          오늘은 <b>{read.todayMeet.pillar}</b>날이에요
+        </p>
+        <Sentences className="qa qa--sub" text={read.chart.today} />
+        <ul className="read6 read6--tight">
+          <li className="read6__row">
+            <span className="read6__k">오늘 내 단계</span>
+            <Sentences className="read6__v" text={`${read.todayMeet.step}. ${read.todayMeet.stepLine}`} />
+          </li>
+          {read.todayMeet.rows.map((r, i) => (
+            <li key={`${r.k}${r.rel}${i}`} className="read6__row">
+              <span className="read6__k">
+                {r.k}
+                <i className="read6__at">{r.rel}</i>
+              </span>
+              <Sentences className="read6__v" text={r.v} />
+            </li>
+          ))}
+        </ul>
+        {read.todayMeet.quiet ? <Sentences className="qa qa--sub" text={read.todayMeet.quiet} /> : null}
         <Sentences className="mflow__foot" text={read.refresh} />
       </div>
       </Fold>

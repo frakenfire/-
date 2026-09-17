@@ -18,6 +18,13 @@ test('다른 조사도 같은 규칙을 쓴다', () => {
   assert.equal(withJosa('연애', '을를'), '연애를');
 });
 
+test('과와 는 받침 있는 쪽이 과다', () => {
+  assert.equal(withJosa('오', '과와'), '오와');
+  assert.equal(withJosa('미', '과와'), '미와');
+  assert.equal(withJosa('술', '과와'), '술과');
+  assert.equal(withJosa('달', '과와'), '달과');
+});
+
 test('한글이 아니면 받침 없음으로 본다', () => {
   assert.equal(withJosa('AI', '은는'), 'AI는');
 });

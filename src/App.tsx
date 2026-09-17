@@ -7,7 +7,7 @@ import { pickNotesFor } from './lib/pickNotes.ts';
 import { generateFortune } from './lib/generateFortune.ts';
 import { luckPercentile } from './lib/luck.ts';
 import { showRewardAd, isRewarded, isUnsupportedFreePass } from './lib/ads.ts';
-import { buildShareText, shareBriefing, shareForUnlock, copyText, shareMessage } from './lib/share.ts';
+import { shareBriefing, shareForUnlock, copyText, shareMessage } from './lib/share.ts';
 import { ConcernScreen } from './screens/ConcernScreen.tsx';
 import { ConcernAskScreen } from './screens/ConcernAskScreen.tsx';
 import { computeTiming } from './lib/timing.ts';
@@ -364,26 +364,6 @@ export default function App() {
   // 오늘 받은 편지 다시 읽기 (스냅샷 그대로 복원)
 
 
-  function briefingOf(r: NonNullable<typeof result>) {
-    const brag = luckPercentile(r.luck.total);
-    return {
-      title: r.title,
-      score: r.luck.total,
-      headline: r.dayPlan.headline,
-      doItem: r.dayPlan.steps[0].text,
-      dontItem: r.dayPlan.holdOff,
-      brag: brag.isBrag ? `상위 ${brag.pct}%` : undefined,
-      pinpoint: r.pinpoint,
-    };
-  }
-
-  // 복사하기 — 카톡 붙여넣기용. 공유창과 같은 문구.
-  async function handleCopyResult() {
-    if (!result) return;
-    const ok = await copyText(buildShareText(briefingOf(result)));
-    flash(ok ? '복사했어요. 카톡에 붙여넣으면 돼요' : '앗, 복사를 못 했어요');
-  }
-
   async function handleShare() {
     if (!result) return;
     const brag = luckPercentile(result.luck.total);
@@ -623,7 +603,6 @@ export default function App() {
           note={note}
           busy={busy}
           onShare={handleShare}
-          onCopy={handleCopyResult}
           spin={spin}
           userName={birth?.name ?? null}
           deep={concernKey && deep ? { concernKey, read: deep.read, timing: deep.timing } : null}
