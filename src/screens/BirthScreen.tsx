@@ -8,6 +8,8 @@ import type { StoredBirth } from '../lib/storage.ts';
 type Props = {
   initial: StoredBirth | null;
   onSave: (b: StoredBirth) => void;
+  /** 이미 넣어둔 정보를 지운다. 안 주면 지우기 줄이 안 보인다 */
+  onClear?: () => void;
   onBack: () => void;
   /** 뽑기 흐름 중이면 건너뛰기를 제공하고 단계 표시를 붙인다 */
   inFlow?: boolean;
@@ -36,7 +38,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 //  - 기기 로케일을 따라가 한국 사용자에게 '03/15/1994' 로 보인다.
 //  - 피커에서 고른 값이 앱으로 안 넘어와, 화면엔 값이 있는데 버튼만 죽었다.
 // 그래서 굴려서 고르는 피커를 직접 쓴다. 굴려도 되고 눌러도 된다.
-export function BirthScreen({ initial, onSave, onBack, inFlow = false, ctaLabel, onSkip }: Props) {
+export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, ctaLabel, onSkip }: Props) {
   const init = initial ? parseBirth(initial.date, initial.time) : null;
 
   const [year, setYear] = useState(init?.year ?? 1995);
@@ -47,6 +49,7 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, ctaLabel,
   const [minute, setMinute] = useState(init?.minute ?? 0);
   const [name, setName] = useState(initial?.name ?? '');
   const [gender, setGender] = useState<'male' | 'female' | null>(initial?.gender ?? null);
+  const [confirmClear, setConfirmClear] = useState(false);
 
   // 월이 바뀌면 일수가 줄 수 있다 (1/31 → 2월). 없는 날짜가 남지 않게 잘라준다.
   const maxDay = daysIn(year, month);
@@ -199,6 +202,28 @@ export function BirthScreen({ initial, onSave, onBack, inFlow = false, ctaLabel,
       ) : null}
 
       {notice ? <p className="birth-warn">{notice}</p> : null}
+
+      {/* 지울 길은 넣는 자리에 둔다. 결과 화면에 두면 '또 볼 게 있나' 가 된다.
+          지우는 건 되돌릴 수 없으니 한 번 더 묻는다. */}
+      {initial && onClear ? (
+        confirmClear ? (
+          <div className="clear-ask">
+            <p className="clear-ask__q">이름, 생년월일, 성별을 전부 지울까요?</p>
+            <div className="clear-ask__btns">
+              <button type="button" className="btn btn--ghost" onClick={() => setConfirmClear(false)}>
+                아니요
+              </button>
+              <button type="button" className="btn btn--danger" onClick={onClear}>
+                네, 지울게요
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button type="button" className="data-link" onClick={() => setConfirmClear(true)}>
+            넣어둔 정보 지우기
+          </button>
+        )
+      ) : null}
     </AppLayout>
   );
 }

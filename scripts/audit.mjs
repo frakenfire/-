@@ -108,11 +108,18 @@ async function setZodiac(page, label = '개띠') {
 
 // 궁합과 이번 달은 홈이 아니라 결과 화면 아래에 있다. 결과까지 간 다음 누른다.
 async function goCompat(page) {
-  // 생년월일을 넣으면 궁합의 '나' 가 이미 정해져 고르기 화면이 안 열린다.
-  // 궁합 자체를 보는 점검이므로 아무것도 넣지 않은 사람으로 간다.
-  await drawTo(page, { zodiac: null, noBirth: true });
-  await page.getByText('오늘 우리 궁합', { exact: false }).first().click();
-  await wait(page, 700);
+  // 궁합은 결과 화면에서 뺐다. 따로 메뉴로 나갈 자리라 해시 딥링크가 유일한 입구다.
+  await page.goto(`${URL_BASE}#/compat`, { waitUntil: 'networkidle' });
+  await wait(page, 1000);
+}
+
+// 상세는 접혀 있다. 안을 보는 점검 전에 다 펴놓는다.
+async function openFolds(page) {
+  for (const b of await page.locator('.fold__head').all()) {
+    await b.click();
+    await wait(page, 150);
+  }
+  await wait(page, 400);
 }
 
 async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topic = null, noBirth = false } = {}) {
@@ -286,7 +293,7 @@ async function run(browser) {
     const TARGETS = [
       ['시작하기', '오늘 쪽지 열어보기', '언제 태어났어요'],
     ];
-    // 궁합과 이번 달은 홈에서 뺐다. 결과 화면 아래 '더 보기' 에만 있다.
+    // 궁합과 이번 달은 홈에서도 결과에서도 뺐다. 궁합은 따로 메뉴로 나갈 자리다.
 
     for (const [name, needle, expect] of TARGETS) {
       const page = await newPage(browser);
@@ -395,47 +402,7 @@ async function run(browser) {
 
       await page.getByRole('button', { name: '다음' }).first().click();
       await wait(page, 900);
-      // 저장됐으면 홈의 '내 사주' 행으로 사주 화면에 들어간다
-      await drawTo(page, { zodiac: null });
-      await page.locator('.saju-entry--done').first().click();
-      await wait(page, 1200);
-
-      const saju = await bodyText(page);
-      check(saju.includes('내 사주 글자'), '[사주] 카드 화면 진입');
-      check(saju.length > 500, '[사주] 빈 화면 아님', `글자 ${saju.length}자`);
-
-      // 네 기둥이 모두 서 있고, 일주가 '나'로 표시돼야 한다
-      const pcols = await page.locator('.pcol').count();
-      check(pcols === 4, '[사주] 네 기둥 모두 표시', `${pcols}칸`);
-      check((await page.locator('.pcol--me').count()) === 1, '[사주] 일주가 나로 강조됨');
-      const emptyPcol = await page.locator('.pcol').evaluateAll((els) =>
-        els.filter((el) => !(el.querySelector('.pcol__stem')?.textContent || '').trim()).length);
-      check(emptyPcol === 0, '[사주] 빈 기둥 없음', `${emptyPcol}칸 비어있음`);
-
-      // 오행 다섯 줄이 모두 있고 합이 100% 근처여야 한다
-      const bars = await page.locator('.elbal-row').count();
-      check(bars === 5, '[사주] 오행 다섯 줄 표시', `${bars}줄`);
-      const sum = await page.locator('.elbal-row__v').evaluateAll((els) =>
-        els.reduce((a, el) => a + parseInt(el.textContent, 10), 0));
-      check(Math.abs(sum - 100) <= 2, '[사주] 오행 합이 100%', `${sum}%`);
-
-      // 적용된 보정이 근거로 보여야 한다 (왜 이 값인지 확인 가능해야 신뢰가 생긴다)
-      check((await page.locator('.pillars-corr li').count()) >= 1, '[사주] 적용된 보정 근거 노출');
-      check(/힘이 많은 편|힘을 받아 쓰는 편/.test(saju), '[사주] 강약 판정 노출');
-      check(/나에게 좋은 기운/.test(saju), '[사주] 용신 안내 노출');
-
-      await diagnose(page, '사주');
-
-      // 공유 · 수정 버튼이 실제로 동작해야 한다
-      await page.getByText('내 사주 자랑하기', { exact: false }).first().click();
-      await wait(page, 1200);
-      check(/공유|복사/.test(await bodyText(page)), '[사주] 내 일간 자랑하기 동작');
-
-      await page.getByText('수정', { exact: true }).first().click();
-      await wait(page, 800);
-      check((await bodyText(page)).includes('언제 태어났어요'), '[사주] 수정 버튼 → 입력 화면');
-      // 수정 화면엔 기존 값이 채워져 있어야 한다 (처음부터 다시 입력시키면 안 된다)
-      check((await bodyText(page)).includes('2024년 2월 4일'), '[사주] 수정 시 기존 값 유지');
+      // 명식 표(네 기둥·오행·강약)는 리포트 안으로 들어갈 자리다. 별도 화면은 없앴다.
 
       // 새로고침해도 사주가 남고, 홈은 쪽지 뽑기만 남아 있어야 한다
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
@@ -477,11 +444,8 @@ async function run(browser) {
       await drawTo(page, { zodiac: null });
       check((await page.locator('.week-card').count()) === 1,
         '[사주] 띠가 채워져 주간 캘린더도 열림');
-      check((await page.locator('.saju-entry--done').count()) === 1,
-        '[사주] 결과에 내 사주 행이 붙음');
-      await page.locator('.saju-entry--done').first().click();
-      await wait(page, 1000);
-      check((await bodyText(page)).includes('내 사주 글자'), '[사주] 결과의 사주 행 → 사주 화면');
+      check((await page.locator('.data-link').count()) === 0,
+        '[사주] 결과에 또 볼 것을 권하는 행이 없음');
 
       // 사주를 넣은 사람의 '오늘 결과'가 실제로 개인 기준으로 바뀌는가.
       // 여기가 안 바뀌면 사주 화면만 따로 놀고, 매일 보는 결과는 여전히 띠 12분의 1이다.
@@ -506,24 +470,21 @@ async function run(browser) {
 
       const res = await bodyText(page);
       check(/(오늘|일과 이직|돈|연애|사람 관계|몸과 컨디션|마음) 점수\s*\d+\s*점/.test(res), '[사주결과] 결과 도달');
-      check(/언제가 좋을까요/.test(res), '[사주결과] 고민 답이 결과 안에 들어감');
+      check(/지금 어떻게 하면 될까요/.test(res), '[사주결과] 고민 답이 결과 안에 들어감');
       await diagnose(page, '사주결과');
 
-      // 개인정보를 받았으면 지우는 길이 앱 안에 있어야 한다 (설정 깊숙이 숨기지 않는다)
-      await drawTo(page, { zodiac: null });
-      await page.locator('.saju-entry--done').first().click();
-      await wait(page, 900);
-      check((await bodyText(page)).includes('서버로 보내지 않고'),
-        '[사주] 저장 범위를 결과 화면에서도 고지');
-      await page.getByText('내 정보 전체 삭제', { exact: false }).first().click();
+      // 개인정보를 받았으면 지우는 길이 앱 안에 있어야 한다. 넣는 자리에 둔다.
+      await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+      await wait(page, 500);
+      await page.locator('.today-hook__cta').first().click();
+      await wait(page, 800);
+      check((await page.locator('.data-link').count()) === 1, '[사주] 생년월일 화면에 지우기 한 줄');
+      await page.locator('.data-link').first().click();
       await wait(page, 400);
       check((await bodyText(page)).includes('전부 지울까요'), '[사주] 삭제는 두 단계 확인');
       await page.getByText('네, 지울게요', { exact: false }).first().click();
       await wait(page, 900);
-      check((await page.locator('.saju-entry--done').count()) === 0,
-        '[사주] 삭제 후 사주 행이 사라짐');
-      check(/열어보기/.test(await bodyText(page)),
-        '[사주] 삭제 후 홈으로 되돌아감');
+      check(/열어보기/.test(await bodyText(page)), '[사주] 삭제 후 홈으로 되돌아감');
       const gone = await page.evaluate(() => window.localStorage.getItem('tomorrowNoteBirth'));
       check(gone === null, '[사주] 삭제 후 저장소에 생년월일이 남지 않음', String(gone));
     } catch (e) {
@@ -570,8 +531,30 @@ async function run(browser) {
 
     check((await page.locator('.lucky4__tile').count()) === 6, '[결과] 오늘의 행운 여섯 칸');
     check((await page.locator('.cat4__row').count()) === 4, '[결과] 네 가지 운 점수');
-    check((await page.locator('.share-row__btn').count()) === 2, '[결과] 공유·복사 두 버튼');
-    await page.getByText('복사하기', { exact: false }).first().click();
+    // 같은 일을 하는 버튼을 셋 세워두면 뭘 눌러야 하는지가 먼저 고민이 된다.
+    // 아래 바의 '친구한테 보내기' 하나와 본문의 복사 하나로 줄였다.
+    check((await page.locator('.share-row__btn').count()) === 0, '[결과] 같은 공유 버튼이 겹치지 않음');
+    // 맨 위 쪽지 카드만 캡처해 보내도 뜻이 통해야 한다 - 결론과 지금 할 일까지 들어간다
+    const heroText = (await page.locator('.score-hero').first().innerText()).replace(/\s+/g, ' ');
+    check(/점수/.test(heroText) && /점/.test(heroText), '[쪽지카드] 주제와 점수');
+    check(/내가 뽑은 쪽지/.test(heroText), '[쪽지카드] 뽑은 쪽지 키워드');
+    check((await page.locator('.drawn__verdict').count()) === 1, '[쪽지카드] 한 문장 결론');
+    check((await page.locator('.drawn__now').count()) === 1, '[쪽지카드] 지금 할 일 한 줄');
+    // 같은 결론을 아래에서 또 카드로 세우지 않는다
+    check((await page.locator('.deep-hero').count()) === 0, '[쪽지카드] 결론 카드가 두 번 안 나옴');
+    // 결정 카드가 접히는 상세보다 먼저 온다 — 위쪽만 읽어도 뭘 할지 알 수 있어야 한다
+    const order = await page.evaluate(() => {
+      const d = document.querySelector('.sec-card--decide');
+      const fold = document.querySelector('.fold');
+      if (!d || !fold) return null;
+      return d.getBoundingClientRect().top < fold.getBoundingClientRect().top;
+    });
+    check(order === true, '[결정] 접히는 상세보다 먼저 나옴');
+    // 접힌 채로도 안에 뭐가 있는지는 말해줘야 '사라졌나' 가 안 생긴다
+    const hints = await page.locator('.fold__hint').allInnerTexts();
+    check(hints.length === 3 && hints.every((h) => h.trim().length > 6),
+      '[결정] 접힌 덩이마다 안내 한 줄', hints.join(' / '));
+    await page.getByText('쪽지 문구 복사하기', { exact: false }).first().click();
     await wait(page, 600);
     check(/복사/.test(await bodyText(page)), '[결과] 복사하기 동작');
     await page.context().close();
@@ -598,17 +581,22 @@ async function run(browser) {
     await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click();
     await wait(page, 600);
     await page.locator('button.note').first().dispatchEvent('click');
-    await page.waitForSelector('.deep-hero', { timeout: 25000 });
+    // 결론 카드는 맨 위 쪽지 카드로 합쳤다. 상세가 붙었는지는 결정 카드로 본다.
+    await page.waitForSelector('.sec-card--decide', { timeout: 25000 });
     await wait(page, 600);
+    // 상세는 접혀 있다. 접힌 채로도 무엇이 들었는지 보여야 하고, 펴면 다 있어야 한다.
+    check((await page.locator('.fold').count()) === 3, '[상담] 상세가 세 덩이로 접혀 있음');
+    check((await page.locator('.when4__row').count()) === 0, '[상담] 접힌 채로는 안 그린다');
+    await openFolds(page);
     const dt = await bodyText(page);
     check(/언제가 좋을까요/.test(dt), '[상담] 시기 구역 노출');
     check((await page.locator('.when4__row').count()) === 4, '[상담] 시기 네 줄');
     check((await page.locator('.mflow__col').count()) === 12, '[상담] 열두 달 막대');
-    check((await page.locator('.todo3__row').count()) === 3, '[상담] 할 일 세 가지');
+    check((await page.locator('.decide__list--do .decide__row').count()) === 3, '[상담] 지금 할 것 세 가지');
     check(/\d+세부터 \d+세까지|첫 대운이/.test(dt), '[상담] 십 년 대운 노출');
     check(/년 \d+월/.test(dt), '[상담] 답이 달로 나옴');
     await diagnose(page, '상담');
-    await page.getByText('복사하기', { exact: true }).first().click();
+    await page.getByText('쪽지 문구 복사하기', { exact: true }).first().click();
     await wait(page, 600);
     check(/복사/.test(await bodyText(page)), '[상담] 복사하기 동작');
     await page.context().close();
@@ -743,15 +731,18 @@ async function run(browser) {
     await page.context().close();
   }
 
-  // 12. 전체 삭제 → 초기 상태. 지우는 길은 내 사주 화면 하나뿐이다.
+  // 12. 전체 삭제 → 초기 상태. 지우는 길은 생년월일 화면 하나뿐이다.
   {
     const page = await newPage(browser);
     await drawTo(page);
-    check((await page.locator('.saju-entry--done').count()) === 1, '[삭제] 결과에 내 사주 행');
-    await page.locator('.saju-entry--done').first().click();
-    await wait(page, 900);
-    await page.getByText('내 정보 전체 삭제', { exact: false }).first().click();
-    await wait(page, 600);
+    // 지우는 길은 정보를 넣는 화면에 있다. 결과에서 홈을 거쳐 들어간다.
+    await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+    await wait(page, 500);
+    await page.getByText('오늘 쪽지 열어보기').first().click();
+    await wait(page, 800);
+    check((await page.locator('.data-link').count()) === 1, '[삭제] 생년월일 화면에 지우기 한 줄');
+    await page.locator('.data-link').first().click();
+    await wait(page, 500);
     check((await bodyText(page)).includes('전부 지울까요'), '[삭제] 두 단계 확인 UI');
     await page.getByText('네, 지울게요', { exact: false }).first().click();
     await wait(page, 1500);

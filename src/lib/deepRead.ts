@@ -8,6 +8,7 @@ import { NATAL_SHAPE, SHAPE_LABELS, type ShapeRow } from '../data/natalShape.ts'
 import { CONCERN_DAY } from '../data/concernDay.ts';
 import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
 import { DECADE_AREAS, GOD_KEYWORD, type DecadeAreas } from '../data/decadeAreas.ts';
+import { DECISION, STANCE_WORD, WHEN_ACT, type Stance } from '../data/decision.ts';
 import { GOD_GROUP_OF } from './tenGods.ts';
 import type { FourPillars } from './fourPillars.ts';
 
@@ -26,13 +27,15 @@ export type DeepRead = {
   shape: ShapeRow & { head: string; rows: { k: string; v: string }[] };
   /** 오늘 하루의 행동. 고른 주제에 일진을 대어 뽑는다 */
   today: { doIt: string; avoid: string; hold: string | null };
+  /** 결정 카드 — 지금 어느 상태이고, 뭘 하고 뭘 하지 말 것인가 */
+  decision: { stance: Stance; stanceWord: string; verdict: string; dos: string[]; donts: string[] };
   /** 왜 지금 이 고민이 커졌는지 — 십 년, 올해, 이번 달을 겹쳐 본다 */
   now: { head: string; situation: string; rows: { k: string; label: string; v: string }[] };
   headline: string;
   sub: string;
   situationLine: string;
   /** 시기 표 */
-  when: { k: string; v: string; band?: string }[];
+  when: { k: string; v: string; band?: string; act?: string }[];
   /** 왜 그렇게 봤는지 */
   why: { k: string; v: string }[];
   actions: string[];
@@ -233,6 +236,23 @@ export function buildDeepRead(
 
   const shapeRow = NATAL_SHAPE[concernKey][GOD_GROUP_OF[score.natalTopGod]];
   const lab = SHAPE_LABELS[concernKey];
+  // 지금 어느 상태인가. 이번 달 판정과 가장 좋은 달까지의 거리로 정한다.
+  // verdict 와 같은 재료를 쓰되 네 갈래로 나눠야 '실행' 과 '유지' 가 안 섞인다.
+  let stance: Stance;
+  if (timing.thisMonth.band === 'good' && score.total >= 74) stance = 'run';
+  else if (timing.thisMonth.band === 'hard') stance = 'hold';
+  else if (timing.bestMonth.band === 'good' && away > 0 && away <= 3) stance = 'prep';
+  else stance = 'keep';
+
+  const cell = DECISION[concernKey][stance];
+  const decision = {
+    stance,
+    stanceWord: STANCE_WORD[stance],
+    verdict: cell.verdict,
+    dos: [...cell.dos],
+    donts: [...cell.donts],
+  };
+
   // 오늘 칸이 버거울 때만 '미뤄도 돼요' 를 낸다. 늘 띄우면 접어두라는 말만 쌓인다.
   const dayAct = CONCERN_DAY[concernKey][score.dayGod];
   const today = {
@@ -281,7 +301,8 @@ export function buildDeepRead(
     ],
   };
 
-  const when: { k: string; v: string; band?: string }[] = [
+  const act = WHEN_ACT[concernKey];
+  const when: { k: string; v: string; band?: string; act?: string }[] = [
     {
       k: '이번 달',
       v: timing.thisMonth.label,
@@ -291,16 +312,19 @@ export function buildDeepRead(
       k: '가장 좋은 때',
       v: away === 0 ? `${timing.bestMonth.label}, 바로 이번 달이에요` : `${timing.bestMonth.label}, ${away}달 뒤`,
       band: BAND_WORD[timing.bestMonth.band],
+      act: act.best,
     },
     {
       k: '피할 때',
       v: `${timing.hardMonth.label}`,
       band: BAND_WORD[timing.hardMonth.band],
+      act: act.hard,
     },
     {
       k: '좋은 해',
       v: `${timing.bestYear.label}`,
       band: BAND_WORD[timing.bestYear.band],
+      act: act.year,
     },
   ];
 
@@ -426,6 +450,7 @@ export function buildDeepRead(
     scoreLine: scoreVerdictLine(score, concernKey),
     shape,
     today,
+    decision,
     now,
     headline: HEADLINE[concernKey][verdict],
     sub: `${CONCERN_GOD[concernKey][timing.thisMonth.tenGod].line} ${VERDICT_SUB[verdict]}`,

@@ -9,13 +9,10 @@ import { Sentences } from '../components/Sentences.tsx';
 import { luckyWhen } from '../lib/luckyWhen.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
 import { LUCKY_HEADS } from '../data/copy.ts';
-import { DAY_ANSWERS } from '../data/sajuAnswers.ts';
 import { CATEGORY_INTERP, band } from '../data/detailContent.ts';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { DeepSections } from '../components/DeepSections.tsx';
 import { WeekCard } from '../components/WeekCard.tsx';
-import type { GodGroup } from '../lib/tenGods.ts';
-import type { IconName } from '../components/Icon.tsx';
 import type { Zodiac } from '../data/zodiac.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import type { Band } from '../lib/timing.ts';
@@ -35,22 +32,17 @@ type Props = {
   spin?: number;
   /** 고민을 고르고 들어왔으면 그 답을 결과 안에 같이 낸다 */
   deep?: { concernKey: ConcernKey; read: DeepRead; timing: TimingRead } | null;
-  /** 생년월일을 넣은 사람에게만 보이는 것들. 홈에 두면 '내 것' 이 아니다 */
-  sajuBadge: { icon: IconName; name: string; hue: string; group: GodGroup } | null;
-  onSaju: () => void;
   zodiac: Zodiac | null;
   onShareWeek: (text: string) => void;
   /** 결과를 본 다음에만 권하는 것들. 홈은 쪽지 뽑기 하나로 비워뒀다 */
   /** 명식에서 계산된 네 가지 운 점수. 생년월일이 없으면 null */
   chartScores?: Record<'love' | 'money' | 'work' | 'health', number> | null;
-  onCompat: () => void;
-  onMonth: () => void;
   onBack: () => void;
 };
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, onCopy, userName, spin = 0, deep = null, sajuBadge, onSaju, zodiac, chartScores = null, onShareWeek, onCompat, onMonth, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, onCopy, userName, spin = 0, deep = null, zodiac, chartScores = null, onShareWeek, onBack }: Props) {
   const { luck, dayPlan } = result;
   const isMonth = result.reading.scale === 'month';
   // 고민을 골라 들어왔으면 맨 위 점수는 그 고민의 점수다. 명식에서 계산된 값이라
@@ -116,10 +108,23 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
             <span className="score-hero__grade">{headGrade}</span>
           </div>
         </div>
+        {/* 캡처해서 친구에게 보내도 뜻이 통해야 하는 자리. 결론과 지금 할 일까지
+            여기서 끝낸다. 아래 상세를 안 읽어도 무엇을 할지는 알 수 있어야 한다. */}
         <div className="score-hero__note">
           <span className="drawn__k">내가 뽑은 쪽지 · <span className="drawn__kw">{note.keyword}</span></span>
           <strong className="drawn__name">{note.name}</strong>
-          <span className="drawn__lead">{result.summaryLines[0]}</span>
+          {deep ? (
+            <>
+              <strong className="drawn__verdict">{softBreak(deep.read.headline, 16)}</strong>
+              <Sentences className="drawn__lead" text={deep.read.sub} />
+              <span className="drawn__now">
+                <b>{deep.read.decision.stanceWord}</b>
+                {deep.read.decision.dos[0]}
+              </span>
+            </>
+          ) : (
+            <span className="drawn__lead">{result.summaryLines[0]}</span>
+          )}
         </div>
       </div>
 
@@ -228,37 +233,6 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
       {/* 6. 공유 */}
       {/* 내 사주 · 오늘 나에게 · 이번 주 — 전부 생년월일을 넣어야 의미가 있는 것들.
           그래서 홈이 아니라 결과를 받은 이 자리에 둔다. */}
-      {sajuBadge ? (
-        <>
-          <button
-            type="button"
-            className="saju-entry saju-entry--done"
-            style={{ ['--saju-hue' as string]: sajuBadge.hue }}
-            onClick={onSaju}
-          >
-            <span className="saju-entry__icon" aria-hidden>
-              <Mascot size={44} accent={sajuBadge.hue} bare />
-            </span>
-            <span className="saju-entry__text">
-              <span className="saju-entry__k">내 사주</span>
-              <strong className="saju-entry__v">{sajuBadge.name}</strong>
-            </span>
-            <span className="saju-entry__chev" aria-hidden>›</span>
-          </button>
-
-          <section className="sec sec--card">
-            <div className="sec__head">
-              <h2 className="sec__title">오늘 나에게</h2>
-            </div>
-            <ul className="mygod__qa mygod__qa--home">
-              <li><span className="mygod__qa-k">돈</span>{DAY_ANSWERS[sajuBadge.group].money}</li>
-              <li><span className="mygod__qa-k">사랑</span>{DAY_ANSWERS[sajuBadge.group].love}</li>
-              <li><span className="mygod__qa-k">일</span>{DAY_ANSWERS[sajuBadge.group].work}</li>
-            </ul>
-          </section>
-        </>
-      ) : null}
-
       {/* 재미로 하나 더 — 여기부터는 사주 계산이 아니다. 본 풀이 사이에 끼우면
           색깔과 음식이 분석 행세를 하게 되므로 아래로 내려 따로 묶는다. */}
       <p className="fun-head">재미로 하나 더</p>
@@ -344,41 +318,12 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
 
       <WeekCard zodiac={zodiac} onShare={onShareWeek} />
 
-      {/* 더 보기 — 결과를 본 사람에게만 권한다. 처음 온 사람에겐 고를 게 많으면 안 된다 */}
-      <section className="sec sec--card">
-        <div className="sec__head">
-          <h2 className="sec__title">더 보기</h2>
-        </div>
-        <div className="rowlist">
-          <button type="button" className="compat-banner" onClick={onMonth}>
-            <span className="compat-banner__icon compat-banner__icon--yellow" aria-hidden><Icon name="calendar" /></span>
-            <span className="compat-banner__body">
-              <span className="compat-banner__title">이번 달 내 운세는?</span>
-              <span className="compat-banner__desc">주차별 흐름이 나와요</span>
-            </span>
-            <span className="compat-banner__cta">보러가기 ›</span>
-          </button>
-          <button type="button" className="compat-banner" onClick={onCompat}>
-            <span className="compat-banner__icon compat-banner__icon--pink" aria-hidden><Icon name="heart" /></span>
-            <span className="compat-banner__body">
-              <span className="compat-banner__title">오늘 우리 궁합은?</span>
-              <span className="compat-banner__desc">띠만 고르면 바로 나와요</span>
-            </span>
-            <span className="compat-banner__cta">보러가기 ›</span>
-          </button>
-        </div>
-      </section>
-
-      <div className="share-row">
-        <button type="button" className="btn btn--primary share-row__btn" disabled={busy} onClick={onShare}>
-          카톡·메시지로 보내기
-        </button>
-        <button type="button" className="btn btn--secondary share-row__btn" disabled={busy} onClick={onCopy}>
-          복사하기
-        </button>
-      </div>
+      <button type="button" className="btn btn--ghost" disabled={busy} onClick={onCopy}>
+        쪽지 문구 복사하기
+      </button>
 
       <Disclaimer />
+
     </AppLayout>
   );
 }

@@ -39,7 +39,6 @@ import { DetailResultScreen } from './screens/DetailResultScreen.tsx';
 import { CompatScreen } from './screens/CompatScreen.tsx';
 import { BirthScreen } from './screens/BirthScreen.tsx';
 import { parseBirth } from './lib/birth.ts';
-import { MySajuScreen } from './screens/MySajuScreen.tsx';
 import { TopicScreen } from './screens/TopicScreen.tsx';
 import { computeFourPillars } from './lib/fourPillars.ts';
 import { tap } from './lib/haptic.ts';
@@ -242,6 +241,18 @@ export default function App() {
   }, [dateKey]);
 
   // 퍼널 계측 — 화면 진입 로깅 (토스 Analytics, 미지원 시 no-op)
+  // 궁합은 결과 화면에서 뺐다. 이제 이 해시가 유일한 입구라, 주소가 바뀌면
+  // 화면도 따라가야 한다. (예전엔 첫 렌더 때 한 번만 읽어서 딥링크가 안 먹었다)
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const onHash = () => {
+      if (window.location.hash === '#/compat') setScreen('compat');
+      else if (screenRef.current === 'compat') goBack();
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
+
   useEffect(() => {
     logEvent('screen_view', { screen });
     // 화면이 바뀌면 항상 맨 위에서 시작한다.
@@ -418,7 +429,7 @@ export default function App() {
   // 뽑기 흐름 중에 생년월일을 받았으면 흐름을 이어간다(주제 고르기로).
   // 홈에서 직접 들어왔으면 세운 사주를 보여준다.
   const [birthFromFlow, setBirthFromFlow] = useState(false);
-  const [skipBirth, setSkipBirth] = useState(() => loadSkipBirth());
+  const [, setSkipBirth] = useState(() => loadSkipBirth());
 
   // 고민 상담 — 주제를 고르고, 상황을 좁히고, 생년월일을 받은 뒤 시기를 답으로 준다.
   const [concernKey, setConcernKey] = useState<ConcernKey | null>(null);
@@ -471,7 +482,7 @@ export default function App() {
     saveBirth(b);
     logEvent('birth_saved', { hasTime: b.time !== null, viaFlow: birthFromFlow });
     if (birthNext === 'concern' || birthFromFlow) startDraw();
-    else setScreen('saju');
+    else startDraw();
     setBirthFromFlow(false);
     setBirthNext('saju');
   }
@@ -506,7 +517,8 @@ export default function App() {
     saveMyZodiac(derived);
   }, [birthInput, zodiac?.id]);
 
-  // 지우는 길은 하나면 된다. 개인적인 값이 다 모여 있는 내 사주 화면에 둔다.
+  // 지우는 길은 하나면 된다. 정보를 넣는 화면에 둔다 - 결과 화면에 두면
+  // '또 볼 게 있나' 로 읽히고, 이 앱의 결과 화면은 이미 그 사람의 사주다.
   function handleDeleteBirth() {
     const ok = clearAllData();
     clearBirth();
@@ -520,15 +532,6 @@ export default function App() {
     flash(ok ? '내 정보를 모두 지웠어요' : '앗, 데이터를 지우지 못했어요');
     setScreen('home');
   }
-
-  async function handleShareSaju(text: string) {
-    const r = await shareMessage(text);
-    logEvent('share_saju', { outcome: r });
-    if (r === 'shared') flash('내 일간을 공유했어요');
-    else if (r === 'copied') flash('공유 문구 복사 완료!');
-    else if (r === 'failed') flash('앗, 공유를 못 했어요');
-  }
-
 
   async function handleSave() {
     if (busy || !result || !note) return;
@@ -624,13 +627,9 @@ export default function App() {
           spin={spin}
           userName={birth?.name ?? null}
           deep={concernKey && deep ? { concernKey, read: deep.read, timing: deep.timing } : null}
-          sajuBadge={sajuBadge}
-          onSaju={() => setScreen(birth ? 'saju' : 'birth')}
           zodiac={zodiac}
           chartScores={chartScores}
           onShareWeek={handleShareWeek}
-          onCompat={() => setScreen('compat')}
-          onMonth={() => (birthInput || skipBirth ? handleType('month') : (setBirthNext('concern'), setScreen('birth')))}
           onBack={() => goBack()}
         />
       )}
@@ -642,25 +641,10 @@ export default function App() {
           inFlow={birthFromFlow || birthNext === 'concern'}
           ctaLabel={birthNext === 'concern' || birthFromFlow ? '다음' : undefined}
           onSave={handleSaveBirth}
+          onClear={birth ? handleDeleteBirth : undefined}
           onSkip={handleSkipBirth}
           onBack={() => goBack()}
         />
-      )}
-
-      {screen === 'saju' && birthInput && (
-        <MySajuScreen
-          birth={birthInput}
-          onBack={() => goBack()}
-          onEdit={() => setScreen('birth')}
-          onShare={handleShareSaju}
-          onDeleteBirth={handleDeleteBirth}
-          onDraw={() => startDraw()}
-        />
-      )}
-
-      {/* 안전망 — 저장된 생년월일이 깨졌으면 사주 화면 대신 입력으로 되돌린다 */}
-      {screen === 'saju' && !birthInput && (
-        <BirthScreen initial={null} onSave={handleSaveBirth} onBack={() => goBack()} />
       )}
 
       {screen === 'detail' && result && (

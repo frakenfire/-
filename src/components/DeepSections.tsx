@@ -3,6 +3,7 @@ import { Icon } from './Icon.tsx';
 import { Mascot } from '../components/Mascot.tsx';
 import { softBreak } from '../lib/softBreak.ts';
 import { Sentences } from './Sentences.tsx';
+import { Fold } from './Fold.tsx';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import type { DeepRead } from '../lib/deepRead.ts';
 import type { TimingRead } from '../lib/timing.ts';
@@ -43,19 +44,23 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
   return (
     <>
-      <div className={`deep-hero deep-hero--${read.verdict}${compact ? ' deep-hero--compact' : ''}`}>
-        <div className="deep-hero__main">
-          <span className="deep-hero__tag">
-            <Icon name={concern.icon} size={14} /> {userName ? `${userName}님의 ${concern.label}` : concern.label}
+      {/* 결과 화면 안에서는 맨 위 쪽지 카드가 이미 결론을 말했다. 같은 말을 두 번
+          하면 화면만 길어진다. 상담 단독 화면일 때만 결론 카드를 세운다. */}
+      {compact ? null : (
+        <div className={`deep-hero deep-hero--${read.verdict}`}>
+          <div className="deep-hero__main">
+            <span className="deep-hero__tag">
+              <Icon name={concern.icon} size={14} /> {userName ? `${userName}님의 ${concern.label}` : concern.label}
+            </span>
+            <strong className="deep-hero__head">{softBreak(read.headline, 14)}</strong>
+            <span className="deep-hero__sub"><Sentences text={read.sub} /></span>
+            <span className="deep-hero__badge">{VERDICT_WORD[read.verdict]}</span>
+          </div>
+          <span className="deep-hero__art" aria-hidden>
+            <Mascot size={72} mood={read.verdict === 'wait' ? 'calm' : 'grin'} bare />
           </span>
-          <strong className="deep-hero__head">{softBreak(read.headline, 14)}</strong>
-          <span className="deep-hero__sub"><Sentences text={read.sub} /></span>
-          <span className="deep-hero__badge">{VERDICT_WORD[read.verdict]}</span>
         </div>
-        <span className="deep-hero__art" aria-hidden>
-          <Mascot size={compact ? 56 : 72} mood={read.verdict === 'wait' ? 'calm' : 'grin'} bare />
-        </span>
-      </div>
+      )}
 
       {/* 점수가 어디서 나왔는지 — '87점입니다' 하고 끝내면 아무도 안 믿는다.
           바탕 30, 십 년 20, 올해 20, 이번 달 20, 오늘 10 을 그대로 펼쳐 보여준다. */}
@@ -82,6 +87,34 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </p>
       </div>
 
+      {/* 결정 카드 — 이 리포트가 실패하지 않으려면 여기서 끝이 나야 한다.
+          다 읽고 '그래서 뭘 하라는 거지' 가 남으면 진 것이다. */}
+      <div className="sec-card sec-card--decide">
+        <p className="cat4__head">지금 어떻게 하면 될까요</p>
+        <span className={`decide__stance decide__stance--${read.decision.stance}`}>{read.decision.stanceWord}</span>
+        <Sentences className="decide__verdict" text={read.decision.verdict} />
+        <p className="decide__sub">지금 할 것</p>
+        <ol className="decide__list decide__list--do">
+          {read.decision.dos.map((d, i) => (
+            <li key={d} className="decide__row">
+              <span className="decide__no num">{i + 1}</span>
+              <span className="decide__v">{d}</span>
+            </li>
+          ))}
+        </ol>
+        <p className="decide__sub">지금 하지 말 것</p>
+        <ul className="decide__list decide__list--dont">
+          {read.decision.donts.map((d) => (
+            <li key={d} className="decide__row">
+              <span className="decide__x" aria-hidden />
+              <span className="decide__v">{d}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="mflow__foot">맨 위 하나가 오늘 바로 할 수 있는 것이에요.</p>
+      </div>
+
+      <Fold title="내 사주는 이렇게 생겼어요" hint="타고난 구조와, 지금 이 고민이 커진 이유">
       {/* 평생 안 바뀌는 자리 — 오늘 어떠냐가 아니라 나는 원래 어떤 사람이냐 */}
       <div className="sec-card">
         <p className="cat4__head">{read.shape.head}</p>
@@ -115,6 +148,9 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         <p className="mflow__foot">십 년이 배경을 깔고, 올해가 방향을 정하고, 이번 달이 눈앞에 밀어놓은 거예요.</p>
       </div>
 
+      </Fold>
+
+      <Fold title="언제 움직일까요" hint="가장 좋은 때와 조심할 때, 앞으로 열두 달">
       <div className="sec-card">
         <p className="cat4__head">언제가 좋을까요</p>
         <ul className="when4">
@@ -123,13 +159,12 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
               <span className="when4__k">{w.k}</span>
               <span className="when4__v">{w.v}</span>
               {w.band ? <span className="when4__b">{w.band}</span> : null}
+              {w.act ? <span className="when4__act">{w.act}</span> : null}
             </li>
           ))}
         </ul>
-      </div>
 
-      <div className="sec-card">
-        <p className="cat4__head">앞으로 열두 달</p>
+        <p className="cat4__head cat4__head--sub">앞으로 열두 달</p>
         <ul
           className="mflow"
           ref={flowRef}
@@ -192,27 +227,6 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </div>
       </div>
 
-      {read.slots.map((sl) => (
-        <div key={sl.k} className="sec-card">
-          <p className="slot__head">
-            <span className="slot__k">{sl.k}</span>
-            <span className="slot__label">{sl.label}</span>
-            <span className="slot__band">{sl.band}</span>
-          </p>
-          <Sentences className="slot__outer" text={sl.outer} />
-          <ul className="slot__pts">
-            <li className="slot__pt slot__pt--good">
-              <span className="slot__pt-k">좋아요</span>
-              <Sentences className="slot__pt-v" text={sl.good} />
-            </li>
-            <li className="slot__pt slot__pt--care">
-              <span className="slot__pt-k">조심해요</span>
-              <Sentences className="slot__pt-v" text={sl.care} />
-            </li>
-          </ul>
-        </div>
-      ))}
-
       <div className="sec-card">
         <p className="cat4__head">올해와 내년, 무엇이 다른가요</p>
         <ul className="yline">
@@ -270,6 +284,9 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </div>
       )}
 
+      </Fold>
+
+      <Fold title="왜 이렇게 봤나요" hint="내 글자와 올해, 이번 달에서 본 것">
       <div className="sec-card">
         <p className="cat4__head">왜 이렇게 봤냐면요</p>
         <ul className="read6">
@@ -281,28 +298,9 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           ))}
         </ul>
         <p className="mflow__foot">{read.basis}</p>
+        <Sentences className="mflow__foot" text={read.refresh} />
       </div>
-
-      <div className="sec-card">
-        <p className="cat4__head">이 답은 언제 바뀌나요</p>
-        <Sentences className="qa qa--sub" text={read.refresh} />
-      </div>
-
-      <div className="sec-card">
-        <p className="cat4__head">이렇게 해보세요</p>
-        <ol className="todo3">
-          {read.actions.map((a, i) => (
-            <li key={a} className="todo3__row">
-              <span className="todo3__no num">{i + 1}</span>
-              <Sentences className="todo3__v" text={a} />
-            </li>
-          ))}
-        </ol>
-        <div className="plan__hold">
-          <span className="plan__hold-k">이건 조심해요</span>
-          <span className="plan__hold-v"><Sentences text={read.caution} /></span>
-        </div>
-      </div>
+      </Fold>
     </>
   );
 }

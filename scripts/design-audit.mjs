@@ -248,23 +248,16 @@ async function run() {
 
   await page.locator('button.note').first().dispatchEvent('click');
   await page.waitForSelector('.drawn', { timeout: 20000 }); await w(1500);
+  // 접힌 덩이도 규칙을 지켜야 한다. 다 펴놓고 잰다.
+  for (const b of await page.locator('.fold__head').all()) { await b.click(); await w(200); }
+  await w(600);
   await grab('결과');
-
-  // 내 사주 행은 결과 화면에 있다
-  await page.locator('.saju-entry--done').first().click(); await w(900);
-  await grab('내 사주');
 
   await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);
   await grab('홈(사주 후)');
 
-  // 궁합은 결과 화면 아래 '더 보기' 에서만 들어간다. 결과까지 다시 간다.
-  await page.locator('.today-hook__cta').first().click(); await w(700);
-  await page.getByRole('button', { name: '다음' }).first().click(); await w(800);
-  await page.getByText('일과 이직', { exact: true }).first().click(); await w(600);
-  await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click(); await w(800);
-  await page.locator('button.note').first().dispatchEvent('click');
-  await page.waitForSelector('.drawn', { timeout: 20000 }); await w(1400);
-  await page.getByText('오늘 우리 궁합', { exact: false }).first().click(); await w(700);
+  // 궁합은 결과 화면에서 뺐다. 따로 메뉴로 나갈 자리라 딥링크로 확인한다.
+  await page.goto(`${BASE}#/compat`, { waitUntil: 'networkidle' }); await w(1200);
   await grab('궁합(고르기 전)');
   // 사주가 있으면 '나'가 이미 정해져 피커가 안 열려 있다. 슬롯을 눌러 연다.
   const pickOne = async (label) => {
