@@ -1,9 +1,8 @@
-import type { FortuneResult, FortuneType } from '../types/fortune.ts';
+import type { FortuneType } from '../types/fortune.ts';
 
 // PRD §14 — 개인정보/자유입력 저장 금지. 선택형 값 + 생성된 결과 텍스트만 저장.
 
 const KEYS = {
-  todayReading: 'tomorrowNoteTodayReading',
   dailyDrawCount: 'tomorrowNoteDrawCount',
   dailyDrawDate: 'tomorrowNoteDrawDate', // 뽑기 카운트 전용 날짜(방문 기록과 분리)
   lastVisitDate: 'tomorrowNoteLastVisit',
@@ -13,15 +12,6 @@ export type StoredResult = {
   dateKey: string;
   fortuneType: FortuneType;
   noteId: string;
-};
-
-// 오늘의 편지 스냅샷 — 다시 들어와도 같은 편지를 그대로 읽을 수 있게.
-// (편지 조합은 직전 회피 로직 때문에 재생성 시 달라지므로 스냅샷으로 보존)
-export type TodayReading = {
-  dateKey: string;
-  fortuneType: FortuneType;
-  noteId: string;
-  result: FortuneResult;
 };
 
 import { parseBirth } from './birth.ts';
@@ -49,7 +39,7 @@ function safeSet(key: string, value: string): boolean {
 // 지난 기록·이번 달 등급 수집을 로컬스토리지에 쌓아왔는데, 저장이 오래 버티지 못한다.
 // 아이폰은 이레 동안 안 들어오면 웹 저장소를 통째로 지우고, 토스 SDK 가 올라가면
 // 서빙 주소가 바뀌어 예전 값에 닿지 못한다. 못 지킬 약속은 애초에 하지 않는 게 낫다.
-// 오늘 뽑은 한 장만 하루치 스냅샷으로 두고, 날이 바뀌면 그것도 버린다.
+// 오늘 뽑은 결과도 저장하지 않는다. 화면을 벗어나면 그걸로 끝이다.
 
 // 내 띠 (12개 중 선택 — 선택형 값)
 const ZODIAC_KEY = 'tomorrowNoteZodiac';
@@ -71,39 +61,6 @@ export function saveMyStarSign(id: string): boolean {
 
 export function loadMyStarSign(): string | null {
   return safeGet(STAR_KEY);
-}
-
-export function saveTodayReading(reading: TodayReading): void {
-  safeSet(KEYS.todayReading, JSON.stringify(reading));
-}
-
-export function loadTodayReading(dateKey: string): TodayReading | null {
-  const raw = safeGet(KEYS.todayReading);
-  if (!raw) return null;
-  try {
-    const r = JSON.parse(raw) as TodayReading;
-    if (r.dateKey !== dateKey) return null;
-    // 구버전 스냅샷(배열 편지·처방 없음)은 새 구조와 호환되지 않으므로 무시
-    if (!r.result?.letter || Array.isArray(r.result.letter) || !r.result.letter.sign) {
-      return null;
-    }
-    if (!Array.isArray(r.result.dos) || r.result.dos.length === 0) {
-      return null;
-    }
-    if (!r.result.reading?.overall) {
-      return null;
-    }
-    // 하루 설계(dayPlan)·심층 리포트(detail) 없는 구버전 스냅샷은 새 화면과 호환되지 않음
-    if (!r.result.dayPlan?.headline || !Array.isArray(r.result.dayPlan.steps)) {
-      return null;
-    }
-    if (!r.result.detail?.topPick || !Array.isArray(r.result.detail.ranked)) {
-      return null;
-    }
-    return r;
-  } catch {
-    return null;
-  }
 }
 
 // 뽑기 카운트는 방문 기록(markVisit)과 분리된 자체 날짜 키를 쓴다.

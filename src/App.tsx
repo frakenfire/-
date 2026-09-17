@@ -17,14 +17,11 @@ import { AppLayout } from './components/AppLayout.tsx';
 import { saveResultCard } from './lib/saveImage.ts';
 import {
   incrementDailyDrawCount,
-  loadTodayReading,
   markVisit,
-  saveTodayReading,
   updateStreak,
   peekStreak, loadSkipBirth, saveSkipBirth } from './lib/storage.ts';
 import { clearAllData } from './lib/storage.ts';
 import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError, askReview } from './lib/toss.ts';
-import { findNote } from './data/notes.ts';
 import { findZodiac } from './data/zodiac.ts';
 import type { Zodiac, ZodiacId } from './data/zodiac.ts';
 import { findStarSign } from './data/starSign.ts';
@@ -140,7 +137,6 @@ export default function App() {
   const [result, setResult] = useState<FortuneResult | null>(null);
 
   // 오늘 이미 받은 편지 (다시 읽기용 스냅샷)
-  const [todayReading, setTodayReading] = useState(() => loadTodayReading(todayKey()));
 
   // 내 띠 (띠별 한 줄용, 선택형 값)
   const [zodiac, setZodiac] = useState<Zodiac | null>(() => {
@@ -220,7 +216,6 @@ export default function App() {
   useEffect(() => {
     if (lastSyncedDate.current === dateKey) return;
     lastSyncedDate.current = dateKey;
-    setTodayReading(loadTodayReading(dateKey));
     setWeekUnlocked(isWeekUnlocked(dateKey));
     setStreak(peekStreak());
     // 어제 뽑은 결과 화면을 띄워둔 채 자정을 넘겼다면 홈으로 되돌린다.
@@ -315,10 +310,6 @@ export default function App() {
       }
       incrementDailyDrawCount(dateKey);
       setStreak(updateStreak(dateKey, yesterdayKey)); // 실제 뽑은 날에만 스트릭 갱신
-      // 오늘 뽑은 것만 하루치 스냅샷으로 둔다. 지난 기록은 남기지 않는다.
-      const snapshot = { dateKey, fortuneType, noteId: picked.id, result: generated };
-      saveTodayReading(snapshot);
-      setTodayReading(snapshot);
       logEvent('result_viewed', { fortuneType, engineVersion: generated.engineVersion });
       setScreen('result');
       setSpin((v) => v + 7);
@@ -367,15 +358,6 @@ export default function App() {
   }
 
   // 오늘 받은 편지 다시 읽기 (스냅샷 그대로 복원)
-  function handleReopen() {
-    if (!todayReading) return;
-    const n = findNote(todayReading.noteId);
-    if (!n) return;
-    setFortuneType(todayReading.fortuneType);
-    setNote(n);
-    setResult(todayReading.result);
-    setScreen('result');
-  }
 
 
   function briefingOf(r: NonNullable<typeof result>) {
@@ -550,7 +532,6 @@ export default function App() {
     setBirth(null);
     setZodiac(null);
     setStarSign(null);
-    setTodayReading(null);
     setResult(null);
     setStreak(0);
     setSkipBirth(false);
@@ -606,10 +587,8 @@ export default function App() {
       {screen === 'home' && (
         <HomeScreen
           streak={streak}
-          todayReading={todayReading}
           zodiac={zodiac}
           spin={spin}
-          onReopen={handleReopen}
           onStart={() => {
             setBirthNext('concern');
             setScreen('birth');

@@ -2,7 +2,6 @@ import { AppLayout } from '../components/AppLayout.tsx';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { Icon } from '../components/Icon.tsx';
 import { Mascot } from '../components/Mascot.tsx';
-import { findNote } from '../data/notes.ts';
 import { GREETINGS } from '../data/copy.ts';
 import { HOW_ROWS, HOW_HEAD, HOW_LEAD, HOW_FOOT } from '../data/howItWorks.ts';
 import { todayVibe } from '../lib/dayVibe.ts';
@@ -10,7 +9,6 @@ import { todayKey, hashSeed } from '../lib/dateSeed.ts';
 import { sajuToday, iljinOf, dailyZodiacRanking } from '../lib/saju.ts';
 import { softBreak } from '../lib/softBreak.ts';
 import { findZodiac, type Zodiac } from '../data/zodiac.ts';
-import type { TodayReading } from '../lib/storage.ts';
 
 function todayLabel(): string {
   const d = new Date();
@@ -29,9 +27,7 @@ function greeting(dateKey: string, spin: number): string {
 
 type Props = {
   streak: number;
-  todayReading: TodayReading | null;
   zodiac: Zodiac | null;
-  onReopen: () => void;
   /** 쪽지 뽑기 시작 — 주제 고르기(1단계)로 간다 */
   onStart: () => void;
   /** 회전 값 — 겉 문구가 열 때마다 돌아간다 */
@@ -41,18 +37,14 @@ type Props = {
 // 홈 — '클릭해서 시작'하는 호기심 히어로(물음표)를 중심으로 정리.
 export function HomeScreen({
   streak,
-  todayReading,
   zodiac,
-  onReopen,
   onStart,
   spin = 0,
 }: Props) {
   // 오늘 이미 뽑았으면 그 결과를 히어로 카드에도 반영한다(잠긴 ?  실제 값).
-  const drawn = todayReading?.result ?? null;
   // 주간 캘린더는 띠가 있어야 계산된다. 잠금 상태에서도 미리 계산해두면
   // 해금 순간 바로 그려져 '열었는데 빈 화면' 이 없다.
   const vibe = todayVibe(todayKey());
-  const drawnName = todayReading ? findNote(todayReading.noteId)?.name ?? null : null;
   const iljin = iljinOf(todayKey());
   const saju = zodiac ? sajuToday(todayKey(), zodiac.id) : null;
   const ranking = dailyZodiacRanking(todayKey());
@@ -73,9 +65,7 @@ export function HomeScreen({
             ? `${streak}일째!`
             : streak >= 2
               ? `${streak}일째 쪽지`
-              : todayReading
-                ? '1일째 쪽지'
-                : '오늘의 첫 쪽지'}
+              : '오늘의 첫 쪽지'}
         </p>
       </div>
 
@@ -104,18 +94,11 @@ export function HomeScreen({
             )}
           </div>
           <span className="today-hook__art" aria-hidden>
-            <Mascot size={96} score={drawn ? drawn.luck.total : streak >= 3 ? 90 : 80} bare />
+            <Mascot size={96} score={streak >= 3 ? 90 : 80} bare />
           </span>
         </div>
-        {drawn ? (
-          <div className="today-hook__score">
-            <span className="today-hook__score-k">오늘 점수</span>
-            <span className="today-hook__score-v"><b className="num">{drawn.luck.total}</b>점</span>
-            {drawnName ? <span className="today-hook__score-note">{drawnName}</span> : null}
-          </div>
-        ) : null}
         <button type="button" className="btn btn--primary today-hook__cta" onClick={onStart}>
-          {drawn ? '하나 더 열어보기' : '오늘 쪽지 열어보기'}
+          오늘 쪽지 열어보기
         </button>
       </div>
 
@@ -163,22 +146,6 @@ export function HomeScreen({
         </ol>
         <p className="how__foot">{HOW_FOOT}</p>
       </section>
-
-      {/* 오늘 받은 편지 다시 읽기 */}
-      {todayReading ? (
-        <button type="button" className="reopen-card" onClick={onReopen}>
-          <span className="reopen-card__icon" aria-hidden>
-            <Icon name="feather" size={22} />
-          </span>
-          <span className="reopen-card__body">
-            <span className="reopen-card__label">오늘 받은 편지</span>
-            <span className="reopen-card__text">
-              {todayReading.result.title} · 오늘 점수 {todayReading.result.luck.total}점
-            </span>
-          </span>
-          <span className="reopen-card__cta">다시 읽기 ›</span>
-        </button>
-      ) : null}
 
     </AppLayout>
   );

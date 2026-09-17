@@ -725,13 +725,16 @@ async function run(browser) {
     await page.context().close();
   }
 
-  // 11. 자정 넘김 — 어제 것이 오늘로 남지 않아야 한다
+  // 11. 홈은 뽑은 흔적을 남기지 않는다
   {
     const page = await newPage(browser);
     await drawTo(page);
     await page.goto(URL_BASE, { waitUntil: 'networkidle' });
     await wait(page, 700);
-    check((await bodyText(page)).includes('오늘 받은 편지'), '[자정] 뽑은 날 홈에 기록 표시');
+    const home = await bodyText(page);
+    check(!home.includes('오늘 받은 편지') && !/오늘 점수/.test(home),
+      '[홈] 뽑고 와도 점수나 기록이 안 남는다');
+    check(home.includes('오늘 쪽지 열어보기'), '[홈] CTA 문구가 그대로다');
     await page.evaluate(() => {
       const R = Date, OFF = 86400000;
       // eslint-disable-next-line no-global-assign
@@ -743,7 +746,7 @@ async function run(browser) {
     });
     await wait(page, 1500);
     const after = await bodyText(page);
-    check(!after.includes('오늘 받은 편지'), '[자정] 날짜가 바뀌면 어제 편지가 오늘로 남지 않음');
+    check(!after.includes('오늘 받은 편지'), '[자정] 날짜가 바뀌어도 남는 게 없다');
     await page.context().close();
   }
 
