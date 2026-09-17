@@ -276,7 +276,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
         </p>
         {confirmDelete ? (
           <div className="privacy-note__confirm">
-            <span>정말 지울까요? 사주는 다시 볼 수 없어요.</span>
+            <span>이름, 생년월일, 성별, 띠, 저장한 사람까지 전부 지울까요?</span>
             <div className="privacy-note__acts">
               <button type="button" className="privacy-note__btn" onClick={() => setConfirmDelete(false)}>
                 그대로 둘게요
@@ -292,7 +292,7 @@ export function MySajuScreen({ birth, onBack, onEdit, onShare, onDeleteBirth, on
           </div>
         ) : (
           <button type="button" className="privacy-note__del" onClick={() => setConfirmDelete(true)}>
-            생년월일 삭제
+            내 정보 전체 삭제
           </button>
         )}
       </div>

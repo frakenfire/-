@@ -255,20 +255,6 @@ export default function App() {
     }
   }, [screen]);
 
-  function handleReset() {
-    const ok = clearAllData();
-    if (ok) {
-      setZodiac(null);
-      setStarSign(null);
-      setTodayReading(null);
-      setResult(null);
-      setStreak(0);
-      flash('내 데이터를 모두 지웠어요');
-      setScreen('home');
-    } else {
-      flash('앗, 데이터를 지우지 못했어요');
-    }
-  }
 
   function flash(msg: string) {
     setToast(msg);
@@ -557,11 +543,19 @@ export default function App() {
     saveMyZodiac(derived);
   }, [birthInput, zodiac?.id]);
 
+  // 지우는 길은 하나면 된다. 개인적인 값이 다 모여 있는 내 사주 화면에 둔다.
   function handleDeleteBirth() {
+    const ok = clearAllData();
     clearBirth();
     setBirth(null);
+    setZodiac(null);
+    setStarSign(null);
+    setTodayReading(null);
+    setResult(null);
+    setStreak(0);
+    setSkipBirth(false);
     logEvent('birth_deleted', {});
-    flash('생년월일을 지웠어요');
+    flash(ok ? '내 정보를 모두 지웠어요' : '앗, 데이터를 지우지 못했어요');
     setScreen('home');
   }
 
@@ -620,7 +614,6 @@ export default function App() {
             setBirthNext('concern');
             setScreen('birth');
           }}
-          onReset={handleReset}
         />
       )}
 

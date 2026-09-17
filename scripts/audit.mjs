@@ -285,7 +285,6 @@ async function run(browser) {
   {
     const TARGETS = [
       ['시작하기', '오늘 쪽지 열어보기', '언제 태어났어요'],
-      ['데이터 삭제', '내 데이터 전체 삭제', '네, 전부 지울게요'],
     ];
     // 궁합과 이번 달은 홈에서 뺐다. 결과 화면 아래 '더 보기' 에만 있다.
 
@@ -523,9 +522,9 @@ async function run(browser) {
       await wait(page, 900);
       check((await bodyText(page)).includes('서버로 보내지 않고'),
         '[사주] 저장 범위를 결과 화면에서도 고지');
-      await page.getByText('생년월일 삭제', { exact: false }).first().click();
+      await page.getByText('내 정보 전체 삭제', { exact: false }).first().click();
       await wait(page, 400);
-      check((await bodyText(page)).includes('정말 지울까요'), '[사주] 삭제는 두 단계 확인');
+      check((await bodyText(page)).includes('전부 지울까요'), '[사주] 삭제는 두 단계 확인');
       await page.getByText('네, 지울게요', { exact: false }).first().click();
       await wait(page, 900);
       check((await page.locator('.saju-entry--done').count()) === 0,
@@ -748,19 +747,23 @@ async function run(browser) {
     await page.context().close();
   }
 
-  // 12. 데이터 전체 삭제 → 초기 상태
+  // 12. 전체 삭제 → 초기 상태. 지우는 길은 내 사주 화면 하나뿐이다.
   {
     const page = await newPage(browser);
     await drawTo(page);
-    await page.goto(URL_BASE, { waitUntil: 'networkidle' });
-    await wait(page, 700);
-    await page.getByText('내 데이터 전체 삭제', { exact: false }).first().click();
+    check((await page.locator('.saju-entry--done').count()) === 1, '[삭제] 결과에 내 사주 행');
+    await page.locator('.saju-entry--done').first().click();
+    await wait(page, 900);
+    await page.getByText('내 정보 전체 삭제', { exact: false }).first().click();
     await wait(page, 600);
-    check((await bodyText(page)).includes('네, 전부 지울게요'), '[삭제] 두 단계 확인 UI');
-    await page.getByText('네, 전부 지울게요', { exact: false }).first().click();
+    check((await bodyText(page)).includes('전부 지울까요'), '[삭제] 두 단계 확인 UI');
+    await page.getByText('네, 지울게요', { exact: false }).first().click();
     await wait(page, 1500);
     const t = await bodyText(page);
     check(!t.includes('오늘 받은 편지') && t.includes('오늘 쪽지 열어보기'), '[삭제] 초기 상태로 복귀');
+    const left = await page.evaluate(() =>
+      Object.keys(window.localStorage).filter((k) => k.startsWith('tomorrowNote')));
+    check(left.length === 0, '[삭제] 저장소에 남는 값 없음', left.join(' '));
     await page.context().close();
   }
 
