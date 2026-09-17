@@ -2,7 +2,6 @@ import { AppLayout } from '../components/AppLayout.tsx';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { Icon } from '../components/Icon.tsx';
 import { Mascot } from '../components/Mascot.tsx';
-import { FORTUNE_LABEL } from '../data/fortuneTypes.ts';
 import { findNote } from '../data/notes.ts';
 import { GREETINGS } from '../data/copy.ts';
 import { HOW_ROWS, HOW_HEAD, HOW_LEAD, HOW_FOOT } from '../data/howItWorks.ts';
@@ -12,7 +11,7 @@ import { todayKey, hashSeed } from '../lib/dateSeed.ts';
 import { sajuToday, iljinOf, dailyZodiacRanking } from '../lib/saju.ts';
 import { softBreak } from '../lib/softBreak.ts';
 import { findZodiac, type Zodiac } from '../data/zodiac.ts';
-import type { StoredResult, TodayReading, RarityCounts } from '../lib/storage.ts';
+import type { TodayReading } from '../lib/storage.ts';
 
 function todayLabel(): string {
   const d = new Date();
@@ -31,8 +30,6 @@ function greeting(dateKey: string, spin: number): string {
 
 type Props = {
   streak: number;
-  rarityCounts: RarityCounts;
-  yesterdayRecord: StoredResult | null;
   todayReading: TodayReading | null;
   zodiac: Zodiac | null;
   onReopen: () => void;
@@ -46,8 +43,6 @@ type Props = {
 // 홈 — '클릭해서 시작'하는 호기심 히어로(물음표)를 중심으로 정리.
 export function HomeScreen({
   streak,
-  rarityCounts,
-  yesterdayRecord,
   todayReading,
   zodiac,
   onReopen,
@@ -55,7 +50,6 @@ export function HomeScreen({
   spin = 0,
   onReset,
 }: Props) {
-  const yNote = yesterdayRecord ? findNote(yesterdayRecord.noteId) : null;
   // 오늘 이미 뽑았으면 그 결과를 히어로 카드에도 반영한다(잠긴 ?  실제 값).
   const drawn = todayReading?.result ?? null;
   // 주간 캘린더는 띠가 있어야 계산된다. 잠금 상태에서도 미리 계산해두면
@@ -190,51 +184,13 @@ export function HomeScreen({
         </button>
       ) : null}
 
-      {rarityCounts.legendary + rarityCounts.epic + rarityCounts.rare > 0 || (yesterdayRecord && yNote) ? (
-        <section className="sec">
-          <div className="sec__head">
-            <h2 className="sec__title">내 기록</h2>
-          </div>
-      {rarityCounts.legendary + rarityCounts.epic + rarityCounts.rare > 0 ? (
-        <div className="collection">
-          <span className="collection__title">이번 달 뽑은 쪽지</span>
-          <div className="collection__items">
-            {rarityCounts.legendary > 0 ? (
-              <span className="collection__item collection__item--leg">전설 {rarityCounts.legendary}</span>
-            ) : null}
-            {rarityCounts.epic > 0 ? (
-              <span className="collection__item collection__item--epic">에픽 {rarityCounts.epic}</span>
-            ) : null}
-            {rarityCounts.rare > 0 ? (
-              <span className="collection__item">레어 {rarityCounts.rare}</span>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
-
-      {yesterdayRecord && yNote ? (
-        <div className="recap-card">
-          <span className="recap-card__icon" aria-hidden>
-            <Icon name={yNote.icon} size={22} />
-          </span>
-          <span className="recap-card__body">
-            <span className="recap-card__label">어제 뽑은 쪽지</span>
-            <span className="recap-card__text">
-              {FORTUNE_LABEL[yesterdayRecord.fortuneType]} · {yNote.name}
-            </span>
-          </span>
-        </div>
-      ) : null}
-        </section>
-      ) : null}
-
       {/* 삭제 확인 — window.confirm 은 웹뷰·샌드박스 iframe 에서 조용히 false 를
           돌려주는 경우가 있어(그러면 눌러도 아무 일도 안 일어남) 앱 안에서 두 번
           눌러 확인받는다. 어떤 환경에서도 동작하고, 실수로 지우는 것도 막는다. */}
       {confirmReset ? (
         <div className="reset-confirm">
           <p className="reset-confirm__q">
-            내 띠·별자리·저장한 사람·출석 기록을 모두 지울까요?
+            내 띠·별자리·저장한 사람을 모두 지울까요?
           </p>
           <div className="reset-confirm__row">
             <button type="button" className="reset-confirm__no" onClick={() => setConfirmReset(false)}>

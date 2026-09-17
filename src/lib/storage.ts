@@ -3,7 +3,6 @@ import type { FortuneResult, FortuneType } from '../types/fortune.ts';
 // PRD §14 — 개인정보/자유입력 저장 금지. 선택형 값 + 생성된 결과 텍스트만 저장.
 
 const KEYS = {
-  lastResult: 'tomorrowNoteLastResult',
   todayReading: 'tomorrowNoteTodayReading',
   dailyDrawCount: 'tomorrowNoteDrawCount',
   dailyDrawDate: 'tomorrowNoteDrawDate', // 뽑기 카운트 전용 날짜(방문 기록과 분리)
@@ -45,71 +44,12 @@ function safeSet(key: string, value: string): boolean {
   }
 }
 
-export function saveResult(result: StoredResult): void {
-  safeSet(KEYS.lastResult, JSON.stringify(result));
-}
-
-// ── 뽑기 기록 히스토리 (최근 7일) ──
-// lastResult 하나만 저장하면 오늘 새로 뽑을 때 어제 기록이 사라진다.
-// 날짜별로 최근 7건을 보관해 '어제의 쪽지' 등이 안정적으로 남게 한다.
-const HISTORY_KEY = 'tomorrowNoteHistory';
-
-export function loadHistory(): StoredResult[] {
-  const raw = safeGet(HISTORY_KEY);
-  if (!raw) return [];
-  try {
-    const parsed = JSON.parse(raw);
-    return Array.isArray(parsed)
-      ? parsed.filter(
-          (r): r is StoredResult =>
-            !!r && typeof r.dateKey === 'string' && typeof r.noteId === 'string',
-        )
-      : [];
-  } catch {
-    return [];
-  }
-}
-
-export function pushHistory(record: StoredResult): void {
-  const list = loadHistory().filter((r) => r.dateKey !== record.dateKey);
-  list.unshift(record);
-  safeSet(HISTORY_KEY, JSON.stringify(list.slice(0, 7)));
-}
-
-export function getRecordForDate(dateKey: string): StoredResult | null {
-  return loadHistory().find((r) => r.dateKey === dateKey) ?? null;
-}
-
-// ── 이번 달 등급 수집 (레어 뽑기 도파민·자랑·재방문 유도) ──
-// 월별로 등급 카운트를 누적한다(히스토리 7건 제한과 무관하게 O(1)).
-export type RarityCounts = { legendary: number; epic: number; rare: number; common: number };
-const RARITY_KEY = 'tomorrowNoteRarity';
-
-function loadRarityMap(): Record<string, RarityCounts> {
-  const raw = safeGet(RARITY_KEY);
-  if (!raw) return {};
-  try {
-    const parsed = JSON.parse(raw);
-    return parsed && typeof parsed === 'object' ? (parsed as Record<string, RarityCounts>) : {};
-  } catch {
-    return {};
-  }
-}
-
-/** dateKey('YYYY-MM-DD')에서 월('YYYY-MM')을 뽑아 해당 등급 카운트를 올린다. */
-export function bumpRarity(dateKey: string, tier: keyof RarityCounts): void {
-  const month = dateKey.slice(0, 7);
-  const map = loadRarityMap();
-  const cur = map[month] ?? { legendary: 0, epic: 0, rare: 0, common: 0 };
-  cur[tier] = (cur[tier] ?? 0) + 1;
-  map[month] = cur;
-  safeSet(RARITY_KEY, JSON.stringify(map));
-}
-
-export function getRarityCounts(dateKey: string): RarityCounts {
-  const month = dateKey.slice(0, 7);
-  return loadRarityMap()[month] ?? { legendary: 0, epic: 0, rare: 0, common: 0 };
-}
+// 뽑은 기록은 남기지 않는다.
+//
+// 지난 기록·이번 달 등급 수집을 로컬스토리지에 쌓아왔는데, 저장이 오래 버티지 못한다.
+// 아이폰은 이레 동안 안 들어오면 웹 저장소를 통째로 지우고, 토스 SDK 가 올라가면
+// 서빙 주소가 바뀌어 예전 값에 닿지 못한다. 못 지킬 약속은 애초에 하지 않는 게 낫다.
+// 오늘 뽑은 한 장만 하루치 스냅샷으로 두고, 날이 바뀌면 그것도 버린다.
 
 // 내 띠 (12개 중 선택 — 선택형 값)
 const ZODIAC_KEY = 'tomorrowNoteZodiac';

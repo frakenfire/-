@@ -19,14 +19,9 @@ import {
   incrementDailyDrawCount,
   loadTodayReading,
   markVisit,
-  saveResult,
   saveTodayReading,
   updateStreak,
-  peekStreak,
-  pushHistory,
-  getRecordForDate,
-  bumpRarity,
-  getRarityCounts, loadSkipBirth, saveSkipBirth } from './lib/storage.ts';
+  peekStreak, loadSkipBirth, saveSkipBirth } from './lib/storage.ts';
 import { clearAllData } from './lib/storage.ts';
 import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError, askReview } from './lib/toss.ts';
 import { findNote } from './data/notes.ts';
@@ -114,9 +109,7 @@ export default function App() {
   // 스트릭은 '앱을 연 순간'이 아니라 '쪽지를 뽑은 날' 기준으로 오른다(handlePick).
   // 홈에는 부작용 없이 현재 값만 보여준다.
   const [streak, setStreak] = useState(() => peekStreak());
-  const [rarityCounts, setRarityCounts] = useState(() => getRarityCounts(dateKey));
 
-  const yesterdayRecord = useMemo(() => getRecordForDate(yesterdayKey), [yesterdayKey]);
 
   // 내 사주 — 띠(1/12)로는 '나를 위한 결과'가 안 나온다.
   // 저장은 이 기기 localStorage 뿐이고 서버로 나가지 않는다.
@@ -229,7 +222,6 @@ export default function App() {
     lastSyncedDate.current = dateKey;
     setTodayReading(loadTodayReading(dateKey));
     setWeekUnlocked(isWeekUnlocked(dateKey));
-    setRarityCounts(getRarityCounts(dateKey));
     setStreak(peekStreak());
     // 어제 뽑은 결과 화면을 띄워둔 채 자정을 넘겼다면 홈으로 되돌린다.
     setResult(null);
@@ -271,7 +263,6 @@ export default function App() {
       setTodayReading(null);
       setResult(null);
       setStreak(0);
-      setRarityCounts({ legendary: 0, epic: 0, rare: 0, common: 0 });
       flash('내 데이터를 모두 지웠어요');
       setScreen('home');
     } else {
@@ -337,13 +328,9 @@ export default function App() {
         reportError('noteAd', e);
       }
       incrementDailyDrawCount(dateKey);
-      const record = { dateKey, fortuneType, noteId: picked.id };
-      saveResult(record);
-      pushHistory(record); // 날짜별 최근 7건 보관(어제의 쪽지 유지)
-      bumpRarity(dateKey, generated.rarity.tier); // 이번 달 등급 수집 카운트
-      setRarityCounts(getRarityCounts(dateKey));
       setStreak(updateStreak(dateKey, yesterdayKey)); // 실제 뽑은 날에만 스트릭 갱신
-      const snapshot = { ...record, result: generated };
+      // 오늘 뽑은 것만 하루치 스냅샷으로 둔다. 지난 기록은 남기지 않는다.
+      const snapshot = { dateKey, fortuneType, noteId: picked.id, result: generated };
       saveTodayReading(snapshot);
       setTodayReading(snapshot);
       logEvent('result_viewed', { fortuneType, engineVersion: generated.engineVersion });
@@ -625,8 +612,6 @@ export default function App() {
       {screen === 'home' && (
         <HomeScreen
           streak={streak}
-          rarityCounts={rarityCounts}
-          yesterdayRecord={yesterdayRecord}
           todayReading={todayReading}
           zodiac={zodiac}
           spin={spin}
