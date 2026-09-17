@@ -73,6 +73,11 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const seed = hashSeed(
     `v${ENGINE_VERSION}|${dateKey}|${fortuneType}|${note.id}|${mood}|${zodiac ?? ''}|${star ?? ''}|${birthKey}`,
   );
+  // 오늘의 점수와 행운은 '뽑은 쪽지' 가 아니라 '오늘의 나' 에서 나와야 한다.
+  // 오 분 뒤에 다시 뽑았는데 점수가 74에서 91로 튀면, 그 숫자를 누가 믿겠나.
+  // 그래서 총운·네 가지 운·행운 요소·잘 맞는 띠는 날짜와 사주로만 정한다.
+  // 쪽지는 같은 하루를 어떤 말로 풀어줄지만 바꾼다.
+  const daySeed = hashSeed(`v${ENGINE_VERSION}|day|${dateKey}|${zodiac ?? ''}|${star ?? ''}|${birthKey}`);
   const persona = buildPersona(zodiac, star);
 
   // 뽑은 쪽지가 결과의 결을 정한다.
@@ -101,11 +106,11 @@ export function generateFortune(input: FortuneInput): FortuneResult {
     : zodiac && dateKey
       ? sajuToday(dateKey, zodiac)
       : null;
-  const luck = computeLuck(seed, saju ? luckBandForTone(saju.tone) : undefined);
+  const luck = computeLuck(daySeed, saju ? luckBandForTone(saju.tone) : undefined);
   // 행운 색을 사주 개운 컬러로 연결 — 띠를 알면 색이 랜덤이 아니라
   // '내 오행을 생해주는 오행(인성)'의 오방색에서 나온다. 매일의 색에 근거가 생긴다.
   if (saju) luck.color = saju.luckyColor;
-  const detail = computeDetail(seed, luck, zodiac);
+  const detail = computeDetail(daySeed, luck, zodiac);
   const rarity = computeRarity(seed);
 
   // 콕 집은 한마디 — '어떻게 알았지'의 핵심. 방금 고른 기분을 되읽는 전용 풀에서.

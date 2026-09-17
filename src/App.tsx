@@ -58,9 +58,38 @@ function wait(ms: number): Promise<void> {
 export default function App() {
   // 공유·딥링크로 재현 가능한 화면(궁합)은 URL 해시와 연결한다.
   // (결과·심층은 뽑기 시점 상태에 의존해 재현 대상이 아니므로 홈으로 시작)
-  const [screen, setScreen] = useState<ScreenName>(() =>
+  const [screen, setScreenRaw] = useState<ScreenName>(() =>
     typeof window !== 'undefined' && window.location.hash === '#/compat' ? 'compat' : 'home',
   );
+  // 뒤로가기는 '한 단계 앞' 으로 가야 한다. 화면마다 돌아갈 곳을 손으로 적어두면
+  // 흐름이 바뀔 때마다 한 군데씩 틀어져서, 결국 어디서 눌러도 홈으로 떨어진다.
+  // 그래서 지나온 길을 쌓아두고 그대로 되짚는다.
+  const backStack = useRef<ScreenName[]>([]);
+  // 거쳐 가기만 하는 화면은 쌓지 않는다. 되돌아가면 곧바로 다시 앞으로 가버린다.
+  const PASS_THROUGH: ScreenName[] = ['reveal'];
+
+  function setScreen(next: ScreenName) {
+    setScreenRaw((cur) => {
+      if (cur !== next && !PASS_THROUGH.includes(cur)) backStack.current.push(cur);
+      return next;
+    });
+  }
+
+  /** 쌓지 않고 자리만 바꾼다 (연출 화면에서 결과로 넘어갈 때) */
+  function replaceScreen(next: ScreenName) {
+    setScreenRaw(next);
+  }
+
+  function goBack(fallback: ScreenName = 'home') {
+    const prev = backStack.current.pop();
+    setScreenRaw(prev ?? fallback);
+  }
+
+  /** 처음으로 — 쌓인 길도 비운다 */
+  function goHome() {
+    backStack.current = [];
+    setScreenRaw('home');
+  }
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -158,30 +187,11 @@ export default function App() {
   const busyRef = useRef(busy);
   busyRef.current = busy;
 
-  function goBack() {
+  // 토스 하드웨어 뒤로가기도 같은 길을 되짚는다. 화면마다 따로 적어두면 어긋난다.
+  function handleHardwareBack() {
     if (busyRef.current) return;
-    switch (screenRef.current) {
-      case 'topic':
-        setScreen('home');
-        break;
-      case 'mood':
-        setScreen('topic');
-        break;
-      case 'pick':
-        setScreen('mood');
-        break;
-      case 'result':
-        setScreen('home');
-        break;
-      case 'detail':
-        setScreen('result');
-        break;
-      case 'compat':
-        setScreen(hasResultRef.current ? 'result' : 'home');
-        break;
-      default:
-        break; // home/reveal — 토스가 앱 종료를 처리
-    }
+    if (screenRef.current === 'home') return; // 토스가 앱 종료를 처리
+    goBack();
   }
 
   useEffect(() => {
@@ -197,7 +207,7 @@ export default function App() {
     };
     document.addEventListener('visibilitychange', onVis);
     const unsubSafe = subscribeSafeArea();
-    const unsubBack = subscribeBackEvent(goBack);
+    const unsubBack = subscribeBackEvent(handleHardwareBack);
     return () => {
       alive = false;
       document.removeEventListener('visibilitychange', onVis);
@@ -221,7 +231,14 @@ export default function App() {
     // 어제 뽑은 결과 화면을 띄워둔 채 자정을 넘겼다면 홈으로 되돌린다.
     setResult(null);
     setNote(null);
-    setScreen((cur) => (cur === 'result' || cur === 'detail' || cur === 'reveal' ? 'home' : cur));
+    // 날이 바뀌었으니 지나온 길도 의미가 없다
+    setScreenRaw((cur) => {
+      if (cur === 'result' || cur === 'detail' || cur === 'reveal') {
+        backStack.current = [];
+        return 'home';
+      }
+      return cur;
+    });
   }, [dateKey]);
 
   // 퍼널 계측 — 화면 진입 로깅 (토스 Analytics, 미지원 시 no-op)
@@ -311,7 +328,7 @@ export default function App() {
       incrementDailyDrawCount(dateKey);
       setStreak(updateStreak(dateKey, yesterdayKey)); // 실제 뽑은 날에만 스트릭 갱신
       logEvent('result_viewed', { fortuneType, engineVersion: generated.engineVersion });
-      setScreen('result');
+      replaceScreen('result');
       setSpin((v) => v + 7);
       // 기분 좋은 순간(대길·3일 스트릭)에 미니앱 리뷰를 한 번만 요청.
       // 실제로 리뷰 UI 가 뜬 경우에만 소진 처리(토스 밖에서 기회를 태우지 않게).
@@ -600,7 +617,7 @@ export default function App() {
         <TopicScreen
           sajuBadge={sajuBadge}
           onSelect={handleType}
-          onBack={() => setScreen('home')}
+          onBack={() => goBack()}
         />
       )}
 
@@ -612,7 +629,7 @@ export default function App() {
           onPickStar={handleSaveMyStarSign}
           onSelect={handleMood}
           hasBirth={birthInput !== null}
-          onBack={() => setScreen('topic')}
+          onBack={() => goBack()}
         />
       )}
 
@@ -629,7 +646,7 @@ export default function App() {
           fortuneLabel={fortuneType ? FORTUNE_LABEL[fortuneType] : ''}
           personal={notePick.personal}
           onPick={handlePick}
-          onBack={() => setScreen('home')}
+          onBack={() => goBack()}
         />
       )}
 
@@ -652,7 +669,7 @@ export default function App() {
           onShareWeek={handleShareWeek}
           onCompat={() => setScreen('compat')}
           onMonth={() => (birthInput || skipBirth ? handleType('month') : (setBirthNext('concern'), setScreen('birth')))}
-          onBack={() => setScreen('home')}
+          onBack={() => goBack()}
         />
       )}
 
@@ -664,14 +681,14 @@ export default function App() {
           ctaLabel={birthNext === 'concern' || birthFromFlow ? '다음' : undefined}
           onSave={handleSaveBirth}
           onSkip={handleSkipBirth}
-          onBack={() => setScreen(birthNext === 'concern' || birthFromFlow ? 'home' : birth ? 'saju' : 'home')}
+          onBack={() => goBack()}
         />
       )}
 
       {screen === 'saju' && birthInput && (
         <MySajuScreen
           birth={birthInput}
-          onBack={() => setScreen('home')}
+          onBack={() => goBack()}
           onEdit={() => setScreen('birth')}
           onShare={handleShareSaju}
           onDeleteBirth={handleDeleteBirth}
@@ -681,7 +698,7 @@ export default function App() {
 
       {/* 안전망 — 저장된 생년월일이 깨졌으면 사주 화면 대신 입력으로 되돌린다 */}
       {screen === 'saju' && !birthInput && (
-        <BirthScreen initial={null} onSave={handleSaveBirth} onBack={() => setScreen('home')} />
+        <BirthScreen initial={null} onSave={handleSaveBirth} onBack={() => goBack()} />
       )}
 
       {screen === 'detail' && result && (
@@ -691,14 +708,14 @@ export default function App() {
           onShare={handleShare}
           onCopyLine={handleCopyLine}
           onSave={handleSave}
-          onBack={() => setScreen('result')}
+          onBack={() => goBack()}
         />
       )}
 
       {/* 안전망 — 결과/심층 화면인데 데이터가 없으면(저장 실패·비정상 복원 등)
           빈 화면을 보여주지 않고 홈으로 돌아갈 길을 준다. */}
       {(screen === 'result' || screen === 'detail') && !(result && note) && (
-        <AppLayout onBack={() => setScreen('home')} title="오늘의 쪽지">
+        <AppLayout onBack={() => goBack()} title="오늘의 쪽지">
           <div className="empty-state">
             <p className="empty-state__title">쪽지를 불러오지 못했어요</p>
             <p className="empty-state__desc">잠시 문제가 있었어요. 다시 뽑아볼까요?</p>
@@ -708,7 +725,7 @@ export default function App() {
               onClick={() => {
                 setNote(null);
                 setDrawNonce((n) => n + 1);
-                setScreen('home');
+                goHome();
               }}
             >
               처음으로 돌아가기
@@ -724,7 +741,7 @@ export default function App() {
           initialMyStar={starSign?.id ?? null}
           onSaveMyZodiac={handleSaveMyZodiac}
           onSaveMyStar={handleSaveMyStarSign}
-          onBack={() => setScreen(result ? 'result' : 'home')}
+          onBack={() => goBack()}
           onAdUnlock={handleCompatAdUnlock}
           onShare={shareForUnlock}
           onToast={flash}
@@ -735,7 +752,7 @@ export default function App() {
         <ConcernScreen
           userName={birth?.name ?? null}
           onSelect={handleConcern}
-          onBack={() => setScreen('home')}
+          onBack={() => goBack()}
           inFlow={concernInFlow}
         />
       )}
@@ -744,7 +761,7 @@ export default function App() {
         <ConcernAskScreen
           concernKey={concernKey}
           onSelect={handleConcernOption}
-          onBack={() => setScreen('concern')}
+          onBack={() => goBack()}
           inFlow={concernInFlow}
         />
       )}

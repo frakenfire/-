@@ -2,7 +2,7 @@ import { DAY_MASTER_BY_INDEX } from '../data/dayMaster.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { TEN_GOD_KO } from './tenGods.ts';
 import { BAND_WORD, monthsAway, type TimingRead, type TimingSlot } from './timing.ts';
-import { CONCERN_GOD, GOD_SCALE, INNER_GAP, INNER_SAME, REFRESH_NOTE } from '../data/concernReadings.ts';
+import { CONCERN_GOD, GOD_SCALE, REFRESH_NOTE } from '../data/concernReadings.ts';
 import type { FourPillars } from './fourPillars.ts';
 
 // 고민 하나에 대한 심층 답 — 결론, 시기, 근거, 할 일.
@@ -24,11 +24,9 @@ export type DeepRead = {
   daeunLine: string;
   basis: string;
   /** 달마다 한 덩이씩 — 이번 달, 좋은 달, 피할 달 */
-  slots: { k: string; label: string; band: string; outer: string; inner: string; note: string }[];
+  slots: { k: string; label: string; band: string; outer: string; good: string; care: string }[];
   /** 올해와 내년 */
   yearLines: { k: string; label: string; band: string; v: string }[];
-  /** 겉과 속이 같은지 */
-  innerNote: string;
   /** 이 답이 언제 다시 계산되는지 */
   refresh: string;
 };
@@ -229,8 +227,7 @@ export function buildDeepRead(
   const why: { k: string; v: string }[] = [
     { k: '내 글자', v: `${dm.name}이에요. ${dm.tagline}` },
     { k: '올해', v: `${TEN_GOD_KO[timing.years[0].tenGod]}이 도는 해예요` },
-    { k: '겉 기운', v: `${TEN_GOD_KO[timing.thisMonth.tenGod]}이 들어와요` },
-    { k: '속 기운', v: `${TEN_GOD_KO[timing.thisMonth.branchGod]}이 깔려 있어요` },
+    { k: '이번 달', v: `${TEN_GOD_KO[timing.thisMonth.tenGod]}이 들어와요` },
     { k: '십 년', v: timing.daeunSlot ? `${TEN_GOD_KO[timing.daeunSlot.tenGod]}이에요` : '아직 첫 대운 전이에요' },
   ];
 
@@ -250,8 +247,8 @@ export function buildDeepRead(
     label: slot.label,
     band: BAND_WORD[slot.band],
     outer: GOD_SCALE[slot.tenGod].month,
-    inner: CONCERN_GOD[concernKey][slot.tenGod].line,
-    note: CONCERN_GOD[concernKey][slot.branchGod].line,
+    good: CONCERN_GOD[concernKey][slot.tenGod].good,
+    care: CONCERN_GOD[concernKey][slot.branchGod].care,
   });
 
   const slots = [
@@ -286,7 +283,6 @@ export function buildDeepRead(
     sub: `${CONCERN_GOD[concernKey][timing.thisMonth.tenGod].line} ${VERDICT_SUB[verdict]}`,
     slots,
     yearLines,
-    innerNote: timing.thisMonth.tenGod === timing.thisMonth.branchGod ? INNER_SAME : INNER_GAP,
     refresh: REFRESH_NOTE,
     situationLine: option?.line ?? '',
     when,

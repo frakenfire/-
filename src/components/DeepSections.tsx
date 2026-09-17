@@ -1,6 +1,7 @@
 import { Icon } from './Icon.tsx';
 import { Mascot } from '../components/Mascot.tsx';
 import { softBreak } from '../lib/softBreak.ts';
+import { Sentences } from './Sentences.tsx';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import type { DeepRead } from '../lib/deepRead.ts';
 import type { TimingRead } from '../lib/timing.ts';
@@ -30,7 +31,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             <Icon name={concern.icon} size={14} /> {userName ? `${userName}님의 ${concern.label}` : concern.label}
           </span>
           <strong className="deep-hero__head">{softBreak(read.headline, 14)}</strong>
-          <span className="deep-hero__sub">{read.sub}</span>
+          <span className="deep-hero__sub"><Sentences text={read.sub} /></span>
           <span className="deep-hero__badge">{VERDICT_WORD[read.verdict]}</span>
         </div>
         <span className="deep-hero__art" aria-hidden>
@@ -40,7 +41,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       {read.situationLine ? (
         <div className="sec-card">
-          <p className="deep-situation">{read.situationLine}</p>
+          <Sentences className="deep-situation" text={read.situationLine} />
         </div>
       ) : null}
 
@@ -79,9 +80,17 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             <span className="slot__label">{sl.label}</span>
             <span className="slot__band">{sl.band}</span>
           </p>
-          <p className="slot__outer">{sl.outer}</p>
-          <p className="slot__inner">{sl.inner}</p>
-          <p className="slot__note">속으로는 이래요. {sl.note}</p>
+          <Sentences className="slot__outer" text={sl.outer} />
+          <ul className="slot__pts">
+            <li className="slot__pt slot__pt--good">
+              <span className="slot__pt-k">좋아요</span>
+              <span className="slot__pt-v">{sl.good}</span>
+            </li>
+            <li className="slot__pt slot__pt--care">
+              <span className="slot__pt-k">조심해요</span>
+              <span className="slot__pt-v">{sl.care}</span>
+            </li>
+          </ul>
         </div>
       ))}
 
@@ -94,7 +103,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
                 {y.k} <b>{y.label}</b>
               </span>
               <span className="yline__b">{y.band}</span>
-              <span className="yline__v">{y.v}</span>
+              <span className="yline__v"><Sentences text={y.v} /></span>
             </li>
           ))}
         </ul>
@@ -102,7 +111,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       <div className="sec-card">
         <p className="cat4__head">지금 지나는 십 년</p>
-        <p className="qa qa--sub">{read.daeunLine}</p>
+        <Sentences className="qa qa--sub" text={read.daeunLine} />
       </div>
 
       <div className="sec-card">
@@ -116,12 +125,11 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           ))}
         </ul>
         <p className="mflow__foot">{read.basis}</p>
-        <p className="mflow__foot">{read.innerNote}</p>
       </div>
 
       <div className="sec-card">
         <p className="cat4__head">이 답은 언제 바뀌나요</p>
-        <p className="qa qa--sub">{read.refresh}</p>
+        <Sentences className="qa qa--sub" text={read.refresh} />
       </div>
 
       <div className="sec-card">
@@ -136,7 +144,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </ol>
         <div className="plan__hold">
           <span className="plan__hold-k">이건 조심해요</span>
-          <span className="plan__hold-v">{read.caution}</span>
+          <span className="plan__hold-v"><Sentences text={read.caution} /></span>
         </div>
       </div>
     </>

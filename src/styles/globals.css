@@ -5735,3 +5735,32 @@ strong {
 
 /* 고르는 화면의 글자 한 벌: 제목 24, 한마디 15, 힌트 14, 질문답 15와 14 */
 .note-fan__hint { font-size: 14px; line-height: 21px; }
+
+/* 달 카드의 좋아요·조심해요 — 뭘 하면 되고 뭘 피하면 되는지 두 줄로 끝낸다 */
+.slot__pts { list-style: none; margin: 12px 0 0; padding: 0; }
+.slot__pt {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  gap: 10px;
+  padding: 10px 0;
+  border-top: 1px solid var(--gray-100);
+}
+.slot__pt-k {
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 700;
+  padding: 1px 0;
+}
+.slot__pt--good .slot__pt-k { color: var(--brand-strong); }
+.slot__pt--care .slot__pt-k { color: #9c5d00; }
+.slot__pt-v {
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-800);
+  word-break: keep-all;
+}
+
+/* 한 문장이 한 줄을 차지한다. 여러 문장을 한 덩이로 흘리면 다 흘려 읽는다. */
+.sent { display: block; }
+.sent + .sent { margin-top: 3px; }

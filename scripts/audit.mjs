@@ -774,8 +774,9 @@ async function run(browser) {
   {
     const BACKS = [
       ['생년월일', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); }, '오늘의 띠 서열'],
-      ['고민 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); await wait(p, 500); await p.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click(); }, '오늘의 띠 서열'],
-      ['결과', async (p) => { await drawTo(p); }, '오늘의 띠 서열'],
+      // 뒤로가기는 홈이 아니라 '한 단계 앞' 으로 가야 한다
+      ['고민 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); await wait(p, 500); await p.getByText('생년월일 없이 보고 싶어요', { exact: false }).first().click(); }, '언제 태어났어요'],
+      ['결과', async (p) => { await drawTo(p); }, '이렇게 뽑혀요'],
       ['궁합', async (p) => { await goCompat(p); }, '오늘 점수'],
     ];
     for (const [name, prep, expect] of BACKS) {

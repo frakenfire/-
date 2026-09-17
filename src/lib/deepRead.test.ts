@@ -48,7 +48,7 @@ test('고민이 다르면 답도 다르다', () => {
   for (const c of CONCERNS) {
     const t = computeTiming(INPUT, P, 'female', c.key, at);
     const r = buildDeepRead(P, t, c.key, null);
-    seen.add(r.sub + r.slots[0].inner);
+    seen.add(r.sub + r.slots[0].good);
   }
   assert.equal(seen.size, CONCERNS.length);
 });
@@ -72,10 +72,10 @@ test('모든 고민에서 문장이 비지 않는다', () => {
       assert.equal(r.actions.length, 3);
       assert.ok(r.actions.every((a) => a.length > 5));
       assert.ok(r.slots.length >= 2);
-      assert.ok(r.slots.every((s) => s.outer && s.inner && s.note));
+      assert.ok(r.slots.every((s) => s.outer && s.good && s.care));
       assert.equal(r.yearLines.length, 2);
       assert.ok(r.daeunLine.length > 20);
-      assert.ok(r.why.length === 5);
+      assert.equal(r.why.length, 4);
     }
   }
 });

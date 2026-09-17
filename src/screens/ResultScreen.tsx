@@ -5,6 +5,7 @@ import { AppLayout } from '../components/AppLayout.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
 import { GRADE_KO } from '../lib/luck.ts';
 import { softBreak } from '../lib/softBreak.ts';
+import { Sentences } from '../components/Sentences.tsx';
 import { luckyWhen } from '../lib/luckyWhen.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
 import { LUCKY_HEADS, PLAN_TITLES } from '../data/copy.ts';
@@ -139,7 +140,7 @@ export function ResultScreen({ result, note, busy, onShare, onCopy, userName, sp
               <span className="cat4__k">{c.label}</span>
               <span className="cat4__bar"><i style={{ width: `${c.score}%` }} /></span>
               <span className="cat4__v num">{c.score}</span>
-              <span className="cat4__why">{CATEGORY_INTERP[c.key]?.[band(c.score)] ?? ''}</span>
+              <span className="cat4__why"><Sentences text={CATEGORY_INTERP[c.key]?.[band(c.score)] ?? ''} /></span>
             </li>
           ))}
         </ul>
