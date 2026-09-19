@@ -511,11 +511,18 @@ export function buildDeepRead(
     { k: '태어난 날', b: pillars.day.branch },
     ...(pillars.hour ? [{ k: '태어난 시각', b: pillars.hour.branch }] : []),
   ];
+  // 한 자리에 관계가 여럿 걸릴 수 있다. 인신(寅申)은 충이면서 형이라 같은 자리가
+  // 두 번 잡힌다. 줄을 따로 세우면 '태어난 달과 부딪혀요' 밑에 '태어난 달과
+  // 어긋나요' 가 또 붙어 화면에 같은 자리가 쌓인다. 한 자리는 한 줄로 묶는다.
   const meetRows: { k: string; rel: string; v: string }[] = [];
   for (const spot of meetSpots) {
-    for (const rel of branchRelations(todayPillar.branch, spot.b)) {
-      meetRows.push({ k: withJosa(spot.k, '과와'), rel: RELATION_KO[rel].word, v: RELATION_KO[rel].line });
-    }
+    const rels = branchRelations(todayPillar.branch, spot.b);
+    if (rels.length === 0) continue;
+    meetRows.push({
+      k: withJosa(spot.k, '과와'),
+      rel: rels.map((r) => RELATION_KO[r].word).join(', '),
+      v: rels.map((r) => RELATION_KO[r].line).join(' '),
+    });
   }
   const todayStep = unseongOf(pillars.dayStem, todayPillar.branch);
   const todayMeet = {

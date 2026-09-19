@@ -6,6 +6,15 @@ import { hashSeed } from './dateSeed.ts';
 import { GOLDEN, NEEDS_EXTERNAL_CHECK, type GoldenCase } from './goldenFixtures.ts';
 import { RULESET, rulesetLabel } from './sajuRuleset.ts';
 import { daeunStartAge, isYangYearStem } from './daeun.ts';
+import { computeTiming } from './timing.ts';
+import { buildDeepRead } from './deepRead.ts';
+import { branchRelations } from './sinsal.ts';
+import type { FourPillars, BirthInput } from './fourPillars.ts';
+
+/** 골든 검사에서 쓰는 타이밍 — 사람마다 한 번만 세운다 */
+function computeTimingFor(p: FourPillars, input: BirthInput = { year: 1992, month: 3, day: 3, hour: 20 }) {
+  return computeTiming(input, p, 'female', 'work', new Date('2026-09-19T12:00:00+09:00'));
+}
 
 // 골든 테스트 러너.
 //
@@ -285,4 +294,47 @@ test('규칙: 규칙 버전이 문구 seed 에도 걸려 있다', () => {
   const a = hashSeed(`v2r${RULESET.version}|day|2026-09-19|||1990-5-15-14`);
   const b = hashSeed(`v2r${RULESET.version + 1}|day|2026-09-19|||1990-5-15-14`);
   assert.notEqual(a, b, '규칙 버전이 달라도 seed 가 같다 — 버전이 안 걸린 것이다');
+});
+
+// ── 같은 자리가 여러 줄로 쌓이지 않는가 ──────────────────────────────────
+
+test('오늘 글자와 만나는 자리가 한 자리당 한 줄이다', () => {
+  // 인신(寅申)은 충이면서 형이다. 줄을 따로 세우면 같은 자리가 두 번 찍힌다.
+  // 1992-03-03 은 월지와 일지가 둘 다 인(寅)이고, 2026-09-19 일진이 병신(丙申)이다.
+  const P92 = computeFourPillars({ year: 1992, month: 3, day: 3, hour: 20 });
+  const t = computeTimingFor(P92);
+  const r = buildDeepRead(P92, t, 'work', 'stay', '2026-09-19', '김한별');
+  const keys = r.todayMeet.rows.map((x) => x.k);
+  assert.equal(new Set(keys).size, keys.length, `같은 자리가 여러 줄: ${keys.join(' / ')}`);
+  // 묶였어도 관계 이름은 빠짐없이 남아야 한다
+  const merged = r.todayMeet.rows.find((x) => x.rel.includes(','));
+  assert.ok(merged, '충이면서 형인 자리가 한 줄로 묶이지 않았다');
+  assert.ok(merged!.v.length > 20, '묶인 줄의 설명이 잘렸다');
+});
+
+test('어느 사람 어느 날이어도 자리가 중복되지 않는다', () => {
+  for (const input of [
+    { year: 1992, month: 3, day: 3, hour: 20 },
+    { year: 1988, month: 11, day: 21, hour: 7 },
+    { year: 2001, month: 6, day: 15, hour: 3 },
+  ]) {
+    const p = computeFourPillars(input);
+    const t = computeTimingFor(p, input);
+    for (const day of ['2026-09-19', '2026-09-20', '2026-10-01', '2027-02-11']) {
+      const r = buildDeepRead(p, t, 'money', null, day, '김한별');
+      const keys = r.todayMeet.rows.map((x) => x.k);
+      assert.equal(new Set(keys).size, keys.length,
+        `${input.year} / ${day} 에서 자리가 중복: ${keys.join(' / ')}`);
+    }
+  }
+});
+
+test('규칙: 삼형을 두 글자로 잡는지 세 글자로 잡는지가 적혀 있다', () => {
+  assert.ok(['pair', 'triple'].includes(RULESET.hyeongScope));
+  assert.ok(rulesetLabel().includes(`hyeong:${RULESET.hyeongScope}`),
+    '라벨에 형 관법이 없다 — 바뀌어도 추적이 안 된다');
+  // 현재는 pair. 인신은 둘만 있어도 형으로 잡힌다.
+  if (RULESET.hyeongScope === 'pair') {
+    assert.ok(branchRelations(2, 8).includes('형'), '인신이 형으로 안 잡힌다');
+  }
 });

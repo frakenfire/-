@@ -55,6 +55,20 @@ export type SajuRuleSet = {
   /** 태어난 시각을 모를 때 대입하는 시각(24시간제). */
   unknownHourFallback: number;
 
+  /**
+   * 삼형(인사신 · 축술미)을 두 글자만으로 잡을 것인가.
+   *
+   *  pair   두 글자만 있어도 형으로 본다 (현재 동작)
+   *  triple 세 글자가 다 모여야 형으로 본다
+   *
+   * 명리에서는 삼형이 셋 다 모여야 성립한다는 관법이 다수고, 둘만 있으면 반형으로
+   * 약하게 보거나 아예 안 잡는다. 지금은 pair 로 돌고 있어서 형이 자주 뜬다.
+   *
+   * 이건 코드에 숨어 있던 선택이다. 바꾸면 형이 뜨던 사람들의 결과가 달라지므로
+   * 값은 그대로 두고 어느 쪽으로 돌고 있는지만 먼저 적어둔다.
+   */
+  hyeongScope: 'pair' | 'triple';
+
   /** 음력 입력 지원 여부. 지금은 양력만 받는다. */
   lunarInput: 'unsupported';
 };
@@ -78,6 +92,7 @@ export const RULESET: SajuRuleSet = {
   daeunStartRounding: 'round',
   daeunDirection: 'yangMaleForward',
   unknownHourFallback: 12,
+  hyeongScope: 'pair',
   lunarInput: 'unsupported',
 };
 
@@ -91,6 +106,7 @@ export function rulesetLabel(r: SajuRuleSet = RULESET): string {
     `nightZi:${r.nightZi}@${r.nightZiClock}`,
     r.trueSolar ? `trueSolar@${r.defaultLongitude}` : 'noTrueSolar',
     `daeun:${r.daeunStartRounding}`,
+    `hyeong:${r.hyeongScope}`,
     `unknownHour:${r.unknownHourFallback}`,
   ].join(' / ');
 }
