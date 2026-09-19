@@ -1,6 +1,7 @@
 import { apparentSolarLongitude, deltaTSeconds, solveSolarLongitude, toJulianDay } from './astro.ts';
 import { koreaOffsetAt } from './koreaTime.ts';
 import { STEMS, BRANCHES } from './saju.ts';
+import { RULESET } from './sajuRuleset.ts';
 import type { BirthInput, FourPillars } from './fourPillars.ts';
 
 // 대운(大運) — 십 년 단위로 갈리는 삶의 배경.
@@ -86,7 +87,10 @@ export function daeunStartAge(input: BirthInput, forward: boolean): number {
   const termJde = solveSolarLongitude(target, guess);
 
   const days = Math.abs(termJde - jde);
-  const age = Math.round(days / 3);
+  // 사흘이 한 해라는 관법. 남은 하루를 올릴지 버릴지가 학파마다 갈려 RULESET 이 정한다.
+  const age = RULESET.daeunStartRounding === 'floor'
+    ? Math.floor(days / 3)
+    : Math.round(days / 3);
   // 절입에 바싹 붙어 태어나도 첫 대운은 한 살부터 본다
   return Math.max(1, Math.min(10, age));
 }

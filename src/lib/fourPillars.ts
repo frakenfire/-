@@ -11,8 +11,9 @@
 // 학파가 갈리는 지점은 옵션으로 열어두되 기본값을 명시한다 (아래 NightZiPolicy 참고).
 
 import { apparentSolarLongitude, deltaTSeconds, toJulianDay, fromJulianDay, solveSolarLongitude } from './astro.ts';
-import { koreaOffsetAt, SEOUL_LONGITUDE } from './koreaTime.ts';
+import { koreaOffsetAt } from './koreaTime.ts';
 import { STEMS, BRANCHES, toJDN, type Element } from './saju.ts';
+import { RULESET } from './sajuRuleset.ts';
 import type { ZodiacId } from '../data/zodiac.ts';
 
 export type Pillar = {
@@ -127,7 +128,9 @@ export function ipchunJdUt(year: number): number {
  */
 export function computeFourPillars(
   input: BirthInput,
-  nightZi: NightZiPolicy = 'nextDay',
+  // 기본값을 여기에 박아두면 규칙 문서와 계산이 따로 논다. RULESET 이 유일한
+  // 출처다 — 규칙을 바꾸려면 그 파일 하나만 고치면 계산이 따라온다.
+  nightZi: NightZiPolicy = RULESET.nightZi,
 ): FourPillars {
   const {
     year,
@@ -135,13 +138,13 @@ export function computeFourPillars(
     day,
     hour,
     minute = 0,
-    longitude = SEOUL_LONGITUDE,
-    trueSolar = true,
+    longitude = RULESET.defaultLongitude,
+    trueSolar = RULESET.trueSolar,
   } = input;
 
   const knowsHour = hour !== null;
   // 시각을 모르면 정오로 둔다. 자시(23시)·절기 경계에서 멀어 오판 위험이 가장 낮은 지점이다.
-  const clockHour = knowsHour ? hour : 12;
+  const clockHour = knowsHour ? hour : RULESET.unknownHourFallback;
   const clockMinute = knowsHour ? minute : 0;
 
   // (1) 그 시절 시계 기준 → UTC
@@ -241,7 +244,11 @@ export function pillarsHanja(p: FourPillars): string {
  * 그럴 땐 모르는 척 단정하는 것보다 사실대로 말하는 편이 낫다.
  */
 export function boundaryNotice(input: BirthInput): string | null {
-  const { year, month, day, hour, minute = 0, longitude = SEOUL_LONGITUDE, trueSolar = true } = input;
+  const {
+    year, month, day, hour, minute = 0,
+    longitude = RULESET.defaultLongitude,
+    trueSolar = RULESET.trueSolar,
+  } = input;
 
   // 시각을 모르면 정오를 대입한다(규칙). 문제는 그날이 절기 경계일 때다. 정오 기준
   // 한쪽 답이 조용히 정해지는데, 실제 출생 시각이 반대편이면 년주와 띠가 통째로

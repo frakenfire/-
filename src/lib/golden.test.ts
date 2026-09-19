@@ -4,6 +4,7 @@ import { computeFourPillars, pillarsHanja, boundaryNotice } from './fourPillars.
 import { toJDN } from './saju.ts';
 import { GOLDEN, NEEDS_EXTERNAL_CHECK, type GoldenCase } from './goldenFixtures.ts';
 import { RULESET, rulesetLabel } from './sajuRuleset.ts';
+import { daeunStartAge, isYangYearStem } from './daeun.ts';
 
 // 골든 테스트 러너.
 //
@@ -197,4 +198,69 @@ test('golden: 1년 중 경고가 뜨는 날은 12개 절기 언저리뿐이다',
   }
   assert.ok(days.length >= 8 && days.length <= 16,
     `경계일이 ${days.length}일 (${days.join(' ')}) — 12절기 언저리를 크게 벗어났다`);
+});
+
+// ── 규칙이 계산을 실제로 지배하는가 ──────────────────────────────────────
+//
+// RULESET 을 선언만 해두고 엔진이 안 읽으면 그 파일은 문서가 아니라 거짓말이 된다.
+// 규칙값을 바꿔 넣었을 때 결과가 실제로 따라오는지 확인한다.
+
+test('규칙: 경도를 바꾸면 시주가 실제로 달라진다', () => {
+  // 시주 경계는 진태양시 홀수 시다. 오시와 미시를 가르는 진태양시 13:00 은
+  // 벽시계로 서울 13:32, 부산 13:24 에 걸린다. 그 사이 시각을 고른다.
+  const seoul = computeFourPillars({ year: 1990, month: 5, day: 15, hour: 13, minute: 28 });
+  const busan = computeFourPillars({
+    year: 1990, month: 5, day: 15, hour: 13, minute: 28, longitude: 129.08,
+  });
+  assert.notEqual(seoul.hour!.kor, busan.hour!.kor,
+    '경도를 바꿨는데 시주가 그대로다 — RULESET.defaultLongitude 가 계산에 안 닿는다');
+  assert.notEqual(seoul.corrections.trueSolarMin, busan.corrections.trueSolarMin);
+});
+
+test('규칙: 진태양시를 끄면 보정이 사라진다', () => {
+  const on = computeFourPillars({ year: 1990, month: 5, day: 15, hour: 12, minute: 58 });
+  const off = computeFourPillars({
+    year: 1990, month: 5, day: 15, hour: 12, minute: 58, trueSolar: false,
+  });
+  assert.notEqual(on.corrections.trueSolarMin, 0);
+  assert.equal(off.corrections.trueSolarMin, 0);
+});
+
+test('규칙: 야자시 정책을 바꾸면 일주가 실제로 달라진다', () => {
+  // 진태양시 23시를 넘긴 시각. nextDay 면 다음날, sameDay 면 그날.
+  const at = { year: 2000, month: 6, day: 15, hour: 23, minute: 50 };
+  const next = computeFourPillars(at, 'nextDay');
+  const same = computeFourPillars(at, 'sameDay');
+  assert.notEqual(next.day.kor, same.day.kor,
+    'nightZi 를 바꿨는데 일주가 그대로다 — 죽은 옵션이라는 뜻이다');
+  assert.equal(same.day.kor, computeFourPillars({ ...at, hour: 12 }).day.kor,
+    'sameDay 는 그날 일주를 유지해야 한다');
+});
+
+test('규칙: 시각 미상 대입값이 RULESET 과 맞다', () => {
+  const unknown = computeFourPillars({ year: 1990, month: 5, day: 15, hour: null });
+  const atFallback = computeFourPillars({
+    year: 1990, month: 5, day: 15, hour: RULESET.unknownHourFallback,
+  });
+  assert.equal(unknown.day.kor, atFallback.day.kor);
+  assert.equal(unknown.month.kor, atFallback.month.kor);
+  assert.equal(unknown.year.kor, atFallback.year.kor);
+  assert.equal(unknown.hour, null, '시각을 몰랐으면 시주는 비어 있어야 한다');
+});
+
+test('규칙: 대운수 반올림 방식이 RULESET 에 적힌 대로다', () => {
+  // round 와 floor 는 절입까지 날수가 3의 배수가 아닐 때 갈린다.
+  const input = { year: 1992, month: 3, day: 3, hour: 20 };
+  const p = computeFourPillars(input);
+  const age = daeunStartAge(input, isYangYearStem(p.year.stem));
+  assert.ok(age >= 1 && age <= 10, `대운수가 ${age}`);
+  assert.ok(['round', 'floor'].includes(RULESET.daeunStartRounding));
+});
+
+test('규칙: 라벨에 갈리는 규칙이 빠짐없이 들어간다', () => {
+  const label = rulesetLabel();
+  for (const piece of [String(RULESET.version), RULESET.nightZi, RULESET.nightZiClock,
+    RULESET.daeunStartRounding, String(RULESET.unknownHourFallback)]) {
+    assert.ok(label.includes(piece), `라벨에 ${piece} 가 없다 — 추적이 안 된다`);
+  }
 });
