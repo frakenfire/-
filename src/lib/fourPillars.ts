@@ -242,7 +242,27 @@ export function pillarsHanja(p: FourPillars): string {
  */
 export function boundaryNotice(input: BirthInput): string | null {
   const { year, month, day, hour, minute = 0, longitude = SEOUL_LONGITUDE, trueSolar = true } = input;
-  if (hour === null) return null;
+
+  // 시각을 모르면 정오를 대입한다(규칙). 문제는 그날이 절기 경계일 때다. 정오 기준
+  // 한쪽 답이 조용히 정해지는데, 실제 출생 시각이 반대편이면 년주와 띠가 통째로
+  // 달라진다. 그런 날은 계산을 바꾸지 말고 '갈린다' 고 알려야 한다.
+  //
+  // 예전에는 여기서 곧바로 null 을 냈다. 시각을 모를 때가 경계 위험이 제일 큰
+  // 순간인데 그때만 입을 다물고 있었다.
+  if (hour === null) {
+    const early = computeFourPillars({ ...input, hour: 0, minute: 30 });
+    const late = computeFourPillars({ ...input, hour: 23, minute: 30 });
+    if (early.year.ganzhi !== late.year.ganzhi) {
+      return '태어난 날이 해가 바뀌는 절기(입춘)에 걸쳐 있어요. 태어난 시각에 따라 띠와 사주가 통째로 달라지는 날이라, 시각을 알면 꼭 넣어주세요.';
+    }
+    if (early.month.ganzhi !== late.month.ganzhi) {
+      return '태어난 날이 절기가 바뀌는 날이에요. 태어난 시각에 따라 달의 기둥이 달라지니, 시각을 알면 꼭 넣어주세요.';
+    }
+    if (early.day.ganzhi !== late.day.ganzhi) {
+      return '태어난 날이 날짜 경계에 걸쳐 있어요. 밤늦게 태어났다면 결과가 달라질 수 있어요.';
+    }
+    return null;
+  }
 
   const off = koreaOffsetAt(year, month, day, hour, minute);
   const jdUt = toJulianDay(year, month, day, hour, minute, 0) - off.offsetMin / 1440;
