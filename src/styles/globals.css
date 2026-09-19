@@ -6572,3 +6572,45 @@ strong {
 
 /* 이 안에서는 줄이 안 끊긴다 — 명사 가운데서 끊기면 읽는 속도가 떨어진다 */
 .nowrap { white-space: nowrap; }
+
+/* ── 안 채운 칸 ──
+   안내 문구만 조용히 바꾸면 아무도 못 본다. 칸에 테두리를 두르고,
+   문구는 노랑 계열 본문색으로 바꾸고, 앞에 표식을 붙인다.
+   빨강은 쓰지 않는다 — 이 앱에서 빨강은 지우기 한 곳뿐이다. */
+.field--warn .field__input {
+  background: var(--white);
+  box-shadow: 0 0 0 2px var(--score-low);
+}
+.field--warn .field__input:focus {
+  box-shadow: 0 0 0 2px var(--score-low);
+}
+.field--warn .seg__btn {
+  border-color: var(--score-low);
+}
+.field__warn {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+  color: var(--score-low-text);
+  word-break: keep-all;
+}
+.field__warn__mark {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  height: 17px;
+  margin-top: 1px;
+  border-radius: 50%;
+  /* 흰 글자를 올려야 해서 밝은 --score-low 가 아니라 어두운 쪽을 쓴다 (5.28:1) */
+  background: var(--score-low-text);
+  color: var(--white);
+  font-size: 11px;
+  line-height: 16.5px;
+  font-weight: 700;
+}

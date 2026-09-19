@@ -396,6 +396,38 @@ async function run(browser) {
       check((await page.locator('.wheel').count()) === 6, '[사주입력] 생년월일·시각 휠 6개');
       check((await page.locator('.wheel-group__v').count()) >= 1, '[사주입력] 고른 값이 요약 줄에 보인다');
 
+      // 안 채우고 넘기면 안 채웠다고 떠야 한다.
+      // 잠긴 버튼은 이유를 안 알려주고, 조용히 안내 문구만 바꾸면 아무도 못 본다.
+      // 눌렀을 때 (1) 못 넘어가고 (2) 눈에 띄게 뜨고 (3) 그 칸으로 끌려가야 한다.
+      await page.getByRole('button', { name: '다음' }).first().click();
+      await wait(page, 700);
+      const blocked = await bodyText(page);
+      check(blocked.includes('언제 태어났어요'), '[미입력] 이름 없이 누르면 다음으로 안 넘어감');
+      check((await page.locator('.field__warn').count()) === 1,
+        '[미입력] 이름 경고가 화면에 뜬다');
+      check(/이름을 두 글자 이상/.test(blocked), '[미입력] 무엇을 해야 하는지 적혀 있다');
+      check((await page.locator('.field--warn').count()) === 1, '[미입력] 빈 칸에 테두리 표시');
+      check((await page.locator('.field__input[aria-invalid="true"]').count()) === 1,
+        '[미입력] 빈 칸에 aria-invalid');
+      check(await page.evaluate(() => document.activeElement?.className?.includes?.('field__input') === true),
+        '[미입력] 커서가 빈 이름 칸으로 간다');
+
+      await page.locator('.field__input').first().fill('김한별');
+      await wait(page, 300);
+      check((await page.locator('.field__warn').count()) === 0,
+        '[미입력] 채우면 경고가 사라진다');
+
+      // 성별도 십 년 흐름의 방향을 가른다 — 같은 대우를 받아야 한다
+      await page.getByRole('button', { name: '다음' }).first().click();
+      await wait(page, 700);
+      const blocked2 = await bodyText(page);
+      check(blocked2.includes('언제 태어났어요'), '[미입력] 성별 없이 누르면 다음으로 안 넘어감');
+      check(/성별을 골라주세요/.test(blocked2), '[미입력] 성별 경고가 뜬다');
+      await page.getByRole('button', { name: '여자' }).first().click();
+      await wait(page, 300);
+      check((await page.locator('.field__warn').count()) === 0,
+        '[미입력] 성별을 고르면 경고가 사라진다');
+
       // 입춘 경계(2024-02-04 10:00) — 달력 띠와 사주 띠가 갈리는 날
       // 휠은 굴려도 되고 눌러도 된다 — 자동화는 누르는 쪽으로 확인한다
       await pickBirth(page, { year: 2024, month: 2, day: 4, ampm: '오전', hour: 10, minute: '00' });

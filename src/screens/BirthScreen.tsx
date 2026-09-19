@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { WheelPicker, type WheelItem } from '../components/WheelPicker.tsx';
 import { boundaryNotice } from '../lib/fourPillars.ts';
@@ -51,6 +51,33 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
   const [confirmClear, setConfirmClear] = useState(false);
   const [nameWarn, setNameWarn] = useState(false);
   const [genderWarn, setGenderWarn] = useState(false);
+  const nameRef = useRef<HTMLInputElement>(null);
+  const genderRef = useRef<HTMLDivElement>(null);
+
+  // 안 채운 칸을 알려주는 방식.
+  //
+  // 예전에는 칸 밑 안내 문구만 조용히 바꿨다. 같은 회색, 같은 크기라
+  // 바뀐 걸 알아채지 못했고, 생년월일 휠까지 내려간 상태면 이름 칸은
+  // 화면 밖이라 아무 일도 안 일어난 것처럼 보였다. 버튼만 먹통인 줄 안다.
+  //
+  // 그래서 세 가지를 같이 한다. 칸을 화면 안으로 끌어오고, 커서를 넣고,
+  // 눈에 띄는 색으로 무엇이 빠졌는지 적는다.
+  function nudge(el: HTMLElement | null, focusEl?: HTMLElement | null) {
+    if (!el) return;
+    try {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } catch {
+      el.scrollIntoView();
+    }
+    // 스크롤이 먼저 눈에 들어와야 어디로 가는지 보인다. 포커스는 한 박자 뒤에.
+    window.setTimeout(() => {
+      try {
+        focusEl?.focus({ preventScroll: true });
+      } catch {
+        focusEl?.focus();
+      }
+    }, 260);
+  }
 
   // 월이 바뀌면 일수가 줄 수 있다 (1/31 → 2월). 없는 날짜가 남지 않게 잘라준다.
   const maxDay = daysIn(year, month);
@@ -98,10 +125,12 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
             // 버튼을 잠그지는 않는다 — 안 눌리면 '왜 안 되지' 로 멈춘다. 눌러서 알려준다.
             if (name.trim().length < 2) {
               setNameWarn(true);
+              nudge(nameRef.current, nameRef.current);
               return;
             }
             if (!gender) {
               setGenderWarn(true);
+              nudge(genderRef.current);
               return;
             }
             onSave({ date: dateStr, time: timeStr, name: name.trim(), gender });
@@ -115,28 +144,36 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
       <p className="lead">이 기기에만 저장돼요. 어디에도 보내지 않아요.</p>
 
       <div className="birth-form">
-        <label className="field">
+        <label className={nameWarn ? 'field field--warn' : 'field'}>
         <span className="field__k">이름</span>
         <input
+          ref={nameRef}
           className="field__input"
           type="text"
           inputMode="text"
           maxLength={10}
           placeholder="한글 이름"
           value={name}
+          aria-invalid={nameWarn || undefined}
+          aria-describedby="birth-name-hint"
           onChange={(e) => {
             setName(e.target.value);
             if (nameWarn) setNameWarn(false);
           }}
         />
-        <span className="field__hint">
-          {nameWarn
-            ? '이름을 두 글자 이상 넣어주세요. 이름 소리도 계산에 들어가요.'
-            : '이름 소리를 다섯 기운으로 갈라 사주와 같이 봐요.'}
-        </span>
+        {nameWarn ? (
+          <span className="field__warn" id="birth-name-hint" role="alert">
+            <span className="field__warn__mark" aria-hidden>!</span>
+            이름을 두 글자 이상 넣어주세요. 이름 소리도 계산에 들어가요.
+          </span>
+        ) : (
+          <span className="field__hint" id="birth-name-hint">
+            이름 소리를 다섯 기운으로 갈라 사주와 같이 봐요.
+          </span>
+        )}
       </label>
 
-      <div className="field">
+      <div className={genderWarn ? 'field field--warn' : 'field'} ref={genderRef}>
         <span className="field__k">성별</span>
         <div className="seg">
           {([['female', '여자'], ['male', '남자']] as const).map(([k, label]) => (
@@ -145,6 +182,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
               type="button"
               className={`seg__btn${gender === k ? ' seg__btn--on' : ''}`}
               aria-pressed={gender === k}
+              aria-describedby="birth-gender-hint"
               onClick={() => {
                 setGender(gender === k ? null : k);
                 if (genderWarn) setGenderWarn(false);
@@ -154,11 +192,16 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
             </button>
           ))}
         </div>
-        <span className="field__hint">
-          {genderWarn
-            ? '성별을 골라주세요. 십 년 흐름이 앞으로 가는지 뒤로 가는지가 여기서 갈려요.'
-            : '십 년 흐름의 방향이 성별로 갈려요.'}
-        </span>
+        {genderWarn ? (
+          <span className="field__warn" id="birth-gender-hint" role="alert">
+            <span className="field__warn__mark" aria-hidden>!</span>
+            성별을 골라주세요. 십 년 흐름이 앞으로 가는지 뒤로 가는지가 여기서 갈려요.
+          </span>
+        ) : (
+          <span className="field__hint" id="birth-gender-hint">
+            십 년 흐름의 방향이 성별로 갈려요.
+          </span>
+        )}
       </div>
 
       <div className="wheel-group">
