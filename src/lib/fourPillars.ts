@@ -63,6 +63,13 @@ export type FourPillars = {
   zodiac: ZodiacId;
   /** 달력 나이 띠와 사주 띠가 다른 경우 true — 화면에서 반드시 설명해야 하는 케이스 */
   zodiacDiffersFromCalendarYear: boolean;
+  /**
+   * 이 결과가 어느 규칙으로 나왔는가.
+   *
+   * 규칙을 고치면 같은 사람의 사주가 달라진다. 결과물이 버전을 들고 다니지 않으면
+   * 나중에 '이 결과가 구 규칙인지 신 규칙인지' 를 가릴 방법이 없다.
+   */
+  rulesetVersion: number;
   /** 계산에 실제로 적용된 보정들 — 사용자에게 근거로 보여준다 */
   corrections: {
     /** 적용된 UTC 오프셋(분) */
@@ -218,6 +225,7 @@ export function computeFourPillars(
     dayMaster: STEMS[dayPillar.stem],
     zodiac,
     zodiacDiffersFromCalendarYear: yearBranch !== calendarYearBranch,
+    rulesetVersion: RULESET.version,
     corrections: {
       offsetMin: off.offsetMin,
       isDst: off.isDst,

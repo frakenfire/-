@@ -5,6 +5,7 @@ import { findZodiac } from '../data/zodiac.ts';
 import { findStarSign } from '../data/starSign.ts';
 import { ZODIAC_TRAIT, STAR_TRAIT } from '../data/traits.ts';
 import { hashSeed } from './dateSeed.ts';
+import { RULESET } from './sajuRuleset.ts';
 import { computeLuck, luckBandForTone } from './luck.ts';
 import { sajuToday } from './saju.ts';
 import { computeFourPillars, type BirthInput } from './fourPillars.ts';
@@ -70,14 +71,17 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   // 기분 + 띠 + 별자리까지 seed 에 넣어, 세 조합으로 결과가 갈라지게 한다.
   // 사주가 있으면 시드에도 넣는다 — 같은 날 같은 기분이어도 사람마다 다른 문장이 나오게.
   const birthKey = birth ? `${birth.year}-${birth.month}-${birth.day}-${birth.hour ?? 'x'}` : '';
+  // 사주 규칙이 바뀌면 사주가 바뀐다. seed 에 규칙 버전을 안 넣으면 사주만 바뀌고
+  // 문구 선택은 그대로라 둘이 어긋난다. 두 버전을 같이 건다.
+  const v = `v${ENGINE_VERSION}r${RULESET.version}`;
   const seed = hashSeed(
-    `v${ENGINE_VERSION}|${dateKey}|${fortuneType}|${note.id}|${mood}|${zodiac ?? ''}|${star ?? ''}|${birthKey}`,
+    `${v}|${dateKey}|${fortuneType}|${note.id}|${mood}|${zodiac ?? ''}|${star ?? ''}|${birthKey}`,
   );
   // 오늘의 점수와 행운은 '뽑은 쪽지' 가 아니라 '오늘의 나' 에서 나와야 한다.
   // 오 분 뒤에 다시 뽑았는데 점수가 74에서 91로 튀면, 그 숫자를 누가 믿겠나.
   // 그래서 총운·네 가지 운·행운 요소·잘 맞는 띠는 날짜와 사주로만 정한다.
   // 쪽지는 같은 하루를 어떤 말로 풀어줄지만 바꾼다.
-  const daySeed = hashSeed(`v${ENGINE_VERSION}|day|${dateKey}|${zodiac ?? ''}|${star ?? ''}|${birthKey}`);
+  const daySeed = hashSeed(`${v}|day|${dateKey}|${zodiac ?? ''}|${star ?? ''}|${birthKey}`);
   const persona = buildPersona(zodiac, star);
 
   // 뽑은 쪽지가 결과의 결을 정한다.

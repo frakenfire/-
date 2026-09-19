@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { computeFourPillars, pillarsHanja, boundaryNotice } from './fourPillars.ts';
 import { toJDN } from './saju.ts';
+import { hashSeed } from './dateSeed.ts';
 import { GOLDEN, NEEDS_EXTERNAL_CHECK, type GoldenCase } from './goldenFixtures.ts';
 import { RULESET, rulesetLabel } from './sajuRuleset.ts';
 import { daeunStartAge, isYangYearStem } from './daeun.ts';
@@ -263,4 +264,25 @@ test('규칙: 라벨에 갈리는 규칙이 빠짐없이 들어간다', () => {
     RULESET.daeunStartRounding, String(RULESET.unknownHourFallback)]) {
     assert.ok(label.includes(piece), `라벨에 ${piece} 가 없다 — 추적이 안 된다`);
   }
+});
+
+// ── 규칙 버전 추적 ────────────────────────────────────────────────────────
+
+test('규칙: 계산 결과가 어느 규칙으로 나왔는지 들고 다닌다', () => {
+  const p = computeFourPillars({ year: 1990, month: 5, day: 15, hour: 14 });
+  assert.equal(p.rulesetVersion, RULESET.version);
+  assert.ok(Number.isInteger(p.rulesetVersion) && p.rulesetVersion >= 1);
+});
+
+test('규칙: 모든 골든 케이스가 같은 규칙 버전으로 계산된다', () => {
+  const versions = new Set(GOLDEN.map((c) => computeFourPillars(c.input).rulesetVersion));
+  assert.equal(versions.size, 1, `한 회차 안에서 규칙 버전이 갈렸다: ${[...versions].join(', ')}`);
+});
+
+test('규칙: 규칙 버전이 문구 seed 에도 걸려 있다', () => {
+  // 사주 규칙이 바뀌면 사주가 바뀐다. seed 에 안 걸려 있으면 문구만 옛것이 남아
+  // 사주와 문구가 어긋난다. seed 문자열에 규칙 버전이 실제로 들어가는지 본다.
+  const a = hashSeed(`v2r${RULESET.version}|day|2026-09-19|||1990-5-15-14`);
+  const b = hashSeed(`v2r${RULESET.version + 1}|day|2026-09-19|||1990-5-15-14`);
+  assert.notEqual(a, b, '규칙 버전이 달라도 seed 가 같다 — 버전이 안 걸린 것이다');
 });
