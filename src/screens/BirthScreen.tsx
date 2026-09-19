@@ -3,6 +3,7 @@ import { AppLayout } from '../components/AppLayout.tsx';
 import { WheelPicker, type WheelItem } from '../components/WheelPicker.tsx';
 import { boundaryNotice } from '../lib/fourPillars.ts';
 import { parseBirth } from '../lib/birth.ts';
+import { solarToLunar, lunarToSolar, leapMonthOf, lunarMonthLength } from '../lib/lunar.ts';
 import type { StoredBirth } from '../lib/storage.ts';
 
 type Props = {
@@ -39,10 +40,16 @@ const pad = (n: number) => String(n).padStart(2, '0');
 // 그래서 굴려서 고르는 피커를 직접 쓴다. 굴려도 되고 눌러도 된다.
 export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, ctaLabel }: Props) {
   const init = initial ? parseBirth(initial.date, initial.time) : null;
+  // 음력으로 넣었던 사람에게는 음력 그대로 다시 보여준다.
+  // 저장된 값은 언제나 양력이라, 보여줄 때 되돌린다.
+  const initLunar =
+    initial?.calendar === 'lunar' && init ? solarToLunar(init.year, init.month, init.day) : null;
 
-  const [year, setYear] = useState(init?.year ?? 1995);
-  const [month, setMonth] = useState(init?.month ?? 1);
-  const [day, setDay] = useState(init?.day ?? 1);
+  const [cal, setCal] = useState<'solar' | 'lunar'>(initLunar ? 'lunar' : 'solar');
+  const [leap, setLeap] = useState(initLunar?.leap ?? false);
+  const [year, setYear] = useState(initLunar?.year ?? init?.year ?? 1995);
+  const [month, setMonth] = useState(initLunar?.month ?? init?.month ?? 1);
+  const [day, setDay] = useState(initLunar?.day ?? init?.day ?? 1);
   const [unknownTime, setUnknownTime] = useState(initial ? initial.time === null : false);
   const [hour24, setHour24] = useState(init?.hour ?? 12);
   const [minute, setMinute] = useState(init?.minute ?? 0);
@@ -80,10 +87,24 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
   }
 
   // 월이 바뀌면 일수가 줄 수 있다 (1/31 → 2월). 없는 날짜가 남지 않게 잘라준다.
-  const maxDay = daysIn(year, month);
+  // 윤달은 그 해 그 달에만 있다. 윤2월이 없는 해에 윤달을 켜둔 채로 두면
+  // 없는 날짜가 되므로, 고를 수 있을 때만 켜진 것으로 친다.
+  const leapAvail = cal === 'lunar' && leapMonthOf(year) === month;
+  const leapOn = leapAvail && leap;
+
+  const maxDay =
+    cal === 'lunar' ? (lunarMonthLength(year, month, leapOn) ?? 29) : daysIn(year, month);
   const safeDay = Math.min(day, maxDay);
 
-  const YEARS = useMemo(() => range(1930, THIS_YEAR, (n) => `${n}`), []);
+  // 계산은 양력 하나로만 돈다. 음력은 넣는 방식일 뿐 명식의 기준이 아니다.
+  const solar =
+    cal === 'lunar' ? lunarToSolar(year, month, safeDay, leapOn) : { year, month, day: safeDay };
+
+  // 음력 해는 양력보다 한 해 앞에서 시작한다 (1930년 1월 1일은 음력 1929년이다).
+  const YEARS = useMemo(
+    () => range(cal === 'lunar' ? 1929 : 1930, THIS_YEAR, (n) => `${n}`),
+    [cal],
+  );
   const MONTHS = useMemo(() => range(1, 12, (n) => `${n}월`), []);
   const DAYS = useMemo(() => range(1, maxDay, (n) => `${n}일`), [maxDay]);
   // 오전/오후는 값 0·1, 시는 1~12, 분은 5분 단위 — 태어난 시각을 분 단위로 기억하는 사람은 드물다.
@@ -104,7 +125,27 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
     setHour24(h);
   }
 
-  const dateStr = `${year}-${pad(month)}-${pad(safeDay)}`;
+  const dateStr = solar
+    ? `${solar.year}-${pad(solar.month)}-${pad(solar.day)}`
+    : `${year}-${pad(month)}-${pad(safeDay)}`;
+
+  // 달력을 바꿔도 가리키는 날은 같아야 한다. 같은 날을 다른 말로 다시 적어준다.
+  function switchCal(next: 'solar' | 'lunar') {
+    if (next === cal) return;
+    if (next === 'lunar') {
+      const l = solarToLunar(year, month, safeDay);
+      setYear(l.year);
+      setMonth(l.month);
+      setDay(l.day);
+      setLeap(l.leap);
+    } else if (solar) {
+      setYear(solar.year);
+      setMonth(solar.month);
+      setDay(solar.day);
+      setLeap(false);
+    }
+    setCal(next);
+  }
   const timeStr = unknownTime ? null : `${pad(hour24)}:${pad(minute)}`;
   const input = useMemo(() => parseBirth(dateStr, timeStr), [dateStr, timeStr]);
 
@@ -133,7 +174,14 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
               nudge(genderRef.current);
               return;
             }
-            onSave({ date: dateStr, time: timeStr, name: name.trim(), gender });
+            onSave({
+              date: dateStr,
+              time: timeStr,
+              name: name.trim(),
+              gender,
+              calendar: cal,
+              ...(leapOn ? { leap: true } : {}),
+            });
           }}
         >
           {ctaLabel ?? (inFlow ? '쪽지 열어보기' : '내 사주 보기')}
@@ -206,14 +254,50 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
 
       <div className="wheel-group">
           <span className="wheel-group__k">생년월일</span>
+          {/* 음력 생일만 아는 분이 많다. 음력을 양력인 줄 알고 넣으면
+              여덟 글자가 통째로 남의 것이 되므로, 무엇으로 넣는지 먼저 고르게 한다. */}
+          <div className="seg cal-seg">
+            {([['solar', '양력'], ['lunar', '음력']] as const).map(([k, label]) => (
+              <button
+                key={k}
+                type="button"
+                className={`seg__btn${cal === k ? ' seg__btn--on' : ''}`}
+                aria-pressed={cal === k}
+                onClick={() => switchCal(k)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
           <span className="wheel-group__v">
-            {year}년 {month}월 {safeDay}일
+            {cal === 'lunar' ? '음력 ' : ''}
+            {year}년 {leapOn ? '윤' : ''}
+            {month}월 {safeDay}일
           </span>
+          {cal === 'lunar' ? (
+            <span className="wheel-group__sub">
+              {solar
+                ? `양력 ${solar.year}년 ${solar.month}월 ${solar.day}일로 봐요`
+                : '이 날짜는 그 해에 없어요'}
+            </span>
+          ) : null}
           <div className="wheel-row">
             <WheelPicker items={YEARS} value={year} onChange={setYear} label="태어난 해" />
             <WheelPicker items={MONTHS} value={month} onChange={setMonth} label="태어난 달" />
             <WheelPicker items={DAYS} value={safeDay} onChange={setDay} label="태어난 날" />
           </div>
+          {/* 윤달은 그 해 그 달에만 있다. 없는 해에도 칸을 띄워두면 뭘 고르라는 건지 모른다. */}
+          {leapAvail ? (
+            <button
+              type="button"
+              className={leapOn ? 'birth-unknown birth-unknown--on' : 'birth-unknown'}
+              onClick={() => setLeap((v) => !v)}
+              aria-pressed={leapOn}
+            >
+              <span className="birth-unknown__box" aria-hidden />
+              윤{month}월에 태어났어요
+            </button>
+          ) : null}
         </div>
 
         <div className="wheel-group">

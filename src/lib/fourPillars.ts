@@ -30,7 +30,11 @@ export type Pillar = {
 };
 
 export type BirthInput = {
-  /** 양력 생년월일. 음력 입력은 UI 단계에서 양력으로 변환해 넘긴다. */
+  /**
+   * 양력 생년월일. 이 엔진은 양력만 받는다.
+   * 음력으로 태어난 날을 아는 사람은 화면에서 음력으로 넣고, lunar.ts 가 양력으로
+   * 옮긴 뒤에 여기로 들어온다. 음력 날짜가 이 함수까지 그대로 오면 남의 사주가 나온다.
+   */
   year: number;
   month: number;
   day: number;

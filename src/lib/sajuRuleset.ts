@@ -69,8 +69,13 @@ export type SajuRuleSet = {
    */
   hyeongScope: 'pair' | 'triple';
 
-  /** 음력 입력 지원 여부. 지금은 양력만 받는다. */
-  lunarInput: 'unsupported';
+  /**
+   * 음력 입력 지원 여부.
+   *  supported  화면에서 음력으로 받고, 계산 전에 양력으로 옮긴다 (윤달 포함)
+   *
+   * 계산은 언제나 양력 하나로만 돈다. 음력은 입력 방식일 뿐 명식의 기준이 아니다.
+   */
+  lunarInput: 'supported';
 };
 
 /**
@@ -93,7 +98,7 @@ export const RULESET: SajuRuleSet = {
   daeunDirection: 'yangMaleForward',
   unknownHourFallback: 12,
   hyeongScope: 'pair',
-  lunarInput: 'unsupported',
+  lunarInput: 'supported',
 };
 
 /** 규칙을 사람이 읽는 한 줄로. 디버그 출력과 fixture 기록에 쓴다. */

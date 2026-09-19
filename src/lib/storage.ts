@@ -258,6 +258,14 @@ export type StoredBirth = {
   name?: string;
   /** 대운의 방향이 성별로 갈린다. 안 고르면 대운은 순행으로 세운다 */
   gender?: 'male' | 'female';
+  /**
+   * 넣을 때 무엇으로 넣었는지. date 는 언제나 양력이다 — 계산은 양력 하나로만 한다.
+   * 이건 다시 열었을 때 넣던 모습 그대로 보여주기 위한 값이다.
+   * 음력으로 넣은 사람에게 양력 날짜를 보여주면 '내가 이렇게 넣었나' 가 된다.
+   */
+  calendar?: 'solar' | 'lunar';
+  /** 음력으로 넣었고 그게 윤달이었으면 true */
+  leap?: boolean;
 };
 // 생년월일 없이 보고 싶어요 — 한 번 고르면 다시 묻지 않는다
 const SKIP_BIRTH_KEY = 'tomorrowNoteSkipBirth';
@@ -279,7 +287,16 @@ export function loadBirth(): StoredBirth | null {
     // 저장소에 남은 이상한 값이 잘못된 사주로 이어지지 않게 한다.
     if (!parseBirth(v.date, time)) return null;
     const name = typeof v.name === 'string' ? v.name.trim().slice(0, 10) : undefined;
-    return name ? { date: v.date, time, name } : { date: v.date, time };
+    // 성별은 대운이 앞으로 가는지 뒤로 가는지를 가른다. 예전엔 여기서 흘려서,
+    // 새로고침하면 열 해 흐름이 통째로 반대로 섰다. 넣은 값은 전부 되돌려준다.
+    const gender = v.gender === 'male' || v.gender === 'female' ? v.gender : undefined;
+    const calendar = v.calendar === 'lunar' ? 'lunar' : v.calendar === 'solar' ? 'solar' : undefined;
+    const out: StoredBirth = { date: v.date, time };
+    if (name) out.name = name;
+    if (gender) out.gender = gender;
+    if (calendar) out.calendar = calendar;
+    if (calendar === 'lunar' && v.leap === true) out.leap = true;
+    return out;
   } catch {
     return null;
   }

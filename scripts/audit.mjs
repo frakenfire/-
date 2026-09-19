@@ -121,8 +121,9 @@ async function fillName(page, who = '김한별') {
     await box.fill(who);
     await wait(page, 200);
   }
-  // 성별도 십 년 흐름의 방향을 가르므로 필수다
-  if ((await page.locator('.seg__btn--on').count()) === 0) {
+  // 성별도 십 년 흐름의 방향을 가르므로 필수다.
+  // 양력·음력도 같은 세그 모양이라 .field 안으로 좁혀야 성별 칸만 본다.
+  if ((await page.locator('.field .seg__btn--on').count()) === 0) {
     await page.getByRole('button', { name: '여자' }).first().click();
     await wait(page, 200);
   }
@@ -442,6 +443,44 @@ async function run(browser) {
       check((await bodyText(page)).includes('세 기둥'), '[사주입력] 시각 없이도 되는 이유 설명');
       await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
       await wait(page, 400);
+
+      // 음력 — 생일을 음력으로만 아는 분이 많다. 음력을 양력인 줄 알고 넣으면
+      // 여덟 글자가 통째로 남의 것이 되므로, 넣는 달력을 고를 수 있어야 한다.
+      check((await page.getByRole('button', { name: '음력' }).count()) >= 1,
+        '[음력] 양력·음력을 고를 수 있다');
+      await pickBirth(page, { year: 2023, month: 3, day: 1 });
+      await page.getByRole('button', { name: '음력' }).first().click();
+      await wait(page, 600);
+      const lun = await bodyText(page);
+      check(/음력 \d{4}년/.test(lun), '[음력] 고르면 음력으로 적힌다');
+      check(/양력 \d{4}년 \d{1,2}월 \d{1,2}일로 봐요/.test(lun),
+        '[음력] 양력으로 며칠인지 같이 보여준다');
+
+      // 2023년은 윤2월이 있는 해다. 음력 2월을 고르면 윤달 칸이 떠야 한다.
+      await pickBirth(page, { year: 2023, month: 2, day: 1 });
+      check((await page.getByText('윤2월에 태어났어요', { exact: false }).count()) === 1,
+        '[음력] 윤달이 있는 달에서만 윤달 칸이 뜬다');
+      await page.getByText('윤2월에 태어났어요', { exact: false }).first().click();
+      await wait(page, 500);
+      check(/음력 2023년 윤2월/.test(await bodyText(page)), '[음력] 윤달을 켜면 윤달로 적힌다');
+      await page.getByText('윤2월에 태어났어요', { exact: false }).first().click();
+      await wait(page, 400);
+
+      // 2024년은 윤달이 없다. 칸이 남아 있으면 안 된다.
+      await pickBirth(page, { year: 2024, month: 2, day: 1 });
+      check((await page.locator('.birth-unknown').filter({ hasText: '윤' }).count()) === 0,
+        '[음력] 윤달이 없는 해에는 윤달 칸이 없다');
+
+      // 달력을 바꿔도 가리키는 날은 같아야 한다
+      const before = (await bodyText(page)).match(/양력 (\d{4})년 (\d{1,2})월 (\d{1,2})일/);
+      await page.getByRole('button', { name: '양력' }).first().click();
+      await wait(page, 600);
+      const after = (await page.locator('.wheel-group__v').first().innerText()).trim();
+      check(
+        !!before && after.startsWith(`${before[1]}년 ${before[2]}월 ${before[3]}일`),
+        '[음력] 양력으로 되돌려도 같은 날',
+        `${before ? before.slice(1).join('-') : '?'} vs ${after}`,
+      );
 
       await fillName(page);
       await page.getByRole('button', { name: '다음' }).first().click();
