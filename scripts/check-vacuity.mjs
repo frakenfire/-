@@ -12,6 +12,7 @@
 // verify 에는 넣지 않는다 - 매번 돌리기엔 느리고, 이건 '검사를 고칠 때 한 번'
 // 돌리는 도구다. 새 부재 검사를 쓰면 여기에도 한 칸을 같이 넣는다.
 import { spawn } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright-core');
@@ -172,6 +173,77 @@ const ZODIAC_PROBE = () => ({
 await trial('[사주] 띠는 생년월일에서 따서 채워 둔다', ZODIAC_PROBE, () => {
   window.localStorage.removeItem('tomorrowNoteZodiac');
 }, { before: drawTo });
+
+// ── design-audit 쪽 ─────────────────────────────────────────
+// 여긴 프로브가 collect() 하나라, 그 함수를 design-audit.mjs 에서 그대로 떠다 쓴다.
+// 손으로 베껴두면 본체가 바뀐 뒤에도 옛 프로브를 증명하게 된다.
+const designSrc = readFileSync(new URL('./design-audit.mjs', import.meta.url), 'utf8');
+const COLLECT = designSrc.slice(designSrc.indexOf('function collect()'), designSrc.indexOf('\nfunction auditScreen'));
+const runCollect = `(() => { ${COLLECT}; return collect(); })()`;
+
+const designTrial = async (name, pick, inject, before) => {
+  const ctx = await browser.newContext({ viewport: { width: 375, height: 812 } });
+  const page = await ctx.newPage();
+  await page.goto(BASE, { waitUntil: 'networkidle' });
+  await wait(600);
+  if (before) await before(page);
+  const clean = pick(await page.evaluate(runCollect));
+  await page.evaluate(inject);
+  await wait(300);
+  const dirty = pick(await page.evaluate(runCollect));
+  out.push({ name, clean: JSON.stringify(clean), dirty: JSON.stringify(dirty),
+    proved: JSON.stringify(clean) !== JSON.stringify(dirty) });
+  await ctx.close();
+};
+
+// 옛 점검은 TDS 초록·빨강 값을 손으로 적어둔 목록이라, 제일 옅은 두 값을 빠뜨렸다.
+// 색상환 각도로 보는 지금 점검이 그 둘을 잡는지 본다.
+const greenHits = (d) => d.colors.filter((c) => /174, 239, 213/.test(c.bg)).length;
+await designTrial('[디자인] 옅은 초록 바탕을 잡는다', greenHits, () => {
+  document.querySelector('.today-hook').style.background = 'rgb(174, 239, 213)';
+});
+const redHits = (d) => d.colors.filter((c) => /254, 175, 180/.test(c.bg)).length;
+await designTrial('[디자인] 옅은 빨강 바탕을 잡는다', redHits, () => {
+  document.querySelector('.today-hook').style.background = 'rgb(254, 175, 180)';
+});
+
+// 버튼 둘이 나란히 서는 자리는 삭제 확인 하나뿐이다. 붙여놓으면 잡히는가.
+const stuckOf = (d) => ({ pairs: d.btnPairs, stuck: d.stuck });
+await designTrial('[디자인] 나란한 버튼이 붙으면 잡는다', stuckOf, () => {
+  const box = document.querySelector('.clear-ask__btns');
+  box.style.gap = '0px';
+}, async (page) => {
+  // 지우기 줄은 넣어둔 정보가 있어야 나온다 - 한 번 뽑고 와야 보인다.
+  await drawTo(page);
+  await page.goto(BASE, { waitUntil: 'networkidle' });
+  await wait(600);
+  await page.locator('.today-hook__cta').first().click();
+  await wait(900);
+  await page.locator('.data-link').first().click();
+  await wait(500);
+});
+
+// 물어보는 동안 아래 바에 다른 큰 버튼이 없다
+const ASK_PROBE = () => ({
+  bottom: document.querySelectorAll('.app__bottom .btn').length,
+  ask: document.querySelectorAll('.clear-ask__btns .btn').length,
+});
+await trial('[삭제] 물어보는 동안 다른 큰 버튼이 없다', ASK_PROBE, () => {
+  const bar = document.createElement('div');
+  bar.className = 'app__bottom';
+  const b = document.createElement('button');
+  b.className = 'btn btn--primary'; b.textContent = '다음';
+  bar.appendChild(b);
+  document.querySelector('.app').appendChild(bar);
+}, { before: async (page) => {
+  await drawTo(page);
+  await page.goto(BASE, { waitUntil: 'networkidle' });
+  await wait(600);
+  await page.locator('.today-hook__cta').first().click();
+  await wait(900);
+  await page.locator('.data-link').first().click();
+  await wait(500);
+} });
 
 await browser.close();
 srv.kill();

@@ -1452,6 +1452,15 @@ async function run(browser) {
     await page.locator('.data-link').first().click();
     await wait(page, 500);
     check((await bodyText(page)).includes('전부 지울까요'), '[삭제] 두 단계 확인 UI');
+    // 되돌릴 수 없는 빨간 버튼 바로 밑에 화면에서 제일 큰 파란 버튼이 붙어 있으면,
+    // 세 버튼 중 무엇을 누르는 자리인지가 흐려진다. 물었으면 그 물음만 남긴다.
+    const askOnly = await page.evaluate(() => ({
+      bottom: document.querySelectorAll('.app__bottom .btn').length,
+      ask: document.querySelectorAll('.clear-ask__btns .btn').length,
+    }));
+    check(askOnly.ask === 2 && askOnly.bottom === 0,
+      '[삭제] 물어보는 동안에는 다른 큰 버튼이 없다',
+      `확인 ${askOnly.ask}개 / 아래 바 ${askOnly.bottom}개`);
     await page.getByText('네, 지울게요', { exact: false }).first().click();
     await wait(page, 1500);
     const t = await bodyText(page);

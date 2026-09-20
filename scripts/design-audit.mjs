@@ -12,9 +12,12 @@
 //   npm run build:web && npm run audit:design
 
 import { spawn } from 'node:child_process';
+import { readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
+const root = new URL('../', import.meta.url).pathname;
 const PORT = Number(process.env.DESIGN_PORT ?? 4174);
 const BASE = `http://localhost:${PORT}/`;
 
@@ -30,16 +33,61 @@ const results = [];
 const check = (cond, name, detail = '') => results.push({ pass: !!cond, name, detail });
 
 // ── 규칙 ────────────────────────────────────────────────────
-// TDS 초록·빨강 계열. 이 앱은 파랑/회색/주황만 쓴다.
-// 빨강은 '되돌릴 수 없는 삭제' 한 곳만 예외.
-const BANNED_COLORS = {
-  green: ['3, 178, 108', '2, 118, 72', '21, 196, 126', '2, 162, 98', '2, 147, 89', '2, 132, 80', '63, 213, 153', '118, 228, 184'],
-  red: ['240, 68, 82', '228, 41, 57', '210, 32, 48', '188, 27, 42', '165, 25, 38', '246, 101, 112', '251, 136, 144'],
+// 이 앱은 파랑/회색/주황만 쓴다. 빨강은 '되돌릴 수 없는 삭제' 한 곳만 예외.
+//
+// 전에는 TDS 초록·빨강 값을 손으로 여덟 개씩 적어두고 그 문자열이 있는지 봤다.
+// 세어보니 TDS 초록은 아홉, 빨강은 여덟이었다 - 제일 옅은 aeefd5 와 feafb4 가
+// 목록에 없어서, 연초록 카드를 깔아도 이 점검은 조용했다. 그리고 애초에 값을
+// 적어 막는 방식은 TDS 밖의 초록(런타임에 계산된 색)을 못 잡는다.
+// 색이 아니라 색상환의 각도로 본다 - 초록 자리에 있으면 어디서 온 값이든 잡힌다.
+const HUE_BANDS = {
+  green: (h) => h >= 85 && h <= 170,
+  red: (h) => h >= 340 || h <= 12,
 };
-const RED_ALLOWED = ['reset-confirm__yes', 'privacy-note__btn--danger'];
-// 오행 다섯(목·화·토·금·수)은 UI 장식이 아니라 데이터 범주다. 다섯 칸을 서로
-// 구분해야 하므로 한 색으로 못 만든다 — 목(木)의 초록은 여기서만 허용한다.
-const GREEN_ALLOWED = ['elbal-row__dot', 'elbal-row__bar', 'pcol__els'];
+// 회색·거의 회색은 각도가 의미 없다. 채도가 이만큼은 돼야 '색'으로 친다.
+const HUE_MIN_SAT = 0.25;
+function hueSat(css) {
+  const m = css && css.match(/rgba?\(([^)]+)\)/);
+  if (!m) return null;
+  const n = m[1].split(',').map(parseFloat);
+  if (n.length >= 4 && n[3] < 0.05) return null; // 투명한 건 안 보이는 색이다
+  const [r, g, b] = n.slice(0, 3).map((v) => v / 255);
+  const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+  if (!d || !mx) return null;
+  let h;
+  if (mx === r) h = ((g - b) / d) % 6;
+  else if (mx === g) h = (b - r) / d + 2;
+  else h = (r - g) / d + 4;
+  return { h: (Math.round(h * 60) + 360) % 360, s: d / mx };
+}
+// 한 요소가 쓰는 색 셋(글자·배경·테두리) 중 그 각도 안에 드는 것을 돌려준다.
+function hitsBand(c, band) {
+  const out = [];
+  for (const [k, v] of [['글자', c.color], ['바탕', c.bg], ['테두리', c.border]]) {
+    const hs = hueSat(v);
+    if (hs && hs.s >= HUE_MIN_SAT && band(hs.h)) out.push(`${k} ${v}`);
+  }
+  return out;
+}
+// 빨강을 써도 되는 유일한 자리 — 되돌릴 수 없는 삭제.
+const RED_ALLOWED = ['btn--danger'];
+// 초록은 지금 한 곳도 없다. 오행 다섯 칸을 색으로 나누던 시절의 예외
+// 세 개가 오래 남아 있었는데, 셋 다 화면에 없는 이름이었다.
+const GREEN_ALLOWED = [];
+// 예외 목록이 낡는 걸 막는다. 여기 적힌 이름이 화면 어디에도 없으면, 그 예외는
+// 아무것도 안 봐주면서 '봐주고 있다' 는 착각만 남긴다. 실제로 다섯 개 중
+// 다섯 개가 전부 죽은 이름이었고, 그 바람에 CSS 도 같이 살아남아 있었다.
+{
+  const src = readdirSync(join(root, 'src'), { recursive: true })
+    .filter((f) => typeof f === 'string' && f.endsWith('.tsx'))
+    .map((f) => readFileSync(join(root, 'src', f), 'utf8')).join('\n');
+  const stale = [...RED_ALLOWED, ...GREEN_ALLOWED].filter((c) => !src.includes(c));
+  if (stale.length) {
+    console.error(`❌ 예외 목록에 화면에 없는 이름이 있어요: ${stale.join(', ')}`);
+    console.error('   지웠으면 목록에서도 빼고, 이름을 바꿨으면 여기도 바꿔주세요.');
+    process.exit(1);
+  }
+}
 const HANJA = /[\u{3400}-\u{4DBF}\u{4E00}-\u{9FFF}]/u;
 // 어른도 사전 없이는 모르는 명리 용어. 화면에 그대로 나오면 아이 눈높이가 아니다.
 // 뜻을 풀어 쓴 말(찰떡 사이, 규칙 기운, 오늘 점수)로만 말한다.
@@ -105,7 +153,11 @@ function collect() {
     // 아니라 '한 변이 나머지보다 유독 두꺼운지'를 봐야 잡힌다.
     const maxW = Math.max(...bw);
     const others = bw.filter((x) => x !== maxW);
-    if (maxW >= 3 && others.every((x) => x <= maxW / 3)) out.oneSided.push(`${cls}[${bw.join('/')}]`);
+    // others 가 비면(사방이 똑같이 두꺼우면) every 는 참이다 — 균일한 4px 테두리를
+    // '한쪽만 두껍다' 로 신고하게 된다. 지금 그런 요소가 없어서 안 터졌을 뿐이다.
+    if (maxW >= 3 && others.length > 0 && others.every((x) => x <= maxW / 3)) {
+      out.oneSided.push(`${cls}[${bw.join('/')}]`);
+    }
     if (['Top', 'Right', 'Bottom', 'Left'].some((k) => cs['border' + k + 'Style'] === 'dashed')) out.dashed.push(cls);
     const r = el.getBoundingClientRect();
     const rad = parseFloat(cs.borderRadius) || 0;
@@ -117,20 +169,29 @@ function collect() {
       if (d > out.depth) out.depth = d;
     }
   }
-  // 나란히 선 버튼이 서로 붙어 있는가 — 여백 0 은 한 덩어리로 읽혀서 누를 곳을 헷갈리게 한다
-  out.stuck = [];
+  // 나란히 선 버튼이 서로 붙어 있는가 — 여백 0 은 한 덩어리로 읽혀서 누를 곳을 헷갈리게 한다.
   // 목록 줄(휠 항목·이동 행)은 구분선으로 나뉘어 붙어 있는 게 정상이다. 큰 버튼만 본다.
+  //
+  // 전에는 세로로 쌓인 쌍만 봤다. '가로로 나란한 건 격자라 gap 이 따로 있다' 는
+  // 이유였는데, 그건 확인이 아니라 짐작이다. 그리고 이 앱에서 버튼 둘이 나란히
+  // 서는 자리는 삭제 확인(가로 격자) 하나뿐이라, 세로만 보는 동안 이 점검은
+  // 열다섯 화면 전부에서 볼 것이 한 쌍도 없었다. 두 방향 다 실제로 잰다.
+  out.stuck = [];
+  out.btnPairs = 0;
   for (const el of document.querySelectorAll('.btn')) {
     const next = el.nextElementSibling;
     if (!next || !next.matches('.btn')) continue;
     const a = el.getBoundingClientRect();
     const b = next.getBoundingClientRect();
-    // 세로로 쌓인 경우만 본다 (가로로 나란한 건 격자라 gap 이 따로 있다)
-    if (b.top < a.bottom - 1) continue;
-    const gap = b.top - a.bottom;
+    if (a.width < 1 || b.width < 1) continue;
+    const stacked = b.top >= a.bottom - 1;
+    const sideBySide = b.left >= a.right - 1;
+    if (!stacked && !sideBySide) continue; // 겹쳐 있거나 줄이 바뀐 경우는 여기서 볼 것이 아니다
+    out.btnPairs += 1;
+    const gap = stacked ? b.top - a.bottom : b.left - a.right;
     if (gap < 6) {
       const cls = (typeof el.className === 'string' ? el.className : '').split(' ')[0] || el.tagName;
-      out.stuck.push(`${cls}[${Math.round(gap)}px]`);
+      out.stuck.push(`${cls}[${stacked ? '세로' : '가로'} ${Math.round(gap)}px]`);
     }
   }
   out.stuck = [...new Set(out.stuck)];
@@ -191,15 +252,19 @@ function auditScreen(name, data) {
   check(emo.length === 0, `[${name}] 이모지 없음`, emo.map((h) => `${h.cls}"${h.text.slice(0, 24)}"`).join(' / '));
 
   // 3) 금지 색 (초록 전면 금지 · 빨강은 삭제 버튼만)
-  const greens = data.colors.filter((c) =>
-    BANNED_COLORS.green.some((g) => c.color.includes(g) || c.bg.includes(g) || c.border.includes(g)) &&
-    !GREEN_ALLOWED.some((a) => c.cls.includes(a)));
-  check(greens.length === 0, `[${name}] 초록 없음`, greens.map((c) => c.cls).slice(0, 4).join(' / '));
+  const greens = data.colors
+    .filter((c) => !GREEN_ALLOWED.some((a) => c.cls.includes(a)))
+    .map((c) => [c.cls, hitsBand(c, HUE_BANDS.green)]).filter(([, hit]) => hit.length);
+  check(greens.length === 0, `[${name}] 초록 없음`,
+    greens.length ? greens.map(([cls, hit]) => `${cls}: ${hit.join(', ')}`).slice(0, 4).join(' / ')
+      : `색 ${data.colors.length}개 검사`);
 
-  const reds = data.colors.filter((c) =>
-    BANNED_COLORS.red.some((g) => c.color.includes(g) || c.bg.includes(g) || c.border.includes(g)) &&
-    !RED_ALLOWED.some((a) => c.cls.includes(a)));
-  check(reds.length === 0, `[${name}] 빨강은 삭제 버튼만`, reds.map((c) => c.cls).slice(0, 4).join(' / '));
+  const reds = data.colors
+    .filter((c) => !RED_ALLOWED.some((a) => c.cls.includes(a)))
+    .map((c) => [c.cls, hitsBand(c, HUE_BANDS.red)]).filter(([, hit]) => hit.length);
+  check(reds.length === 0, `[${name}] 빨강은 삭제 버튼만`,
+    reds.length ? reds.map(([cls, hit]) => `${cls}: ${hit.join(', ')}`).slice(0, 4).join(' / ')
+      : `색 ${data.colors.length}개 검사`);
 
   // 4) 글자 굵기 700 이하 (토스 번들 실측: 800·900 은 한 번도 안 씀)
   const heavy = data.weights.filter((w) => w.w > 700);
@@ -226,7 +291,8 @@ function auditScreen(name, data) {
   check(data.depth <= 2, `[${name}] 면 중첩 2겹 이하`, `${data.depth}겹`);
   // 10) 떠 있는 면이 세 장을 넘으면 '카드 더미' 로 읽힌다
   check(data.floating <= 3, `[${name}] 떠 있는 면 3장 이하`, `${data.floating}장: ${data.floatingList.join(' ')}`);
-  check(data.stuck.length === 0, `[${name}] 버튼끼리 붙어 있지 않음`, data.stuck.join(' '));
+  check(data.stuck.length === 0, `[${name}] 버튼끼리 붙어 있지 않음`,
+    data.stuck.length ? data.stuck.join(' ') : `나란한 버튼 ${data.btnPairs}쌍`);
   // 11) 점수 막대와 바로 옆 숫자가 같은 말을 하는가 (막대가 없는 화면은 0개로 지나간다)
   check(data.barGap.length === 0, `[${name}] 점수 막대가 옆 숫자와 어긋나지 않음`,
     data.barGap.length ? data.barGap.slice(0, 4).join(' / ') : `막대 ${data.barCount}개`);
@@ -331,6 +397,14 @@ async function run() {
   await grab('궁합(짝 고름)');
   const unlock = page.getByText('광고 보고 결과 열기', { exact: false });
   if (await unlock.count()) { await unlock.first().click(); await w(2600); await grab('궁합 결과'); }
+
+  // 삭제 확인 — 이 앱에서 빨강을 쓰는 유일한 자리이자, 버튼 둘이 나란히 서는
+  // 유일한 자리다. 그런데 열다섯 화면을 도는 동안 한 번도 안 들렀다. 안 들른
+  // 화면은 규칙을 지키는지 아닌지를 아무도 모른다.
+  await page.goto(BASE, { waitUntil: 'networkidle' }); await w(600);
+  await page.locator('.today-hook__cta').first().click(); await w(800);
+  await page.locator('.data-link').first().click(); await w(500);
+  await grab('삭제 확인');
 
   await browser.close();
   srv.kill();

@@ -163,7 +163,10 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
       onBack={onBack}
       step={inFlow ? 1 : undefined}
       totalSteps={inFlow ? 4 : undefined}
-      bottom={
+      // 지울까요 를 묻는 동안에는 아래 '다음' 을 내린다. 안 그러면 되돌릴 수 없는
+      // 빨간 버튼 바로 밑에 화면에서 제일 큰 파란 버튼이 붙어서, 세 개 중에
+      // 무엇을 누르는 자리인지가 흐려진다. 물었으면 그 물음 하나만 남긴다.
+      bottom={confirmClear ? null : (
         <button
           type="button"
           className="btn btn--primary"
@@ -197,7 +200,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
         >
           {ctaLabel ?? (inFlow ? '쪽지 열어보기' : '내 사주 보기')}
         </button>
-      }
+      )}
     >
       <h2 className="h2">언제 태어났어요?</h2>
       <p className="lead">이 기기에만 저장돼요. 어디에도 보내지 않아요.</p>
