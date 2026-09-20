@@ -56,23 +56,35 @@ export const DAY_ANCHOR = { date: '1900-01-01', ganzhi: 10, kor: '갑술' } as c
  * 열어 대조한 뒤에야 source 를 붙여 GOLDEN 으로 옮긴다. 그전까지 PASS 라고 적지
  * 않는다.
  */
-export const NEEDS_EXTERNAL_CHECK: { date: string; engineSays: string; why: string }[] = [
-  {
-    date: '1900-01-01',
-    engineSays: '갑술',
-    why: '일주 절대 기준점. 이 하나가 밀리면 모든 사람의 일주가 같은 만큼 밀린다.',
-  },
-  {
-    date: '2000-01-01',
-    engineSays: '무오',
-    why: '널리 공표된 날짜라 대조하기 쉽다. 위 기준점과 60갑자로 맞물리는지 같이 본다.',
-  },
-  {
-    date: '1984-02-02',
-    engineSays: '병인',
-    why: '1984 는 갑자년. 갑자년 초에 갑자일이 온다는 통설이 맞는지 확인이 필요하다.',
-  },
-];
+/**
+ * 외부에서 대조한 일주 기준점.
+ *
+ * 2026-09-20 에 웹 검색으로 확인했다. 2000년 1월 1일은 무오일(60갑자 55번째,
+ * 0부터 세면 54)이고 음력으로 1999년 11월 25일이다. 두 값 모두 엔진과 같다.
+ *
+ * 이 하나로 나머지가 따라온다. 일주는 하루에 정확히 한 칸씩 도는 산술이고,
+ * golden.test 가 150년치를 율리우스일 계산과 따로 맞춰 끊김이 없음을 이미
+ * 확인한다. 기준점 하나가 맞으면 그 범위의 모든 일주가 맞는다.
+ *
+ * 그래서 1900-01-01 갑술과 1984-02-02 병인은 '외부에서 본 값' 이 아니라
+ * '확인된 기준점에서 날수로 끌어낸 값' 이다. 테스트에서도 그렇게 검산한다.
+ */
+export const DAY_ANCHOR_CHECKED = {
+  date: '2000-01-01',
+  ganzhi: 54,
+  kor: '무오',
+  lunar: { year: 1999, month: 11, day: 25, leap: false },
+  checkedOn: '2026-09-20',
+  how: '웹 검색. 일주와 음력 환산이 둘 다 엔진과 일치.',
+} as const;
+
+/**
+ * 아직 외부 대조가 안 된 항목.
+ *
+ * 여기 적힌 것은 '현재 엔진이 내는 값' 이지 '검증된 값' 이 아니다. 대조한 뒤에야
+ * GOLDEN 으로 옮긴다. 그전까지 PASS 라고 적지 않는다.
+ */
+export const NEEDS_EXTERNAL_CHECK: { date: string; engineSays: string; why: string }[] = [];
 
 const RS = 'v1 / ipchun / solarTerm / trueSolarMidnight / nightZi:nextDay / trueSolar@126.9784 / daeun:round';
 

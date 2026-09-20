@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { computeFourPillars, pillarsHanja, boundaryNotice } from './fourPillars.ts';
 import { toJDN } from './saju.ts';
 import { hashSeed } from './dateSeed.ts';
-import { GOLDEN, NEEDS_EXTERNAL_CHECK, type GoldenCase } from './goldenFixtures.ts';
+import { GOLDEN, NEEDS_EXTERNAL_CHECK, DAY_ANCHOR_CHECKED, type GoldenCase } from './goldenFixtures.ts';
+import { solarToLunar } from './lunar.ts';
 import { RULESET, rulesetLabel } from './sajuRuleset.ts';
 import { daeunStartAge, isYangYearStem } from './daeun.ts';
 import { computeTiming } from './timing.ts';
@@ -127,9 +128,12 @@ test('golden: 자시 경계가 진태양시 23:00 에 걸린다 (서울 벽시�
 });
 
 test('golden: 외부 대조가 남은 항목은 PASS 로 위장하지 않는다', () => {
-  // 절대 일주 기준점은 아직 만세력으로 대조하지 못했다. 목록이 비어 있으면
-  // 누군가 확인 없이 지운 것이므로 실패시킨다.
-  assert.ok(NEEDS_EXTERNAL_CHECK.length >= 1, '외부 대조 목록이 비었다');
+  // 목록이 비었다는 건 '전부 대조됐다' 는 뜻이어야 한다. 그러려면 기준점에
+  // 언제 어떻게 대조했는지가 적혀 있어야 한다. 그냥 지우고 비우는 건 막는다.
+  if (NEEDS_EXTERNAL_CHECK.length === 0) {
+    assert.ok(DAY_ANCHOR_CHECKED.checkedOn.length >= 10, '언제 대조했는지 안 적혀 있다');
+    assert.ok(DAY_ANCHOR_CHECKED.how.length > 10, '어떻게 대조했는지 안 적혀 있다');
+  }
   for (const x of NEEDS_EXTERNAL_CHECK) {
     assert.ok(x.date && x.engineSays && x.why.length > 10, `${x.date} 기록이 부실함`);
   }
@@ -336,5 +340,57 @@ test('규칙: 삼형을 두 글자로 잡는지 세 글자로 잡는지가 적�
   // 현재는 pair. 인신은 둘만 있어도 형으로 잡힌다.
   if (RULESET.hyeongScope === 'pair') {
     assert.ok(branchRelations(2, 8).includes('형'), '인신이 형으로 안 잡힌다');
+  }
+});
+
+// ── 일주 절대 기준점 ────────────────────────────────────────────────────────
+// 이 앱에서 제일 무서운 실패는 일주가 통째로 한 칸 밀리는 것이다. 아무도
+// 못 알아채면서 모든 사람의 답이 틀린다. 상대 성질(하루 +1, 60일 주기)만
+// 맞춰서는 이걸 못 잡는다. 바깥에서 본 값 하나가 반드시 필요하다.
+test('외부에서 대조한 기준점과 일주가 맞는다', () => {
+  const [y, m, d] = DAY_ANCHOR_CHECKED.date.split('-').map(Number);
+  const p = computeFourPillars({ year: y, month: m, day: d, hour: 12 });
+  assert.equal(
+    p.day.ganzhi,
+    DAY_ANCHOR_CHECKED.ganzhi,
+    `${DAY_ANCHOR_CHECKED.date} 은 ${DAY_ANCHOR_CHECKED.kor} 이어야 해요 (실제 ${p.day.kor})`,
+  );
+  assert.equal(p.day.kor, DAY_ANCHOR_CHECKED.kor);
+});
+
+test('같은 기준점의 음력 환산도 맞는다', () => {
+  const [y, m, d] = DAY_ANCHOR_CHECKED.date.split('-').map(Number);
+  const l = solarToLunar(y, m, d);
+  assert.deepEqual(
+    { year: l.year, month: l.month, day: l.day, leap: l.leap },
+    DAY_ANCHOR_CHECKED.lunar,
+  );
+});
+
+// 기준점 하나가 맞고 하루 +1 이 끊기지 않으면, 그 사이 모든 날이 맞는다.
+// 예전에 '외부 대조 필요' 로 남겨뒀던 두 날짜를 여기서 날수로 끌어내 검산한다.
+test('확인된 기준점에서 날수로 끌어낸 값이 엔진과 같다', () => {
+  const anchorJdn = toJDN(2000, 1, 1);
+  const cases: [string, string][] = [
+    ['1900-01-01', '갑술'],
+    ['1984-02-02', '병인'],
+    ['1949-01-01', '신묘'],
+    ['2026-09-20', '정유'],
+  ];
+  for (const [date, kor] of cases) {
+    const [y, m, d] = date.split('-').map(Number);
+    const gap = toJDN(y, m, d) - anchorJdn;
+    const derived = (((DAY_ANCHOR_CHECKED.ganzhi + gap) % 60) + 60) % 60;
+    const p = computeFourPillars({ year: y, month: m, day: d, hour: 12 });
+    assert.equal(p.day.ganzhi, derived, `${date}: 기준점에서 끌어낸 값과 다름`);
+    assert.equal(p.day.kor, kor, `${date}: ${kor} 이어야 해요 (실제 ${p.day.kor})`);
+  }
+});
+
+test('대조 안 된 항목이 남아 있으면 목록에 적혀 있다', () => {
+  // 비어 있으면 전부 대조됐다는 뜻이다. 남아 있으면 무엇이 왜 남았는지
+  // 읽을 수 있어야 한다. 조용히 통과시키지 않는다.
+  for (const item of NEEDS_EXTERNAL_CHECK) {
+    assert.ok(item.date && item.engineSays && item.why, '남은 항목에 설명이 없어요');
   }
 });
