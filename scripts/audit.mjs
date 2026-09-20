@@ -1000,6 +1000,16 @@ async function run(browser) {
     });
     check(chipGrid !== null && chipGrid.cols === 3 && chipGrid.rows === 4,
       '[궁합] 띠 고르기가 세 칸씩 네 줄', chipGrid ? `${chipGrid.cols}열 ${chipGrid.rows}줄 ${chipGrid.w}px` : '칸 없음');
+    // 이름만 열둘 늘어놓으면 '나 92년생인데 무슨 띠지' 에서 막힌다.
+    // 띠에는 최근 생년 셋, 별자리에는 날짜 범위가 같이 있어야 한다.
+    const chipSubs = await page.evaluate(() =>
+      [...document.querySelectorAll('.zodiac-grid--full .zodiac-chip .zodiac-chip__sub')]
+        .map((e) => e.textContent.trim()).filter(Boolean));
+    check(chipSubs.length === 12, '[궁합] 열두 칸 전부 실마리 한 줄', `${chipSubs.length}칸`);
+    check(new Set(chipSubs).size === 12, '[궁합] 칸마다 실마리가 다름', chipSubs.slice(0, 3).join(' / '));
+    check(chipSubs.every((t) => /^\d\d( · \d\d)+$/.test(t)), '[궁합] 띠 칸은 두 자리 생년', chipSubs[0]);
+    // 띠가 바뀌는 자리는 1월 1일이 아니라 입춘이라, 연도가 어긋나는 구간을 적어둬야 한다.
+    check((await bodyText(page)).includes('앞 띠일 수 있어요'), '[궁합] 입춘 경계를 알려줌');
 
     // 생년월일을 넣고 온 사람은 '나' 가 이미 정해져 있어 피커가 닫혀 있다. 슬롯을 눌러 연다.
     const pickZ = async (label) => {

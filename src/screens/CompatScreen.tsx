@@ -5,7 +5,7 @@ import { Mascot } from '../components/Mascot.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { AdBadge } from '../components/AdNotice.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
-import { ZODIACS, findZodiac, type ZodiacId, type Zodiac } from '../data/zodiac.ts';
+import { ZODIACS, findZodiac, zodiacYears, type ZodiacId, type Zodiac } from '../data/zodiac.ts';
 import { STAR_SIGNS, findStarSign, type StarSignId } from '../data/starSign.ts';
 import { computeCompat, type CompatResult } from '../lib/compat.ts';
 import { computeStarCompat } from '../lib/starCompat.ts';
@@ -71,6 +71,10 @@ export function CompatScreen({
   onToast,
 }: Props) {
   const [mode, setMode] = useState<Mode>('zodiac');
+
+  // 띠 연도는 오늘이 아니라 dateKey 에서 뽑는다. 이 앱의 화면은 전부 날짜
+  // 하나로 결정되고, 같은 날짜면 몇 번을 봐도 같은 글자가 나와야 한다.
+  const thisYear = Number(dateKey.slice(0, 4));
 
   const [myZodiac, setMyZodiac] = useState<ZodiacId | null>(initialMyZodiac);
   const [friendZodiac, setFriendZodiac] = useState<ZodiacId | null>(null);
@@ -252,8 +256,9 @@ export function CompatScreen({
         <p className="lead">
           {modeLabel}만 고르면 돼요. 생년월일은 필요 없어요.
         </p>
-        {/* 별자리는 이름만 있으면 자기 것을 못 찾는다. 생일은 알아도 자기가
-            무슨 자리인지 모르는 사람이 더 많다. 기호와 날짜 범위를 같이 둔다.
+        {/* 이름만 열둘 늘어놓으면 '나 92년생인데 무슨 띠지' 에서 막힌다.
+            생년과 생일은 다들 알지만 자기 띠·별자리 이름은 모르는 사람이 많다.
+            띠에는 최근 생년 셋, 별자리에는 날짜 범위를 같이 둔다.
             배지는 안 붙인다. 띠 배지는 담는 글자가 '쥐'고 이름이 '쥐띠'라 같은
             글자를 두 번 쓰는 꼴이고, 별자리 배지는 열둘이 전부 같은 별 모양이라
             아무것도 안 갈린다. 빈 자리를 메우려고 뜻 없는 것을 넣는 건 여백을
@@ -262,7 +267,9 @@ export function CompatScreen({
           {options.map((z) => (
             <button key={z.id} type="button" className="zodiac-chip" onClick={() => choose(z.id)}>
               <span className="zodiac-chip__label">{z.label}</span>
-              {'dateRange' in z ? <span className="zodiac-chip__sub num">{z.dateRange}</span> : null}
+              <span className="zodiac-chip__sub num">
+                {'dateRange' in z ? z.dateRange : zodiacYears(z.id as ZodiacId, thisYear).join(' · ')}
+              </span>
             </button>
           ))}
         </div>
@@ -270,6 +277,11 @@ export function CompatScreen({
           <span className="pick-foot__lock" aria-hidden><Icon name="lock" size={18} /></span>
           이름·생년월일 없이 {modeLabel}만으로 봐요
         </p>
+        {/* 띠가 바뀌는 자리는 1월 1일이 아니라 입춘이다. 연도는 고르는 데
+            쓰는 실마리지 판정이 아니라서, 어긋나는 구간을 적어둔다. */}
+        {mode === 'zodiac' ? (
+          <p className="pick-foot pick-foot--note">1~2월 초에 태어났으면 앞 띠일 수 있어요</p>
+        ) : null}
       </AppLayout>
     );
   }

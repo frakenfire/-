@@ -822,6 +822,15 @@ strong {
   line-height: 16.5px;
   font-weight: 500;
   color: var(--gray-600);
+  white-space: nowrap;
+}
+/* 바닥 안내가 두 줄이 되면서 둘 다 margin-top:auto 를 물려받아 서로
+   44px 떨어져 있었다. 둘은 한 덩이로 읽혀야 한다. 위로 올리는 건 첫 줄만. */
+.pick-foot--note {
+  margin-top: 0;
+  padding-top: 2px;
+  font-weight: 500;
+  color: var(--gray-500);
 }
 .zodiac-grid--full .zodiac-chip:active {
   background: var(--brand-soft);
