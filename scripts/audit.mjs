@@ -1017,6 +1017,26 @@ async function run(browser) {
     await wait(page, 3200);
     const c = await bodyText(page);
     check(/\d+점/.test(c) && c.includes('케미'), '[궁합] 광고 언락 후 결과');
+    // 세 칸은 폭이 같은데 첫 칸만 padding-left 가 0 이라 막대 자리가
+    // 102/89/89px 로 갈려 있었다. 각자 자기 자리의 %로 그리니 98점이 100px,
+    // 97점이 86px 로 나왔다. 1점 차이가 14px 로 보이면 점수가 거짓말이 된다.
+    const catBars = await page.evaluate(() => {
+      const cols = [...document.querySelectorAll('.compat-cat')];
+      const t = cols.map((c) => Math.round(c.querySelector('.compat-cat__bar').getBoundingClientRect().width));
+      const pair = cols.map((c) => ({
+        score: Number(c.querySelector('.compat-cat__score').textContent),
+        fill: c.querySelector('.compat-cat__fill').getBoundingClientRect().width,
+      }));
+      // 점수가 높은 칸의 막대가 더 짧으면 안 된다
+      const sorted = [...pair].sort((a, b) => b.score - a.score);
+      let monotone = true;
+      for (let i = 1; i < sorted.length; i += 1) {
+        if (sorted[i - 1].score > sorted[i].score && sorted[i - 1].fill < sorted[i].fill - 0.5) monotone = false;
+      }
+      return { tracks: t, spread: Math.max(...t) - Math.min(...t), monotone };
+    });
+    check(catBars.spread <= 1, '[궁합] 세 점수 막대의 자리 폭이 같다', `${catBars.tracks.join('/')}px`);
+    check(catBars.monotone, '[궁합] 점수가 높은 칸의 막대가 더 길다');
     await diagnose(page, '궁합');
 
     // 결과 화면과 같은 규칙 - 공유가 안 되는 환경에서는 알아서 복사로 떨어지므로

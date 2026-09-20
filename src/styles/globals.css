@@ -441,7 +441,11 @@ strong {
   white-space: pre-line;
 }
 /* ── 고지 / 광고 ── */
+/* 이 한 줄은 늘 화면의 맨 끝이다. 짧은 화면(궁합 잠금)에서는 버튼 바로
+   밑에 붙고 그 아래로 150px 이 허공으로 남았다. 남는 자리는 이 줄 위가
+   받고, 이 줄이 화면을 닫는다. 긴 화면에서는 auto 가 0 이라 그대로다. */
 .disclaimer {
+  margin-top: auto;
   font-size: 12px;
   color: var(--color-text-secondary);
   line-height: 18px;
@@ -1773,28 +1777,28 @@ strong {
   margin: 0 0 var(--space-4);
   word-break: keep-all;
 }
+/* 세 칸은 폭이 같은데 첫 칸만 padding-left 를 0 으로 둬서 막대가 들어가는
+   자리가 102px / 89px / 89px 로 갈렸다. 막대 길이를 각자 자기 자리의 %로
+   그리니 케미 98점이 100px, 안 싸우기 97점이 86px 로 나왔다. 1점 차이가
+   14px 로 보이는 그림은 점수를 거짓말로 만든다.
+   칸 사이는 세로선 대신 틈으로 가른다. 그래야 세 칸이 같은 폭이면서
+   양쪽 끝이 카드의 다른 줄과 나란히 선다. */
 .compat-cats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-
-  gap: 0;
+  gap: 0 14px;
   margin: 0 0 var(--space-4);
   border-top: 1px solid var(--gray-100);
   border-bottom: 1px solid var(--gray-100);
-  padding: var(--space-3) 0;}
+  padding: var(--space-3) 0;
+}
 .compat-cat {
   display: flex;
   flex-direction: column;
   gap: 4px;
   min-width: 0;
-
   align-items: flex-start;
-  padding: 0 12px;}
-.compat-cat:first-child {
-  padding-left: 0;
-}
-.compat-cat + .compat-cat {
-  border-left: 1px solid var(--gray-100);
+  padding: 0;
 }
 .compat-cat__label {
   font-size: 11px;

@@ -7,7 +7,7 @@ import { pickNotesFor } from './lib/pickNotes.ts';
 import { generateFortune } from './lib/generateFortune.ts';
 import { luckPercentile } from './lib/luck.ts';
 import { showRewardAd, isRewarded, isUnsupportedFreePass } from './lib/ads.ts';
-import { shareBriefing, shareForUnlock, copyText, shareMessage } from './lib/share.ts';
+import { shareBriefing, shareForUnlock, shareMessage } from './lib/share.ts';
 import { ConcernScreen } from './screens/ConcernScreen.tsx';
 import { ConcernAskScreen } from './screens/ConcernAskScreen.tsx';
 import { computeTiming } from './lib/timing.ts';
@@ -15,7 +15,6 @@ import { buildDeepRead } from './lib/deepRead.ts';
 import { computeFourScores } from './lib/concernScore.ts';
 import { findConcern, type ConcernKey } from './data/concerns.ts';
 import { AppLayout } from './components/AppLayout.tsx';
-import { saveResultCard } from './lib/saveImage.ts';
 import {
   incrementDailyDrawCount,
   markVisit,
@@ -31,25 +30,19 @@ import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, hasAskedRev
   type StoredBirth } from './lib/storage.ts';
 
 import { HomeScreen } from './screens/HomeScreen.tsx';
-import { MoodScreen } from './screens/MoodScreen.tsx';
 import { NotePickScreen } from './screens/NotePickScreen.tsx';
 import { RevealScreen } from './screens/RevealScreen.tsx';
 import { ResultScreen } from './screens/ResultScreen.tsx';
-import { DetailResultScreen } from './screens/DetailResultScreen.tsx';
 import { CompatScreen } from './screens/CompatScreen.tsx';
 import { BirthScreen } from './screens/BirthScreen.tsx';
 import { findPlace } from './data/birthPlace.ts';
 import { parseBirth } from './lib/birth.ts';
-import { TopicScreen } from './screens/TopicScreen.tsx';
 import { computeFourPillars } from './lib/fourPillars.ts';
 import { tap } from './lib/haptic.ts';
 import { hashSeed } from './lib/dateSeed.ts';
-import { dailyForMe } from './lib/dailySaju.ts';
-import { analyzeSaju } from './lib/tenGods.ts';
-import { DAY_MASTER_BY_INDEX } from './data/dayMaster.ts';
 
 type ScreenName =
-  | 'home' | 'mood' | 'pick' | 'reveal' | 'result' | 'detail' | 'compat' | 'birth' | 'saju' | 'topic'
+  | 'home' | 'pick' | 'reveal' | 'result' | 'compat' | 'birth'
   | 'concern' | 'concernAsk';
 
 function wait(ms: number): Promise<void> {
@@ -233,7 +226,7 @@ export default function App() {
     setNote(null);
     // 날이 바뀌었으니 지나온 길도 의미가 없다
     setScreenRaw((cur) => {
-      if (cur === 'result' || cur === 'detail' || cur === 'reveal') {
+      if (cur === 'result' || cur === 'reveal') {
         backStack.current = [];
         return 'home';
       }
@@ -283,15 +276,6 @@ export default function App() {
   function flash(msg: string) {
     setToast(msg);
     window.setTimeout(() => setToast((cur) => (cur === msg ? null : cur)), 1800);
-  }
-
-  function handleType(t: FortuneType) {
-    startDraw(t);
-  }
-
-  function handleMood(m: Mood) {
-    setMood(m);
-    setScreen('pick');
   }
 
   function handleSaveMyZodiac(id: ZodiacId) {
@@ -389,12 +373,6 @@ export default function App() {
     else flash('앗, 공유를 못 했어요');
   }
 
-  async function handleCopyLine() {
-    if (!result) return;
-    const ok = await copyText(result.detail.charm);
-    flash(ok ?'한 줄 복사 완료!' : '앗, 복사를 못 했어요');
-  }
-
   async function handleShareWeek(text: string) {
     const r = await shareMessage(text);
     logEvent('share_week', { outcome: r });
@@ -471,16 +449,6 @@ export default function App() {
     setBirthNext('saju');
   }
 
-  // 홈에 보여줄 일간 배지 — 사주를 세운 사람에게는 '내 것'이 홈에서 바로 보여야 한다.
-  const sajuBadge = useMemo(() => {
-    if (!birthInput || !pillars) return null;
-    const dm = DAY_MASTER_BY_INDEX[pillars.dayStem];
-    // 오늘 기운이 돈·사랑·일에 어떻게 닿는지 홈에서 바로 보여주기 위한 묶음
-    const group = dailyForMe(dateKey, pillars, analyzeSaju(pillars)).dayGodGroup;
-    // 한자는 붙이지 않는다. '壬 큰 물' 은 읽는 사람 대부분에게 앞 글자가 장벽이다.
-    return { icon: dm.icon, name: dm.name, hue: dm.hue, group };
-  }, [birthInput, pillars, dateKey]);
-
   // 사주를 세우면 띠는 이미 정해진다(그것도 입춘 기준이라 더 정확하다).
   // 그런데도 홈이 "내 띠를 고르면…"이라고 물으면 유저는 "방금 넣었는데?" 가 된다.
   // 사주가 있으면 띠를 자동으로 맞춰, 같은 걸 두 번 묻지 않는다.
@@ -508,33 +476,9 @@ export default function App() {
     setScreen('home');
   }
 
-  async function handleSave() {
-    if (busy || !result || !note) return;
-    const snapshot = result;
-    setBusy(true);
-    try {
-      const ok = await saveResultCard({
-        title: snapshot.title,
-        subtitle: snapshot.subtitle,
-        headline: snapshot.dayPlan.headline,
-        total: snapshot.luck.total,
-        grade: snapshot.luck.grade,
-        rarity: snapshot.rarity,
-        saju: snapshot.saju
-          ? { iljin: snapshot.saju.iljin.kor, rel: snapshot.saju.relationKo, tone: snapshot.saju.toneWord }
-          : null,
-      });
-      logEvent('save_card', { ok });
-      flash(ok ?'결과 카드 저장 완료!  스토리에 올려봐요' : '앗, 저장을 못 했어요');
-    } catch (e) {
-      reportError('handleSave', e);
-      flash('앗, 저장 중 문제가 생겼어요');
-    } finally {
-      setBusy(false);
-    }
-  }
-
-
+  // 결과 카드 저장(이미지)과 한 줄 복사는 상세 화면에만 버튼이 있었다.
+  // 그 화면이 setScreen 으로 열리지 않아 두 기능 다 이미 안 도는 상태였다.
+  // 코드만 지운다 — 다시 넣으려면 결과 화면에 버튼부터 있어야 한다.
   // 친구 궁합 보상 광고 게이트 — rewarded/unsupported 만 잠금 해제.
   // 광고로 다른 고민 하나를 연다. 본문은 전부 무료고 여기만 광고를 낀다.
   // 한 번 연 고민은 그 날 다시 묻지 않는다 — 같은 값에 두 번 받으면 통행료다.
@@ -581,26 +525,6 @@ export default function App() {
             setBirthNext('concern');
             setScreen('birth');
           }}
-        />
-      )}
-
-      {screen === 'topic' && (
-        <TopicScreen
-          sajuBadge={sajuBadge}
-          onSelect={handleType}
-          onBack={() => goBack()}
-        />
-      )}
-
-      {screen === 'mood' && (
-        <MoodScreen
-          zodiac={zodiac}
-          star={starSign}
-          onPickZodiac={handleSaveMyZodiac}
-          onPickStar={handleSaveMyStarSign}
-          onSelect={handleMood}
-          hasBirth={birthInput !== null}
-          onBack={() => goBack()}
         />
       )}
 
@@ -653,20 +577,9 @@ export default function App() {
         />
       )}
 
-      {screen === 'detail' && result && (
-        <DetailResultScreen
-          result={result}
-          busy={busy}
-          onShare={handleShare}
-          onCopyLine={handleCopyLine}
-          onSave={handleSave}
-          onBack={() => goBack()}
-        />
-      )}
-
-      {/* 안전망 — 결과/심층 화면인데 데이터가 없으면(저장 실패·비정상 복원 등)
+      {/* 안전망 — 결과 화면인데 데이터가 없으면(저장 실패·비정상 복원 등)
           빈 화면을 보여주지 않고 홈으로 돌아갈 길을 준다. */}
-      {(screen === 'result' || screen === 'detail') && !(result && note) && (
+      {screen === 'result' && !(result && note) && (
         <AppLayout onBack={() => goBack()} title="오늘의 쪽지">
           <div className="empty-state">
             <p className="empty-state__title">쪽지를 불러오지 못했어요</p>
