@@ -690,6 +690,46 @@ async function run(browser) {
         return true;
       });
       check(ndOpen, '[재방문] 접힌 묶음 밖에 있다');
+
+      // ── 한 단어는 한 뜻만 ──
+      // 밴드 칩이 '좋아요 92' 로 점수를 말하는데 같은 화면의 줄 이름도
+      // '좋아요' 였다. 한 단어가 두 가지 뜻이면 읽는 사람이 둘을 잇는다.
+      const BAND_WORDS = ['좋아요', '무난해요', '조심할 때'];
+      const clash = await page.evaluate((words) => {
+        const LABELS = '.slot__pt-k, .today2__k, .read6__k, .when4__k, .yline__k, .cat4__head, .more__label, .dec__k, .ycmp th';
+        return [...document.querySelectorAll(LABELS)]
+          .map((el) => el.textContent.trim())
+          .filter((t) => words.includes(t));
+      }, BAND_WORDS);
+      check(clash.length === 0, '[문구] 점수 말과 줄 이름이 안 겹친다', clash.slice(0, 4).join(' / '));
+      // 밴드 말은 칩에만 있어야 한다
+      const bandOutside = await page.evaluate((words) => {
+        const chips = '.when4__b, .yline__b, .mpick__band, .score-hero__grade';
+        const inChip = new Set(document.querySelectorAll(chips));
+        return [...document.querySelectorAll('span, b, strong')]
+          .filter((el) => el.children.length === 0)
+          .filter((el) => words.includes(el.textContent.trim()))
+          .filter((el) => ![...inChip].some((c) => c === el || c.contains(el)))
+          .map((el) => `${el.className || el.tagName}:${el.textContent.trim()}`);
+      }, BAND_WORDS);
+      check(bandOutside.length === 0, '[문구] 밴드 말은 칩 안에만 있다', bandOutside.slice(0, 4).join(' / '));
+
+      // 묶음 이름과 그 안 첫 카드 제목이 같은 말을 두 번 하면 안 된다.
+      // '왜 이렇게 봤나요' 바로 밑에 '왜 이렇게 봤냐면요' 가 있었다.
+      await openFolds(page);
+      const echoes = await page.evaluate(() => {
+        const out = [];
+        for (const fold of document.querySelectorAll('.fold')) {
+          const t = fold.querySelector('.fold__title')?.textContent?.trim() ?? '';
+          const h = fold.querySelector('.cat4__head')?.textContent?.trim() ?? '';
+          if (!t || !h) continue;
+          let n = 0;
+          while (n < t.length && n < h.length && t[n] === h[n]) n += 1;
+          if (n >= 4) out.push(`${t} / ${h}`);
+        }
+        return out;
+      });
+      check(echoes.length === 0, '[문구] 묶음 이름을 카드가 되풀이하지 않는다', echoes.join(' · '));
       await diagnose(page, '쪽지결과');
     } catch (e) {
       bad('[쪽지] 컨셉 유지', e.message.split('\n')[0]);

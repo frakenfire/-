@@ -221,11 +221,14 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           <Sentences className="mpick__line" text={picked.outer} />
           <ul className="slot__pts">
             <li className="slot__pt slot__pt--good">
-              <span className="slot__pt-k">좋아요</span>
+              {/* 밴드 칩이 같은 화면에서 '좋아요 92' 로 쓰이고 있다.
+                  여기까지 '좋아요' 라고 적으면 한 단어가 두 가지 뜻이 된다.
+                  점수를 말하는 자리와 내용을 말하는 자리를 갈라놓는다. */}
+              <span className="slot__pt-k">잘 되는 것</span>
               <Sentences className="slot__pt-v" text={picked.good} />
             </li>
             <li className="slot__pt slot__pt--care">
-              <span className="slot__pt-k">조심해요</span>
+              <span className="slot__pt-k">탈 나는 것</span>
               <Sentences className="slot__pt-v" text={picked.care} />
             </li>
           </ul>
@@ -293,7 +296,10 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       <Fold title="왜 이렇게 봤나요" hint="내 글자와 올해, 이번 달에서 본 것">
       <div className="sec-card">
-        <p className="cat4__head">왜 이렇게 봤냐면요</p>
+        {/* 묶음 이름이 바로 위에서 '왜 이렇게 봤나요' 라고 묻고 있다.
+            여기서 '왜 이렇게 봤냐면요' 라고 다시 쓰면 같은 질문을 두 번 한다.
+            이 카드가 실제로 보여주는 것(네 층에서 각각 무엇을 봤나)을 적는다. */}
+        <p className="cat4__head">층마다 본 것</p>
         <ul className="read6 read6--tight">
           {read.why.map((w) => (
             <li key={w.k} className="read6__row">

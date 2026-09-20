@@ -145,11 +145,11 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           <p className="cat4__head">오늘은 이렇게</p>
           <ul className="today2">
             <li className="today2__row today2__row--do">
-              <span className="today2__k">하면 좋아요</span>
+              <span className="today2__k">하면 좋은 것</span>
               <Sentences className="today2__v" text={deep.read.today.doIt} />
             </li>
             <li className="today2__row today2__row--dont">
-              <span className="today2__k">피하세요</span>
+              <span className="today2__k">피할 것</span>
               <Sentences className="today2__v" text={deep.read.today.avoid} />
             </li>
             {deep.read.today.hold ? (
@@ -167,11 +167,11 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           <p className="today2__vibe">{dayPlan.vibe}</p>
           <ul className="today2">
             <li className="today2__row today2__row--do">
-              <span className="today2__k">하면 좋아요</span>
+              <span className="today2__k">하면 좋은 것</span>
               <Sentences className="today2__v" text={result.daily?.reading.doThis ?? result.dos[0]} />
             </li>
             <li className="today2__row today2__row--dont">
-              <span className="today2__k">피하세요</span>
+              <span className="today2__k">피할 것</span>
               <Sentences className="today2__v" text={result.daily?.reading.avoid ?? result.dont} />
             </li>
             <li className="today2__row today2__row--hold">
