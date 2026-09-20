@@ -21,10 +21,6 @@ body {
   letter-spacing: -0.01em;
   word-break: keep-all; /* 한글 단어 단위 줄바꿈 — 어색한 끊김 방지 */
 }
-.lucky-cell__v {
-  font-family: var(--font-num);
-  font-feature-settings: var(--fnum);
-}
 /* 숫자 강조 공통 — 고정폭 숫자(tnum)로 카운트업/순위 떨림 방지 */
 .num {
   font-family: var(--font-num);
@@ -232,73 +228,8 @@ strong {
   flex-direction: column;
   gap: var(--space-3);
 }
-.menu-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--color-white);
-  box-shadow: var(--shadow-card);
-  text-align: left;
-  transition:
-    border-color 0.12s ease,
-    transform 0.2s var(--ease-spring);
-}
-.menu-row:active {
-  transform: scale(0.975);
-}
-.menu-row--selected {
-  border-color: var(--color-signature-green);
-  background: var(--brand-soft);
-}
-.menu-row__icon {
-  width: 32px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--gray-800);
-}
-.menu-row__body {
-  flex: 1;
-  min-width: 0;
-}
-.menu-row__title {
-  display: block;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 600;
-  color: var(--color-dark-gray);
-}
-.menu-row__desc {
-  display: block;
-  margin-top: 2px;
-  font-size: 13px;
-  line-height: 19.5px;
-  color: var(--color-text-secondary);
-}
-.menu-row__chevron {
-  font-size: 20px;
-  line-height: 29px;
-  font-weight: 600;
-  color: var(--gray-500); /* 20px 큰 글씨 3:1 확보 */
-  flex-shrink: 0;
-}
 /* ── 쪽지 (접힌 카드) ── */
  /* 부채꼴로 펼쳐 놓은 느낌 — 나란히 세워두면 카드 선택지지 '뽑는' 행위가 아니다 */
-.note-row > *:nth-child(1) {
-  --tilt: -5deg;
-  transform-origin: bottom center;
-}
-.note-row > *:nth-child(2) {
-  --tilt: 0deg;
-  margin-top: -10px;
-}
-.note-row > *:nth-child(3) {
-  --tilt: 5deg;
-  transform-origin: bottom center;
-}
 .note-stage {
   flex: 1;
   display: flex;
@@ -307,14 +238,6 @@ strong {
   min-height: 0;
   padding-bottom: var(--space-8);
 }
-.note-row {
-  display: flex;
-  gap: var(--space-3);
-  justify-content: center; /* 가운데 카드를 올려둔 만큼 위가 잘리지 않게 */
-
-  width: 100%;
-  margin-top: 0;
-  padding: 12px 6px 0;}
 .note {
   flex: 1 1 0; /* 이 화면의 주인공. 작게 두면 아래가 텅 비고 '뽑는' 맛이 안 산다 */
   aspect-ratio: 5 / 7;
@@ -426,20 +349,6 @@ strong {
   border-top: none;
   padding-top: 0;
 }
-.section__label {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-  margin: 0 0 var(--space-1);
-}
-.section__text {
-  font-size: 16px;
-  line-height: 24px;
-  color: var(--color-dark-gray);
-  margin: 0;
-  white-space: pre-line;
-}
 /* ── 고지 / 광고 ── */
 /* 이 한 줄은 늘 화면의 맨 끝이다. 짧은 화면(궁합 잠금)에서는 버튼 바로
    밑에 붙고 그 아래로 150px 이 허공으로 남았다. 남는 자리는 이 줄 위가
@@ -519,9 +428,6 @@ strong {
     transform: translate(-50%, 0);
   }
 }
-.fade-in {
-  animation: fade-in 0.22s ease;
-}
 /* 등장 애니메이션은 투명도를 건드리지 않고 위치만 움직인다.
    투명도로 등장시키면 두 가지가 문제가 된다.
    (1) 0 에서 시작하면, 웹뷰가 애니메이션을 멈췄을 때(저전력 모드·백그라운드 등)
@@ -599,14 +505,6 @@ strong {
 }
 /* 섹션 오른쪽 보조 동작 — 토스는 여기에 '더보기'처럼 담백한 글자 버튼을 둔다.
    바탕이 흰색이 아니라 gray-50 이라 gray-600 은 4.42:1 로 AA 미달, 한 단계 진하게. */
-.sec__desc {
-  margin: 2px 0 0;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  /* 카드 밖 바탕(gray-50) 위 — gray-600 은 4.42:1 로 AA 미달 */
-  color: var(--gray-700);
-}
 .sec__action {
   position: relative;
   flex: none;
@@ -639,15 +537,6 @@ strong {
 .rowlist {
   overflow: hidden;
 }
-.rowlist > .compat-banner,
-.rowlist > .reopen-card,
-.rowlist > .recap-card {
-  margin-bottom: 0;
-  border: 0;
-  border-radius: 0;
-  box-shadow: none;
-  background: transparent;
-}
 .rowlist > * + * {
   border-top: 1px solid var(--gray-100);
 }
@@ -662,10 +551,6 @@ strong {
   color: var(--gray-800);
   font-weight: 700;
   line-height: 1;
-}
-.pick-mark {
-  line-height: 1;
-  color: var(--gray-800);
 }
 .zbadge--brand {
   background: var(--brand-soft);
@@ -711,10 +596,6 @@ strong {
   color: var(--gray-800);
 }
 /* 펼쳐진 편지는 줄 밑에 그대로 이어 붙인다 */
-.act-row__panel {
-  padding: var(--space-4);
-  background: var(--gray-50);
-}
 .note-hint {
   text-align: center;
   font-size: 13px;
@@ -837,104 +718,8 @@ strong {
   border-color: var(--brand);
 }
 /* ── 오늘 받은 편지 다시 읽기 ── */
-.reopen-card {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  border-radius: var(--radius-lg);
-  background: var(--white);
-  border: 1px solid var(--gray-100);
-  box-shadow: var(--shadow-card);
-  text-align: left;
-  margin-bottom: var(--space-4);
-}
-.reopen-card:active {
-  transform: scale(0.99);
-}
-.reopen-card__icon {
-  font-size: 26px;
-  line-height: 35px;
-}
-.reopen-card__body {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.reopen-card__label {
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 600;
-  color: var(--gray-500);
-}
-.reopen-card__text {
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.reopen-card__cta {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--brand);
-  flex-shrink: 0;
-}
 /* ── 어제의 쪽지 돌아보기 ── */
-.recap-card {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--gray-50);
-  margin-top: var(--space-4);
-}
-.recap-card__icon {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
-  background: var(--gray-100);
-  color: var(--gray-800);
-}
-.recap-card__body {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.recap-card__label {
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 600;
-  color: var(--gray-500);
-}
-.recap-card__text {
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 600;
-  color: var(--gray-800);
-}
 /* ── 고득점 축하 (색종이) ── */
-.confetti {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-.confetti__bit {
-  position: absolute;
-  top: -24px;
-  font-size: 18px;
-  line-height: 27px;
-  animation: confetti-fall 1.8s ease-in forwards;
-}
 @keyframes confetti-fall {
   0% {
     transform: translateY(0) rotate(0deg);
@@ -966,68 +751,7 @@ strong {
 
   gap: 0;
   border-top: 1px solid var(--gray-100);}
-.lucky-cell {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-
-  padding: var(--space-3) 12px;
-  border-bottom: 1px solid var(--gray-100);}
-.lucky-cell:nth-child(odd) {
-  padding-left: 0;
-}
-.lucky-cell:nth-child(even) {
-  border-left: 1px solid var(--gray-100);
-}
-.lucky-cell__k {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-700);
-}
-.lucky-cell__v {
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 700;
-  color: var(--gray-900);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.lucky-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-}
 /* ── 오늘의 처방 브리핑 ── */
-.briefing {
-  margin-bottom: var(--space-6);
-
-  padding: var(--space-4) 0;}
-.briefing__meta {
-  margin: 10px 0 0;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-700);
-  word-break: keep-all;
-}
-.briefing__meta b {
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.briefing__chips {
-  align-items: center;
-  margin-bottom: var(--space-4);
-
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0 6px;
-  margin: 0 0 var(--space-3);
-  font-size: 13px;
-  line-height: 19.5px;
-  color: var(--gray-700);}
 /* 등급 스탬프 리빌 — 점수 카운트업이 끝날 즈음 등급 배지가 도장처럼 찍힌다 */
 @keyframes stamp-in {
   0% {
@@ -1038,14 +762,6 @@ strong {
   }
   100% {
     transform: scale(1);
-  }
-}
-.briefing .rarity-badge {
-  animation: stamp-in 0.45s var(--ease-spring) 0.6s backwards;
-}
-@media (prefers-reduced-motion: reduce) {
-  .briefing .rarity-badge {
-    animation: none;
   }
 }
 .chip {
@@ -1063,11 +779,6 @@ strong {
 
   padding: 0;
   background: none;}
-.briefing__chips > * + *::before {
-  content: '·';
-  margin-right: 6px;
-  color: var(--gray-400);
-}
 .chip--score {
   color: var(--brand-strong);
 
@@ -1082,316 +793,23 @@ strong {
 
   padding: var(--space-4) 0 0;
   border-top: 1px solid var(--gray-100);}
-.report__head {
-  margin: 0 0 var(--space-3);
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--gray-800);
-  letter-spacing: -0.01em;
-}
-.report__grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-
-  gap: 0;}
-.report__cell {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  min-width: 0;
-
-  padding: 0 12px;}
-.report__cell:first-child {
-  padding-left: 0;
-}
-.report__cell + .report__cell {
-  border-left: 1px solid var(--gray-100);
-}
-.report__k {
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 600;
-  color: var(--gray-600);
-}
-.report__v {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--gray-900);
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  word-break: keep-all;
-  line-height: 21px;
-}
-.report__dot {
-  width: 11px;
-  height: 11px;
-  border-radius: 999px;
-  flex: none;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
-}
-.report__why {
-  margin: var(--space-3) 0 0;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--gray-700);
-  line-height: 19.5px;
-  word-break: keep-all;
-}
 /* 카드 헤더 — 제목이 홀로 뜨지 않게 부제와 묶는다 */
 /* ── 결과 히어로: 기분에 맞춘 하루 설계 ── */
-.briefing__headline {
-  white-space: pre-line;
-  margin: 0 0 var(--space-2);
-  font-size: 21px;
-  font-weight: 700;
-  line-height: 30px;
-  letter-spacing: -0.02em;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
-.briefing__vibe {
-  margin: 0 0 var(--space-5);
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  color: var(--gray-600);
-  word-break: keep-all;
-}
 /* 하루 설계 카드 — 토스식 뉴트럴 서피스, 색 채움 없이 */
 .plan {
   background: var(--gray-50);
   border-radius: var(--radius-md);
   padding: var(--space-4);
 }
-.plan__title {
-  margin: 0 0 var(--space-3);
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--gray-800);
-  letter-spacing: -0.01em;
-}
-.plan__steps {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-.plan__step {
-  display: flex;
-  gap: 10px;
-  align-items: flex-start;
-}
-.plan__when {
-  flex: none;
-  min-width: 40px;
-  height: 24px;
-  padding: 0 9px;
-  border-radius: 8px;
-  background: var(--brand-soft);
-  color: var(--brand-strong);
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-top: 2px;
-}
-.plan__text {
-  font-size: 15px;
-  font-weight: 500;
-  line-height: 22.5px;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
-.plan__hold {
-  margin-top: var(--space-4);
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--gray-200);
-
-  display: flex;
-  flex-direction: column;
-  gap: 4px;}
-.plan__hold-k {
-  flex: none;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--gray-700);
-}
-.plan__hold-v {
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 600;
-  color: var(--gray-700);
-  word-break: keep-all;
-}
 /* 풀이 리드 — 콕 집은 한마디를 풀이 도입부로 */
-.section__lead {
-  margin: 0 0 var(--space-2);
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--brand-strong);
-  line-height: 22.5px;
-  word-break: keep-all;
-}
 /* ── 심층 리포트 (상세화면) ── */
-.report-hero {
-  margin-bottom: var(--space-6);
-  box-shadow: var(--shadow-card);
-
-  padding: var(--space-2) 0 var(--space-5);
-  border-bottom: 1px solid var(--gray-100);}
-.report-hero__mascot {
-  display: block;
-  margin-bottom: 4px;
-}
-.report-hero__title {
-  margin: 8px 0 6px;
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 33px;
-  color: var(--gray-900);
-  letter-spacing: -0.02em;
-  word-break: keep-all;
-}
-.report-hero__title b {
-  color: var(--brand-strong);
-}
 /* 왼쪽에만 두꺼운 색 테두리를 두른 인용 블록은 AI 가 만든 화면의 가장 흔한 표시다.
    반투명 흰 면까지 겹쳐 '카드 안의 카드'가 되어 있었다. 둘 다 걷고 그냥 글로 둔다. */
-.report-hero__summary {
-  margin: var(--space-3) 0 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--gray-800);
-  line-height: 21px;
-  word-break: keep-all;
-  position: relative;
-}
 /* 항목별 운세 순위 — 1위는 인사이트 카드로 압도, 2~4위는 상대 비교 리스트 */
-.cat-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
 .cat-top {
   padding: var(--space-4);
   border-radius: var(--radius-md);
   background: var(--gray-50);
-}
-.cat-top__head {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: var(--space-2);
-}
-.cat-top__label {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: var(--brand-strong);
-  text-transform: uppercase;
-}
-.cat-top__row {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: var(--space-3);
-}
-.cat-top__name {
-  font-size: 20px;
-  line-height: 29px;
-  font-weight: 700;
-  color: var(--gray-900);
-  letter-spacing: -0.02em;
-}
-.cat-top__score {
-  margin-left: auto;
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1;
-}
-.cat-top__bar {
-  display: block;
-  height: 10px;
-  border-radius: 999px;
-  background: var(--white);
-  overflow: hidden;
-  margin-bottom: var(--space-3);
-}
-.cat-top__fill {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-}
-.cat-top__interp {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--gray-800);
-  line-height: 21px;
-  word-break: keep-all;
-  position: relative;
-}
-.cat-rank {
-  display: flex;
-  flex-direction: column;
-}
-.cat-rank__row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 11px 2px;
-  border-top: 1px solid var(--gray-100);
-}
-.cat-rank__row:first-child {
-  border-top: none;
-}
-.cat-rank__no {
-  flex: none;
-  width: 30px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-600);
-}
-.cat-rank__name {
-  flex: none;
-  width: 46px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  color: var(--gray-700);
-}
-.cat-rank__bar {
-  flex: 1;
-  height: 6px;
-  border-radius: 999px;
-  background: var(--gray-100);
-  overflow: hidden;
-  min-width: 0;
-}
-.cat-rank__fill {
-  display: block;
-  height: 100%;
-  border-radius: 999px;
-  opacity: 0.85;
-}
-.cat-rank__score {
-  flex: none;
-  width: 28px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  text-align: right;
 }
 /* 행운 세트 — 미션 + 세트 + 숫자 활용 */
 .lucky {
@@ -1399,46 +817,6 @@ strong {
   flex-direction: column;
 
   gap: 0;}
-.lucky__mission {
-
-  padding: 0 0 var(--space-4);}
-.lucky__mission-k {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
-.lucky__mission-v {
-  margin: 6px 0 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--gray-900);
-  line-height: 22.5px;
-  word-break: keep-all;
-}
-.lucky__num {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  padding: var(--space-3) 0 0;}
-.lucky__num-badge {
-  flex: none; /* 18px 는 일반 텍스트 기준(4.5:1) */
-  font-size: 18px;
-  line-height: 27px;
-  font-weight: 700;
-  place-items: center;
-
-  color: var(--brand-strong);
-  font-size: 20px;
-  line-height: 29px;}
-.lucky__num-text {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--gray-700);
-  line-height: 21px;
-  word-break: keep-all;
-}
 /* 오늘의 궁합 */
 .match {
   display: grid;
@@ -1487,22 +865,6 @@ strong {
   background: var(--gray-50);
   border-radius: var(--radius-lg);
   padding: var(--space-5);}
-.charm__text {
-  margin: 10px 0 8px;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 27px;
-  letter-spacing: -0.02em;
-  word-break: keep-all;
-
-  color: var(--gray-900);}
-.charm__sub {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 500;
-
-  /* gray-50 위에서 gray-600 은 4.42:1 로 AA 미달 */
-  color: var(--gray-700);}
 /* 심층 리포트 잠금 해제 버튼 — 눌러서 보고 싶게 */
 .btn--unlock {
   display: flex;
@@ -1524,73 +886,9 @@ strong {
   line-height: 22.5px;
   font-weight: 700;
 }
-.btn-unlock__sub {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 500;
-  color: var(--brand-strong); /* 연파랑 배경 위 AA 확보 (4.82:1) */
-  opacity: 0.9;
-}
 /* ── 상위 % 자랑 배지 ── */
 /* 오늘의 기운 — 홈과 결과를 잇는 키워드 */
 /* ── 친구 궁합 배너 (홈·결과) ── */
-.compat-banner {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 15px 16px;
-  border: 1px solid var(--gray-100);
-  border-radius: var(--radius-lg);
-  background: var(--white);
-  box-shadow: var(--shadow-card);
-  cursor: pointer;
-  text-align: left;
-  margin-bottom: var(--space-6);
-  transition: transform 0.2s var(--ease-spring);
-}
-.compat-banner:active {
-  transform: scale(0.985);
-}
-@media (prefers-reduced-motion: reduce) {
-  .menu-row:active,
-  .compat-banner:active {
-    transform: none;
-  }
-}
-.compat-banner__icon {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--brand-strong);
-}
-.compat-banner__body {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-.compat-banner__title {
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.compat-banner__desc {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-700); /* 틴트 배경 위 AA 확보 */
-  margin-top: 2px;
-}
-.compat-banner__cta {
-  margin-left: auto;
-  flex: none;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
 /* ── 친구 궁합 화면 ── */
 /* 띠/별자리 모드 전환 탭 */
 .seg-tabs {
@@ -2043,209 +1341,27 @@ strong {
   word-break: keep-all;
 }
 /* 등급별 브리핑 테두리 */
-.briefing--rare {
-  border-color: #c9e2ff;
-}
-.briefing--epic {
-  border-color: #edccf8;
-  box-shadow: 0 2px 14px rgba(123, 63, 212, 0.14);
-}
-.briefing--legendary {
-  border: 2px solid #ffd158;
-  box-shadow: 0 8px 28px rgba(197, 152, 32, 0.22);
-}
 /* ── 쪽지 요정의 편지 (토스식 위계) ── */
 .letter {
   padding: var(--space-4) 0 var(--space-2);
   margin-bottom: var(--space-4);
 }
-.letter__head {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  margin-bottom: var(--space-5);
-}
-.letter__from {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  color: var(--gray-700); /* 연회색 면 위 AA */
-}
 /* 인사+공감: 작게, 조용하게 */
-.letter__intro {
-  margin: 0 0 var(--space-4);
-  font-size: 14px;
-  line-height: 21px;
-  color: var(--gray-700);
-  word-break: keep-all;
-  white-space: pre-line;
-}
 /* 콕 집은 한마디: 화면에서 제일 크게, 형광 강조 */
-.letter__highlight {
-  margin: 0 0 var(--space-5);
-  font-size: 21px;
-  font-weight: 700;
-  line-height: 30px;
-  letter-spacing: -0.02em;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
-.letter__highlight mark {
-  background: linear-gradient(transparent 62%, var(--brand-soft) 62%);
-  color: inherit;
-  padding: 0 2px;
-}
-.letter__body-text {
-  margin: 0 0 var(--space-5);
-  font-size: 16px;
-  line-height: 24px;
-  color: var(--gray-800);
-  word-break: keep-all;
-  white-space: pre-line;
-}
 /* 오늘의 부적: 파란 박스로 또렷하게 */
-.letter__keep {
-  background: var(--brand-soft);
-  border-radius: var(--radius-md);
-  padding: var(--space-4);
-  margin-bottom: var(--space-5);
-}
-.letter__keep-label {
-  display: block;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-  margin-bottom: 6px;
-}
-.letter__keep-lucky {
-  margin: 0 0 4px;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.letter__keep-caution {
-  margin: 0;
-  font-size: 13px;
-  line-height: 19.5px;
-  color: var(--gray-700); /* 편지 배경(연회색) 위 AA 확보 */
-  word-break: keep-all;
-}
-.letter__special {
-  margin: 0 0 var(--space-5);
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 22.5px;
-  color: var(--brand-strong);
-  background: var(--brand-soft);
-  border-radius: var(--radius-md);
-  padding: var(--space-3) var(--space-4);
-  word-break: keep-all;
-}
-.letter__closing {
-  margin: 0;
-  font-size: 15px;
-  line-height: 22.5px;
-  color: var(--gray-700);
-  word-break: keep-all;
-}
-.letter__sign {
-  margin: var(--space-3) 0 0;
-  text-align: right;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 600;
-  color: var(--gray-700); /* 편지 배경 위 AA 확보 */
-}
 /* ── 등급별 편지지 ── */
 .letter--rare {
 }
-.letter--rare .letter__from {
-  color: #1b64da; /* TDS adaptiveBlue700 — 4.61:1 */
-}
 .letter--epic {
-}
-.letter--epic .letter__from {
-  color: #8222a2;
-}
-.letter--epic .letter__highlight mark {
-  background: linear-gradient(transparent 62%, #f9f0fc 62%);
 }
 .letter--legendary {
 }
 /* 예전엔 여기에 흰 빛이 카드를 가로지르는 스윕 애니메이션이 있었다.
    토스 어디에도 없는 처리이고, 가만히 있어야 할 화면에서 계속 움직였다. */
-.letter--legendary .letter__from {
-  color: #9c5d00;
-}
-.letter--legendary .letter__highlight mark {
-  background: linear-gradient(transparent 62%, #ffefbf 62%);
-}
 /* ── 등급 뱃지 ── */
-.rarity-badge {
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 700;
-  white-space: nowrap;
-
-  padding: 0;
-  background: none;}
-.rarity-badge b {
-  font-weight: 700;
-  opacity: 0.85;
-}
-.rarity-badge--common {
-  background: #f2f4f6;
-  color: var(--gray-700); /* 회색 틴트 위 AA 확보 (6.45:1) */
-}
-.rarity-badge--rare {
-  color: #1b64da; /* TDS adaptiveBlue700 — 4.61:1 */
-}
-.rarity-badge--epic {
-  color: #8222a2;
-}
-.rarity-badge--legendary {
-  color: #9c5d00;
-}
 /* ── 기분 입력 ── */
 /* 다섯 개는 목록이지 카드 다섯 장이 아니다. 상자 하나 안에서
    얇은 선으로만 나눈다 — 홈·결과의 목록과 같은 규칙. */
-.mood-grid {
-  display: flex;
-  flex-direction: column;
-  margin-top: var(--space-3);
-  overflow: hidden;
-}
-.mood-btn {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  min-height: 72px;
-  padding: var(--space-3) var(--space-4);
-  background: none;
-  text-align: left;
-  transition: background 0.12s ease;
-}
-.mood-btn + .mood-btn {
-  border-top: 1px solid var(--gray-100);
-}
-.mood-btn:active {
-  background: var(--gray-50);
-}
-.mood-btn__emoji {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  color: var(--gray-800);
-}
-.mood-btn__label {
-  font-size: 17px;
-  line-height: 25.5px;
-  font-weight: 600;
-  color: var(--gray-900);
-}
 /* ── 콕 집은 한마디 (핀포인트 훅) ── */
 .pinpoint {
   background: var(--brand);
@@ -2286,141 +1402,13 @@ strong {
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  .confetti,
-  .rarity-badge--legendary {
-    animation: none !important;
-  }
 }
 /* 내 데이터 삭제 링크 — 홈 하단, 눈에 안 띄지만 접근 가능 */
-.reset-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  margin: var(--space-6) auto var(--space-2);
-  padding: 0 12px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 500;
-  color: var(--gray-700);
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
 /* 이번 달 등급 수집 — 레어 뽑기 자랑/재방문 유도 스트립 */
-.collection {
-  margin-bottom: var(--space-6);
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--gray-50);
-  border: 1px solid var(--gray-100);
-}
-.collection__title {
-  display: block;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--gray-800);
-  margin-bottom: var(--space-3);
-}
-.collection__items {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.collection__item {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--gray-800);
-  background: var(--white);
-  border: 1px solid var(--gray-200);
-  border-radius: 999px;
-  padding: 7px 14px;
-}
-.collection__item--leg {
-  color: #9c5d00;
-  background: #fff9e7;
-  border-color: #ffd158;
-}
-.collection__item--epic {
-  color: #8222a2;
-  background: #f9f0fc;
-  border-color: #da9bef;
-}
 /* 오늘의 나 — 기분 + 띠 + 별자리 조합 입력 */
-.me-picks {
-  display: flex;
-  gap: var(--space-2);
-  margin: var(--space-2) 0 var(--space-3);
-}
-.me-pick {
-  flex: 1;
-  min-height: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  gap: 3px;
-  padding: 10px 14px;
-  border-radius: var(--radius-md);
-  background: var(--white);
-  border: 1.5px solid var(--gray-200);
-  text-align: left;
-}
-.me-pick--on {
-  border-color: var(--brand);
-  background: var(--brand-soft);
-}
-.me-pick__k {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-600);
-}
-.me-pick__v {
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.me-pick__chev {
-  color: var(--gray-700); /* 흰 배경 위 AA(4.5:1) */
-  font-weight: 600;
-}
-.me-grid {
-  /* 위의 '내 띠 고르면…' 점선 버튼과 딱 붙어 있었다(측정 0px).
-     카드 내부 리듬(12px)에 맞춘다. */
-  margin: var(--space-3) 0 var(--space-3);
-}
 /* 결과 브리핑의 개인화 한 줄 — 흰 카드 위 (예전 파란 카드용 연한색은 안 보였음) */
-.briefing__persona {
-  margin: 0 0 var(--space-2);
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 600;
-  color: var(--brand-strong);
-  word-break: keep-all;
-}
 /* 쪽지 선택 화면 마스코트 — 카드와 하단 힌트 사이 빈 공간을 채운다 */
 /* 인트로 티저 — 오늘 운 좋은 띠 (궁금증 유발) */
-.lucky-today__set {
-  display: block;
-  width: 100%;
-  min-height: 44px;
-  text-align: left;
-  font-size: 13px;
-  line-height: 19.5px;
-  /* 점선 테두리는 '여기에 뭔가 놓일 자리' 라는 템플릿 신호다. 실제로 누르는
-     버튼에 쓰면 만들다 만 화면으로 보인다. 실선 한 줄로. */
-
-  margin: 0;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--gray-100);
-  color: var(--brand-strong);
-  font-weight: 600;}
-.lucky-today__set:active {
-  background: var(--white);
-}
 /* ── 이번 주 운세 캘린더 ── 스트릭 보상(3일 연속) 또는 광고로 열리는 7일 미리보기.
    좋은 날을 미리 알려 "그날 다시 오게" 만드는 리텐션 장치라 서열 카드 위에 둔다. */
 .week-card {
@@ -2529,72 +1517,12 @@ strong {
 .week-row--caution .week-row__tone {
   color: var(--score-low-text);
 }
-.week-card__foot {
-  margin: var(--space-3) 0 0;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--gray-600);
-  line-height: 18px;
-}
 /* 잠금 상태 — 무엇이 열리는지 먼저 보여주고(요일 프리뷰), 조건을 숫자로 말한다.
    "3일만 더" 처럼 남은 개수를 보여줘야 스트릭이 목표가 된다. */
-.week-lock {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  width: 100%;
-  min-height: 54px;
-  padding: 12px 0;
-  text-align: left;
-}
-.week-lock__icon {
-  flex: none;
-  display: flex;
-  align-items: center;
-  color: var(--gray-700);
-}
-.week-lock__text {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.week-lock__title {
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 600;
-  color: var(--gray-900);
-}
-.week-lock__desc {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--gray-600);
-  line-height: 19.5px;
-  word-break: keep-all;
-}
-.week-lock__cta {
-  flex: none;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 600;
-  color: var(--brand-strong);
-}
 /* ── 오늘의 띠 서열 ── 리더보드. 매일 갈리는 12띠 랭킹(사주 일진 기반) */
 .rank-card {
 
   padding: 0;}
-.rank-card__copied {
-  margin: 0 0 var(--space-3);
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  color: var(--brand-strong);
-  background: var(--brand-soft);
-  border-radius: 10px;
-  padding: 8px 12px;
-  text-align: center;
-}
 /* 내 순위 카드 — 띠를 고른 직후 '내 것'이 한눈에 보이는 확인 장치 */
 .me-rank {
   display: flex;
@@ -2604,64 +1532,6 @@ strong {
   padding: 12px 0;
   border-bottom: 1px solid var(--gray-100);
 }
-.me-rank__body {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.me-rank__title {
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.me-rank__sub {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-700);
-}
-.me-rank__rank {
-  flex: none;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 1px;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
-.me-rank__rank b {
-  font-size: 26px;
-  line-height: 35px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-.me-rank__rank i {
-  font-style: normal;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-700);
-  margin-left: 2px;
-}
-.me-rank--top .me-rank__rank {
-  color: var(--brand-strong);
-}
-.rank-card__more {
-  display: block;
-  width: 100%;
-  min-height: 44px; /* 최소 터치 영역 */
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  color: var(--brand-strong);
-
-  margin-top: 0;
-  padding: 14px 0;
-  text-align: left;}
 .rank-list--top {
   margin-top: 0;
 }
@@ -2712,8 +1582,8 @@ strong {
   line-height: 21px;
   font-weight: 600;
 }
-/* 일진 칩(.iljin__tone)과 같은 사다리 — 같은 뜻의 표시가 화면마다 다른 색이면
-   사용자는 둘을 다른 것으로 읽는다. */
+/* 같은 뜻의 표시가 화면마다 다른 색이면 사용자는 둘을 다른 것으로 읽는다.
+   등급 색은 아래 한 사다리로만 쓴다. */
 .rank-row__tone--great {
   color: var(--brand-strong);
   font-weight: 700;
@@ -2767,13 +1637,6 @@ strong {
   font-weight: 500;
   color: var(--white); /* 파란 면 위 13px 는 흰색만 AA 를 넘긴다 */
 }
-.today-hook__persona {
-  margin: 16px 0 6px;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 600;
-  color: #e8f3ff;
-}
 /* 띠를 고른 상태에선 위의 persona 줄('○○띠인 당신,')이 일진 배지와의 간격을
    갖고 있다. 띠 미설정이면 그 줄이 없어 헤드라인이 배지에 그대로 붙으므로,
    배지 바로 뒤에 올 때만 같은 22px 를 직접 준다. */
@@ -2804,53 +1667,7 @@ strong {
   word-break: keep-all;
 }
 /* 스트릭 마일스톤 축하 — 3·7·14·30일 달성 시 브리핑 상단에 */
-.streak-hit {
-  margin: var(--space-2) 0 var(--space-3);
-  padding: 9px 14px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-  background: var(--brand-soft);
-  border: 1px solid #c9e2ff;
-  border-radius: 999px;
-  display: inline-block;
-}
 /* 내일 예고 — 결과 하단 리텐션 훅 (달 카드) */
-.tmr-tease {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  margin-top: var(--space-4);
-  padding: 14px 0;
-  border-top: 1px solid var(--gray-100);
-  border-bottom: 1px solid var(--gray-100);
-}
-.tmr-tease__moon {
-  flex: none;
-  display: flex;
-  align-items: center;
-  color: var(--gray-700);
-}
-.tmr-tease__body {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-.tmr-tease__k {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-600);
-}
-.tmr-tease__v {
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 21px;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
 /* 결과 화면 '오늘의 일진' 스탬프 스트립 — 행운 보고서(3칸 그리드)와 겹치지 않는
    가로 흐름 레이아웃: 한자 도장 + 관계 설명 + 기운 배지 → 근거 한 줄 → 개운 포인트 */
 .iljin {
@@ -2859,167 +1676,10 @@ strong {
      한 섹션 안에서 얇은 선으로만 나눈다. */
   padding: 0 0 var(--space-4);
 }
-.iljin__row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-.iljin__seal {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 52px;
-  height: 52px;
-  font-size: 21px;
-  line-height: 30px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  /* 낙관은 원래 붉지만, 이 앱에서 빨강은 '주의' 하나에만 쓴다.
-     앱 전체의 아이콘 타일과 같은 연파랑 + 진한 파랑으로 맞춘다. */
-  color: var(--brand-strong);
-  /* 카드 자체가 연파랑이라 도장까지 연파랑이면 묻힌다. 흰 바탕으로 띄운다. */
-  background: var(--white);
-  border: 1px solid #c9e2ff;
-  border-radius: 12px;
-}
-.iljin__flow {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-  flex: 1;
-}
-.iljin__date {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-700); /* 틴트 배경 위 AA 확보 */
-}
-.iljin__rel {
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 600;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
-.iljin__rel b {
-  color: var(--brand-strong);
-}
-.iljin__tone {
-  flex: none;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 600;
-}
 /* 네 단계를 색상(초록/파랑/회색/빨강)으로 가르면 화면에 없던 색이 두 개 는다.
    이 앱에서 '좋다'는 파랑이다 — 진하기로 단계를 만들고, 주의만 주황으로 뺀다. */
-.iljin__tone--great {
-  color: var(--brand-strong);
-  font-weight: 700;
-}
-.iljin__tone--good {
-  color: var(--brand-strong);
-}
-.iljin__tone--steady {
-  color: var(--gray-600);
-}
-.iljin__tone--caution {
-  color: var(--gray-800);
-}
-.iljin__line {
-  margin: var(--space-4) 0 0;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 21px;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
-.iljin__boost {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  margin-top: var(--space-3);
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--gray-100);
-}
-.iljin__boost-color {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  color: var(--gray-800);
-}
-.iljin__boost-color b {
-  color: var(--brand-strong);
-}
-.iljin__boost-color small {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 500;
-  color: var(--gray-700); /* 틴트 배경 위 AA 확보 */
-}
-.iljin__boost-tip {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  color: var(--brand-strong);
-  word-break: keep-all;
-}
 /* 사주 근거 칩 — 일진×내 띠 관계를 가볍게(한자 없이) 보여줌 */
-.today-hook__saju {
-  margin: 8px 0 0;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  color: var(--white);
-  word-break: keep-all;
-}
-.today-hook__reveal {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin: var(--space-5) 0 var(--space-4);
-}
-.th-cell {
-  flex: 1 1 0;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2px;
-  padding: 0 8px;
-}
 /* 칸 사이는 박스가 아니라 얇은 선으로 나눈다 */
-.th-cell + .th-cell {
-  border-left: 1px solid rgba(255, 255, 255, 0.18);
-}
-.th-cell__k {
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 600;
-  color: #e8f3ff;
-}
-.th-cell__v {
-  font-family: var(--font-num);
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1;
-  color: #fff;
-}
-.th-cell__v i {
-  font-family: var(--font-body);
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  font-style: normal;
-  margin-left: 1px;
-}
-.th-cell__v--q {
-  color: rgba(255, 255, 255, 0.86);
-}
 .today-hook__cta {
   align-items: center;
   justify-content: center;
@@ -3072,20 +1732,6 @@ strong {
   border-radius: var(--radius-md);
   background: var(--gray-50);
 }
-.reset-confirm__q {
-  margin: 0 0 var(--space-3);
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 19.5px;
-  color: var(--gray-800);
-  text-align: center;
-  word-break: keep-all;
-}
-.reset-confirm__row {
-  display: flex;
-  gap: 8px;
-}
-.reset-confirm__no,
 .reset-confirm__yes {
   flex: 1;
   min-height: 44px;
@@ -3093,11 +1739,6 @@ strong {
   font-size: 14px;
   line-height: 21px;
   font-weight: 700;
-}
-.reset-confirm__no {
-  color: var(--gray-800);
-  background: var(--white);
-  border: 1px solid var(--gray-300);
 }
 .reset-confirm__yes {
   color: var(--white);
@@ -3126,151 +1767,18 @@ strong {
 /* ── 아침 알림 옵트인 카드 (결과 화면, 내일 예고 아래) ──
    내일 예고가 만든 궁금증을 알림 동의로 잇는 리텐션 장치.
    콘솔 알림 템플릿이 없으면 렌더 자체가 되지 않는다. */
-.noti-card {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  min-height: 64px;
-  margin-top: var(--space-3);
-  padding: 14px 16px;
-  text-align: left;
-  background: var(--gray-50);
-  border: 1px solid var(--gray-200);
-  border-radius: 16px;
-  transition: transform 0.2s var(--ease-spring);
-}
-.noti-card:active {
-  transform: scale(0.98);
-}
-.noti-card__icon {
-  flex: none;
-  display: flex;
-  align-items: center;
-  color: var(--brand-strong);
-}
-.noti-card__body {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
-  min-width: 0;
-}
-.noti-card__title {
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--gray-900);
-  line-height: 22.5px;
-}
-.noti-card__desc {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--gray-700); /* 흰 배경 계열 위 AA */
-  line-height: 19.5px;
-}
-.noti-card__cta {
-  flex: none;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--white);
-  background: var(--brand);
-  border-radius: 999px;
-  padding: 8px 14px;
-}
 /* ══ 내 사주 ══════════════════════════════════════════════════════════════
    띠(1/12)에서 사주(사실상 1인 1결과)로 넘어가는 화면들.
    낯선 한자를 다루므로 색과 여백으로 위계를 만들어야 벽처럼 보이지 않는다. */
 
 /* ── 홈 진입 카드 ── */
-.saju-entry {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  width: auto;
-  align-self: stretch;
-  min-height: 44px;
-  margin-bottom: 16px;
-  padding: var(--space-4);
-  text-align: left;
-  transition: transform 0.2s var(--ease-spring);
-  overflow: hidden;
-}
-.saju-entry:active {
-  transform: scale(0.98);
-}
 /* 아직 안 넣은 사람에게는 '할 일' 로 보여야 한다. 다만 둥근 틴트 카드가 떠 있으면
    템플릿 티가 난다 — 화면 좌우 끝까지 닿는 띠로 두면 앱에 붙어 있는 것으로 읽힌다. */
-.saju-entry:not(.saju-entry--done) {
-  background: var(--brand-soft);
-  margin-left: calc(-1 * var(--space-6));
-  margin-right: calc(-1 * var(--space-6));
-  padding-left: var(--space-6);
-  padding-right: var(--space-6);
-}
-.saju-entry:not(.saju-entry--done) .saju-entry__icon {
-  background: var(--white);
-  color: var(--brand-strong);
-}
-.saju-entry:not(.saju-entry--done) .saju-entry__v {
-  color: var(--brand-strong);
-}
 /* 파란 배경에선 gray-600 이 4.11:1 로 AA 미달 — 보조 문구도 한 단계 진하게 */
-.saju-entry:not(.saju-entry--done) .saju-entry__k,
-.saju-entry:not(.saju-entry--done) .saju-entry__sub {
-  color: var(--gray-700);
-}
 /* 사주를 세운 사람에겐 자기 일간 색을 띠처럼 둘러준다 — '내 것'이라는 신호 */
 /* 왼쪽에만 굵은 색 테두리를 두르는 건 AI 가 만든 화면의 표시로 가장 흔히 꼽히는
    모양이다. 사주를 넣었다는 사실은 아이콘과 문구가 이미 말하고 있다. */
-.saju-entry--done {
-  border-top: 1px solid var(--gray-100);
-  border-bottom: 1px solid var(--gray-100);
-}
-.saju-entry__icon {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  line-height: 1;
-}
-.saju-entry--done .saju-entry__icon {
-}
-.saju-entry__text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0; /* 긴 문구가 카드를 밀어내지 않게 */
-  flex: 1 1 auto;
-}
-.saju-entry__k {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-600);
-}
-.saju-entry__v {
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.saju-entry__sub {
-  margin-top: 1px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--gray-600);
-  line-height: 18px;
-}
 /* 셰브런도 정보다 — gray-400 은 흰 배경에서 2.01:1 로 AA 미달이라 한 단계 올린다 */
-.saju-entry__chev {
-  flex: 0 0 auto;
-  font-size: 20px;
-  line-height: 29px;
-  font-weight: 600;
-  color: var(--gray-800);
-}
 /* ── 생년월일시 입력 ── */
 .birth-form {
   display: flex;
@@ -3340,59 +1848,6 @@ strong {
   text-align: center;
 }
 /* 입력 도중 미리보기 — 다 채우기 전에 '이게 나오는구나'가 와야 이탈이 준다 */
-.birth-peek {
-  margin: var(--space-4) 0 var(--space-6);
-  padding-top: var(--space-4);
-  border-top: 0;
-  text-align: left;
-  background: var(--brand-soft);
-  border-radius: 20px;
-  padding: 20px;
-}
-.birth-peek__label {
-  display: block;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-700) /* 파란 틴트 위 AA */;
-}
-.birth-peek__row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 6px;
-}
-.birth-peek__icon {
-  flex: none;
-  display: flex;
-  align-items: center;
-  color: var(--gray-700);
-}
-.birth-peek__txt {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-.birth-peek__name {
-  font-size: 20px;
-  line-height: 29px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.birth-peek__tag {
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-700) /* 파란 틴트 위 AA */;
-}
-.birth-peek__pillars {
-  display: block;
-  margin-top: 10px;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  color: var(--gray-700);
-}
 .birth-warn {
   margin: 0 0 var(--space-4);
   padding: 11px 13px;
@@ -3412,28 +1867,8 @@ strong {
 /* ── 일간 히어로 ── 이 화면에서 "이게 나야"가 오는 자리 ── */
 /* 중앙정렬 큰 틴트 카드는 온보딩 완료 화면의 모양이지 정보 화면의 모양이 아니다.
    토스의 '내 정보' 류 화면은 전부 좌측 정렬이고, 히어로도 바탕 위에 그냥 놓인다. */
-.dm-hero {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
-  margin-bottom: var(--space-6);
-  padding: 24px 20px;
-  border-bottom: 0;
-  text-align: left;
-  background: var(--brand-soft);
-  border-radius: 20px;
-}
  /* 일간 히어로만은 자기 오행 색을 쓴다 — 이 화면의 주인공이라서.
    상자는 두르지 않는다. */
-.dm-hero__cap {
-  display: block;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  color: var(--gray-700) /* 파란 틴트 위 AA */;
-  margin-bottom: 6px;
-}
 .qa {
   margin: 0;
   font-size: 17px;
@@ -3451,103 +1886,8 @@ strong {
   line-height: 22.5px;
   color: var(--gray-600);
 }
-.qa + .dm-note {
-  margin-top: var(--space-4);
-}
-.dm-hero__row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.dm-hero__icon {
-  flex: none;
-  display: flex;
-  align-items: center;
-  color: var(--dm-hue-text);
-}
-.dm-hero__name {
-  margin: 0;
-  font-size: 26px;
-  line-height: 35px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--gray-900);
-}
  /* 한자는 글자다 — 장식용 밝은 값(--dm-hue)을 쓰면 흰 배경에서 AA 를 못 넘는다 */
-
-.dm-hero__tag {
-  margin: 2px 0 0;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-700) /* 파란 틴트 위 AA */;
-}
-.dm-hero__nature {
-  margin: var(--space-3) 0 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--gray-700);
-  line-height: 21px;
-  text-align: left;
-}
-.dm-chips > li + li::before {
-  content: '·';
-  margin: 0 6px;
-  color: var(--gray-400);
-}
-.dm-chips {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  margin: var(--space-3) 0 0;
-  padding: 0;
-  list-style: none;
-
-  gap: 0;}
-.dm-chip {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--gray-800);
-
-  padding: 0;}
-.dm-two {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: var(--space-3);
-  margin-bottom: var(--space-6);
-}
-.dm-note {
-  padding: var(--space-3) 0;
-}
-.dm-note + .dm-note {
-  border-top: 1px solid var(--gray-100);
-}
-.dm-note__k {
-  display: block;
-  margin-bottom: 6px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--gray-700);
-}
-.dm-note__v {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--gray-800);
-  line-height: 21px;
-}
 /* ── 여덟 글자 ── */
-.pillars-card {
-  overflow: hidden;
-
-  padding: 0;}
-.pillars-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-}
 .pcol {
   display: flex;
   flex-direction: column;
@@ -3562,20 +1902,7 @@ strong {
   background: var(--brand-soft);
   box-shadow: inset 0 0 0 1.5px var(--brand);
 }
-.pcol__label {
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 700;
-  color: var(--gray-700);
-}
  /* 한자는 검정. 오행은 아래 점으로 알린다 — 글자마다 색이 다르면 산만하고, 화(火)의 붉은색은 경고처럼 보인다 */
-.pcol__stem,
-.pcol__branch {
-  font-size: 26px;
-  font-weight: 700;
-  line-height: 1.15;
-  color: var(--gray-900);
-}
 .pcol__els {
   display: flex;
   gap: 3px;
@@ -3586,57 +1913,13 @@ strong {
   height: 5px;
   border-radius: 999px;
 }
-.pcol__stem--none,
-.pcol__branch--none {
-  color: var(--gray-400);
-}
-.pillars-card__foot {
-  margin: var(--space-3) 0 0;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--gray-700);
-  line-height: 18px;
-}
 /* 적용된 보정을 숨기지 않는다 — 왜 이 값이 나왔는지 확인할 수 있어야 신뢰가 생긴다 */
-.pillars-corr {
-  margin: var(--space-3) 0 0;
-  padding: 10px 12px;
-  list-style: none;
-  border-radius: 10px;
-  background: var(--gray-50);
-}
-.pillars-corr li {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--gray-700);
-  line-height: 18px;
-}
 /* ── 오행 저울 ── */
-.elbal-card {
-
-  padding: 0;}
-.elbal-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
 .elbal-row {
   display: grid;
   grid-template-columns: 34px minmax(0, 1fr) 42px;
   align-items: center;
   gap: 10px;
-}
-.elbal-row__k {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--gray-700);
 }
 .elbal-row__dot {
   width: 8px;
@@ -3656,229 +1939,16 @@ strong {
   height: 100%;
   border-radius: 999px;
 }
-.elbal-row__v {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--gray-700);
-  text-align: right;
-}
-.elbal-card__foot {
-  margin: var(--space-3) 0 0;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--gray-700);
-  line-height: 19.5px;
-}
-.elbal-missing {
-  margin: var(--space-2) 0 0;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: var(--gray-50);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--gray-700);
-  line-height: 19.5px;
-}
 /* ── 해석 카드 ── */
-.reading-card {
-
-  margin: 0;
-  padding: var(--space-4) 0;}
-.reading-card + .reading-card,
-.reading-card + .useful-card {
-  border-top: 1px solid var(--gray-100);
-}
-.reading-card__badge {
-  margin: 0 0 var(--space-3);
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-
-  display: block;
-  padding: 0;}
-.reading-card--group .reading-card__badge {
-  background: var(--gray-100);
-  color: var(--gray-800);
-}
-.reading-card__body {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--gray-800);
-  line-height: 21px;
-}
-.reading-card__tip {
-  margin: var(--space-3) 0 0;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: var(--gray-50);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--gray-700);
-  line-height: 19.5px;
-}
-.useful-card {
-
-  margin: 0;
-  padding: var(--space-4) 0 0;}
-.useful-card__title {
-  margin: 0 0 4px;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
-.useful-card__what {
-  margin: 0;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  color: var(--gray-800);
-}
-.useful-card__how {
-  margin: 6px 0 0;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--gray-700);
-  line-height: 19.5px;
-}
 /* 화면이 넓어지면 두 칸으로 — 375px 에서는 세로가 읽기 편하다 */
-@media (min-width: 400px) {
-  .dm-two {
-    grid-template-columns: 1fr 1fr;
-  }
-}
 /* ── 오늘, 나에게 ── 십신 카드. 띠 운세와 갈리는 핵심이라 결과에서 가장 눈에 띄어야 한다 */
-.mygod {
-  padding: var(--space-4) 0 0;
-  border-top: 1px solid var(--gray-100);
-  overflow: hidden;
-}
- .mygod__title {
-  margin: 0;
-  min-width: 0;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.mygod__body {
-  margin: 0;
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--gray-800);
-  line-height: 21px;
-}
 /* 같은 십신도 신강/신약에 따라 약이 되고 독이 된다 — 그 판정을 색으로 구분한다 */
-.mygod__fit {
-  margin: var(--space-3) 0 0;
-  padding: 9px 12px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  line-height: 19.5px;
-  background: var(--gray-50);
-  color: var(--gray-700);
-}
-.mygod__fit--needed {
-  background: var(--brand-soft);
-  color: var(--brand-strong);
-}
-.mygod__fit--excess {
-  background: #fff9e7;
-  color: var(--score-low-text);
-}
-.mygod__qa {
-  margin: var(--space-3) 0 0;
-  padding: 0;
-  list-style: none;
-}
-.mygod__qa li {
-  display: flex;
-  gap: 12px;
-  padding: 10px 0;
-  border-top: 1px solid var(--gray-100);
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
-.mygod__qa-k {
-  flex: none;
-  width: 36px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.mygod__acts {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin: var(--space-3) 0 0;
-  padding: 0;
-  list-style: none;
-}
-.mygod__act {
-  padding: 10px 12px;
-  border-radius: 10px;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--gray-800);
-  line-height: 19.5px;
-}
-.mygod__act--do {
-  background: var(--brand-soft);
-}
-.mygod__act--dont {
-  background: var(--gray-50);
-}
-.mygod__act-k {
-  display: block;
-  margin-bottom: 3px;
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 700;
-  color: var(--gray-700);
-}
 /* ── 개인정보 안내 ── 받았으면 지우는 길도 같은 화면에 둔다 */
 .privacy-note {
   margin-top: var(--space-6);
   padding-top: var(--space-4);
   border-top: 1px solid var(--gray-100);
   text-align: left;
-}
-.privacy-note__body {
-  margin: 0 0 var(--space-2);
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--gray-700);
-  line-height: 19.5px;
-  word-break: keep-all;
-}
-.privacy-note__del {
-  min-height: 44px;
-  padding: 10px 0;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 600;
-  color: var(--gray-700);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.privacy-note__confirm {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  color: var(--gray-800);
-}
-.privacy-note__acts {
-  display: flex;
-  gap: 8px;
 }
 .privacy-note__btn {
   flex: 1 1 0;
@@ -3912,20 +1982,6 @@ strong {
   background: var(--white);
   overflow: hidden;
 }
-.drawn__icon {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  color: var(--gray-800);
-}
-.drawn__text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-  flex: 1 1 auto;
-  margin-top: 6px;
-}
 .drawn__k {
   font-size: 11px;
   line-height: 16.5px;
@@ -3940,19 +1996,6 @@ strong {
   line-height: 19.5px;
 }
 .drawn__kw {
-  font-weight: 700;
-  color: var(--gray-800);
-}
-.mygod__why {
-  margin: var(--space-3) 0 0;
-  padding-top: var(--space-3);
-  border-top: 1px solid var(--gray-100);
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--gray-700);
-  line-height: 18px;
-}
-.mygod__why b {
   font-weight: 700;
   color: var(--gray-800);
 }
@@ -3972,66 +2015,9 @@ strong {
 /* ── 뽑기 1단계 · 알고 싶은 것 ── 주제를 고르는 자리. 이게 흐름의 시작이다 */
 /* 무엇을 근거로 뽑는지 알리는 한 줄. 화면 폭을 다 쓰는 띠가 아니라
    왼쪽에 붙는 작은 칩이다 — 읽고 지나가는 값이 제목만큼 커지면 안 된다. */
-.topic-basis {
-  display: inline-flex;
-  align-self: flex-start;
-  align-items: center;
-  gap: 5px;
-  margin: var(--space-4) 0 0;
-  font-size: 13px;
-  line-height: 19.5px;
-
-  padding: 0;
-  color: var(--gray-700);
-  font-weight: 500;}
-.topic-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-3);
-  margin-top: var(--space-5);
-}
-.topic-btn:last-child:nth-child(odd) {
-  grid-column: 1 / -1;
-}
-.topic-btn {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  min-height: 96px;
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--white);
-  border: 1px solid var(--gray-200);
-  box-shadow: var(--shadow-card);
-  text-align: left;
-  transition: transform 0.16s var(--ease-spring);
-}
-.topic-btn:active {
-  transform: scale(0.97);
-}
 /* 7회차에 '아이콘 타일로 통일'한다며 연파랑 사각을 둘렀는데, 아이콘을 비슷한
    색조의 작은 상자에 담는 것 자체가 AI 가 만든 화면의 표시로 꼽힌다.
    상자를 걷고 선만 남긴다 — 아이콘은 배경이 없어야 그림으로 읽힌다. */
-.topic-btn__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 10px;
-  color: var(--brand-strong);
-}
-.topic-btn__label {
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.topic-btn__desc {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--gray-700);
-  line-height: 18px;
-}
 /* 일간의 한글 표기 — 이름 아래 작게 */
 /* ── 돌려서 고르는 피커 ──
    네이티브 date/time 입력은 로케일을 따라가 '03/15/1994' 로 뜨고, 고른 값이
@@ -4252,36 +2238,6 @@ strong {
   color: var(--gray-700);
   word-break: keep-all;
 }
-.today-hook__score {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin-top: 14px;
-  padding-top: 14px;
-  border-top: 1px solid rgba(27, 100, 218, 0.12);
-}
-.today-hook__score-k {
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  color: var(--gray-700);
-}
-.today-hook__score-v {
-  font-size: 17px;
-  line-height: 25.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
-.today-hook__score-v b {
-  font-size: 32px;
-  line-height: 42px;
-}
-.today-hook__score-note {
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 600;
-  color: var(--gray-800);
-}
 .today-hook .today-hook__cta {
   display: block;
   width: 100%;
@@ -4296,34 +2252,17 @@ strong {
   padding: 0 16px;
   text-align: center;
 }
-.mygod__qa--home li {
-  font-size: 15px;
-  line-height: 22.5px;
-}
-.mygod__qa--home li:first-child {
-  border-top: 0;
-}
 
 /* ── 누르는 맛: 토스는 누르는 것마다 손끝에 반응이 온다 ── */
 .btn,
 .act-row,
-.compat-banner,
-.saju-entry,
-.week-lock,
-.mood-btn,
-.topic-btn,
 .compat-pick,
 .zodiac-chip,
-.reopen-card,
-.rank-card__more,
 .sec__action,
-.seg-tab,
-.lucky-today__set,
-.rel-chip {
+.seg-tab {
   transition: transform 0.12s ease, background-color 0.12s ease, opacity 0.12s ease;
 }
 .btn:active,
-.topic-btn:active,
 .compat-pick:active,
 .zodiac-chip:active,
 .today-hook__cta:active {
@@ -4332,14 +2271,7 @@ strong {
 .btn--primary:active {
   background: var(--brand-strong);
 }
-.act-row:active,
-.compat-banner:active,
-.saju-entry:active,
-.week-lock:active,
-.mood-btn:active,
-.reopen-card:active,
-.rank-card__more:active,
-.lucky-today__set:active {
+.act-row:active {
   background: var(--gray-100);
 }
 .sec__action:active,
@@ -4402,16 +2334,12 @@ strong {
   background: var(--white);
   box-shadow: 0 0 0 2px var(--brand);
 }
-.birth-skip {
-  margin-top: 4px;
-}
 
 /* ── 입체감: 주인공 카드에만 얇은 그림자 ── */
 .today-hook,
 .score-hero,
 .lucky4__tile,
-.compat-pick,
-.topic-btn {
+.compat-pick {
   box-shadow: 0 6px 20px rgba(0, 23, 51, 0.06);
 }
 
@@ -4469,14 +2397,6 @@ strong {
   color: var(--gray-900);
   word-break: keep-all;
 }
-.lucky4__why {
-  margin-top: 4px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-700);
-  word-break: keep-all;
-}
 .share-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -4497,35 +2417,9 @@ strong {
   gap: 16px;
   padding: 20px 0 0;
 }
-.note-stage__hint {
-  margin: 0;
-  text-align: center;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  color: var(--gray-600);
-}
 .note--tint0 { background: #e8f3ff; border-color: #c9e2ff; }
 .note--tint1 { background: #fff9e7; border-color: #ffefbf; }
 .note--tint2 { background: #ffeeee; border-color: #ffd4d6; }
-
-.compat-banner__icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--brand-soft);
-}
-.compat-banner__icon--yellow { background: #fff9e7; color: #9c5d00; }
-.compat-banner__icon--pink { background: #ffeeee; color: #e45600; }
-.compat-banner__icon--blue { background: #e8f3ff; color: #1b64da; }
-.week-lock__icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--brand-soft);
-  justify-content: center;
-  color: var(--brand-strong);
-}
 
 @keyframes rise-in {
   from { opacity: 0; transform: translateY(8px); }
@@ -4548,10 +2442,6 @@ strong {
   flex: 0 0 auto;
   justify-content: flex-start;
   padding: 4px 0 20px;
-}
-.note-stage__mascot {
-  display: flex;
-  justify-content: center;
 }
 
 /* ── 살아 있는 느낌: 쪽지는 둥실, 마스코트는 가끔 깜빡이고 살짝 까딱 ── */
@@ -4578,14 +2468,13 @@ strong {
   50% { transform: translateY(-4px); }
 }
 .today-hook__art svg,
-.note-stage__mascot svg,
 .score-hero__mascot svg {
   animation: mascot-bob 3s ease-in-out infinite;
 }
 @media (prefers-reduced-motion: reduce) {
   .note--idle { animation: none; }
   .mascot__eyes { animation: none; }
-  .today-hook__art svg, .note-stage__mascot svg, .score-hero__mascot svg { animation: none; }
+  .today-hook__art svg, .score-hero__mascot svg { animation: none; }
 }
 
 /* 움직임을 눈에 보이게: 4px 는 안 보였다. 숨 쉬듯 8px + 살짝 기울기, 깜빡임은 3초마다 */
@@ -4605,8 +2494,7 @@ strong {
   50% { transform: translateY(-9px) rotate(calc(var(--tilt, 0deg) + 1.5deg)); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .today-hook__art svg, .note-stage__mascot svg, .score-hero__mascot svg,
-  .dm-hero__icon svg, .compat-result__mascot svg, .report-hero__mascot svg { animation: none; }
+  .today-hook__art svg, .score-hero__mascot svg, .compat-result__mascot svg { animation: none; }
 }
 
 /* ── 쪽지 석 장: 가로로 긴 봉투 세 줄. 작은 카드 셋보다 크고, 누르기 쉽다 ── */
@@ -4615,13 +2503,6 @@ strong {
   justify-content: flex-start;
   padding: 4px 0 20px;
 }
-.note-row {
-  flex-direction: column;
-  align-items: stretch;
-  gap: 12px;
-  width: 100%;
-}
-.note-row > * { --tilt: 0deg; margin-top: 0; }
 .note {
   flex: 0 0 auto;
   width: 100%;
@@ -4658,22 +2539,6 @@ strong {
 }
 
 /* ── 결과 위 한 줄 ── */
-.result__headline {
-  margin: 20px 0 4px;
-  font-size: 22px;
-  line-height: 31px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--gray-900);
-  white-space: pre-line;
-}
-.result__vibe {
-  margin: 0;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-700);
-}
 
 /* ── 화면 전환: 오른쪽에서 밀려 들어온다 ── */
 @keyframes screen-in {
@@ -4696,68 +2561,6 @@ strong {
   justify-content: flex-start;
   padding: 12px 0 0;
 }
-.note-pouch {
-  position: relative;
-  padding: 16px 12px 14px;
-  border-radius: 20px;
-  background: var(--gray-50);
-}
-.note-pouch::after {
-  /* 통의 앞면: 쪽지 아랫부분을 살짝 가려 '꽂혀 있는' 느낌 */
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 40px;
-  height: 46px;
-  border-radius: 14px 14px 0 0;
-  background: var(--gray-100);
-  pointer-events: none;
-}
-.note-pouch__hint {
-  position: relative;
-  margin: 12px 0 0;
-  text-align: center;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  color: var(--gray-700);
-}
-.note-pouch .note-row {
-  position: relative;
-  flex-direction: row;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-}
-.note-pouch .note-row > *:nth-child(1) { --tilt: -5deg; transform-origin: bottom center; margin-top: 0; }
-.note-pouch .note-row > *:nth-child(2) { --tilt: 0deg; margin-top: -12px; }
-.note-pouch .note-row > *:nth-child(3) { --tilt: 5deg; transform-origin: bottom center; margin-top: 0; }
-.note-pouch .note {
-  flex: 1 1 0;
-  width: auto;
-  max-width: 108px;
-  min-height: 0;
-  aspect-ratio: 5 / 7;
-  flex-direction: column;
-  justify-content: center;
-  gap: 6px;
-  padding: 12px 10px;
-  border-radius: 16px;
-  text-align: center;
-  background: var(--white);
-  border: 1.5px solid var(--gray-200);
-  box-shadow: 0 4px 14px rgba(0, 23, 51, 0.08);
-}
-.note-pouch .note__seal { height: 44px; }
-.note-pouch .note--facedown .note__hint {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  color: var(--gray-800);
-  text-align: center;
-}
 @keyframes note-float {
   0%, 100% { transform: translateY(0) rotate(var(--tilt, 0deg)); }
   50% { transform: translateY(-7px) rotate(var(--tilt, 0deg)); }
@@ -4765,18 +2568,6 @@ strong {
 
 /* ── 이렇게 뽑혀요: 질문 굵게, 답 한 줄 ── */
 .faq { margin-top: 24px; }
-.faq__list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.faq__row {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 14px 0;
-  border-top: 1px solid var(--gray-100);
-}
 .faq__q {
   font-size: 15px;
   line-height: 22.5px;
@@ -4791,9 +2582,6 @@ strong {
   word-break: keep-all;
 }
 /* 통 앞면이 글자를 가리지 않게: 앞면은 낮게, 쪽지는 길게, 글자는 위로 */
-.note-pouch::after { bottom: 44px; height: 26px; }
-.note-pouch .note { aspect-ratio: 5 / 8; padding: 10px 10px 36px; justify-content: flex-start; }
-.note-pouch .note__seal { height: 56px; }
 
 /* ── 쪽지가 주인공: 부채꼴로 겹쳐 한 장을 150px 로. 세 장이 자리를 돌며 살아 있고,
    누르면 그 한 장만 앞으로 나온다 ── */
@@ -4805,16 +2593,6 @@ strong {
 .note-fan {
   position: relative;
   height: 250px;
-}
-.note-fan .note-row {
-  position: relative;
-  display: block;
-  height: 100%;
-  width: 100%;
-}
-.note-fan .note-row > * {
-  margin-top: 0;
-  --tilt: 0deg;
 }
 .note-fan .note {
   position: absolute;
@@ -4838,9 +2616,6 @@ strong {
   transform-origin: 50% 100%;
   animation: fan-cycle 6s ease-in-out infinite;
 }
-.note-fan .note-row > *:nth-child(1) { animation-delay: 0s; }
-.note-fan .note-row > *:nth-child(2) { animation-delay: -2s; }
-.note-fan .note-row > *:nth-child(3) { animation-delay: -4s; }
 /* 왼쪽 → 가운데 → 오른쪽 → 왼쪽. 가운데에 온 장이 제일 크고 앞에 선다 */
 @keyframes fan-cycle {
   0%   { transform: translateX(-78px) rotate(-12deg) scale(0.9); z-index: 1; }
@@ -4883,9 +2658,6 @@ strong {
 }
 @media (prefers-reduced-motion: reduce) {
   .note-fan .note { animation: none; }
-  .note-fan .note-row > *:nth-child(1) { transform: translateX(-78px) rotate(-12deg) scale(0.9); }
-  .note-fan .note-row > *:nth-child(2) { transform: translateX(0); z-index: 3; }
-  .note-fan .note-row > *:nth-child(3) { transform: translateX(78px) rotate(12deg) scale(0.9); }
 }
 
 /* ── 이렇게 뽑혀요: 한 칸만 보이며 돌아간다 ── */
@@ -4974,7 +2746,6 @@ strong {
 .cat4__bar { height: 10px; border-radius: 999px; background: var(--gray-100); overflow: hidden; }
 .cat4__bar i { display: block; height: 100%; border-radius: 999px; background: var(--brand); transition: width 0.6s ease; }
 .cat4__v { font-size: 17px; line-height: 25.5px; font-weight: 700; color: var(--brand-strong); text-align: right; }
-.cat4 .mygod__qa { margin-top: 0; }
 .cat4 .match { margin-top: 4px; }
 
 /* 행운 여섯 칸: 3열, 칸은 작고 값은 크게 */
@@ -5047,21 +2818,6 @@ strong {
 }
 .note-grid .note--dim { animation: none; opacity: 0.35; transform: scale(0.96); }
 .note-grid .note--opening { animation: none; transform: translateY(-6px) scale(1.06); border-color: var(--brand); }
-.note__no {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--brand);
-  color: var(--white);
-  font-size: 12px;
-  line-height: 18px;
-  padding-top: 2px;
-  font-weight: 700;
-  text-align: center;
-}
 
 /* ── 결과: 뽑은 세 장, 운 설명, 풀이 ── */
 .drawn3 {
@@ -5069,28 +2825,6 @@ strong {
   padding: 0;
   list-style: none;
 }
-.drawn3__row {
-  display: flex;
-  gap: 12px;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--gray-100);
-}
-.drawn3__no {
-  flex: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--brand-soft);
-  color: var(--brand-strong);
-  font-size: 13px;
-  line-height: 19.5px;
-  padding-top: 2px;
-  font-weight: 700;
-  text-align: center;
-}
-.drawn3__body { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.drawn3__k { font-size: 14px; line-height: 21px; font-weight: 700; color: var(--gray-900); }
-.drawn3__v { font-size: 14px; line-height: 21px; font-weight: 500; color: var(--gray-700); word-break: keep-all; }
 .cat4__row--rich {
   grid-template-areas: 'k bar v' 'why why why';
   row-gap: 4px;
@@ -5166,7 +2900,6 @@ strong {
 .sec-card .cat4__head,
 .sec-card .lucky4__head { font-size: 17px; line-height: 25.5px; }
 .sec-card--plan { background: var(--white); padding: 22px 20px; }
-.sec-card--plan .plan__title { font-size: 18px; line-height: 27px; color: var(--gray-900); }
 /* 여섯 칸의 바탕은 하나다. 색을 뜻 없이 나누면 눈이 먼저 색을 읽고
    글자는 나중에 읽는다. 뜻이 있는 색은 행운 색 동그라미 하나뿐이다. */
 .lucky4__grid--3 .lucky4__tile {
@@ -5195,16 +2928,6 @@ strong {
 .lucky-extra__v { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--gray-900); text-align: right; }
 
 /* 내 사주 · 올해 아래 이번 달·다음 달 두 줄 */
-.month2 { list-style: none; margin: 12px 0 0; padding: 0; }
-.month2__row {
-  display: grid;
-  grid-template-columns: 56px minmax(0, 1fr);
-  gap: 12px;
-  padding: 10px 0;
-  border-top: 1px solid var(--gray-100);
-}
-.month2__k { font-size: 14px; line-height: 21px; font-weight: 700; color: var(--brand-strong); }
-.month2__v { font-size: 15px; line-height: 22.5px; font-weight: 500; color: var(--gray-800); word-break: keep-all; }
 
 /* 고른 쪽지는 확실히 들린다. 저사양 폰에서도 보이게 이동·그림자를 키운다 */
 .note-grid .note--picked {
@@ -5410,7 +3133,6 @@ strong {
 .mflow__col--ok .mflow__bar { background: #90c2ff; }
 .mflow__col--hard .mflow__bar { background: var(--gray-200); }
 .mflow__m { font-size: 13px; line-height: 19.5px; font-weight: 600; color: var(--gray-700); }
-.mflow__now { font-size: 13px; line-height: 19.5px; font-weight: 700; color: var(--brand-strong); }
 .mflow__foot {
   margin: 12px 0 0;
   font-size: 13px;
@@ -5420,75 +3142,7 @@ strong {
   word-break: keep-all;
 }
 
-.todo3 { list-style: none; margin: 0 0 14px; padding: 0; }
-.todo3__row {
-  display: grid;
-  grid-template-columns: 24px minmax(0, 1fr);
-  gap: 10px;
-  padding: 9px 0;
-  border-top: 1px solid var(--gray-100);
-}
-.todo3__row:first-child { border-top: 0; padding-top: 2px; }
-.todo3__no {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: var(--brand-soft);
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
-.todo3__v { margin: 0; font-size: 15px; line-height: 22.5px; font-weight: 500; color: var(--gray-800); word-break: keep-all; }
-
 /* 상담 결과 — 달 한 덩이 */
-.slot__head {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin: 0 0 8px;
-}
-.slot__k { font-size: 18px; line-height: 27px; font-weight: 700; color: var(--gray-900); }
-.slot__label { font-size: 14px; line-height: 21px; font-weight: 600; color: var(--gray-700); }
-.slot__band {
-  margin-left: auto;
-  padding: 2px 9px;
-  border-radius: 999px;
-  background: var(--brand-soft);
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
-.slot__outer {
-  margin: 0;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 600;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
-.slot__inner {
-  margin: 6px 0 0;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
-.slot__note {
-  margin: 10px 0 0;
-  padding-top: 10px;
-  border-top: 1px solid var(--gray-100);
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  color: var(--gray-700);
-  word-break: keep-all;
-}
 
 .yline { list-style: none; margin: 0; padding: 0; }
 .yline__row {
@@ -5623,8 +3277,6 @@ strong {
 .sec--card .rowlist { margin-top: 0; }
 
 /* 카드 안에 들어간 하루 한 줄 */
-.sec-card > .result__headline { margin: 0; }
-.sec-card > .result__vibe { margin: 8px 0 0; }
 
 /* 행동 칸이 세 줄로 터지면서 줄 전체 높이를 끌어올렸다.
    값은 두 줄까지만 쓰고, 길면 글자를 한 단계 줄인다. */
@@ -5646,35 +3298,6 @@ strong {
 .score-hero__top { gap: 14px; }
 
 /* 행동은 한 줄짜리 칸으로 뺀다. 여섯 칸 안에 넣으면 문장이 잘린다. */
-.lucky-act {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-top: 12px;
-  padding: 14px;
-  border-radius: 16px;
-  background: var(--brand-soft);
-}
-.lucky-act__icon {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--white);
-  color: var(--brand-strong);
-}
-.lucky-act__text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.lucky-act__k { font-size: 13px; line-height: 19.5px; font-weight: 600; color: var(--brand-strong); }
-.lucky-act__v {
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 700;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
 .lucky-extra { margin-top: 4px; }
 
 /* 고리 안의 마스코트가 테두리를 넘지 않게 */
@@ -5687,8 +3310,6 @@ strong {
 .sec--card { margin-bottom: 0; }
 
 /* '더 보기' 줄: 보러가기 글씨가 본문을 밀어 제목이 두 줄로 꺾였다 */
-.sec--card .compat-banner__cta { flex: none; }
-.sec--card .compat-banner__body { min-width: 0; }
 
 /* 열두 달 막대: 칸마다 막대·달·표시를 같은 세 줄에 맞춘다.
    예전엔 '지금' 이 첫 칸에만 붙어서 그 칸만 키가 커지고 아래 줄이 어긋났다. */
@@ -5711,25 +3332,17 @@ strong {
   width: 100%;
   height: 100%;
 }
-.mflow__now { min-height: 19.5px; }
 
 /* 결과 카드 안 글자 크기를 한 벌로 맞춘다.
    제목 18, 본문 15, 곁말 13. 카드마다 다른 크기가 섞여 있었다. */
 .sec-card .cat4__head,
-.sec-card .slot__k,
 .sec--card .sec__title { font-size: 18px; line-height: 27px; font-weight: 700; }
 .sec-card .qa,
 .sec-card .qa--sub,
-.sec-card .slot__inner,
 .sec-card .read6__v,
-.sec-card .todo3__v,
 .sec-card .yline__v,
-.sec-card .deep-situation,
-.sec-card .result__vibe { font-size: 15px; line-height: 22.5px; }
-.sec-card .slot__outer { font-size: 16px; line-height: 24px; }
-.sec-card .mflow__foot,
-.sec-card .slot__note,
-.sec-card .plan__hold-v { font-size: 13px; line-height: 19.5px; }
+.sec-card .deep-situation { font-size: 15px; line-height: 22.5px; }
+.sec-card .mflow__foot { font-size: 13px; line-height: 19.5px; }
 .sec-card .read6__k,
 .sec-card .when4__k,
 .sec-card .yline__k { font-size: 14px; line-height: 21px; }
@@ -5893,9 +3506,7 @@ strong {
    보인다. 위에 쓴 border-top + first-child 가 맞는 모양인데, 아래 목록들은
    그렇게 안 돼 있었다. 마지막 줄의 선을 지운다. */
 /* 행운 네 칸은 2열 격자라 마지막 줄이 칸 두 개다. 하나만 지우면 옆이 남는다. */
-.lucky-cell:nth-last-child(-n + 2),
 .rank-row:last-child,
-.drawn3__row:last-child,
 .cat4__row--rich:last-child,
 .read6__row:last-child { border-bottom: 0; }
 .why-score__k {
@@ -5970,15 +3581,6 @@ strong {
 }
 
 /* 층을 나누는 제목. 흰 카드가 같은 무게로 쌓이면 어디까지가 결론인지 안 보인다 */
-.grp-head {
-  margin: 28px 0 -2px;
-  padding-top: 22px;
-  border-top: 1px solid var(--gray-100);
-  font-size: 17px;
-  line-height: 25.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
 
 /* 한 카드 안에서 두 번째 덩이의 제목 */
 .cat4__head--sub {

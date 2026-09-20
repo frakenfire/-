@@ -256,6 +256,30 @@ async function run() {
   await w(600);
   await grab('결과');
 
+  // 나머지 다섯 고민의 결과 화면. 한 고민만 재고 '결과 화면은 규칙을 지킨다'
+  // 고 적으면, 나머지 다섯은 여백 리듬도 면 중첩도 한 번도 안 본 채로 통과한다.
+  // 레이아웃 점검은 특히 그렇다 - 들어가는 글자가 길어지면 카드가 달라진다.
+  const REST = [
+    ['돈', '모으고 싶어요'],
+    ['연애', '혼자예요'],
+    ['사람 관계', '회사 사람이에요'],
+    ['몸과 컨디션', '기운이 없어요'],
+    ['마음', '불안해요'],
+  ];
+  for (const [concern, option] of REST) {
+    await page.goto(BASE, { waitUntil: 'networkidle' }); await w(600);
+    await page.locator('.today-hook__cta').first().click(); await w(700);
+    // 이름·성별은 저장돼 있어 이 화면은 그냥 넘긴다
+    await page.getByRole('button', { name: '다음' }).first().click(); await w(800);
+    await page.getByText(concern, { exact: true }).first().click(); await w(600);
+    await page.getByText(option, { exact: true }).first().click(); await w(800);
+    await page.locator('button.note').first().dispatchEvent('click');
+    await page.waitForSelector('.drawn', { timeout: 20000 }); await w(1500);
+    for (const b of await page.locator('.fold__head').all()) { await b.click(); await w(200); }
+    await w(500);
+    await grab(`결과(${concern})`);
+  }
+
   await page.goto(BASE, { waitUntil: 'networkidle' }); await w(700);
   await grab('홈(사주 후)');
 
