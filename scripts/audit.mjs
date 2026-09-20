@@ -670,6 +670,26 @@ async function run(browser) {
       check(!/잠금|잠겨|결제|유료|포인트로 보기/.test(t), '[광고] 본문에 잠긴 카드가 없다');
       // 지금 보고 있는 고민을 다시 팔면 안 된다
       check(geo.rows === 5, '[광고] 지금 보는 고민은 목록에서 빠진다', String(geo.rows));
+
+      // ── 다시 올 이유 ──
+      // 이 앱의 답은 실제로 매일 바뀌는데 그 사실을 아무 데서도 말하지 않으면
+      // 한 번 보고 끝내는 화면이 된다. 단, 지어낸 기대는 걸지 않는다.
+      const nd = await page.locator('.nextday__v').innerText().catch(() => '');
+      check(nd.includes('내일'), '[재방문] 내일 무엇이 달라지는지 적혀 있다', nd.slice(0, 30));
+      check(!/대박|최고의 날|놓치면|서둘러|무조건|반드시/.test(nd),
+        '[재방문] 미끼 표현을 안 쓴다', nd.slice(0, 30));
+      // 접힌 묶음 안에 넣으면 안 펴는 사람은 못 본다
+      const ndOpen = await page.evaluate(() => {
+        const el = document.querySelector('.nextday');
+        if (!el) return false;
+        let cur = el.parentElement;
+        while (cur) {
+          if (cur.classList?.contains('fold')) return false;
+          cur = cur.parentElement;
+        }
+        return true;
+      });
+      check(ndOpen, '[재방문] 접힌 묶음 밖에 있다');
       await diagnose(page, '쪽지결과');
     } catch (e) {
       bad('[쪽지] 컨셉 유지', e.message.split('\n')[0]);

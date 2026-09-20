@@ -87,6 +87,8 @@ export type DeepRead = {
     rows: { k: string; rel: string; v: string }[];
     /** 아무 관계도 없을 때 쓸 한 줄 */
     quiet: string | null;
+    /** 내일은 무엇이 달라지는가. 실제로 내일 일진을 계산해서 적는다 */
+    nextDay: string;
   };
   actions: string[];
   caution: string;
@@ -528,6 +530,33 @@ export function buildDeepRead(
       v: rels.map((r) => RELATION_KO[r].line).join(' '),
     });
   }
+  // 내일 한 줄.
+  //
+  // 왜 넣나: 이 앱의 답은 실제로 매일 바뀐다 (일진이 점수의 10% 고, 오늘 층이
+  // 따로 읽힌다). 그런데 그 사실을 아무 데서도 말하지 않아서, 한 번 보고 끝내는
+  // 화면이 됐다. 다시 올 이유를 만들어야 한다.
+  //
+  // 무엇을 넣지 않나: '내일 대박' 같은 미끼는 안 쓴다. 지어낸 기대를 걸면
+  // 다음 날 한 번 속고 다시는 안 온다. 내일 일진을 실제로 계산해서, 오늘과
+  // 무엇이 달라지는지만 적는다. 틀릴 수 없는 말이다.
+  const tomorrow = new Date(Date.UTC(cy, cm - 1, cd) + 86400000);
+  const tomorrowPillar = computeFourPillars({
+    year: tomorrow.getUTCFullYear(),
+    month: tomorrow.getUTCMonth() + 1,
+    day: tomorrow.getUTCDate(),
+    hour: 12,
+  }).day;
+  const tomorrowGod = tenGodOf(pillars.dayStem, tomorrowPillar.stem) as TenGod;
+  const tomorrowRels = meetSpots.flatMap((spot) =>
+    branchRelations(tomorrowPillar.branch, spot.b).length > 0 ? [spot.k] : [],
+  );
+  const nextDay =
+    tomorrowGod === todayGod && tomorrowRels.length === meetRows.length
+      ? '내일도 결이 비슷한 날이라, 오늘 잡아둔 것이 그대로 이어져요.'
+      : tomorrowGod === todayGod
+        ? `내일은 같은 기운이 오는데 내 글자와 닿는 자리가 달라져요. 오늘과 조금 다른 답이 나와요.`
+        : `내일은 ${GOD_PULL[tomorrowGod]}으로 기울어요. 오늘과 다른 답이 나와요.`;
+
   const todayStep = unseongOf(pillars.dayStem, todayPillar.branch);
   const todayMeet = {
     pillar: `${STEMS[todayPillar.stem].kor}${BRANCHES[todayPillar.branch].kor}`,
@@ -538,6 +567,7 @@ export function buildDeepRead(
       meetRows.length === 0
         ? '오늘 글자는 내 여덟 글자 중 어느 것과도 엮이지 않아요. 흔들림이 적은 날이라 하던 대로 가면 돼요.'
         : null,
+    nextDay,
   };
 
   const cur = timing.daeun.current;

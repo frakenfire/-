@@ -6790,3 +6790,29 @@ strong {
   font-weight: 600;
   color: var(--score-low-text);
 }
+
+/* ── 내일 한 줄 ──
+   결과의 마지막에 읽는 줄. 카드로 세우면 또 하나의 섹션이 되어 화면이
+   길어지고, 배너처럼 보이면 광고로 읽힌다. 바탕 위에 조용히 놓는다. */
+.nextday {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: start;
+  gap: 8px;
+  margin: var(--space-6) 4px 0;
+}
+.nextday__k {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 21px;
+  color: var(--gray-700);
+}
+.nextday__v {
+  margin: 0;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
+  color: var(--gray-800);
+  word-break: keep-all;
+}

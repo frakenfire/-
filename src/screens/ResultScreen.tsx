@@ -339,6 +339,19 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
         />
       ) : null}
 
+      {/* 마지막에 읽는 한 줄. 다시 올 이유를 만드는 자리다.
+          '내일 대박' 같은 미끼는 안 쓴다 — 지어낸 기대를 걸면 다음 날 한 번
+          속고 다시는 안 온다. 내일 일진을 실제로 계산해서 무엇이 달라지는지만
+          적는다. 접힌 묶음 안에 넣지 않는다. 안 펴면 아무도 못 본다. */}
+      {deep ? (
+        <p className="nextday">
+          <span className="nextday__k" aria-hidden>
+            <Icon name="clock" size={16} />
+          </span>
+          <Sentences className="nextday__v" text={deep.read.todayMeet.nextDay} />
+        </p>
+      ) : null}
+
       <Disclaimer />
 
     </AppLayout>

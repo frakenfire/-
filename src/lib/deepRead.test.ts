@@ -288,3 +288,33 @@ test('해 표와 달 차트가 같은 문장을 쓰지 않는다', () => {
   }
   assert.equal(hits.length, 0, `겹치는 문장 ${hits.length}개\n  ${hits.slice(0, 6).join('\n  ')}`);
 });
+
+// 다시 올 이유를 만드는 줄. '내일 대박' 같은 미끼를 쓰면 다음 날 한 번 속고
+// 다시는 안 온다. 실제로 내일 일진을 계산한 말이어야 한다.
+test('내일 한 줄이 날마다 실제로 바뀐다', () => {
+  const lines = new Set<string>();
+  for (let d = 1; d <= 20; d += 1) {
+    const { r } = read(new Date(Date.UTC(2026, 8, d, 3)));
+    assert.ok(r.todayMeet.nextDay.length > 8, `${d}일: 너무 짧아요`);
+    lines.add(r.todayMeet.nextDay);
+  }
+  // 열흘 천간이 한 바퀴 도므로 스무 날이면 여러 갈래가 나와야 한다
+  assert.ok(lines.size >= 4, `스무 날에 ${lines.size}가지뿐`);
+});
+
+test('내일 한 줄에 미끼 표현을 안 쓴다', () => {
+  const BAIT = /대박|최고의 날|놓치면|서둘러|기회를 잡|반드시|무조건|행운이 쏟아/;
+  for (const c of CONCERNS) {
+    for (let d = 1; d <= 12; d += 1) {
+      const { r } = read(new Date(Date.UTC(2026, 8, d, 3)), c.key);
+      assert.ok(!BAIT.test(r.todayMeet.nextDay), `${c.key} ${d}일: ${r.todayMeet.nextDay}`);
+      assert.ok(r.todayMeet.nextDay.includes('내일'), `${c.key} ${d}일: 내일 얘기가 아님`);
+    }
+  }
+});
+
+test('내일 한 줄이 같은 날 안에서는 안 바뀐다', () => {
+  const a = read(new Date('2026-09-15T09:00:00+09:00')).r.todayMeet.nextDay;
+  const b = read(new Date('2026-09-15T21:30:00+09:00')).r.todayMeet.nextDay;
+  assert.equal(a, b);
+});
