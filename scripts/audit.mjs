@@ -1504,7 +1504,11 @@ async function run(browser) {
       // 뒤로가기는 홈이 아니라 '한 단계 앞' 으로 가야 한다
       ['고민 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); await wait(p, 500); await fillName(p); await p.getByRole('button', { name: '다음' }).first().click(); }, '언제 태어났어요'],
       ['결과', async (p) => { await drawTo(p); }, '이렇게 뽑혀요'],
-      ['궁합', async (p) => { await goCompat(p); }, '점수'],
+      // 딥링크로 들어온 궁합은 쌓인 길이 없으니 홈으로 떨어진다.
+      // 전에는 '점수' 라는 말이 있는지만 봤는데, 그 말은 홈의 원리 설명
+      // 여섯째 줄("그 규칙으로 점수를 매겨요")에 들어 있었다. 그 글을 접자마자
+      // 검사가 빨개졌다 - 뒤로가기가 아니라 설명 문단을 보고 있었던 셈이다.
+      ['궁합', async (p) => { await goCompat(p); }, '오늘의 띠 서열'],
     ];
     for (const [name, prep, expect] of BACKS) {
       const page = await newPage(browser);

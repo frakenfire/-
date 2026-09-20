@@ -11,7 +11,7 @@ export type HowRow = { icon: IconName; title: string; body: string };
 export const HOW_ROWS: HowRow[] = [
   {
     icon: 'sun',
-    title: '만세력을 직접 계산해요',
+    title: '달이 바뀌는 날을 직접 계산해요',
     body: '사주에서 한 달은 달력의 1일에 시작하지 않아요. 계절이 바뀌는 날에 바뀌어요. 그날이 언제인지를 해의 위치로 직접 계산해요. 남이 만든 표를 베끼지 않아요.',
   },
   {
@@ -21,7 +21,7 @@ export const HOW_ROWS: HowRow[] = [
   },
   {
     icon: 'trendUp',
-    title: '십 년 단위 대운을 세워요',
+    title: '십 년 단위 흐름을 세워요',
     body: '사람마다 십 년씩 갈리는 큰 흐름이 있어요. 그 흐름이 앞으로 가는지 뒤로 가는지는 태어난 해와 성별로 갈려요. 계절이 바뀌는 날까지 며칠 남았는지를 세서 첫 흐름이 몇 살에 오는지 구해요.',
   },
   {

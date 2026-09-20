@@ -3037,14 +3037,6 @@ strong {
 
 /* ── 이 답은 이렇게 나와요 ── */
 .how { margin-top: var(--space-6); }
-.how__lead {
-  margin: 0 0 14px;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-700);
-  word-break: keep-all;
-}
 .how__list { list-style: none; margin: 0; padding: 0; }
 .how__row {
   display: grid;
