@@ -1303,18 +1303,43 @@ async function run(browser) {
     check(!home.includes('오늘 받은 편지') && !/오늘 점수/.test(home),
       '[홈] 뽑고 와도 점수나 기록이 안 남는다');
     check(home.includes('오늘 쪽지 열어보기'), '[홈] CTA 문구가 그대로다');
-    await page.evaluate(() => {
+    await page.context().close();
+  }
+
+  // 11.5 자정 넘김 — 결과 화면을 켜둔 채 날이 바뀌는 진짜 경우
+  //
+  // 전에는 홈에서 날짜만 넘기고 '오늘 받은 편지' 가 없는지 봤다. 그 문자열은
+  // 주석에만 있고 화면에 안 나온다. 즉 자정 처리를 통째로 지워도 통과하는
+  // 검사였다. 실제로 위험한 건 결과 화면을 띄워둔 채 자정이 지나는 쪽이다 -
+  // 어제 답이 '오늘의 쪽지' 라는 이름표를 달고 남아 있으면 앱이 거짓말을 한다.
+  {
+    const page = await newPage(browser);
+    await drawTo(page);
+    check((await page.locator('.score-hero').count()) === 1, '[자정] 넘기기 전에는 결과 화면');
+    const before = (await bodyText(page)).match(/\d+월 \d+일/)?.[0] ?? '';
+
+    const advanceADay = () => {
       const R = Date, OFF = 86400000;
       // eslint-disable-next-line no-global-assign
       window.Date = class extends R {
         constructor(...a) { if (a.length === 0) super(R.now() + OFF); else super(...a); }
         static now() { return R.now() + OFF; }
       };
+      // 앱이 돌아온 순간 날짜를 다시 읽는다 (백그라운드에서 자정을 넘긴 경우)
       document.dispatchEvent(new Event('visibilitychange'));
-    });
-    await wait(page, 1500);
+    };
+    await page.evaluate(advanceADay);
+    await wait(page, 1800);
+
     const after = await bodyText(page);
-    check(!after.includes('오늘 받은 편지'), '[자정] 날짜가 바뀌어도 남는 게 없다');
+    check((await page.locator('.score-hero').count()) === 0,
+      '[자정] 어제 결과가 오늘 화면에 안 남는다');
+    check((await page.locator('.today-hook__cta').count()) === 1,
+      '[자정] 홈으로 되돌아온다');
+    const now = after.match(/\d+월 \d+일/)?.[0] ?? '';
+    check(before !== '' && now !== '' && before !== now,
+      '[자정] 날짜 줄이 실제로 바뀐다', `${before} -> ${now}`);
+    check(page.__errs.length === 0, '[자정] 날이 바뀔 때 예외 없음', page.__errs.join(' | '));
     await page.context().close();
   }
 
