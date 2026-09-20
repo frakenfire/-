@@ -3293,9 +3293,11 @@ strong {
   padding: 14px 0;
   border-top: 1px solid var(--gray-100);
   border-bottom: 1px solid var(--gray-100);}
+/* 켜면 위아래 가로줄까지 파랗게 칠해져서, 같은 화면에 있는 '태어난 시각을
+   몰라요' 체크줄과 전혀 다른 물건처럼 보였다. 체크됐다는 사실은 네모와
+   글자색이 이미 말한다. 줄은 옆 줄들과 같은 회색으로 둬서 리듬을 지킨다. */
 .birth-unknown--on {
   background: var(--brand-soft);
-  border-color: var(--brand);
   color: var(--brand-strong);
 }
 .birth-unknown__box {

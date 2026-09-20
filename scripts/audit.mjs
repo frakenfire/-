@@ -424,19 +424,23 @@ async function run(browser) {
       await wait(page, 700);
       const blocked = await bodyText(page);
       check(blocked.includes('언제 태어났어요'), '[미입력] 이름 없이 누르면 다음으로 안 넘어감');
-      check((await page.locator('.field__warn').count()) === 1,
-        '[미입력] 이름 경고가 화면에 뜬다');
+      // 빠진 칸은 한 번에 다 보여준다. 전에는 이름부터 막고 돌아섰다가 이름을
+      // 채우면 그제서야 성별을 막아서, 한 번 채울 것을 두 번 왕복하게 했다.
+      check((await page.locator('.field__warn').count()) === 2,
+        '[미입력] 빠진 칸을 한 번에 다 알려준다', `${await page.locator('.field__warn').count()}개`);
       check(/이름을 두 글자 이상/.test(blocked), '[미입력] 무엇을 해야 하는지 적혀 있다');
-      check((await page.locator('.field--warn').count()) === 1, '[미입력] 빈 칸에 테두리 표시');
+      check(/성별을 골라주세요/.test(blocked), '[미입력] 성별도 같이 알려준다');
+      check((await page.locator('.field--warn').count()) === 2, '[미입력] 빈 칸에 테두리 표시');
       check((await page.locator('.field__input[aria-invalid="true"]').count()) === 1,
         '[미입력] 빈 칸에 aria-invalid');
+      // 데려가는 자리는 위에서 처음 빠진 칸 하나다
       check(await page.evaluate(() => document.activeElement?.className?.includes?.('field__input') === true),
-        '[미입력] 커서가 빈 이름 칸으로 간다');
+        '[미입력] 커서가 위에서 처음 빠진 칸으로 간다');
 
       await page.locator('.field__input').first().fill('김한별');
       await wait(page, 300);
-      check((await page.locator('.field__warn').count()) === 0,
-        '[미입력] 채우면 경고가 사라진다');
+      check((await page.locator('.field__warn').count()) === 1,
+        '[미입력] 채운 칸의 경고만 사라진다', `${await page.locator('.field__warn').count()}개`);
 
       // 성별도 십 년 흐름의 방향을 가른다 — 같은 대우를 받아야 한다
       await page.getByRole('button', { name: '다음' }).first().click();
@@ -483,6 +487,16 @@ async function run(browser) {
       await page.getByText('윤2월에 태어났어요', { exact: false }).first().click();
       await wait(page, 500);
       check(/음력 2023년 윤2월/.test(await bodyText(page)), '[음력] 윤달을 켜면 윤달로 적힌다');
+      // 켜면 위아래 가로줄까지 파랗게 칠해져서, 바로 밑의 '태어난 시각을 몰라요'
+      // 체크줄과 전혀 다른 물건처럼 보였다. 체크됐다는 사실은 네모와 글자색이
+      // 이미 말한다. 줄은 옆 줄들과 같은 회색이어야 리듬이 안 깨진다.
+      const checkRule = await page.evaluate(() => {
+        const rows = [...document.querySelectorAll('.birth-unknown')];
+        if (rows.length < 2) return null;
+        return rows.map((r) => getComputedStyle(r).borderTopColor);
+      });
+      check(checkRule !== null && new Set(checkRule).size === 1,
+        '[음력] 켠 체크줄의 가로줄이 옆 줄과 같은 색', checkRule ? [...new Set(checkRule)].join(' / ') : '줄 없음');
       await page.getByText('윤2월에 태어났어요', { exact: false }).first().click();
       await wait(page, 400);
 

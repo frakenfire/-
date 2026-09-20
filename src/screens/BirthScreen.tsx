@@ -169,16 +169,19 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
           className="btn btn--primary"
           onClick={() => {
             if (!input) return;
-            // 이름도 계산에 들어간다. 빈 채로 넘기면 이름 칸이 통째로 빠지므로 막는다.
-            // 버튼을 잠그지는 않는다 — 안 눌리면 '왜 안 되지' 로 멈춘다. 눌러서 알려준다.
-            if (name.trim().length < 2) {
-              setNameWarn(true);
-              nudge(nameRef.current, nameRef.current);
-              return;
-            }
-            if (!gender) {
-              setGenderWarn(true);
-              nudge(genderRef.current);
+            // 이름도 성별도 계산에 들어간다. 빈 채로 넘기면 그 칸이 통째로 빠지므로 막는다.
+            // 버튼을 잠그지는 않는다. 안 눌리면 '왜 안 되지' 로 멈춘다. 눌러서 알려준다.
+            //
+            // 빠진 칸은 한 번에 다 표시한다. 전에는 이름부터 막고 돌아섰다가
+            // 이름을 채우면 그제서야 성별을 막아서, 한 번 채울 것을 두 번 왕복하게
+            // 했다. 데려가는 자리는 위에서 처음 빠진 칸 하나다.
+            const missName = name.trim().length < 2;
+            const missGender = !gender;
+            if (missName || missGender) {
+              setNameWarn(missName);
+              setGenderWarn(missGender);
+              if (missName) nudge(nameRef.current, nameRef.current);
+              else nudge(genderRef.current);
               return;
             }
             onSave({
