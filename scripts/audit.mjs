@@ -138,7 +138,21 @@ async function openFolds(page) {
   await wait(page, 400);
 }
 
-async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topic = null } = {}) {
+// 고민마다 카드 수와 문장 길이가 다르다. 한 고민만 열어보고 '결과 화면은
+// 괜찮다' 고 적으면, 나머지 다섯 화면은 대비도 터치영역도 가로 스크롤도
+// 한 번도 안 본 채로 통과한다. 생년월일도 마찬가지다 - 십성이 갈리면
+// 들어가는 글자가 갈리고, 긴 글자가 칸을 뚫는 건 그때만 보인다.
+const CONCERN_PATHS = [
+  { concern: '일과 이직', option: '다니는데 옮기고 싶어요' },
+  { concern: '돈', option: '모으고 싶어요' },
+  { concern: '연애', option: '혼자예요' },
+  { concern: '사람 관계', option: '회사 사람이에요' },
+  { concern: '몸과 컨디션', option: '기운이 없어요' },
+  { concern: '마음', option: '불안해요' },
+];
+
+async function drawTo(page, opts = {}) {
+  const { zodiac = '개띠', concern = '일과 이직', option = '다니는데 옮기고 싶어요', birth = null } = opts;
   await page.goto(URL_BASE, { waitUntil: 'networkidle' });
   await wait(page, 400);
   if (zodiac) await setZodiac(page, zodiac);
@@ -150,16 +164,16 @@ async function drawTo(page, { zodiac = '개띠', mood = '그냥 그래요', topi
   // 이 앱의 답은 전부 명식에서 나오므로 건너뛰는 길은 없앴다.
   if (await page.getByRole('button', { name: '다음' }).count()) {
     await fillName(page);
+    if (birth) await pickBirth(page, birth);
     await page.getByRole('button', { name: '다음' }).first().click();
     await wait(page, 600);
   }
   if (await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).count()) {
-    await page.getByText('일과 이직', { exact: true }).first().click();
+    await page.getByText(concern, { exact: true }).first().click();
     await wait(page, 500);
-    await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click();
+    await page.getByText(option, { exact: true }).first().click();
     await wait(page, 600);
   }
-  void topic; void mood;
   await page.locator('button.note').first().dispatchEvent('click');
   await wait(page, 4300); // 쪽지 열림 + 로딩 연출
 }
@@ -992,6 +1006,34 @@ async function run(browser) {
     check((await page.getByText('복사하기', { exact: false }).count()) === 0,
       '[상담] 공유와 같은 일을 하는 복사 버튼이 따로 없음');
     await page.context().close();
+  }
+
+  // 6.5 여섯 고민 × 두 생년월일 — 한 고민만 열어보고 '결과 화면은 괜찮다' 고
+  // 적으면 나머지 다섯은 한 번도 안 본 채로 통과한다. 여기서 각 화면을
+  // diagnose 로 훑는다(빈 화면·가로 스크롤·44px·대비·콘솔 에러·이모지).
+  //
+  // 생년월일 둘: 휠 기본값(1995-01-01)과 1960년생 남자. 십성이 갈리면 들어가는
+  // 글자가 갈리고, 긴 글자가 칸을 뚫는 건 그때만 보인다.
+  {
+    const BIRTHS = [
+      { label: '기본', birth: null },
+      { label: '1960남', birth: { year: 1960, month: 5, day: 12, ampm: '오전', hour: 9, minute: '00' } },
+    ];
+    for (const b of BIRTHS) {
+      for (const cp of CONCERN_PATHS) {
+        const page = await newPage(browser);
+        await drawTo(page, { concern: cp.concern, option: cp.option, birth: b.birth });
+        const t = await bodyText(page);
+        check(t.includes('점'), `[여섯고민] ${cp.concern}/${b.label} 결과가 뜬다`);
+        // 문장이 칸을 뚫으면 여기서 가로 스크롤이나 대비로 잡힌다
+        await diagnose(page, `${cp.concern}/${b.label}`);
+        // 고민을 골라 들어왔으면 그 고민 얘기가 화면에 있어야 한다
+        const word = { '일과 이직': /이직|회사|자리/, 돈: /돈|수입|지출/, 연애: /연애|사이|상대/,
+          '사람 관계': /사람|사이|관계/, '몸과 컨디션': /몸|잠|운동/, 마음: /마음|생각|기분/ }[cp.concern];
+        check(word.test(t), `[여섯고민] ${cp.concern}/${b.label} 그 고민의 말을 쓴다`);
+        await page.context().close();
+      }
+    }
   }
 
   // 7. 궁합 — 띠 / 별자리 / 언락 2종 / 카드 액션 / 관계 저장
