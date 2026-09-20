@@ -6,7 +6,7 @@
 // 이 파일은 규칙만 담는다. 해석 문장은 dayMasterContent.ts 로 분리해,
 // 규칙이 바뀌지 않는 한 문장을 고쳐도 계산 결과가 흔들리지 않게 했다.
 
-import { STEMS, BRANCHES, type Element } from './saju.ts';
+import { STEMS, type Element } from './saju.ts';
 import type { FourPillars } from './fourPillars.ts';
 
 export type TenGod =
@@ -47,13 +47,6 @@ export const GOD_GROUP_OF: Record<TenGod, GodGroup> = {
   jeonggwan: 'authority',
   pyeonin: 'support',
   jeongin: 'support',
-};
-export const GOD_GROUP_KO: Record<GodGroup, string> = {
-  self: '비겁(나)',
-  output: '식상(표현)',
-  wealth: '재성(성과)',
-  authority: '관성(책임)',
-  support: '인성(배움)',
 };
 
 // ── 오행 생극 (이 파일 안에서 완결) ────────────────────────────────────────
@@ -255,9 +248,6 @@ export function hiddenStemsOf(branch: number): { stem: number; hanja: string; we
 }
 
 /** 지지 인덱스 → 한자 (외부에서 BRANCHES 를 직접 만지지 않게) */
-export function branchHanja(branch: number): string {
-  return BRANCHES[branch].hanja;
-}
 
 /**
  * 오행 분포를 한 문장으로 요약할 때 쓸 '모양'.

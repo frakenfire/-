@@ -72,7 +72,7 @@ function elementBias(flow: PairElementFlow): number {
   return { generate: 3, same: 1, control: -3 }[flow];
 }
 
-export function vibeOf(tag: Tag): CompatVibe {
+function vibeOf(tag: Tag): CompatVibe {
   if (tag === 'same' || tag === 'selfPunish') return 'twin';
   if (tag === 'trine' || tag === 'union') return 'harmony';
   if (tag === 'clash' || tag === 'harm' || tag === 'punish') return 'spark';

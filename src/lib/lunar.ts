@@ -108,12 +108,12 @@ function kstMidnightJde(day: number): number {
 }
 
 /** 양력 날짜 → 한국 표준시 기준 '며칠' */
-export function kstDayFromSolar(year: number, month: number, day: number): number {
+function kstDayFromSolar(year: number, month: number, day: number): number {
   return Math.floor(toJulianDay(year, month, day, 0, 0, 0) + 0.5);
 }
 
 /** 한국 표준시 기준 '며칠' → 양력 날짜 */
-export function solarFromKstDay(day: number): { year: number; month: number; day: number } {
+function solarFromKstDay(day: number): { year: number; month: number; day: number } {
   const d = fromJulianDay(day - 0.5 + 1e-7);
   return { year: d.year, month: d.month, day: d.day };
 }

@@ -11,7 +11,7 @@ import type { Zodiac } from '../data/zodiac.ts';
 // 그림이 오히려 맞다. 화면과 공유는 다른 매체다.
 
 /** '원숭이띠' → '원' · '개띠' → '개' */
-export function zodiacChar(label: string): string {
+function zodiacChar(label: string): string {
   return label.replace(/띠$/, '').charAt(0);
 }
 

@@ -418,16 +418,5 @@ export const WHEN_ACT: Record<ConcernKey, { best: string; hard: string; year: st
 };
 
 /** 결정 카드가 '그래서 지금 뭘' 에 답했는지 확인할 때 쓰는 추상어 목록 */
-export const VAGUE_WORDS = [
-  '준비하기',
-  '도움 받기',
-  '정리하기',
-  '변화',
-  '기회 잡기',
-  '지키기',
-  '움직이기',
-  '기록하기',
-  '협력하기',
-];
 
 export type { TenGod };

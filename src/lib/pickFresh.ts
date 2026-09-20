@@ -27,7 +27,7 @@ function loadHistory(key: string): number[] {
   }
 }
 
-export function pickFreshIndex(seed: number, len: number, storageKey: string): number {
+function pickFreshIndex(seed: number, len: number, storageKey: string): number {
   const base = Math.abs(Math.trunc(seed)) % len;
   if (len <= 1) return base;
   let idx = base;

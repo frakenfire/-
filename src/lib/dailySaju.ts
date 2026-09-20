@@ -101,7 +101,7 @@ export function needFit(profile: SajuProfile, group: GodGroup): NeedFit {
  *   (2) 오늘 일지가 내 일지와 어떤 관계인가        — 충·형이면 깎인다
  *   (3) 오늘 일간 오행이 내 용신인가               — 보너스
  */
-export function personalScore(fit: NeedFit, rel: BranchRelation, hitsUseful: boolean): number {
+function personalScore(fit: NeedFit, rel: BranchRelation, hitsUseful: boolean): number {
   let s = 2;
   if (fit === 'needed') s += 1.3;
   else if (fit === 'excess') s -= 0.9;

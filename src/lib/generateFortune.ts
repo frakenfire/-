@@ -12,8 +12,7 @@ import { computeFourPillars, type BirthInput } from './fourPillars.ts';
 import { analyzeSaju } from './tenGods.ts';
 import { dailyForMe, asSajuToday, type DailyMe } from './dailySaju.ts';
 import { computeDetail } from './detail.ts';
-import { composeLetter } from './letter.ts';
-import { computeRarity, RARITY_LINE } from './rarity.ts';
+import { computeRarity } from './rarity.ts';
 import { FORTUNE_LABEL } from '../data/fortuneTypes.ts';
 import { NOTE_LEAD, TEMPLATES } from '../data/resultTemplates.ts';
 import { NOTE_DIRECTION, directionOfText, conflicts } from '../data/noteDirection.ts';
@@ -122,24 +121,9 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const moodPool = MOOD_PINPOINT[mood] ?? [variant.pinpoint];
   // 회피 이력은 기분 풀 하나에 대해 한 번만 갱신한다(키 하나 = 풀 하나).
   const moodIdx = pickIndex(Math.trunc(seed / 7), moodPool.length);
-  // 편지는 어떤 주제로 뽑았든 '오늘 쓴 편지'라 기분 풀을 그대로 쓰되,
-  // 본문에 나온 한마디와는 다른 줄을 골라 같은 문장이 두 번 보이지 않게 한다.
-  const letterHighlight =
-    moodPool.length > 1
-      ? moodPool[(moodIdx + 1 + (Math.abs(seed) % (moodPool.length - 1))) % moodPool.length]
-      : moodPool[moodIdx];
   // '이번 달의 나'는 월간 리포트라 기분 풀(12줄 중 9줄이 '오늘/하루')을 그대로 쓰면
   // "오늘이 그런 쪽이에요" 가 월간 화면 맨 위에 박힌다. 월간은 월간 문장으로.
   const pinpoint = isMonth ? variant.pinpoint : moodPool[moodIdx];
-
-  // 편지의 '오늘의 부적'은 실제 계산된 행운 세트를 쓴다 (결과 보고서와 같은 값).
-  const letter = composeLetter({
-    mood,
-    variant,
-    seed,
-    highlight: letterHighlight,
-    luckyLine: `${luck.time}, ${luck.color.name}, ${luck.item}`,
-  });
 
   // 운세 종류(주제·시간척도) × 상태(회복/그라운딩/실행)로 오늘의 설계를 고른다.
   // 결과의 주인공이라 직전과 같은 설계가 연달아 나오지 않게 별도로 회피한다.
@@ -149,9 +133,6 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   const planSeed = Math.trunc(daySeed / 13);
   const dayPlan = cell[pickIndex(planSeed, cell.length)];
 
-  // 에픽 이상이면 요정의 특별 한마디를 편지에 담는다.
-  const rarityLine = RARITY_LINE[rarity.tier];
-  if (rarityLine) letter.special = rarityLine;
 
   // 행동 처방: lucky("타이밍 · 색 · 행동")에서 행동을 분리해 DO 목록으로.
   const luckyParts = variant.lucky.split(' · ');
@@ -194,7 +175,6 @@ ${variant.flow}`,
     luckyPoint: variant.lucky,
     shareLine: variant.share,
     luck,
-    letter,
     rarity,
     dos,
     dont,

@@ -1,4 +1,3 @@
-import { STEMS, BRANCHES } from './saju.ts';
 import type { FourPillars } from './fourPillars.ts';
 
 // 계산으로 확정되는 명리 요소들.
@@ -164,9 +163,3 @@ export function gongmangOf(dayGanzhi: number): [number, number] {
 }
 
 /** 지지 이름 */
-export function branchKo(b: number): string {
-  return BRANCHES[b].kor;
-}
-export function stemKo(s: number): string {
-  return STEMS[s].kor;
-}

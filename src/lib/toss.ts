@@ -6,7 +6,6 @@ import {
   getServerTime as tossGetServerTime,
   eventLog as tossEventLog,
   SafeAreaInsets,
-  requestNotificationAgreement as tossRequestNotiAgreement,
   requestReview as tossRequestReview,
 } from '@apps-in-toss/web-framework';
 
@@ -136,9 +135,6 @@ export function reportError(where: string, error: unknown): void {
 export const NOTI_TEMPLATE_CODE = 'REPLACE_NOTI_TEMPLATE';
 
 /** 알림 동의를 요청할 수 있는 상태인가 (콘솔 템플릿 코드가 채워졌는가) */
-export function canAskNotification(): boolean {
-  return !NOTI_TEMPLATE_CODE.startsWith('REPLACE_');
-}
 
 export type NotiAgreement = 'newAgreement' | 'alreadyAgreed' | 'agreementRejected' | 'unsupported';
 
@@ -146,24 +142,6 @@ export type NotiAgreement = 'newAgreement' | 'alreadyAgreed' | 'agreementRejecte
  * 푸시 알림 동의 UI 를 요청한다. 토스 밖/미설정/실패는 전부 'unsupported' 로
  * 조용히 수렴 — 알림은 부가 기능이라 어떤 경우에도 본 흐름을 막지 않는다.
  */
-export async function askNotificationAgreement(): Promise<NotiAgreement> {
-  if (!canAskNotification()) return 'unsupported';
-  try {
-    return await new Promise<NotiAgreement>((resolve) => {
-      try {
-        tossRequestNotiAgreement({
-          options: { templateCode: NOTI_TEMPLATE_CODE },
-          onEvent: (r: { type: NotiAgreement }) => resolve(r.type),
-          onError: () => resolve('unsupported'),
-        });
-      } catch {
-        resolve('unsupported');
-      }
-    });
-  } catch {
-    return 'unsupported';
-  }
-}
 
 // ── 평판: 미니앱 리뷰 요청 ──────────────────────────────────
 // 기분 좋은 순간(대길·스트릭 달성)에 한 번만 요청한다. 그 외 타이밍의

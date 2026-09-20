@@ -17,7 +17,7 @@
     "typecheck": "tsc -b --noEmit",
     "test": "node --experimental-strip-types --test 'src/**/*.test.ts'",
     "check:release": "node scripts/check-release.mjs",
-    "verify": "npm run typecheck && npm run test && npm run build:web && npm run check:no-mock && npm run check:policy && npm run check:palette && npm run check:emoji && npm run check:type && npm run check:weight && npm run check:hanja && npm run check:uiemoji && npm run check:copy && npm run check:release",
+    "verify": "npm run typecheck && npm run test && npm run build:web && npm run check:no-mock && npm run check:policy && npm run check:palette && npm run check:emoji && npm run check:type && npm run check:weight && npm run check:hanja && npm run check:uiemoji && npm run check:copy && npm run check:dead && npm run check:release",
     "audit": "node scripts/audit.mjs",
     "check:no-mock": "node scripts/check-no-mock.mjs",
     "check:policy": "node scripts/check-bundle-policy.mjs",
@@ -28,7 +28,8 @@
     "check:hanja": "node scripts/check-hanja.mjs",
     "check:uiemoji": "node scripts/check-ui-emoji.mjs",
     "audit:design": "node scripts/design-audit.mjs",
-    "check:copy": "node scripts/check-copy.mjs"
+    "check:copy": "node scripts/check-copy.mjs",
+    "check:dead": "node scripts/check-dead.mjs"
   },
   "dependencies": {
     "@apps-in-toss/web-framework": "^2.10.5",

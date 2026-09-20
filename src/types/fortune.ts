@@ -43,7 +43,6 @@ export type FortuneResult = {
   shareLine: string;
   luck: import('../lib/luck').LuckSet;
   /** 쪽지 요정의 편지 (위계 구조) */
-  letter: LetterParts;
   /** 쪽지 등급 (가챠 희귀도) */
   rarity: import('../lib/rarity').Rarity;
   /** 오늘의 행동 처방 — 결과의 주인공 */

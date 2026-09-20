@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { tap } from '../lib/haptic.ts';
 
-export const WHEEL_ITEM_H = 44;
+const WHEEL_ITEM_H = 44;
 
 export type WheelItem = { value: number; label: string };
 

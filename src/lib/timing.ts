@@ -48,7 +48,7 @@ export type TimingRead = {
 
 export type Favor = { good: GodGroup[]; ok: GodGroup[]; hard: GodGroup[] };
 
-export function favorOf(concern: ConcernKey, gender: Gender | null): Favor {
+function favorOf(concern: ConcernKey, gender: Gender | null): Favor {
   if (concern === 'love' && gender === 'female') {
     return {
       good: [...LOVE_FAVOR_FEMALE.good] as GodGroup[],
@@ -91,7 +91,7 @@ export function slotOf(
 }
 
 /** 사주로 치는 해의 천간. 입춘 전이면 지난해로 본다. */
-export function yearStemOf(sajuYear: number): number {
+function yearStemOf(sajuYear: number): number {
   return (((sajuYear - 4) % 10) + 10) % 10;
 }
 
@@ -102,7 +102,7 @@ function monthPillarOf(y: number, m: number): { stem: number; branch: number } {
 }
 
 /** 그 해의 지지 */
-export function yearBranchOf(sajuYear: number): number {
+function yearBranchOf(sajuYear: number): number {
   return (((sajuYear - 4) % 12) + 12) % 12;
 }
 

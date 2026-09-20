@@ -32,14 +32,3 @@ export function seededRandom(seed: number): () => number {
 }
 
 /** items 에서 seed 기준으로 count 개를 중복 없이 뽑는다 */
-export function pickBySeed<T>(items: T[], count: number, seed: number): T[] {
-  const pool = [...items];
-  const rand = seededRandom(seed);
-  const picked: T[] = [];
-  const n = Math.min(count, pool.length);
-  for (let i = 0; i < n; i += 1) {
-    const idx = Math.floor(rand() * pool.length);
-    picked.push(pool.splice(idx, 1)[0]);
-  }
-  return picked;
-}

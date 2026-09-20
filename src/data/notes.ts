@@ -47,6 +47,3 @@ export const NOTE_COLOR_CLASS: Record<NoteColor, string> = {
   softPink: 'note--pink',
 };
 
-export function findNote(id: string): Note | undefined {
-  return NOTES.find((n) => n.id === id);
-}

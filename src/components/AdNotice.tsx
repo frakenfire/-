@@ -9,12 +9,3 @@ export function AdBadge({ label = '광고' }: { label?: string }) {
     </span>
   );
 }
-
-// 결과 하단 배너 (mock). 실제 SDK 연동 시 배너 컴포넌트로 교체.
-export function AdBanner() {
-  return (
-    <div className="ad-banner" role="complementary" aria-label="배너 광고 영역">
-      배너 광고 영역 (mock)
-    </div>
-  );
-}

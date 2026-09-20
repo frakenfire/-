@@ -67,7 +67,7 @@ export function loadMyStarSign(): string | null {
 // 뽑기 카운트는 방문 기록(markVisit)과 분리된 자체 날짜 키를 쓴다.
 // (예전엔 lastVisitDate 를 공유해, 운세 선택 시 markVisit 이 먼저 날짜를
 //  갱신하면 날이 바뀌어도 카운트가 초기화되지 않는 버그가 있었다.)
-export function getDailyDrawCount(dateKey: string): number {
+function getDailyDrawCount(dateKey: string): number {
   if (safeGet(KEYS.dailyDrawDate) !== dateKey) return 0;
   const n = Number.parseInt(safeGet(KEYS.dailyDrawCount) ?? '0', 10);
   return Number.isFinite(n) ? n : 0;
@@ -219,12 +219,6 @@ const ASK_KEYS = {
   reviewAsked: 'tomorrowNoteReviewAsked', // '1'
 } as const;
 
-export function getNotiAskState(): string | null {
-  return safeGet(ASK_KEYS.notiAsked);
-}
-export function setNotiAskState(state: 'agreed' | 'rejected' | 'asked'): void {
-  safeSet(ASK_KEYS.notiAsked, state);
-}
 export function hasAskedReview(): boolean {
   return safeGet(ASK_KEYS.reviewAsked) === '1';
 }
@@ -274,9 +268,6 @@ export type StoredBirth = {
 const SKIP_BIRTH_KEY = 'tomorrowNoteSkipBirth';
 export function loadSkipBirth(): boolean {
   return safeGet(SKIP_BIRTH_KEY) === '1';
-}
-export function saveSkipBirth(v: boolean): boolean {
-  return safeSet(SKIP_BIRTH_KEY, v ? '1' : '');
 }
 
 export function loadBirth(): StoredBirth | null {

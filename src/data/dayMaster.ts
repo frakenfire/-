@@ -41,7 +41,7 @@ export type DayMasterInfo = {
   hueText: string;
 };
 
-export const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
+const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
   gap: {
     id: 'gap', hanja: '甲', kor: '갑목', icon: 'tree', name: '곧은 사람',
     tagline: '한번 정하면 끝까지 가요',

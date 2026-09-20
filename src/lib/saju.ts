@@ -266,7 +266,7 @@ function toneScore(rel: BranchRelation, flow: ElementFlow): number {
 // 그대로 두고 '어디부터 조심이라 부를지'만 조정한 것.
 // 예전 값(4.0/2.8/1.8)은 조심이 39%라 열흘 중 나흘이 경고였는데,
 // 이제 great 19% / good 35% / steady 34% / caution 12% 로 균형이 잡힌다.
-export function toneOf(score: number): SajuTone {
+function toneOf(score: number): SajuTone {
   if (score >= 3.5) return 'great';
   if (score >= 2.3) return 'good';
   if (score >= 1.0) return 'steady';
