@@ -97,7 +97,7 @@ export const DECISION: Record<ConcernKey, Record<Stance, DecisionCell>> = {
       dos: [
         '받을 돈과 미뤄둔 정산을 오늘 목록으로 만들기',
         '들어온 돈의 일부를 바로 다른 계좌로 옮기기',
-        '미뤄둔 계약이나 견적을 이번 구간 안에 마무리하기',
+        '미뤄둔 계약이나 견적을 이번 달 안에 마무리하기',
       ],
       donts: [
         '수입이 늘 것을 예상하고 먼저 지출하기',
@@ -128,7 +128,7 @@ export const DECISION: Record<ConcernKey, Record<Stance, DecisionCell>> = {
         '빌려준 돈이 있으면 상환 일정만 확인해두기',
       ],
       donts: [
-        '이번 구간에 목돈을 넣기',
+        '이번 달에 목돈을 넣기',
         '보증이나 대여 요청을 받아주기',
         '기분을 지출로 풀기',
       ],
@@ -188,7 +188,7 @@ export const DECISION: Record<ConcernKey, Record<Stance, DecisionCell>> = {
       donts: [
         '감정이 올라온 날 메시지 보내기',
         '끝난 사이에 다시 연락하기',
-        '이번 구간에 관계를 정리한다고 통보하기',
+        '이번 달에 관계를 정리한다고 통보하기',
       ],
     },
     keep: {
@@ -302,7 +302,7 @@ export const DECISION: Record<ConcernKey, Record<Stance, DecisionCell>> = {
         '밤에 화면 보는 시간 한 시간 줄이기',
       ],
       donts: [
-        '이 구간에 밤 새우기',
+        '이번 달에 밤 새우기',
         '아픈 신호를 일정 뒤로 미루기',
         '운동 강도를 올리기',
       ],
@@ -360,7 +360,7 @@ export const DECISION: Record<ConcernKey, Record<Stance, DecisionCell>> = {
         '힘들면 전문가 상담을 알아보기',
       ],
       donts: [
-        '이 구간에 큰 결정 내리기',
+        '이번 달에 큰 결정 내리기',
         '감정이 올라온 날 관계 정리하기',
         '혼자 견디며 아무에게도 말하지 않기',
       ],

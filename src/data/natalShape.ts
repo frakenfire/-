@@ -167,7 +167,7 @@ export const NATAL_SHAPE: Record<ConcernKey, Record<GodGroup, ShapeRow>> = {
       inflow: '표현하는 데서 시작돼요. 말과 표시가 그대로 호감이 돼요.',
       grow: '새로운 걸 같이 할 때 깊어져요. 반복되는 만남은 금방 지쳐요.',
       rise: '표현을 계속하는 사이가 오래 가요. 말이 끊기면 마음도 같이 끊겨요.',
-      leak: '재미가 식으면 마음도 같이 식어요. 잔잔한 구간을 못 견뎌요.',
+      leak: '재미가 식으면 마음도 같이 식어요. 잔잔하기만 한 사이는 못 견뎌요.',
       trap: '말로 다 꺼내놓고 정작 약속은 안 잡는 것.',
     },
     wealth: {
@@ -187,7 +187,7 @@ export const NATAL_SHAPE: Record<ConcernKey, Record<GodGroup, ShapeRow>> = {
     support: {
       inflow: '편해지는 데서 시작돼요. 오래 보고 천천히 붙는 쪽이에요.',
       grow: '받아주고 기다릴 때 깊어져요. 서두르면 오히려 멀어져요.',
-      rise: '편안함이 쌓인 사이가 오래 가요. 설레는 구간이 지난 뒤에 진짜가 남아요.',
+      rise: '편안함이 쌓인 사이가 오래 가요. 설렘이 지난 뒤에 진짜가 남아요.',
       leak: '다 받아주다 지칠 때 한 번에 끊겨요. 쌓아두면 폭이 커져요.',
       trap: '서운한 걸 말 안 하고 담아두는 것. 말했으면 넘어갔을 일이에요.',
     },

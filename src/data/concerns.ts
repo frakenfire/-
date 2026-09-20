@@ -69,7 +69,7 @@ export const CONCERNS: Concern[] = [
     question: '돈은 어느 쪽이 걸려요?',
     questionLead: '고른 쪽으로 답을 좁혀요.',
     options: [
-      { key: 'save', label: '모으고 싶어요', line: '모으는 건 액수보다 기간이에요. 흐름이 좋은 구간에 묶어두면 남아요.' },
+      { key: 'save', label: '모으고 싶어요', line: '모으는 건 액수보다 기간이에요. 돈이 붙는 달에 묶어두면 남아요.' },
       { key: 'leak', label: '나가는 게 너무 많아요', line: '새는 곳이 있는 상태예요. 늘리기 전에 막는 게 먼저예요.' },
       { key: 'big', label: '큰돈 쓸 일이 있어요', line: '큰 지출은 날짜를 고를 수 있어요. 고를 수 있으면 고르는 게 이득이에요.' },
       { key: 'invest', label: '투자를 생각 중이에요', line: '넣는 시기와 빼는 시기를 같이 정해두면 흔들릴 일이 줄어요.' },
@@ -119,7 +119,7 @@ export const CONCERNS: Concern[] = [
     options: [
       { key: 'tired', label: '기운이 없어요', line: '쓰는 곳이 많고 채우는 곳이 적은 상태예요.' },
       { key: 'sleep', label: '잠을 잘 못 자요', line: '머리가 안 꺼지는 상태예요. 몸보다 생각을 먼저 내려야 해요.' },
-      { key: 'ache', label: '아픈 데가 있어요', line: '사주는 병을 못 봐요. 다만 무리하기 쉬운 구간은 알려줄 수 있어요.' },
+      { key: 'ache', label: '아픈 데가 있어요', line: '사주는 병을 못 봐요. 다만 무리하기 쉬운 달은 알려줄 수 있어요.' },
       { key: 'keep', label: '그냥 관리하고 싶어요', line: '아프기 전에 챙기는 게 제일 싸게 먹혀요.' },
     ],
     resultTitle: '몸과 컨디션',
@@ -134,7 +134,7 @@ export const CONCERNS: Concern[] = [
     questionLead: '결을 알면 넘기는 방법이 달라져요.',
     options: [
       { key: 'anxious', label: '불안해요', line: '아직 안 온 일을 미리 겪는 중이에요.' },
-      { key: 'burnt', label: '지쳤어요', line: '쉬는 게 게으름이 아니라 다음을 위한 준비인 구간이에요.' },
+      { key: 'burnt', label: '지쳤어요', line: '쉬는 게 게으름이 아니라 다음을 위한 준비예요.' },
       { key: 'stuck', label: '결정을 못 하겠어요', line: '고르지 못하는 건 정보가 없어서가 아니라 잃을 게 보여서예요.' },
       { key: 'lonely', label: '외로워요', line: '사람이 없는 게 아니라 닿는 자리가 안 열린 때가 있어요.' },
     ],

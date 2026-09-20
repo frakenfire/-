@@ -72,7 +72,7 @@ export function koreaOffsetAt(
       return {
         offsetMin: standard + 60,
         isDst: true,
-        note: `${y}년 서머타임 적용 구간이라 시계가 1시간 당겨져 있었어요`,
+        note: `${y}년은 서머타임을 쓰던 해라 시계가 1시간 당겨져 있었어요`,
       };
     }
   }
