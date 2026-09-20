@@ -181,3 +181,28 @@ test('이번 달 이유가 행동 칸으로 내려가 있다', () => {
     assert.ok(WORD[c.key].test(r.monthWhy), `${c.key}: 이번 달 이유에 고민 말이 없어요 — ${r.monthWhy}`);
   }
 });
+
+// '지금 왜 이 고민이 커졌나' 카드와 층 카드(십 년·올해·이번 달)가 같은 층을
+// 두 번 설명하고 있었다. 층이 무엇인지는 층 카드가 말하고, 지금 카드는
+// 그래서 무엇이 느껴지는지로 각도를 갈라야 한다.
+test('지금 카드와 층 카드가 같은 말을 하지 않는다', async () => {
+  const { CONCERN_NOW } = await import('../data/concernNow.ts');
+  const strip = (x: string) => x.replace(/[^가-힣]/g, '');
+  const near = (a: string, b: string) => {
+    const A = strip(a), B = strip(b);
+    let n = 0;
+    for (let i = 0; i + 6 <= A.length; i += 1) if (B.includes(A.slice(i, i + 6))) n += 1;
+    return n >= 2;
+  };
+  const hits: string[] = [];
+  for (const c of CONCERNS) {
+    for (const god of TEN_GODS) {
+      const n = CONCERN_NOW[c.key][god];
+      const f = CONCERN_GOD[c.key][god];
+      for (const [nk, fk] of [['decade', 'daeun'], ['year', 'year'], ['month', 'month']] as const) {
+        if (near(n[nk], f[fk])) hits.push(`${c.key}.${god}.${nk}\n    ${n[nk]}\n    ${f[fk]}`);
+      }
+    }
+  }
+  assert.equal(hits.length, 0, `겹치는 쌍 ${hits.length}개\n  ${hits.slice(0, 3).join('\n  ')}`);
+});
