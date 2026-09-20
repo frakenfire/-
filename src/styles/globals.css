@@ -6631,3 +6631,12 @@ strong {
   font-weight: 500;
   color: var(--gray-600);
 }
+
+/* 고른 지역 하나만 표시가 남는다 — 목록을 닫아도 무엇을 골랐는지 위 줄에 보이지만,
+   다시 열었을 때 어디 있었는지 찾게 하면 안 된다. */
+.zodiac-grid--full .zodiac-chip--on {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+  font-weight: 700;
+}

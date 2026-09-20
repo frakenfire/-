@@ -471,6 +471,20 @@ async function run(browser) {
       check((await page.locator('.birth-unknown').filter({ hasText: '윤' }).count()) === 0,
         '[음력] 윤달이 없는 해에는 윤달 칸이 없다');
 
+      // 태어난 곳 — 한국 표준시는 동경 135°인데 국토는 126~130°에 있다.
+      // 전원 서울로 계산하면 시주 경계 근처에서 태어난 사람의 시주가 한 칸 밀린다.
+      check((await page.getByText('태어난 곳', { exact: true }).count()) === 1,
+        '[출생지] 태어난 곳을 받는다');
+      check(/서울/.test(await bodyText(page)), '[출생지] 기본값이 서울로 보인다');
+      await page.getByText('바꾸기', { exact: false }).first().click();
+      await wait(page, 500);
+      check((await page.getByRole('button', { name: '부산', exact: true }).count()) === 1,
+        '[출생지] 목록이 열린다');
+      await page.getByRole('button', { name: '부산', exact: true }).first().click();
+      await wait(page, 500);
+      check(/부산/.test(await page.locator('.me-pick__k').first().innerText()),
+        '[출생지] 고른 곳이 줄에 남는다');
+
       // 달력을 바꿔도 가리키는 날은 같아야 한다
       const before = (await bodyText(page)).match(/양력 (\d{4})년 (\d{1,2})월 (\d{1,2})일/);
       await page.getByRole('button', { name: '양력' }).first().click();

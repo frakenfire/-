@@ -38,6 +38,7 @@ import { ResultScreen } from './screens/ResultScreen.tsx';
 import { DetailResultScreen } from './screens/DetailResultScreen.tsx';
 import { CompatScreen } from './screens/CompatScreen.tsx';
 import { BirthScreen } from './screens/BirthScreen.tsx';
+import { findPlace } from './data/birthPlace.ts';
 import { parseBirth } from './lib/birth.ts';
 import { TopicScreen } from './screens/TopicScreen.tsx';
 import { computeFourPillars } from './lib/fourPillars.ts';
@@ -141,7 +142,7 @@ export default function App() {
   // 저장은 이 기기 localStorage 뿐이고 서버로 나가지 않는다.
   const [birth, setBirth] = useState<StoredBirth | null>(() => loadBirth());
   const birthInput = useMemo(
-    () => (birth ? parseBirth(birth.date, birth.time) : null),
+    () => (birth ? parseBirth(birth.date, birth.time, findPlace(birth.place).longitude) : null),
     [birth],
   );
   // 사주 여덟 글자 — 상담과 홈 배지가 같은 계산을 두 번 하지 않게 여기서 한 번만 세운다.

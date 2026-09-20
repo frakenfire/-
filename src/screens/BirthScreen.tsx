@@ -4,6 +4,7 @@ import { WheelPicker, type WheelItem } from '../components/WheelPicker.tsx';
 import { boundaryNotice } from '../lib/fourPillars.ts';
 import { parseBirth } from '../lib/birth.ts';
 import { solarToLunar, lunarToSolar, leapMonthOf, lunarMonthLength } from '../lib/lunar.ts';
+import { BIRTH_PLACES, DEFAULT_PLACE_ID, findPlace } from '../data/birthPlace.ts';
 import type { StoredBirth } from '../lib/storage.ts';
 
 type Props = {
@@ -55,6 +56,8 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
   const [minute, setMinute] = useState(init?.minute ?? 0);
   const [name, setName] = useState(initial?.name ?? '');
   const [gender, setGender] = useState<'male' | 'female' | null>(initial?.gender ?? null);
+  const [placeId, setPlaceId] = useState(initial?.place ?? DEFAULT_PLACE_ID);
+  const [placeOpen, setPlaceOpen] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
   const [nameWarn, setNameWarn] = useState(false);
   const [genderWarn, setGenderWarn] = useState(false);
@@ -147,7 +150,11 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
     setCal(next);
   }
   const timeStr = unknownTime ? null : `${pad(hour24)}:${pad(minute)}`;
-  const input = useMemo(() => parseBirth(dateStr, timeStr), [dateStr, timeStr]);
+  const place = findPlace(placeId);
+  const input = useMemo(
+    () => parseBirth(dateStr, timeStr, place.longitude),
+    [dateStr, timeStr, place.longitude],
+  );
 
   const notice = useMemo(() => (input ? boundaryNotice(input) : null), [input]);
 
@@ -180,6 +187,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
               name: name.trim(),
               gender,
               calendar: cal,
+              place: placeId,
               ...(leapOn ? { leap: true } : {}),
             });
           }}
@@ -328,6 +336,45 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
               disabled={unknownTime}
             />
           </div>
+        </div>
+
+        {/* 태어난 곳 — 한국 표준시는 동경 135°를 쓰는데 국토는 126~130°에 있다.
+            목포와 포항은 해가 뜨는 시각이 12분 차이라, 시주 경계 근처에서
+            태어난 사람은 전원 서울로 계산하면 시주가 한 칸 밀린다. */}
+        <div className="field">
+          <span className="field__k">태어난 곳</span>
+          <button
+            type="button"
+            className={placeOpen ? 'me-pick me-pick--on' : 'me-pick'}
+            onClick={() => setPlaceOpen((v) => !v)}
+          >
+            <span className="me-pick__k">{place.label}</span>
+            <span className="me-pick__v">
+              바꾸기
+              <span className="me-pick__chev" aria-hidden> </span>
+            </span>
+          </button>
+          {placeOpen ? (
+            <div className="zodiac-grid zodiac-grid--full me-grid">
+              {BIRTH_PLACES.map((p) => (
+                <button
+                  key={p.id}
+                  type="button"
+                  className={p.id === placeId ? 'zodiac-chip zodiac-chip--on' : 'zodiac-chip'}
+                  aria-pressed={p.id === placeId}
+                  onClick={() => {
+                    setPlaceId(p.id);
+                    setPlaceOpen(false);
+                  }}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          ) : null}
+          <span className="field__hint">
+            해가 뜨는 시각이 지역마다 달라요. 목록에 없으면 가까운 곳으로 골라주세요.
+          </span>
         </div>
 
         <button

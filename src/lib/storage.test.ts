@@ -66,3 +66,11 @@ test('지우면 아무것도 안 남는다', () => {
   clearBirth();
   assert.equal(loadBirth(), null);
 });
+
+test('태어난 곳이 저장되고 아는 값만 돌아온다', () => {
+  saveBirth({ date: '1992-03-03', time: '13:20', place: 'busan' });
+  assert.equal(loadBirth()?.place, 'busan');
+  // 모르는 값이 남아 있으면 경도가 없는 채로 계산이 서울로 조용히 돌아간다
+  store.set('tomorrowNoteBirth', JSON.stringify({ date: '1992-03-03', time: null, place: 'atlantis' }));
+  assert.equal(loadBirth()?.place, undefined);
+});

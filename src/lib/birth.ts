@@ -5,8 +5,15 @@
 // 잘못된 값은 잘못된 사주가 되고, 그건 이 앱에서 가장 나쁜 실패다.
 import type { BirthInput } from './fourPillars.ts';
 
-/** 'YYYY-MM-DD' + 'HH:MM'(또는 null) → BirthInput. 조금이라도 이상하면 null. */
-export function parseBirth(date: string, time: string | null): BirthInput | null {
+/**
+ * 'YYYY-MM-DD' + 'HH:MM'(또는 null) → BirthInput. 조금이라도 이상하면 null.
+ * longitude 는 태어난 곳의 경도. 안 주면 엔진이 서울로 본다.
+ */
+export function parseBirth(
+  date: string,
+  time: string | null,
+  longitude?: number,
+): BirthInput | null {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
   if (!m) return null;
   const year = Number(m[1]);
@@ -18,11 +25,13 @@ export function parseBirth(date: string, time: string | null): BirthInput | null
   const probe = new Date(Date.UTC(year, month - 1, day));
   if (probe.getUTCMonth() !== month - 1 || probe.getUTCDate() !== day) return null;
 
-  if (time === null) return { year, month, day, hour: null };
+  const place = longitude === undefined ? {} : { longitude };
+
+  if (time === null) return { year, month, day, hour: null, ...place };
   const t = /^(\d{2}):(\d{2})$/.exec(time);
   if (!t) return null;
   const hour = Number(t[1]);
   const minute = Number(t[2]);
   if (hour > 23 || minute > 59) return null;
-  return { year, month, day, hour, minute };
+  return { year, month, day, hour, minute, ...place };
 }

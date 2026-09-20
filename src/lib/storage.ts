@@ -15,6 +15,7 @@ export type StoredResult = {
 };
 
 import { parseBirth } from './birth.ts';
+import { isKnownPlace } from '../data/birthPlace.ts';
 
 function safeGet(key: string): string | null {
   try {
@@ -266,6 +267,8 @@ export type StoredBirth = {
   calendar?: 'solar' | 'lunar';
   /** 음력으로 넣었고 그게 윤달이었으면 true */
   leap?: boolean;
+  /** 태어난 곳. 진태양시 보정의 경도가 여기서 나온다. 없으면 서울로 본다 */
+  place?: string;
 };
 // 생년월일 없이 보고 싶어요 — 한 번 고르면 다시 묻지 않는다
 const SKIP_BIRTH_KEY = 'tomorrowNoteSkipBirth';
@@ -296,6 +299,8 @@ export function loadBirth(): StoredBirth | null {
     if (gender) out.gender = gender;
     if (calendar) out.calendar = calendar;
     if (calendar === 'lunar' && v.leap === true) out.leap = true;
+    // 모르는 지역 값은 받지 않는다. 경도가 없으면 계산이 서울로 조용히 돌아간다.
+    if (isKnownPlace(v.place)) out.place = v.place;
     return out;
   } catch {
     return null;
