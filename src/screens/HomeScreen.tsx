@@ -8,9 +8,19 @@ import { HOW_ROWS, HOW_HEAD, HOW_LEAD, HOW_FOOT } from '../data/howItWorks.ts';
 import { todayVibe } from '../lib/dayVibe.ts';
 import { todayKey, hashSeed } from '../lib/dateSeed.ts';
 import { sajuToday, iljinOf, dailyZodiacRanking } from '../lib/saju.ts';
+import type { BranchRelation } from '../lib/saju.ts';
 import { softBreak } from '../lib/softBreak.ts';
 import { buildRankingShareText } from '../lib/share.ts';
 import { findZodiac, type Zodiac } from '../data/zodiac.ts';
+
+// 글자를 세 갈래로 묶는다. 같은 글자는 언제나 같은 색이 되도록, 점수가 아니라
+// 관계 자체로 가른다. 합(찰떡·짝꿍)은 파랑, 부딪히는 쪽은 진한 회색, 나머지는 회색.
+function relTone(rel: BranchRelation): 'bond' | 'rough' | 'plain' {
+  if (rel === 'trine' || rel === 'union') return 'bond';
+  if (rel === 'clash' || rel === 'punish' || rel === 'selfPunish'
+    || rel === 'harm' || rel === 'break') return 'rough';
+  return 'plain';
+}
 
 function todayLabel(): string {
   const d = new Date();
@@ -154,9 +164,14 @@ export function HomeScreen({
             </button>
           ) : null}
         </div>
+        {/* 열둘을 다 보여준다. 다섯만 보여주면 6위 아래인 사람은 제 자리를
+            영영 못 본다 - '서열' 이라고 이름을 붙여놓고 반도 안 보여주는 셈이고,
+            공유 글은 이미 1~3위와 꼴찌를 같이 적고 있었다. 이 카드는 아무것도
+            안 넣은 사람이 볼 수 있는 유일한 콘텐츠라, 제 띠를 찾는 재미가
+            그대로 다시 올 이유가 된다. */}
         <div className="rank-card">
-          <ol className="rank-list rank-list--top">
-            {ranking.slice(0, 5).map((r) => {
+          <ol className="rank-list">
+            {ranking.map((r) => {
               const z = findZodiac(r.animal);
               return (
                 <li key={r.animal} className="rank-row">
@@ -165,8 +180,14 @@ export function HomeScreen({
                   <span className="rank-row__name">{z?.label}</span>
                   {/* 등급 말을 붙이면 1~3위가 전부 '아주 좋아요' 로 뭉쳐서
                       서열이라는 말이 무색해진다. 순서는 왼쪽 숫자가 이미 말한다.
-                      여기는 왜 그 자리인지를 적는다 — 주간 표가 쓰는 같은 어휘다. */}
-                  <span className={`rank-row__tone rank-row__tone--${r.tone}`}>{r.relationGloss}</span>
+                      여기는 왜 그 자리인지를 적는다 — 주간 표가 쓰는 같은 어휘다.
+                      색은 점수(tone)가 아니라 글자(relation)를 따라간다. 점수를
+                      따라가면 4위와 9위가 똑같이 '무난한 사이' 인데 하나는 파랑,
+                      하나는 회색이 된다 - 한 목록 안에서 같은 말이 두 색으로
+                      보이는 것만큼 읽는 사람을 헷갈리게 하는 게 없다. */}
+                  <span className={`rank-row__tone rank-row__tone--${relTone(r.relation)}`}>
+                    {r.relationGloss}
+                  </span>
                 </li>
               );
             })}

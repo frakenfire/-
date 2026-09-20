@@ -1523,15 +1523,12 @@ strong {
 .rank-card {
 
   padding: 0;}
-.rank-list--top {
-  margin-top: 0;
-}
 .rank-row__no--first {
   color: var(--brand-strong);
 }
 .rank-list {
   list-style: none;
-  margin: var(--space-2) 0 0;
+  margin: 0;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -1573,19 +1570,17 @@ strong {
   line-height: 21px;
   font-weight: 600;
 }
-/* 같은 뜻의 표시가 화면마다 다른 색이면 사용자는 둘을 다른 것으로 읽는다.
-   등급 색은 아래 한 사다리로만 쓴다. */
-.rank-row__tone--great {
+/* 색은 점수가 아니라 글자를 따라간다. 점수를 따라가면 4위와 9위가 똑같이
+   '무난한 사이' 인데 하나는 파랑, 하나는 회색으로 나왔다. 같은 말은 언제나
+   같은 색이어야 한다. 합은 파랑, 부딪히는 쪽은 진하게, 나머지는 회색. */
+.rank-row__tone--bond {
   color: var(--brand-strong);
   font-weight: 700;
 }
-.rank-row__tone--good {
-  color: var(--brand-strong);
-}
-.rank-row__tone--steady {
+.rank-row__tone--plain {
   color: var(--gray-600);
 }
-.rank-row__tone--caution {
+.rank-row__tone--rough {
   color: var(--gray-800);
 }
 /* ── 메인 focal ── '오늘의 나' 훅 카드

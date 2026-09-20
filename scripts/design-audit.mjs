@@ -253,6 +253,37 @@ function collect() {
     out.cardPads = [...new Set(out.cardPads)];
   }
 
+  // 같은 자리에 있는 같은 말은 같은 색이어야 한다.
+  //
+  // 홈의 띠 서열이 색을 점수(tone)에서 가져오는 바람에, 4위와 9위가 똑같이
+  // '무난한 사이' 인데 하나는 파랑 하나는 회색으로 나왔다. 다섯 줄만 보여주던
+  // 동안에는 9위가 화면에 없어서 아무도 몰랐다. 같은 클래스에 같은 글자면
+  // 같은 색으로 그려져야 한다 - 다르면 읽는 사람은 둘을 다른 것으로 읽는다.
+  {
+    const seen = new Map();
+    for (const el of document.querySelectorAll('body *')) {
+      // 이름 전체로 묶으면 못 잡는다. 이 결함이 바로 그랬다 - 4위는
+      // rank-row__tone--good, 9위는 --steady 라 이름이 달라서 서로 다른 칸으로
+      // 세어졌다. 변종을 가르는 게 아니라 한 덩이로 봐야 색이 갈린 게 보인다.
+      const full = typeof el.className === 'string' ? el.className.trim() : '';
+      const cls = full.split(' ')[0];
+      if (!cls) continue;
+      const own = [...el.childNodes].filter((n) => n.nodeType === 3)
+        .map((n) => n.textContent.trim()).filter(Boolean).join(' ');
+      if (!own) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width < 1 || r.height < 1) continue;
+      const cs = getComputedStyle(el);
+      const key = `${cls}|${own}`;
+      const look = `${cs.color}/${cs.fontWeight}`;
+      if (!seen.has(key)) seen.set(key, new Set());
+      seen.get(key).add(look);
+    }
+    out.twoFaced = [...seen.entries()].filter(([, v]) => v.size > 1)
+      .map(([k, v]) => `${k.split('|')[1]} (${[...v].join(' vs ')})`);
+    out.twoFacedSeen = seen.size;
+  }
+
   // 점수 막대가 바로 옆 숫자와 같은 말을 하는가.
   // 이 앱에는 점수 막대가 세 종류 있다 — 왜 N점인가요, 네 가지 운, 궁합 세 칸.
   // 한때 '왜 N점인가요' 만 50~92 를 0~100 으로 펴서 그렸고, 그 바람에 73점
@@ -349,7 +380,11 @@ function auditScreen(name, data) {
     cardOk ? `카드 사이 ${data.cardGaps.join('·') || '없음'} / 안쪽 ${data.cardPads[0] ?? '없음'}`
       : `카드 사이 ${data.cardGaps.join('·')} / 안쪽 ${data.cardPads.join(' · ')}`);
 
-  // 13) 점수 막대와 바로 옆 숫자가 같은 말을 하는가 (막대가 없는 화면은 0개로 지나간다)
+  // 13) 같은 클래스에 같은 글자면 같은 색으로 그려지는가
+  check(data.twoFaced.length === 0, `[${name}] 같은 말이 두 얼굴로 안 나옴`,
+    data.twoFaced.length ? data.twoFaced.slice(0, 3).join(' / ') : `말 ${data.twoFacedSeen}가지 검사`);
+
+  // 14) 점수 막대와 바로 옆 숫자가 같은 말을 하는가 (막대가 없는 화면은 0개로 지나간다)
   check(data.barGap.length === 0, `[${name}] 점수 막대가 옆 숫자와 어긋나지 않음`,
     data.barGap.length ? data.barGap.slice(0, 4).join(' / ') : `막대 ${data.barCount}개`);
 }
