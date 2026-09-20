@@ -42,12 +42,14 @@ type Props = {
   onUnlockConcern?: (key: ConcernKey) => Promise<boolean>;
   /** 이미 열린 고민으로 간다 */
   onOpenConcern?: (key: ConcernKey) => void;
+  /** 내일 알림을 받겠다고 하면 동의 UI 를 띄운다. 없으면 줄이 안 나온다 */
+  onAskNoti?: () => void;
   onBack: () => void;
 };
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onShareWeek, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onShareWeek, onBack }: Props) {
   const { luck, dayPlan } = result;
   const isMonth = result.reading.scale === 'month';
   // 고민을 골라 들어왔으면 맨 위 점수는 그 고민의 점수다. 명식에서 계산된 값이라
@@ -350,6 +352,16 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           </span>
           <Sentences className="nextday__v" text={deep.read.todayMeet.nextDay} />
         </p>
+      ) : null}
+
+      {/* 알림은 먼저 띄우지 않는다. 결과를 다 본 사람이 '내일도 본다' 고
+          누를 때만 동의 UI 가 뜬다. 시스템 팝업이 불쑥 뜨는 앱이 되면
+          그 자리에서 나간다. 콘솔 템플릿이 없으면 줄 자체가 안 나온다. */}
+      {deep && onAskNoti ? (
+        <button type="button" className="notiask" onClick={onAskNoti}>
+          <span className="notiask__k">내일 쪽지가 바뀌면 알려드릴까요</span>
+          <span className="notiask__c" aria-hidden>›</span>
+        </button>
       ) : null}
 
       <Disclaimer />

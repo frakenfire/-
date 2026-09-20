@@ -691,6 +691,13 @@ async function run(browser) {
       });
       check(ndOpen, '[재방문] 접힌 묶음 밖에 있다');
 
+      // 알림은 먼저 띄우지 않는다. 시스템 팝업이 불쑥 뜨는 앱이 되면 그 자리에서
+      // 나간다. 콘솔 템플릿이 아직 비어 있으므로 지금은 줄 자체가 없어야 한다.
+      check((await page.locator('.notiask').count()) === 0,
+        '[알림] 템플릿이 비면 줄이 안 나온다');
+      const popped = await page.evaluate(() => document.body.innerText.includes('알림 동의'));
+      check(!popped, '[알림] 화면 진입에 동의 창을 띄우지 않는다');
+
       // ── 한 단어는 한 뜻만 ──
       // 밴드 칩이 '좋아요 92' 로 점수를 말하는데 같은 화면의 줄 이름도
       // '좋아요' 였다. 한 단어가 두 가지 뜻이면 읽는 사람이 둘을 잇는다.

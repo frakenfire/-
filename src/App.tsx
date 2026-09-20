@@ -22,12 +22,12 @@ import {
   updateStreak,
   peekStreak, loadSkipBirth } from './lib/storage.ts';
 import { clearAllData } from './lib/storage.ts';
-import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError, askReview } from './lib/toss.ts';
+import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError, askReview, canAskNotification, askNotificationAgreement } from './lib/toss.ts';
 import { findZodiac } from './data/zodiac.ts';
 import type { Zodiac, ZodiacId } from './data/zodiac.ts';
 import { findStarSign } from './data/starSign.ts';
 import type { StarSign, StarSignId } from './data/starSign.ts';
-import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, hasAskedReview, markReviewAsked, loadBirth, saveBirth, clearBirth, loadUnlockedConcerns, addUnlockedConcern,
+import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, hasAskedReview, markReviewAsked, loadBirth, saveBirth, clearBirth, loadUnlockedConcerns, addUnlockedConcern, hasAskedNoti, markNotiAsked,
   type StoredBirth } from './lib/storage.ts';
 
 import { HomeScreen } from './screens/HomeScreen.tsx';
@@ -420,6 +420,7 @@ export default function App() {
   // 쪽지 뽑기 흐름 안에서 고민을 묻는 중인가. 아니면 '더 해보기' 로 들어온 단독 상담인가.
   const [concernInFlow, setConcernInFlow] = useState(false);
   // 날이 바뀌면 자동으로 비워진다 (저장할 때 날짜를 같이 적어둔다)
+  const [notiAsked, setNotiAsked] = useState(() => hasAskedNoti());
   const [unlockedConcerns, setUnlockedConcerns] = useState<string[]>(() => loadUnlockedConcerns(todayKey()));
 
   // 네 가지 운도 같은 점수 엔진에서 뽑는다. 난수로 흩뿌리면 바로 위 고민 점수와
@@ -552,6 +553,17 @@ export default function App() {
     setScreen('concernAsk');
   }
 
+  // 알림 동의. 콘솔 템플릿이 없으면 애초에 줄이 안 나오므로 여기까지 안 온다.
+  // 한 번 물으면 다시 묻지 않는다 - 거절한 사람에게 또 묻는 건 그 자체로 이탈이다.
+  async function handleAskNoti() {
+    markNotiAsked();
+    setNotiAsked(true);
+    const r = await askNotificationAgreement();
+    logEvent('noti_asked', { result: r });
+    if (r === 'newAgreement' || r === 'alreadyAgreed') flash('내일 아침에 알려드릴게요');
+    else if (r === 'agreementRejected') flash('알림은 언제든 다시 켤 수 있어요');
+  }
+
   async function handleCompatAdUnlock(): Promise<boolean> {
     const result = await showRewardAd('compat');
     return isRewarded(result) || isUnsupportedFreePass(result);
@@ -623,6 +635,7 @@ export default function App() {
           unlockedConcerns={unlockedConcerns}
           onUnlockConcern={handleUnlockConcern}
           onOpenConcern={openConcern}
+          onAskNoti={canAskNotification() && !notiAsked ? handleAskNoti : undefined}
           onShareWeek={handleShareWeek}
           onBack={() => goBack()}
         />

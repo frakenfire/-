@@ -6816,3 +6816,36 @@ strong {
   color: var(--gray-800);
   word-break: keep-all;
 }
+
+/* ── 내일 알림 받기 ──
+   결과 맨 끝, '내일 한 줄' 바로 밑. 카드로 세우지 않는다 - 또 하나의
+   섹션이 되면 결과가 끝난 줄 모른다. 바탕 위에 놓인 한 줄짜리 제안이다. */
+.notiask {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  margin: var(--space-4) 0 0;
+  padding: 14px 16px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--brand-soft);
+  text-align: left;
+  cursor: pointer;
+}
+.notiask__k {
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 600;
+  color: var(--brand-strong);
+  word-break: keep-all;
+}
+.notiask__c {
+  flex: 0 0 auto;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+  color: var(--brand-strong);
+}

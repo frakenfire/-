@@ -335,3 +335,16 @@ export function addUnlockedConcern(dateKey: string, key: string): string[] {
   safeSet(UNLOCKED_KEY, JSON.stringify({ date: dateKey, keys: next }));
   return next;
 }
+
+
+// ── 알림을 물어봤는가 ───────────────────────────────────────────────────────
+// 알림 동의는 한 번만 묻는다. 거절한 사람에게 다시 묻는 건 그 자체로 이탈이다.
+const NOTI_ASK_KEY = 'tomorrowNoteNotiAsked';
+
+export function hasAskedNoti(): boolean {
+  return safeGet(NOTI_ASK_KEY) === '1';
+}
+
+export function markNotiAsked(): boolean {
+  return safeSet(NOTI_ASK_KEY, '1');
+}
