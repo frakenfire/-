@@ -14,7 +14,11 @@ export type { AdResult } from './adResult.ts';
 
 // 광고 지점별 adGroupId.
 //  TODO(콘솔): 앱인토스 콘솔에서 발급받은 실제 adGroupId 로 교체해야 운영 노출됨.
-// 'REPLACE_' 접두사가 남아 있으면 CI 가드가 빌드를 실패시킨다.
+//
+// 'REPLACE_' 가 남아 있으면 showRewardAd 가 호출 자체를 막고 'unsupported' 를
+// 돌려준다 (아래 참고). 제출 전 점검은 scripts/check-release.mjs 가 한다 —
+// 기본 실행에서는 남은 값을 목록으로 보여주고, --release 로 돌리면 실패시킨다.
+// npm run check:release / npm run check:release -- --release
 export const AD_GROUPS = {
   detail: 'REPLACE_REWARD_DETAIL',
   // saveImage 는 현재 게이트로 쓰지 않는다(예비) — 카드 저장은 무료로 풀어
