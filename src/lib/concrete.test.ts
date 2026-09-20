@@ -69,6 +69,28 @@ test('고민별 문장 네 벌이 다 채워져 있다', () => {
   }
 });
 
+// 결과 화면 맨 위 카드는 [판정 배지] [decide] [행동 한 줄] 순으로 붙는다.
+// decide 예순 줄이 전부 '~할 때예요' 판정형이라, 배지가 '지금 준비하기' 인데
+// 바로 옆에서 '병원에 갈 때예요' 라고 말하는 일이 생겼다. 판정은 배지가 하고,
+// 이 줄은 '그래서 무엇부터인가' 만 말해야 배지와 안 싸운다.
+// 예순 줄이 전부 '때예요' 로 끝나던 것도 같이 풀렸다.
+test('맨 위 카드의 한 줄이 판정을 다시 내리지 않는다', () => {
+  const verdict: string[] = [];
+  const tails = new Map<string, number>();
+  for (const c of CONCERNS) {
+    for (const god of TEN_GODS) {
+      const d = CONCERN_GOD[c.key][god].decide;
+      if (/(때|타이밍|시기)(예요|이에요)\.?$/.test(d)) verdict.push(`${c.key}.${god} ${d}`);
+      const t = d.replace(/[.!?]\s*$/, '').slice(-3);
+      tails.set(t, (tails.get(t) ?? 0) + 1);
+    }
+  }
+  assert.deepEqual(verdict, [], '판정형 문장이 남아 있습니다 - 배지가 이미 판정합니다');
+  // 한 어미가 예순 줄의 절반을 넘으면 어느 고민을 눌러도 같은 말투가 된다
+  const top = [...tails.values()].sort((a, b) => b - a)[0];
+  assert.ok(top <= 30, `한 어미가 ${top}번 - 예순 줄의 절반을 넘습니다`);
+});
+
 test('같은 기운도 고민마다 다른 문장이다', () => {
   for (const god of TEN_GODS) {
     const months = CONCERNS.map((c) => CONCERN_GOD[c.key][god].month);
