@@ -7,9 +7,14 @@
 //     --icon=https://static.toss.im/appsintoss/xxxx.png \
 //     --ad-group=abcd-1234
 //
+//     --noti-template=NOTI_T1
+//
 // 광고 그룹을 지면별로 따로 받았다면:
-//   --ad-detail=... --ad-save=... --ad-retry=... --ad-compat=...
-// (--ad-group 하나만 주면 네 지면에 모두 같은 값을 넣는다)
+//   --ad-note=... --ad-compat=... --ad-concern=...
+// (--ad-group 하나만 주면 세 지면에 모두 같은 값을 넣는다)
+//
+// 광고 지면은 셋이다: 쪽지를 여는 자리(note), 궁합 결과를 여는 자리(compat),
+// 다른 고민을 여는 자리(concern). 전에는 여기 여섯 개가 적혀 있었다.
 
 import { readFileSync, writeFileSync } from 'node:fs';
 

@@ -11,6 +11,7 @@
 // Playwright 는 devDependency 가 아니라 필요할 때만 쓴다(설치 안 돼 있으면 안내 후 종료).
 
 import { spawn } from 'node:child_process';
+import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
@@ -769,8 +770,15 @@ async function run(browser) {
 
       // 알림은 먼저 띄우지 않는다. 시스템 팝업이 불쑥 뜨는 앱이 되면 그 자리에서
       // 나간다. 콘솔 템플릿이 아직 비어 있으므로 지금은 줄 자체가 없어야 한다.
-      check((await page.locator('.notiask').count()) === 0,
-        '[알림] 템플릿이 비면 줄이 안 나온다');
+      // 이 줄은 콘솔 템플릿을 채워야 뜬다. 그러니 '안 뜬다' 로 못 박으면
+      // 형님이 값을 채우는 순간 이 점검이 빨개진다 - release.test.ts 가
+      // 같은 병으로 깨졌던 것과 같다. 지금 어느 상태인지 읽고 그에 맞게 잰다.
+      const notiFilled = !/NOTI_TEMPLATE_CODE = 'REPLACE_/.test(
+        readFileSync(new URL('../src/lib/toss.ts', import.meta.url), 'utf8'));
+      const notiRows = await page.locator('.notiask').count();
+      check(notiRows === (notiFilled ? 1 : 0),
+        notiFilled ? '[알림] 템플릿을 채우면 줄이 하나 나온다' : '[알림] 템플릿이 비면 줄이 안 나온다',
+        `${notiRows}줄`);
       const popped = await page.evaluate(() => document.body.innerText.includes('알림 동의'));
       check(!popped, '[알림] 화면 진입에 동의 창을 띄우지 않는다');
 

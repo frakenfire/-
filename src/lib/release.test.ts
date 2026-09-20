@@ -1,7 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 
 const root = new URL('../../', import.meta.url).pathname;
 const run = (args: string[]) => {
@@ -13,16 +15,46 @@ const run = (args: string[]) => {
   }
 };
 
-// 콘솔 값이 임시인 채로 제출하면 광고가 안 나가고 아이콘이 깨진다.
-// 둘 다 떨어지고 나서야 안다. 그래서 제출용 빌드는 막아야 한다.
+// 전에는 이 테스트들이 저장소의 지금 값에 기대고 있었다. '임시값이 남아 있으면
+// 실패한다' 를 저장소에 임시값이 남아 있다는 사실로 확인한 것이다. 그래서
+// 형님이 콘솔 값을 채우는 순간 npm run verify 가 깨졌다 - 제출하려고 값을
+// 넣었더니 빌드가 빨개지는, 제일 나쁜 자리에서 터지는 실패였다.
+//
+// 이제 두 상태를 직접 만들어 놓고 잰다. 저장소가 어느 쪽이든 결과가 같다.
+function fixture(filled: boolean): string {
+  const dir = mkdtempSync(join(tmpdir(), 'release-'));
+  mkdirSync(join(dir, 'src/lib'), { recursive: true });
+  const ad = filled ? 'ad-group-1234' : 'REPLACE_REWARD_NOTE';
+  const noti = filled ? 'NOTI_T1' : 'REPLACE_NOTI_TEMPLATE';
+  const app = filled ? 'todaynote-ab12' : 'today-note';
+  const icon = filled
+    ? 'https://static.toss.im/appsintoss/real.png'
+    : 'https://static.toss.im/appsintoss/placeholder-today-note.png';
+  writeFileSync(join(dir, 'src/lib/ads.ts'), `export const AD_GROUPS = { note: '${ad}' } as const;\n`);
+  writeFileSync(join(dir, 'src/lib/toss.ts'), `export const NOTI_TEMPLATE_CODE = '${noti}';\n`);
+  writeFileSync(join(dir, 'granite.config.ts'), `export default { appName: '${app}', brand: { icon: '${icon}' } };\n`);
+  return dir;
+}
+
 test('제출용 빌드는 임시값이 남아 있으면 실패한다', () => {
-  const r = run(['--release']);
+  const dir = fixture(false);
+  const r = run([`--dir=${dir}`, '--release']);
+  rmSync(dir, { recursive: true, force: true });
   assert.notEqual(r.code, 0, '임시값이 있는데 통과했어요');
   assert.match(r.out, /채울 값이/);
 });
 
+test('값을 다 채우면 제출용 빌드가 통과한다', () => {
+  const dir = fixture(true);
+  const r = run([`--dir=${dir}`, '--release']);
+  rmSync(dir, { recursive: true, force: true });
+  assert.equal(r.code, 0, r.out);
+});
+
 test('개발 중에는 임시값이 있어도 통과하고 목록을 보여준다', () => {
-  const r = run([]);
+  const dir = fixture(false);
+  const r = run([`--dir=${dir}`]);
+  rmSync(dir, { recursive: true, force: true });
   assert.equal(r.code, 0, r.out);
   assert.match(r.out, /광고 그룹 ID/);
   assert.match(r.out, /앱 아이콘 URL/);
