@@ -8,26 +8,25 @@
 // 이름 체계(IconName)는 그대로 둔다. 쓰는 쪽은 바뀌지 않는다.
 import type { LucideIcon } from 'lucide-react';
 import {
-  Heart, Moon, Bell, Lock, Calendar, Sunrise, Coins, Briefcase, TriangleAlert, Star,
+  Heart, Moon, Bell, Lock, Sunrise, Coins, Briefcase, Star,
   TreeDeciduous, Leaf, Sun, Lamp, Mountain, Wheat, Sword, Gem, Waves, Droplet,
   Feather, TrendingUp, DoorOpen, Wallet, ClipboardCheck, MessageCircle, Clock, Compass,
   Link, Target, Cloud, Sticker, Lightbulb, Flame, Clover, Headphones, Gift,
-  Soup, Users, MessageCircleHeart, HeartHandshake, House, Flower2, UserRound,
-  Smile, Meh, Annoyed, Frown, HeartCrack, Hash,
+  Soup, Users, MessageCircleHeart, HeartHandshake, House, Flower2,
+  Smile, Hash,
 } from 'lucide-react';
 
 export type IconName =
-  | 'heart' | 'moon' | 'bell' | 'lock' | 'calendar' | 'sunrise' | 'coin' | 'briefcase'
-  | 'alert' | 'star' | 'tree' | 'leaf' | 'sun' | 'candle' | 'mountain' | 'field'
+  | 'heart' | 'moon' | 'bell' | 'lock' | 'sunrise' | 'coin' | 'briefcase'
+  | 'star' | 'tree' | 'leaf' | 'sun' | 'candle' | 'mountain' | 'field'
   | 'blade' | 'gem' | 'wave' | 'drop' | 'feather' | 'trendUp' | 'door' | 'wallet'
   | 'checklist' | 'chat' | 'clock' | 'compass' | 'link' | 'target' | 'balloon'
   | 'sparkle' | 'bulb' | 'flame' | 'clover' | 'headphone' | 'gift' | 'bowl' | 'users'
-  | 'heartSpark' | 'heartPair' | 'home' | 'flower' | 'faceGood' | 'faceSoso'
-  | 'faceTired' | 'faceAnxious' | 'faceLonely' | 'person' | 'hash';
+  | 'heartSpark' | 'heartPair' | 'home' | 'flower' | 'faceGood' | 'hash';
 
 const ICONS: Record<IconName, LucideIcon> = {
-  heart: Heart, moon: Moon, bell: Bell, lock: Lock, calendar: Calendar, sunrise: Sunrise,
-  coin: Coins, briefcase: Briefcase, alert: TriangleAlert, star: Star,
+  heart: Heart, moon: Moon, bell: Bell, lock: Lock, sunrise: Sunrise,
+  coin: Coins, briefcase: Briefcase, star: Star,
   // 일간 10종
   tree: TreeDeciduous, leaf: Leaf, sun: Sun, candle: Lamp, mountain: Mountain, field: Wheat,
   blade: Sword, gem: Gem, wave: Waves, drop: Droplet,
@@ -38,8 +37,7 @@ const ICONS: Record<IconName, LucideIcon> = {
   headphone: Headphones, gift: Gift,
   // 음식 · 관계 · 기분
   bowl: Soup, users: Users, heartSpark: MessageCircleHeart, heartPair: HeartHandshake,
-  home: House, flower: Flower2, person: UserRound, hash: Hash,
-  faceGood: Smile, faceSoso: Meh, faceTired: Annoyed, faceAnxious: Frown, faceLonely: HeartCrack,
+  home: House, flower: Flower2, faceGood: Smile, hash: Hash,
 };
 
 type Props = { name: IconName; size?: number };

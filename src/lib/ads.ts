@@ -19,13 +19,12 @@ export type { AdResult } from './adResult.ts';
 // 돌려준다 (아래 참고). 제출 전 점검은 scripts/check-release.mjs 가 한다 —
 // 기본 실행에서는 남은 값을 목록으로 보여주고, --release 로 돌리면 실패시킨다.
 // npm run check:release / npm run check:release -- --release
+// 여기 적힌 것은 전부 제출 전에 앱인토스 콘솔에서 발급받아 채워야 하는 값이다.
+// 그러니 실제로 부르는 자리만 적어야 한다. 전에는 여섯 개가 적혀 있었는데
+// 부르는 곳은 셋뿐이라(detail·saveImage·retry 는 '예비'로 남아 있었다),
+// 쓰지도 않을 광고 자리 셋을 콘솔에서 더 만들라고 시키고 있었다.
+// 카드 저장은 무료로 둔다 - 저장하고 공유해서 들어오는 길에 마찰을 안 넣는다.
 export const AD_GROUPS = {
-  detail: 'REPLACE_REWARD_DETAIL',
-  // saveImage 는 현재 게이트로 쓰지 않는다(예비) — 카드 저장은 무료로 풀어
-  // 저장스토리 공유유입 성장 루프에 마찰을 없앤다. 나중에 유료화하려면
-  // App.tsx handleSave 를 runRewardGate('saveImage', ...) 로 감싸면 된다.
-  saveImage: 'REPLACE_REWARD_SAVE',
-  retry: 'REPLACE_REWARD_RETRY',
   // 쪽지를 누른 뒤 결과 전에 한 번
   note: 'REPLACE_REWARD_NOTE',
   compat: 'REPLACE_REWARD_COMPAT',

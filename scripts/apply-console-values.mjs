@@ -77,9 +77,7 @@ if (args.icon) {
 
 // 3) 광고 그룹 (지면별 또는 공통)
 const ads = {
-  REPLACE_REWARD_DETAIL: args['ad-detail'] ?? args['ad-group'],
-  REPLACE_REWARD_SAVE: args['ad-save'] ?? args['ad-group'],
-  REPLACE_REWARD_RETRY: args['ad-retry'] ?? args['ad-group'],
+  REPLACE_REWARD_NOTE: args['ad-note'] ?? args['ad-group'],
   REPLACE_REWARD_COMPAT: args['ad-compat'] ?? args['ad-group'],
   REPLACE_REWARD_CONCERN: args['ad-concern'] ?? args['ad-group'],
 };

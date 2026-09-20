@@ -100,6 +100,69 @@ for (const f of files.filter((x) => !isTest(x))) {
   }
 }
 
+// ── 아무도 안 쓰는 아이콘 ────────────────────────────────────
+// 화면을 지우면 그 화면이 쓰던 아이콘 이름이 Icon.tsx 에 남는다. 이름 하나가
+// lucide 컴포넌트 하나를 번들로 끌고 온다. 지운 MoodScreen 의 기분 얼굴 넷과
+// 달력·사람 아이콘이 그렇게 남아 있었다.
+//
+// 이름이 글자로 나오기만 하면 통과시키면 안 된다. storage.ts 의
+// `calendar?: 'solar'` 나 fortune.ts 의 `persona` 가 걸려서 죽은 아이콘이
+// 살아 있는 것처럼 보였다. 아이콘으로 쓰는 꼴만 센다.
+{
+  const iconFile = files.find((f) => f.endsWith('components/Icon.tsx'));
+  if (!iconFile) {
+    console.error('\n❌ components/Icon.tsx 를 못 찾아 아이콘 검사를 못 했습니다.\n');
+    process.exit(1);
+  }
+  const iconSrc = text.get(iconFile);
+  const recStart = iconSrc.indexOf('{', iconSrc.indexOf('const ICONS')) + 1;
+  const rec = iconSrc.slice(recStart, iconSrc.indexOf('type Props'));
+  const names = [...rec.matchAll(/(\w+):\s*[A-Z]/g)].map((m) => m[1]);
+  if (names.length < 10) {
+    console.error('\n❌ Icon.tsx 에서 아이콘 목록을 못 읽었습니다. 검사가 헛돌고 있습니다.\n');
+    process.exit(1);
+  }
+  const others = files.filter((f) => f !== iconFile).map((f) => text.get(f)).join('\n');
+  const unused = names.filter((n) => !new RegExp(`name=["']${n}["']|name=\\{['"\`]${n}['"\`]\\}|icon:\\s*['"\`]${n}['"\`]`).test(others));
+  if (unused.length) {
+    console.error(`\n❌ 아무도 안 쓰는 아이콘 ${unused.length}개\n`);
+    for (const u of unused) console.error(`  '${u}'`);
+    console.error('\n  Icon.tsx 의 union·ICONS·lucide import 에서 같이 빼세요.\n');
+    process.exit(1);
+  }
+  console.log(`✅ 아이콘 ${names.length}개 전부 쓰임`);
+}
+
+// ── 아무도 안 부르는 광고 그룹 ───────────────────────────────
+// AD_GROUPS 에 적힌 것은 전부 제출 전에 앱인토스 콘솔에서 발급받아 채워야
+// 하는 값이다. 부르지도 않는 자리가 적혀 있으면, 쓰지도 않을 광고 지면을
+// 콘솔에서 더 만들라고 시키는 셈이다. 실제로 여섯 개가 적혀 있고 부르는
+// 곳은 셋뿐이었다.
+{
+  const adsFile = files.find((f) => f.endsWith('lib/ads.ts'));
+  if (!adsFile) {
+    console.error('\n❌ lib/ads.ts 를 못 찾아 광고 그룹 검사를 못 했습니다.\n');
+    process.exit(1);
+  }
+  const adsSrc = text.get(adsFile);
+  const start = adsSrc.indexOf('{', adsSrc.indexOf('AD_GROUPS')) + 1;
+  const block = adsSrc.slice(start, adsSrc.indexOf('} as const', start));
+  const keys = [...block.matchAll(/(\w+):\s*'/g)].map((m) => m[1]);
+  if (keys.length === 0) {
+    console.error('\n❌ AD_GROUPS 를 못 읽었습니다. 검사가 헛돌고 있습니다.\n');
+    process.exit(1);
+  }
+  const callers = files.filter((f) => f !== adsFile).map((f) => text.get(f)).join('\n');
+  const never = keys.filter((k) => !new RegExp(`showRewardAd\\(\\s*['"\`]${k}['"\`]|runRewardGate\\(\\s*['"\`]${k}['"\`]`).test(callers));
+  if (never.length) {
+    console.error(`\n❌ 아무도 안 부르는 광고 그룹 ${never.length}개\n`);
+    for (const n of never) console.error(`  '${n}'`);
+    console.error('\n  제출 전에 콘솔에서 발급받아야 하는 값입니다. 안 쓰면 빼세요.\n');
+    process.exit(1);
+  }
+  console.log(`✅ 광고 그룹 ${keys.length}개 전부 실제로 부름`);
+}
+
 // ── 닿을 수 없는 화면 ────────────────────────────────────────
 // 위의 export 검사로는 못 잡는 것: 화면 컴포넌트는 App.tsx 가 import 해서
 // {screen === 'mood' && <MoodScreen .../>} 로 쓰고 있으니 '쓰인다'로 보인다.
