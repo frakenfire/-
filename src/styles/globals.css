@@ -6014,10 +6014,11 @@ strong {
   cursor: pointer;
 }
 .mpick__step:last-child { margin-left: auto; }
-/* 끝에 닿았을 때도 읽을 수 있어야 한다 - 흐리게만 하면 글자가 배경에 묻힌다 */
+/* 끝에 닿아도 상자는 그대로 둔다. 한쪽만 사라지면 같은 버튼 둘이
+   서로 다른 물건으로 보인다. 글자만 한 단계 흐리게. */
 .mpick__step:disabled {
-  background: none;
-  color: var(--gray-600);
+  /* gray-50 상자 위라 gray-600 은 4.42:1 로 AA 미달이다 */
+  color: var(--gray-700);
   cursor: default;
 }
 .mpick__label { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--gray-900); }
@@ -6397,7 +6398,9 @@ strong {
 .chart8 {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: 1fr;
+  /* 1fr 만 쓰면 칸이 내용(밀어붙이는 기운)보다 작아지지 않아서
+     네 번째 칸이 화면 밖으로 밀려 잘린다. minmax(0,1fr) 이어야 줄어든다. */
+  grid-auto-columns: minmax(0, 1fr);
   gap: 8px;
   list-style: none;
   margin: 0 0 18px;
@@ -6405,6 +6408,7 @@ strong {
 }
 .chart8__col {
   display: grid;
+  min-width: 0;
   justify-items: center;
   gap: 2px;
   padding: 10px 4px 8px;
@@ -6498,7 +6502,10 @@ strong {
   line-height: 16.5px;
   font-weight: 600;
   color: var(--gray-700);
-  white-space: nowrap;
+  /* nowrap 이면 '갈무리하는 자리'가 칸보다 넓어져 네 칸 전체를 밀어낸다.
+     줄이 접히더라도 칸 안에 들어와야 한다. */
+  word-break: keep-all;
+  text-align: center;
 }
 .chart8__col--me .chart8__step { color: var(--brand-strong); }
 
@@ -6695,3 +6702,21 @@ strong {
   color: var(--brand-strong);
   font-weight: 700;
 }
+
+
+/* ── 밴드 칩 색 ──
+   좋아요·무난해요·조심할 때가 전부 파랑이면 칩을 달아둔 뜻이 없다.
+   빨강과 초록은 안 쓴다. 이 앱에서 빨강은 지우기 한 곳뿐이고,
+   초록은 토스 팔레트에서 '완료'를 뜻한다. 파랑·회색·노랑 셋으로 가른다. */
+.when4__b--good,
+.yline__b--good,
+.mpick__band--good { color: var(--brand-strong); }
+.when4__b--ok,
+.yline__b--ok,
+.mpick__band--ok { color: var(--gray-700); }
+.when4__b--hard,
+.yline__b--hard,
+.mpick__band--hard { color: var(--score-low-text); }
+
+/* 열두 달 차트도 같은 셋으로. 조심할 달이 회색이면 '값이 없는 달'로 읽힌다. */
+.mflow__col--hard .mflow__bar { background: var(--score-low); }

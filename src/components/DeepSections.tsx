@@ -75,7 +75,10 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
                 <i className="why-score__label">{p.label}</i>
               </span>
               <span className="why-score__bar" aria-hidden>
-                <i style={{ width: `${p.score}%` }} />
+                {/* 점수는 실제로 50~92 사이에 모인다. 0~100 을 그대로 그리면
+                    67과 78이 눈으로 구분이 안 된다. 실제 범위로 펴서 그린다.
+                    숫자는 바로 옆에 그대로 있으니 과장이 아니라 확대다. */}
+                <i style={{ width: `${Math.max(6, Math.min(100, ((p.score - 45) / 50) * 100))}%` }} />
               </span>
               <span className="why-score__v num">{p.score}</span>
               <span className="why-score__w num">{p.weight}%</span>
@@ -158,7 +161,9 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             <li key={w.k} className="when4__row">
               <span className="when4__k">{w.k}</span>
               <span className="when4__v">{w.v}</span>
-              {w.band ? <span className="when4__b">{w.band}</span> : null}
+              {w.band ? (
+                <span className={`when4__b when4__b--${w.bandKey ?? 'ok'}`}>{w.band}</span>
+              ) : null}
               {w.act ? <span className="when4__act">{w.act}</span> : null}
             </li>
           ))}
@@ -202,7 +207,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
               ‹
             </button>
             <span className="mpick__label">{picked.label}</span>
-            <span className="mpick__band">{picked.band}</span>
+            <span className={`mpick__band mpick__band--${picked.bandKey}`}>{picked.band}</span>
             <button
               type="button"
               className="mpick__step"
@@ -235,7 +240,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
               <span className="yline__k">
                 {y.k} <b>{y.label}</b>
               </span>
-              <span className="yline__b">{y.band}</span>
+              <span className={`yline__b yline__b--${y.bandKey}`}>{y.band}</span>
               <span className="yline__v"><Sentences text={y.v} /></span>
             </li>
           ))}
@@ -289,7 +294,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
       <Fold title="왜 이렇게 봤나요" hint="내 글자와 올해, 이번 달에서 본 것">
       <div className="sec-card">
         <p className="cat4__head">왜 이렇게 봤냐면요</p>
-        <ul className="read6">
+        <ul className="read6 read6--tight">
           {read.why.map((w) => (
             <li key={w.k} className="read6__row">
               <span className="read6__k">{w.k}</span>

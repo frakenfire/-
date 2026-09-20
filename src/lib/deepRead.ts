@@ -1,7 +1,7 @@
 import { DAY_MASTER_BY_INDEX } from '../data/dayMaster.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { TEN_GOD_KO } from './tenGods.ts';
-import { bandLabel, monthsAway, type TimingRead, type TimingSlot } from './timing.ts';
+import { bandLabel, monthsAway, type Band, type TimingRead, type TimingSlot } from './timing.ts';
 import { CONCERN_GOD, GOD_SCALE, GOD_PULL, REFRESH_NOTE } from '../data/concernReadings.ts';
 import { computeConcernScore, scoreVerdictLine, type ConcernScore } from './concernScore.ts';
 import { withJosa } from './josa.ts';
@@ -50,7 +50,7 @@ export type DeepRead = {
   sub: string;
   situationLine: string;
   /** 시기 표 */
-  when: { k: string; v: string; band?: string; act?: string }[];
+  when: { k: string; v: string; band?: string; bandKey?: Band; act?: string }[];
   /** 왜 그렇게 봤는지 */
   why: { k: string; v: string }[];
   /** 내 명식 여덟 글자 — 근거를 그대로 펼쳐 보인다 */
@@ -99,11 +99,11 @@ export type DeepRead = {
   yearGap: string;
   basis: string;
   /** 달마다 한 덩이씩 — 이번 달, 좋은 달, 피할 달 */
-  slots: { k: string; label: string; band: string; outer: string; good: string; care: string }[];
+  slots: { k: string; label: string; band: string; bandKey: Band; outer: string; good: string; care: string }[];
   /** 열두 달 전부. 막대를 눌렀을 때 그 달의 풀이를 바로 펴 준다 */
-  monthSlots: { label: string; month: number; band: string; outer: string; good: string; care: string }[];
+  monthSlots: { label: string; month: number; band: string; bandKey: Band; outer: string; good: string; care: string }[];
   /** 올해와 내년 */
-  yearLines: { k: string; label: string; band: string; v: string }[];
+  yearLines: { k: string; label: string; band: string; bandKey: Band; v: string }[];
   /** 이 답이 언제 다시 계산되는지 */
   refresh: string;
 };
@@ -353,28 +353,32 @@ export function buildDeepRead(
   };
 
   const act = WHEN_ACT[concernKey];
-  const when: { k: string; v: string; band?: string; act?: string }[] = [
+  const when: { k: string; v: string; band?: string; bandKey?: Band; act?: string }[] = [
     {
       k: '이번 달',
       v: timing.thisMonth.label,
       band: bandLabel(timing.thisMonth),
+      bandKey: timing.thisMonth.band,
     },
     {
       k: '가장 좋은 때',
       v: away === 0 ? `${timing.bestMonth.label}, 바로 이번 달이에요` : `${timing.bestMonth.label}, ${away}달 뒤`,
       band: bandLabel(timing.bestMonth),
+      bandKey: timing.bestMonth.band,
       act: act.best,
     },
     {
       k: '피할 때',
       v: `${timing.hardMonth.label}`,
       band: bandLabel(timing.hardMonth),
+      bandKey: timing.hardMonth.band,
       act: act.hard,
     },
     {
       k: '좋은 해',
       v: `${timing.bestYear.label}`,
       band: bandLabel(timing.bestYear),
+      bandKey: timing.bestYear.band,
       act: act.year,
     },
   ];
@@ -595,6 +599,7 @@ export function buildDeepRead(
     k,
     label: slot.label,
     band: bandLabel(slot),
+    bandKey: slot.band,
     outer: GOD_SCALE[slot.tenGod].month,
     good: CONCERN_GOD[concernKey][slot.tenGod].good,
     care: CONCERN_GOD[concernKey][slot.branchGod].care,
@@ -610,6 +615,7 @@ export function buildDeepRead(
     label: m.label,
     month: m.month ?? 0,
     band: bandLabel(m),
+    bandKey: m.band,
     outer: GOD_SCALE[m.tenGod].month,
     good: CONCERN_GOD[concernKey][m.tenGod].good,
     care: CONCERN_GOD[concernKey][m.branchGod].care,
@@ -619,6 +625,7 @@ export function buildDeepRead(
     k: i === 0 ? '올해' : '내년',
     label: y.label,
     band: bandLabel(y),
+    bandKey: y.band,
     v: `${GOD_SCALE[y.tenGod].year} ${CONCERN_GOD[concernKey][y.tenGod].line}`,
   }));
 
