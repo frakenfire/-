@@ -278,6 +278,26 @@ async function diagnose(page, screen) {
   check(realContrast.length === 0, `[${screen}] 대비 AA 충족`,
     realContrast.map((c) => `${c.ratio}(필요 ${c.need}) .${c.cls} "${c.text}"`).join(' / '));
   check(page.__errs.length === 0, `[${screen}] 콘솔 에러 없음`, page.__errs.join(' | '));
+  // 화면에 실제로 찍힌 글자에서 이모지를 찾는다.
+  //
+  // check:uiemoji 는 .tsx 안에 박힌 글자만 본다. 그래서 데이터(.ts)에 있던
+  // 이모지가 {z.emoji} 로 건너와 화면에 뜨는 것은 못 잡았고, 실제로 궁합
+  // 별자리 고르기와 MoodScreen 두 군데에서 새어 나오고 있었다.
+  // 별자리 기호(♈~♓)는 '색 없는 활자'라고 적어뒀지만 크로미움에서는 빨강·
+  // 초록으로 꽉 찬 그림으로 나왔다. 소스가 아니라 화면을 봐야 잡힌다.
+  const shownEmoji = await page.evaluate(() => {
+    const re = /[\u{1F300}-\u{1FAFF}\u{2190}-\u{21FF}\u{2600}-\u{27BF}\u{FE0F}]/u;
+    const out = [];
+    const walk = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    let n = walk.nextNode();
+    while (n) {
+      const m = n.nodeValue.match(re);
+      if (m) out.push(`${m[0]} in .${n.parentElement?.className || '?'}`);
+      n = walk.nextNode();
+    }
+    return [...new Set(out)];
+  });
+  check(shownEmoji.length === 0, `[${screen}] 화면에 이모지 없음`, shownEmoji.join(' / '));
   page.__errs.length = 0;
   return d;
 }

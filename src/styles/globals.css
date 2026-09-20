@@ -791,18 +791,33 @@ strong {
 /* 흰 배경 위(친구 궁합 화면 등)에서 쓸 때 — 위 .zodiac-chip은 파란 히어로 카드 전용이라
    흰 배경에서는 흰 글자가 안 보이는 문제가 있었음. 라이트 배경용 대비 색으로 재정의. */
 /* 이 화면에 있는 건 이 열두 칸뿐이다. 12px 글자에 44px 칸으로 두니
-   화면 한가운데 작은 덩어리 하나만 떠 있었다. 유일한 내용에 맞는 크기로. */
+   화면 한가운데 작은 덩어리 하나만 떠 있었다. 유일한 내용에 맞는 크기로.
+   배지와 날짜가 들어가면서 세로로 쌓는다. */
 .zodiac-grid--full .zodiac-chip {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 5px;
+  gap: 6px;
   min-height: 64px;
+  padding: 12px 6px;
   font-size: 15px;
   line-height: 22.5px;
   color: var(--gray-800);
   background: var(--gray-50);
   border: 1px solid var(--gray-200);
+}
+.zodiac-chip__label {
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+.zodiac-chip__sub {
+  font-size: 11px;
+  line-height: 16.5px;
+  font-weight: 500;
+  color: var(--gray-600);
 }
 .zodiac-grid--full .zodiac-chip:active {
   background: var(--brand-soft);

@@ -43,6 +43,10 @@ export function MoodScreen({
 
       {/* 내 띠 · 별자리 — 사주가 없을 때의 가벼운 개인화 경로.
           사주가 있으면 띠는 이미 입춘 기준으로 정해져 있어, 또 물으면 "방금 넣었는데?"가 된다. */}
+      {/* 여기서 z.emoji / s.emoji 를 그대로 찍고 있었다. 데이터의 이모지는
+          카카오톡 공유 문구용이라 남겨둔 것인데 화면에 흘러나왔다.
+          (check:uiemoji 는 .tsx 안의 글자만 보므로 .ts 데이터에서 건너온 것은
+           못 잡는다. 그래서 화면에 찍힌 글자를 직접 보는 점검을 따로 달았다) */}
       {hasBirth ? null : (
       <>
       <div className="me-picks">
@@ -53,7 +57,7 @@ export function MoodScreen({
         >
           <span className="me-pick__k">내 띠</span>
           <span className="me-pick__v">
-            {zodiac ? `${zodiac.emoji} ${zodiac.label}` : '고르기'}
+            {zodiac ? zodiac.label : '고르기'}
             <span className="me-pick__chev" aria-hidden> </span>
           </span>
         </button>
@@ -64,7 +68,7 @@ export function MoodScreen({
         >
           <span className="me-pick__k">내 별자리</span>
           <span className="me-pick__v">
-            {star ? `${star.emoji} ${star.label}` : '고르기'}
+            {star ? star.label : '고르기'}
             <span className="me-pick__chev" aria-hidden> </span>
           </span>
         </button>
@@ -82,7 +86,7 @@ export function MoodScreen({
                 setOpen(null);
               }}
             >
-              {z.emoji} {z.label}
+              <span className="zodiac-chip__label">{z.label}</span>
             </button>
           ))}
         </div>
@@ -99,7 +103,7 @@ export function MoodScreen({
                 setOpen(null);
               }}
             >
-              {s.emoji} {s.label}
+              <span className="zodiac-chip__label">{s.label}</span>
             </button>
           ))}
         </div>

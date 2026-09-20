@@ -39,15 +39,24 @@ const BAND_EMOJI = { best: '', good: '', ok: '' } as const;
 
 // 친구 궁합 — 로그인 없이 되는 바이럴 훅. 띠/별자리 두 방식 지원(광고/공유로 잠금 해제).
 
-// 띠는 글자 배지로, 별자리는 기호 그대로 그린다.
-// ♈~♓ 는 색이 없는 활자 기호라 그림 이모지와 성격이 다르다 —
-// 어느 기기에서나 같은 모양으로 그려지고, 열두 개가 서로 확실히 갈린다.
-// 반면 띠 이모지(🐭🐮🐯)는 기기마다 그림이 달라진다.
+// 띠는 글자 배지로, 별자리는 별 아이콘으로 그린다.
+//
+// 전에는 별자리를 ♈~♓ 기호 그대로 그리면서 '색 없는 활자 기호라 그림
+// 이모지와 다르다'고 적어뒀다. 틀렸다. 크로미움에서 찍어 보니 열두 개가
+// 전부 빨강·주황·초록·보라로 꽉 찬 그림 이모지로 나왔다. 기기마다 그림이
+// 달라지는 것도, 초록·빨강이 화면에 뜨는 것도 이 앱이 피하려던 것이다.
+// 별자리 열둘은 첫 글자가 겹쳐(사자/사수, 물병/물고기, 천칭/전갈) 글자
+// 배지로는 안 갈린다. 이름이 늘 옆에 붙어 있으니 배지는 '이건 별자리다'
+// 만 말하면 된다.
 function PickMark({ item, size = 24 }: { item: { emoji: string; label: string }; size?: number }) {
   if (item.label.endsWith('띠')) {
     return <ZodiacBadge zodiac={item as Zodiac} size={size} />;
   }
-  return <span className="pick-mark" style={{ fontSize: Math.round(size * 0.9) }} aria-hidden>{item.emoji}</span>;
+  return (
+    <span className="zbadge" style={{ width: size, height: size }} aria-hidden>
+      <Icon name="star" size={Math.round(size * 0.55)} />
+    </span>
+  );
 }
 
 export function CompatScreen({
@@ -243,10 +252,17 @@ export function CompatScreen({
         <p className="lead">
           {modeLabel}만 고르면 돼요. 생년월일은 필요 없어요.
         </p>
+        {/* 별자리는 이름만 있으면 자기 것을 못 찾는다. 생일은 알아도 자기가
+            무슨 자리인지 모르는 사람이 더 많다. 기호와 날짜 범위를 같이 둔다.
+            배지는 안 붙인다. 띠 배지는 담는 글자가 '쥐'고 이름이 '쥐띠'라 같은
+            글자를 두 번 쓰는 꼴이고, 별자리 배지는 열둘이 전부 같은 별 모양이라
+            아무것도 안 갈린다. 빈 자리를 메우려고 뜻 없는 것을 넣는 건 여백을
+            콘텐츠로 위장하는 것이다. */}
         <div className="zodiac-grid zodiac-grid--full picker-grid">
           {options.map((z) => (
             <button key={z.id} type="button" className="zodiac-chip" onClick={() => choose(z.id)}>
-              {z.label}
+              <span className="zodiac-chip__label">{z.label}</span>
+              {'dateRange' in z ? <span className="zodiac-chip__sub num">{z.dateRange}</span> : null}
             </button>
           ))}
         </div>
