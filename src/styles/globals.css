@@ -790,15 +790,16 @@ strong {
 }
 /* 흰 배경 위(친구 궁합 화면 등)에서 쓸 때 — 위 .zodiac-chip은 파란 히어로 카드 전용이라
    흰 배경에서는 흰 글자가 안 보이는 문제가 있었음. 라이트 배경용 대비 색으로 재정의. */
+/* 이 화면에 있는 건 이 열두 칸뿐이다. 12px 글자에 44px 칸으로 두니
+   화면 한가운데 작은 덩어리 하나만 떠 있었다. 유일한 내용에 맞는 크기로. */
 .zodiac-grid--full .zodiac-chip {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 5px;
+  min-height: 64px;
+  font-size: 15px;
+  line-height: 22.5px;
   color: var(--gray-800);
   background: var(--gray-50);
   border: 1px solid var(--gray-200);
@@ -1585,6 +1586,15 @@ strong {
   color: var(--gray-900);
 
   border-bottom-color: var(--gray-900);}
+/* 열두 칸을 담는 상자인데 격자 규칙이 한 줄도 없었다. 칸은 제각기
+   블록이 돼 왼쪽에 한 줄로 쌓였고, 화면 오른쪽 8할이 빈 채로 남았다.
+   궁합 띠 고르기와 별자리 고르기가 같은 모양으로 깨져 있었다.
+   342px 안에 세 칸씩, 네 줄. */
+.zodiac-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
 .zodiac-grid--full {
   margin-top: var(--space-4);
 }
@@ -4894,12 +4904,16 @@ strong {
 }
 @media (prefers-reduced-motion: reduce) { .faq__inner { animation: none; } }
 /* ── 쪽지 화면: 남는 여백 없이. 부채꼴은 가운데, 질문답은 바닥에 ── */
+/* 남는 자리를 가운데 정렬로 먹였더니 질문과 카드 사이가 69px 벌어졌다.
+   고를 것은 질문 바로 밑에 있어야 한다. 카드는 위로 붙이고, 남는 자리는
+   아래 '이렇게 뽑혀요' 묶음이 바닥 쪽으로 내려가면서 받는다.
+   (상황 고르기 화면에서 같은 이유로 가운데 정렬을 걷어냈다) */
 .note-stage {
-  flex: 1 1 auto;
-  justify-content: center;
-  padding: 0;
-  min-height: 300px;
+  flex: 0 0 auto;
+  justify-content: flex-start;
+  padding: var(--space-2) 0 0;
 }
+.sec.faq { margin-top: auto; }
 .note-fan { height: 236px; }
 .note-fan .note { top: 4px; }
 .faq {
@@ -6782,10 +6796,21 @@ strong {
   color: var(--gray-700);
   word-break: keep-all;
 }
+/* 잠겨 있을 때는 테두리 있는 알약(광고)이고 풀리면 맨 파란 글자였다.
+   지금 누를 수 있는 쪽이 값을 치러야 하는 쪽보다 덜 눌릴 것처럼 보였고,
+   상자 크기가 달라 광고를 보고 나면 줄이 옆으로 흔들렸다.
+   상자는 광고 배지와 똑같이 두고 색으로만 상태를 가른다. */
 .more__open {
   flex: 0 0 auto;
-  font-size: 14px;
-  line-height: 21px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border: 1px solid var(--brand);
+  border-radius: 999px;
+  background: var(--brand-soft);
+  font-size: 11px;
+  line-height: 16.5px;
   font-weight: 700;
   color: var(--brand-strong);
 }

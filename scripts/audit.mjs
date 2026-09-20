@@ -539,6 +539,15 @@ async function run(browser) {
       const pickText = await bodyText(page);
       check((await page.locator('[data-screen="pick"]').count()) === 1, '[흐름] 고민을 고르면 쪽지 고르기로');
       check((await page.locator('.pick-basis').count()) === 1, '[흐름] 무엇을 근거로 뽑는지 한 줄로 보임');
+      // 남는 자리를 가운데 정렬로 먹여서 질문과 카드 사이가 69px 벌어져 있었다.
+      // 고를 것은 질문 바로 밑에 있어야 한다.
+      const pickGap = await page.evaluate(() => {
+        const lead = document.querySelector('.pick-basis');
+        const grid = document.querySelector('.note-grid');
+        if (!lead || !grid) return -1;
+        return Math.round(grid.getBoundingClientRect().top - lead.getBoundingClientRect().bottom);
+      });
+      check(pickGap >= 0 && pickGap <= 40, '[흐름] 뽑을 카드가 질문 바로 밑에 있다', `${pickGap}px`);
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
 
@@ -670,6 +679,25 @@ async function run(browser) {
       check(!/잠금|잠겨|결제|유료|포인트로 보기/.test(t), '[광고] 본문에 잠긴 카드가 없다');
       // 지금 보고 있는 고민을 다시 팔면 안 된다
       check(geo.rows === 5, '[광고] 지금 보는 고민은 목록에서 빠진다', String(geo.rows));
+      // 잠겨 있을 때는 테두리 알약(광고)인데 풀리면 맨 글자였다. 지금 누를 수
+      // 있는 쪽이 값을 치러야 하는 쪽보다 덜 눌릴 것처럼 보이면 안 되고,
+      // 상자 높이가 다르면 광고를 보고 난 뒤 줄이 흔들린다.
+      const chipBox = await page.evaluate(() => {
+        const row = document.querySelector('.more__row');
+        if (!row) return null;
+        const ad = document.querySelector('.more__row .ad-notice');
+        const probe = document.createElement('span');
+        probe.className = 'more__open';
+        probe.textContent = '보기';
+        row.appendChild(probe);
+        const a = ad ? ad.getBoundingClientRect() : null;
+        const b = probe.getBoundingClientRect();
+        probe.remove();
+        return a ? { ad: Math.round(a.height), open: Math.round(b.height) } : null;
+      });
+      check(chipBox !== null && chipBox.ad === chipBox.open,
+        '[광고] 풀린 줄과 잠긴 줄의 상자 높이가 같다',
+        chipBox ? `광고 ${chipBox.ad}px / 보기 ${chipBox.open}px` : '줄 없음');
 
       // ── 다시 올 이유 ──
       // 이 앱의 답은 실제로 매일 바뀌는데 그 사실을 아무 데서도 말하지 않으면
@@ -937,6 +965,21 @@ async function run(browser) {
     const page = await newPage(browser);
     await goCompat(page);
     check((await bodyText(page)).includes('별자리 궁합'), '[궁합] 첫 화면에서 별자리로 전환 가능');
+    // 열두 칸을 담는 상자에 격자 규칙이 한 줄도 없어서, 칸이 왼쪽에 한 줄로
+    // 쌓이고 화면 오른쪽 8할이 빈 채로 남아 있었다.
+    const chipGrid = await page.evaluate(() => {
+      const els = [...document.querySelectorAll('.zodiac-grid--full .zodiac-chip')];
+      if (els.length === 0) return null;
+      const box = els.map((e) => e.getBoundingClientRect());
+      return {
+        n: els.length,
+        cols: new Set(box.map((r) => Math.round(r.left))).size,
+        rows: new Set(box.map((r) => Math.round(r.top))).size,
+        w: Math.round(Math.max(...box.map((r) => r.width))),
+      };
+    });
+    check(chipGrid !== null && chipGrid.cols === 3 && chipGrid.rows === 4,
+      '[궁합] 띠 고르기가 세 칸씩 네 줄', chipGrid ? `${chipGrid.cols}열 ${chipGrid.rows}줄 ${chipGrid.w}px` : '칸 없음');
 
     // 생년월일을 넣고 온 사람은 '나' 가 이미 정해져 있어 피커가 닫혀 있다. 슬롯을 눌러 연다.
     const pickZ = async (label) => {
