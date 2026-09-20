@@ -131,6 +131,9 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
                   줄바꿈이 사고처럼 보인다. 배지는 제 줄을 갖는다. */}
               <span className="drawn__now">
                 <b className="drawn__stance">{deep.read.decision.stanceWord}</b>
+                {/* 이번 달 기운은 행동의 이유다. 판정 줄 옆에 두면 두 층이
+                    섞여서 서로 반대로 갈 수 있다. 행동 바로 위에 붙인다. */}
+                <span className="drawn__why">{deep.read.monthWhy}</span>
                 <span className="drawn__do">{deep.read.decision.dos[0]}</span>
               </span>
             </>

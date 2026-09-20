@@ -48,6 +48,8 @@ export type DeepRead = {
   now: { head: string; situation: string; rows: { k: string; label: string; v: string }[] };
   headline: string;
   sub: string;
+  /** 이번 달 기운으로 읽은 한 줄. 행동 바로 위에 붙는다 */
+  monthWhy: string;
   situationLine: string;
   /** 시기 표 */
   when: { k: string; v: string; band?: string; bandKey?: Band; act?: string }[];
@@ -119,7 +121,7 @@ const HEADLINE: Record<ConcernKey, Record<Verdict, string>> = {
   work: {
     now: '지금 이직 문이 열려 있어요',
     soon: '조금 더 준비하고 움직이는 게 나아요',
-    wait: '올해는 자리를 지키면서 조건을 올리는 해예요',
+    wait: '올해는 옮기기보다 자리를 지키는 해예요',
   },
   money: {
     now: '지금은 들어오는 돈이 나가는 돈보다 커요',
@@ -142,7 +144,7 @@ const HEADLINE: Record<ConcernKey, Record<Verdict, string>> = {
     wait: '지금은 무리하면 바로 표시 나는 몸이에요',
   },
   mind: {
-    now: '지금은 마음이 가라앉는 때예요',
+    now: '지금은 마음이 가벼워지는 때예요',
     soon: '두어 달 뒤에 마음이 풀려요',
     wait: '지금은 결정을 미뤄도 되는 때예요',
   },
@@ -725,7 +727,16 @@ export function buildDeepRead(
     headline: HEADLINE[concernKey][verdict],
     // month 를 쓰면 아래 '앞으로 열두 달'의 이번 달 칸과 글자 하나까지 같은
     // 문장이 된다. 결정 카드는 같은 기운을 '무엇을 정할 때인가'로 읽는다.
-    sub: `${CONCERN_GOD[concernKey][timing.thisMonth.tenGod].decide} ${VERDICT_SUB[concernKey][verdict]}`,
+    // 큰 글씨와 이 줄은 둘 다 판정에서 나와야 한 목소리가 된다.
+    //
+    // 예전에는 이 줄 앞에 이번 달 기운(decide)을 붙였는데, 그건 다른 층에서
+    // 나온 말이라 큰 글씨와 반대로 갈 수 있었다. 실제로 연애에서
+    //   큰 글씨  지금은 상대보다 나를 먼저 채울 때예요
+    //   이 줄    상대를 먼저 챙겨줄 때예요
+    // 가 붙어 있었다. 정반대다. decide 는 아래 행동 칸으로 옮겼다.
+    sub: VERDICT_SUB[concernKey][verdict],
+    /** 이번 달 기운으로 읽은 한 줄. 행동 바로 위에 붙는다 */
+    monthWhy: CONCERN_GOD[concernKey][timing.thisMonth.tenGod].decide,
     slots,
     monthSlots,
     yearLines,

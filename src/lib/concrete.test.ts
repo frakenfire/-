@@ -132,3 +132,52 @@ test('한 문단 안에서 같은 문장이 두 번 안 나온다', () => {
     }
   }
 });
+
+// 맨 위 카드에서 큰 글씨와 그 밑 줄이 정반대를 가리킨 적이 있다.
+//   큰 글씨  지금은 상대보다 나를 먼저 채울 때예요
+//   밑 줄    상대를 먼저 챙겨줄 때예요
+// 둘이 다른 층(판정 / 이번 달 기운)에서 나와서 생긴 일이다.
+// 이 카드의 두 줄은 반드시 같은 층에서 나와야 한다.
+test('맨 위 카드의 두 줄이 같은 층에서 나온다', () => {
+  for (const c of CONCERNS) {
+    for (const opt of c.options) {
+      const t = computeTiming(INPUT, P, 'female', c.key, new Date('2026-09-21T09:00:00+09:00'));
+      const r = buildDeepRead(P, t, c.key, opt.key, '2026-09-21', '김한별');
+      // sub 은 판정 하나에서만 나온다 - 같은 고민·같은 판정이면 달이 바뀌어도 같다
+      const t2 = computeTiming(INPUT, P, 'female', c.key, new Date('2026-12-21T09:00:00+09:00'));
+      const r2 = buildDeepRead(P, t2, c.key, opt.key, '2026-12-21', '김한별');
+      if (r.verdict === r2.verdict) {
+        assert.equal(r.sub, r2.sub, `${c.key}: 같은 판정인데 밑 줄이 달라요`);
+      }
+      // 큰 글씨와 밑 줄이 같은 말을 되풀이하지 않는다. 바로 붙어 있는 두 줄이라
+      // 같은 동사가 두 번 나오면 한 문장을 두 번 쓴 것처럼 읽힌다.
+      // 종결어미(때예요·해예요·남아요…)는 어느 문장에나 붙으니 떼고 본다.
+      // 안 떼면 '는때예요' 같은 게 겹침으로 잡혀서 검사가 시끄러워진다.
+      const grams = (x: string) => {
+        const out = new Set<string>();
+        const t = x
+          .split(/(?<=[.!?])\s+/)
+          .map((one) => one.replace(/(는|은|을|를|이|가)?\s*(때|해|거|것)?(예요|에요|이에요|돼요|해요|나아요|남아요|와요|줘요|봐요|세요|어요|아요)\.?$/, ''))
+          .join('')
+          .replace(/[^가-힣]/g, '');
+        for (let i = 0; i + 4 <= t.length; i += 1) out.add(t.slice(i, i + 4));
+        return out;
+      };
+      const shared = [...grams(r.headline)].filter((g) => grams(r.sub).has(g));
+      assert.equal(shared.length, 0, `${c.key}: 큰 글씨와 밑 줄이 겹쳐요 — ${shared.join(',')}\n  ${r.headline}\n  ${r.sub}`);
+      // 한 줄 안에 같은 종결이 두 번 오지 않는다
+      const endings = r.sub.split(/(?<=[.!?])\s+/).map((x) => x.trim().slice(-4)).filter(Boolean);
+      assert.equal(new Set(endings).size, endings.length, `${c.key} 밑 줄 종결 반복 — ${r.sub}`);
+    }
+  }
+});
+
+test('이번 달 이유가 행동 칸으로 내려가 있다', () => {
+  for (const c of CONCERNS) {
+    const t = computeTiming(INPUT, P, 'female', c.key, new Date('2026-09-21T09:00:00+09:00'));
+    const r = buildDeepRead(P, t, c.key, c.options[0].key, '2026-09-21', '김한별');
+    assert.ok(r.monthWhy.length > 6, `${c.key}: 이번 달 이유가 비었어요`);
+    assert.ok(!r.sub.includes(r.monthWhy), `${c.key}: 밑 줄에 아직 섞여 있어요`);
+    assert.ok(WORD[c.key].test(r.monthWhy), `${c.key}: 이번 달 이유에 고민 말이 없어요 — ${r.monthWhy}`);
+  }
+});

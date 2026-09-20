@@ -6849,3 +6849,15 @@ strong {
   font-weight: 700;
   color: var(--brand-strong);
 }
+
+/* 이번 달 기운 — 행동의 이유. 행동보다 작고 흐리게 둬서 무엇이 할 일인지가
+   먼저 읽히게 한다. */
+.drawn__why {
+  display: block;
+  margin: 0 0 2px;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
