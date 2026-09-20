@@ -859,6 +859,20 @@ async function run(browser) {
     await page.getByText('일과 이직', { exact: true }).first().click();
     await wait(page, 500);
     check((await page.locator('.opt-row').count()) === 4, '[상담] 상황 네 가지');
+    // 고를 것이 넷뿐이라 화면 아래 40% 가 허공이었다. 덜 그려진 것처럼 보인다.
+    // 뭔가가 바닥을 닫아줘야 화면이 끝난 걸로 읽힌다.
+    const tailGap = await page.evaluate(() => {
+      const body = document.querySelector('.app__body');
+      if (!body) return -1;
+      const rect = body.getBoundingClientRect();
+      let low = rect.top;
+      for (const el of body.querySelectorAll('*')) {
+        const b = el.getBoundingClientRect();
+        if (b.height > 0 && b.width > 0 && b.bottom > low) low = b.bottom;
+      }
+      return Math.round(rect.bottom - low);
+    });
+    check(tailGap >= 0 && tailGap <= 80, '[상담] 화면 끝이 허공이 아니다', `${tailGap}px`);
     await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click();
     await wait(page, 600);
     await page.locator('button.note').first().dispatchEvent('click');

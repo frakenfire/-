@@ -29,18 +29,23 @@ export function ConcernAskScreen({ concernKey, onSelect, onBack, inFlow = false 
         </div>
       </div>
 
-      <div className="concern-list">
-        {concern.options.map((o) => (
-          <button key={o.key} type="button" className="opt-row" onClick={() => onSelect(o.key)}>
-            <span className="opt-row__label">{o.label}</span>
-            <span className="opt-row__c" aria-hidden>
-              ›
-            </span>
-          </button>
-        ))}
+      {/* 고를 것이 네 개뿐이라 아래가 40% 비었다. 목록을 남는 자리 가운데
+          두고 안내 한 줄은 바닥에 붙인다. 이 화면의 일은 하나를 고르는 것이라
+          고를 것이 화면 한가운데 있어야 한다. */}
+      <div className="ask-body">
+        <div className="concern-list">
+          {concern.options.map((o) => (
+            <button key={o.key} type="button" className="opt-row" onClick={() => onSelect(o.key)}>
+              <span className="opt-row__label">{o.label}</span>
+              <span className="opt-row__c" aria-hidden>
+                ›
+              </span>
+            </button>
+          ))}
+        </div>
       </div>
 
-      <p className="ask-foot">{concern.basis}</p>
+      <p className="ask-foot ask-foot--pin">{concern.basis}</p>
     </AppLayout>
   );
 }
