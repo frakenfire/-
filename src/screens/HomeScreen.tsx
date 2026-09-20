@@ -8,6 +8,7 @@ import { todayVibe } from '../lib/dayVibe.ts';
 import { todayKey, hashSeed } from '../lib/dateSeed.ts';
 import { sajuToday, iljinOf, dailyZodiacRanking } from '../lib/saju.ts';
 import { softBreak } from '../lib/softBreak.ts';
+import { buildRankingShareText } from '../lib/share.ts';
 import { findZodiac, type Zodiac } from '../data/zodiac.ts';
 
 function todayLabel(): string {
@@ -32,6 +33,8 @@ type Props = {
   onStart: () => void;
   /** 회전 값 — 겉 문구가 열 때마다 돌아간다 */
   spin?: number;
+  /** 띠 서열을 단톡방에 던진다. 주간 카드와 같은 자리, 같은 모양 */
+  onShareRanking?: (text: string) => void;
 };
 
 // 홈 — '클릭해서 시작'하는 호기심 히어로(물음표)를 중심으로 정리.
@@ -39,6 +42,7 @@ export function HomeScreen({
   streak,
   zodiac,
   onStart,
+  onShareRanking,
   spin = 0,
 }: Props) {
   // 오늘 이미 뽑았으면 그 결과를 히어로 카드에도 반영한다(잠긴 ?  실제 값).
@@ -113,6 +117,41 @@ export function HomeScreen({
       <section className="sec">
         <div className="sec__head">
           <h2 className="sec__title">오늘의 띠 서열</h2>
+          {/* 서열표를 만드는 코드는 있었는데 누르는 자리가 없었다.
+              주간 카드와 같은 자리, 같은 모양으로 붙인다. */}
+          {onShareRanking && ranking.length >= 12 ? (
+            <button
+              type="button"
+              className="sec__action"
+              onClick={() =>
+                onShareRanking(
+                  buildRankingShareText({
+                    dateLabel: todayLabel(),
+                    top3: ranking.slice(0, 3).map((r) => ({
+                      label: findZodiac(r.animal)?.label ?? '',
+                      emoji: '',
+                      toneWord: r.relationGloss,
+                    })),
+                    last: {
+                      label: findZodiac(ranking[11].animal)?.label ?? '',
+                      emoji: '',
+                      toneWord: ranking[11].relationGloss,
+                    },
+                    me: zodiac
+                      ? (() => {
+                          const mine = ranking.find((r) => r.animal === zodiac.id);
+                          return mine
+                            ? { label: zodiac.label, emoji: '', rank: mine.rank, gloss: mine.relationGloss }
+                            : null;
+                        })()
+                      : null,
+                  }),
+                )
+              }
+            >
+              공유
+            </button>
+          ) : null}
         </div>
         <div className="rank-card">
           <ol className="rank-list rank-list--top">
@@ -123,7 +162,10 @@ export function HomeScreen({
                   <span className={`rank-row__no num${r.rank === 1 ? ' rank-row__no--first' : ''}`}>{r.rank}</span>
                   {z ? <ZodiacBadge zodiac={z} size={32} /> : null}
                   <span className="rank-row__name">{z?.label}</span>
-                  <span className={`rank-row__tone rank-row__tone--${r.tone}`}>{r.toneWord}</span>
+                  {/* 등급 말을 붙이면 1~3위가 전부 '아주 좋아요' 로 뭉쳐서
+                      서열이라는 말이 무색해진다. 순서는 왼쪽 숫자가 이미 말한다.
+                      여기는 왜 그 자리인지를 적는다 — 주간 표가 쓰는 같은 어휘다. */}
+                  <span className={`rank-row__tone rank-row__tone--${r.tone}`}>{r.relationGloss}</span>
                 </li>
               );
             })}

@@ -708,7 +708,7 @@ async function run(browser) {
         // 같이 늘려야 한다 — 안 늘리면 이 검사가 먼저 걸린다.
         const chips = [
           '.when4__b', '.yline__b', '.mpick__band', '.score-hero__grade',
-          '.week-row__tone', '.rank-row__tone', '.cat4__tag', '.cat-top__tag',
+          '.week-row__tone', '.cat4__tag', '.cat-top__tag',
         ].join(', ');
         const inChip = new Set(document.querySelectorAll(chips));
         return [...document.querySelectorAll('span, b, strong')]
@@ -735,6 +735,24 @@ async function run(browser) {
         return out;
       });
       check(echoes.length === 0, '[문구] 묶음 이름을 카드가 되풀이하지 않는다', echoes.join(' · '));
+
+      // 서열에 등급 말을 붙이면 1~3위가 전부 같은 말로 뭉쳐 서열이 무색해진다.
+      // 순서는 숫자가 말하고, 오른쪽은 왜 그 자리인지를 말한다.
+      await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+      await wait(page, 700);
+      const rankWords = await page.evaluate((words) => {
+        const rows = [...document.querySelectorAll('.rank-row__tone')].map((e) => e.textContent.trim());
+        return { rows, bad: rows.filter((t) => words.includes(t)) };
+      }, BAND_WORDS);
+      check(rankWords.rows.length >= 5, '[서열] 줄이 보인다', String(rankWords.rows.length));
+      check(rankWords.bad.length === 0, '[서열] 등급 말을 안 쓴다', rankWords.bad.join(' / '));
+      check(new Set(rankWords.rows).size >= 2, '[서열] 줄마다 다른 것을 말한다',
+        rankWords.rows.join(' / '));
+      // 서열표를 만드는 코드는 있었는데 누르는 자리가 없었다
+      check((await page.locator('.rank-card').count()) === 1, '[서열] 카드가 있다');
+      const shareBtns = await page.locator('.sec__action').allInnerTexts();
+      check(shareBtns.some((t) => t.trim() === '공유'), '[서열] 공유하는 자리가 있다',
+        shareBtns.join(' / '));
       await diagnose(page, '쪽지결과');
     } catch (e) {
       bad('[쪽지] 컨셉 유지', e.message.split('\n')[0]);

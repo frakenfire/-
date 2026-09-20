@@ -561,6 +561,7 @@ export default function App() {
     <>
       {screen === 'home' && (
         <HomeScreen
+          onShareRanking={handleShareWeek}
           streak={streak}
           zodiac={zodiac}
           spin={spin}
