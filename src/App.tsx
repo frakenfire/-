@@ -441,7 +441,11 @@ export default function App() {
 
   function handleSaveBirth(b: StoredBirth) {
     setBirth(b);
-    saveBirth(b);
+    // saveBirth 는 저장 성공 여부를 돌려준다. 그 값을 버리고 있었다.
+    // 저장이 막힌 기기(용량 초과·사생활 보호 모드)에서는 매번 다시 넣어야
+    // 하는데, 이유를 안 말하면 앱이 기억을 못 하는 것으로 보인다.
+    // 이번 뽑기는 그대로 되므로 흐름은 안 막고 한 줄만 알린다.
+    if (!saveBirth(b)) flash('이 기기에 저장이 안 돼요. 다음에 또 넣어주셔야 해요');
     logEvent('birth_saved', { hasTime: b.time !== null, viaFlow: birthFromFlow });
     if (birthNext === 'concern' || birthFromFlow) startDraw();
     else startDraw();

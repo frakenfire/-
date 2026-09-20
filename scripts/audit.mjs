@@ -1210,6 +1210,69 @@ async function run(browser) {
     await ctx.close();
   }
 
+  // 8.5 웹뷰 악조건 — 읽기는 되는데 쓰기만 막힌 경우(용량 초과·사생활 보호)
+  //
+  // 전면 차단만 보고 있었는데, 실제로 더 흔한 건 이쪽이다. iOS 웹뷰에서
+  // setItem 이 QuotaExceededError 로 던진다. 이러면 매번 생년월일을 다시
+  // 넣어야 하는데, 이유를 안 말하면 앱이 기억을 못 하는 것으로 보인다.
+  {
+    const ctx = await browser.newContext({ viewport: VIEWPORT, isMobile: true, hasTouch: true });
+    await ctx.addInitScript(() => {
+      Storage.prototype.setItem = function setItem() {
+        const e = new Error('QuotaExceededError');
+        e.name = 'QuotaExceededError';
+        throw e;
+      };
+    });
+    const page = await ctx.newPage();
+    page.setDefaultTimeout(10000);
+    const errs = [];
+    page.on('pageerror', (e) => errs.push(e.message));
+    page.__errs = errs;
+    await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+    await wait(page, 500);
+    await page.locator('.today-hook__cta').first().click();
+    await wait(page, 700);
+    await fillName(page);
+    await page.getByRole('button', { name: '다음' }).first().click();
+    await wait(page, 800);
+    // 저장이 안 됐다는 걸 말해야 한다. 말없이 삼키면 앱이 잊어버리는 것처럼 보인다.
+    const toast = (await page.locator('.toast').count())
+      ? await page.locator('.toast').first().innerText().catch(() => '') : '';
+    check(/저장이 안 돼요/.test(toast), '[악조건] 저장이 막히면 그 사실을 알린다', toast || '(안내 없음)');
+    // 그래도 이번 뽑기는 끝까지 돼야 한다. 저장은 부가고 답이 본체다.
+    await page.getByText('일과 이직', { exact: true }).first().click();
+    await wait(page, 500);
+    await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click();
+    await wait(page, 600);
+    await page.locator('button.note').first().dispatchEvent('click');
+    await wait(page, 4300);
+    check(/점수\s*\d+\s*점/.test(await bodyText(page)), '[악조건] 쓰기가 막혀도 결과까지 도달');
+    check(errs.length === 0, '[악조건] 쓰기 차단 시 예외 없음', errs.join(' | '));
+    await ctx.close();
+  }
+
+  // 8.6 웹뷰 악조건 — 저장값이 깨진 경우(앱 업데이트·수동 편집·부분 기록)
+  {
+    const ctx = await browser.newContext({ viewport: VIEWPORT, isMobile: true, hasTouch: true });
+    await ctx.addInitScript(() => {
+      try {
+        localStorage.setItem('tomorrowNoteBirth', '{{{깨진 JSON');
+        localStorage.setItem('tomorrowNoteZodiac', '{"not":"a string"}');
+        localStorage.setItem('tomorrowNoteUnlockedConcerns', 'null');
+      } catch { /* 무시 */ }
+    });
+    const page = await ctx.newPage();
+    page.setDefaultTimeout(10000);
+    const errs = [];
+    page.on('pageerror', (e) => errs.push(e.message));
+    page.__errs = errs;
+    await drawTo(page, { zodiac: null });
+    check(/점수\s*\d+\s*점/.test(await bodyText(page)), '[악조건] 저장값이 깨져도 결과까지 도달');
+    check(errs.length === 0, '[악조건] 깨진 저장값에 예외 없음', errs.join(' | '));
+    await ctx.close();
+  }
+
   // 9. 웹뷰 악조건 — 애니메이션 정지 (프리즈된 웹뷰에서 투명 콘텐츠가 남는지)
   {
     const page = await newPage(browser);
