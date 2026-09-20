@@ -5,7 +5,6 @@ import { tenGodOf, mainHiddenStem, GOD_GROUP_OF, TEN_GOD_KO, type TenGod } from 
 import { scoreOf, slotOf, type Band, type Favor, type TimingRead, BAND_WORD } from './timing.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { withJosa } from './josa.ts';
-import { CONCERN_GOD } from '../data/concernReadings.ts';
 
 // 점수 엔진 — 문장 엔진과 분리한다.
 //
@@ -194,7 +193,9 @@ export function scoreVerdictLine(score: ConcernScore, concern: ConcernKey): stri
   //
   // GOD_PULL 은 고민을 안 본다. 돈을 물어도 '밀어붙이는 힘과 부담이 같이
   // 커지는 쪽' 이 나오던 자리다. 고민별로 쓴 pull 을 쓴다.
-  const pull = (god: TenGod) => CONCERN_GOD[concern][god].pull;
+  // pull 은 '왜 이렇게 봤나요' 줄의 몫이다. 여기서도 쓰면 같은 문장이 한
+  // 화면에 두 번 나온다. 이 줄은 '어느 칸이 올리고 어느 칸이 눌렀나' 만 말하고,
+  // 그 기운이 무엇인지는 아래 근거 줄이 맡는다.
   // 기운을 설명하는 말에는 좋고 나쁨이 없다. '챙겨주는 마음이 오가는 쪽이라
   // 제일 낮게 잡혔고요' 처럼 앞뒤가 안 맞아 보이던 이유다. 그 기운이 이 고민에
   // 보탬이 되는지 아닌지는 점수가 이미 알고 있으니, 그걸 뒤에 붙여 말한다.
@@ -209,8 +210,8 @@ export function scoreVerdictLine(score: ConcernScore, concern: ConcernKey): stri
     hard: '이 고민에는 걸리는 자리예요',
   };
   return (
-    `${head} 다섯 칸 중 ${withJosa(top.k, '이가')} 가장 높아요. ${pull(top.god!)} 쪽이고, ${HIGH[top.band]}. ` +
-    `반대로 ${withJosa(low.k, '은는')} ${pull(low.god!)} 쪽인데 ${LOW[low.band]}.`
+    `${head} 다섯 칸 중 ${withJosa(top.k, '이가')} 가장 높아요. ${TEN_GOD_KO[top.god!]}이 ${HIGH[top.band]}. ` +
+    `반대로 ${withJosa(low.k, '은는')} ${TEN_GOD_KO[low.god!]}이라 ${LOW[low.band]}.`
   );
 }
 

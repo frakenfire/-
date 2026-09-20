@@ -434,7 +434,9 @@ export function buildDeepRead(
     { k: '십 년', god: timing.daeunSlot ? timing.daeunSlot.tenGod : null },
     { k: '올해', god: timing.years[0].tenGod },
     { k: '이번 달', god: timing.thisMonth.tenGod },
-    { k: '오늘', god: todayGod },
+    // 오늘 층은 '오늘 글자와 내 글자' 카드가 통째로 맡는다. 여기 또 넣으면
+    // 같은 pull 이 한 화면에 두 번 나온다.
+
   ];
   const grouped = new Map<TenGod, string[]>();
   for (const l of layers) {
@@ -442,13 +444,18 @@ export function buildDeepRead(
     grouped.set(l.god, [...(grouped.get(l.god) ?? []), l.k]);
   }
   const why: { k: string; v: string }[] = [
-    { k: '내 글자', v: `${dm.name}이에요. ${dm.tagline.replace(/\.?$/, '.')}` },
+    // tagline 은 명식 카드의 '나를 뜻하는 글자' 줄이 이미 쓴다. 여기서 또 쓰면
+    // 같은 문장이 한 화면에 두 번 나온다. 이 줄은 '왜 이렇게 봤나' 자리이므로
+    // 그 성격이 어디서 드러나는지(shines)를 적는다.
+    { k: '내 글자', v: `${dm.name}이에요. ${dm.shines.replace(/\.?$/, '.')}` },
     ...[...grouped.entries()].map(([god, ks]) => ({
       k: ks.join(', '),
       v:
         ks.length > 1
-          // GOD_PULL 은 고민을 안 본다. '몫을 나누고 겨루게 되는 쪽' 이
-          // 돈을 물어도 일을 물어도 똑같이 나오던 자리다.
+          // 여기가 pull 의 집이다. 다른 자리에서 pull 을 또 쓰면 한 화면에
+          // 같은 문장이 두 번 나온다. 층마다 말하는 자리는 하나씩만 둔다.
+          //   십 년 → 십 년 카드 · 올해 → 올해내년 줄 · 이번 달 → 열두 달 차트
+          //   오늘 → 오늘 글자 카드 · 왜 그렇게 읽었나 → 이 줄
           ? `${TEN_GOD_KO[god]}이 겹쳐요. ${CONCERN_GOD[concernKey][god].pull} 쪽으로 읽었어요. 층이 겹치면 그 방향이 더 또렷해져요.`
           : `${TEN_GOD_KO[god]}이 들어와요. ${CONCERN_GOD[concernKey][god].pull} 쪽으로 읽었어요.`,
     })),
@@ -488,7 +495,9 @@ export function buildDeepRead(
       ? `${withJosa(concern.label, '은는')} ${favorNames}로 봐요. 태어난 여덟 글자 중 ${focusCount}개가 거기 걸려 있어서 바탕은 ${focusCount >= 3 ? '두꺼운' : '얇은'} 편이에요.`
       : `${withJosa(concern.label, '은는')} ${favorNames}로 봐요. 태어난 글자에는 그 자리가 없어서, 해와 달이 들어올 때 열리는 구조예요.`;
 
-  const chartToday = `내 글자에 대면 ${TEN_GOD_KO[todayGod]}이라, ${CONCERN_GOD[concernKey][todayGod].pull} 쪽이에요.`;
+  // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
+  // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
+  const chartToday = `내 글자에 대면 ${TEN_GOD_KO[todayGod]}이에요. ${CONCERN_GOD[concernKey][todayGod].line}`;
 
   // 조견표로 대조만 하는 것들. 해석을 고르지 않으니 누가 계산해도 같다.
   const stars = sinsalOf(pillars).map((x) => ({
@@ -700,7 +709,9 @@ export function buildDeepRead(
     label: y.label,
     band: bandLabel(y),
     bandKey: y.band,
-    v: `${CONCERN_GOD[concernKey][y.tenGod].year} ${CONCERN_GOD[concernKey][y.tenGod].line}`,
+    // year 가 고민을 보고 쓰였으니 line 은 뺀다. 안 빼면 한 줄 안에서
+    // '연봉과 조건을 따지기' 가 두 번 나온다. 십 년 줄과 같은 이유다.
+    v: CONCERN_GOD[concernKey][y.tenGod].year,
   }));
 
   // 할 일 셋 중 하나는 이번 달 글자에서, 하나는 가장 좋은 달 글자에서 뽑는다.
