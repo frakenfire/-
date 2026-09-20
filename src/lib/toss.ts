@@ -10,10 +10,37 @@ import {
   requestReview as tossRequestReview,
 } from '@apps-in-toss/web-framework';
 
+/**
+ * SDK 가 isSupported 를 붙여준 함수만 그걸로 게이팅한다.
+ *
+ * 설치된 SDK 를 실제로 열어보면 isSupported 가 붙은 건 getServerTime 과
+ * requestReview 뿐이다. saveBase64Data, eventLog, requestNotificationAgreement
+ * 에는 없다. 그래서 '없으면 false' 로 두면 그 셋은 토스 안에서도 영영
+ * 안 불린다. (실제로 saveBase64Data 가 그랬다)
+ */
 function supported(fn: unknown): boolean {
   try {
     const s = (fn as { isSupported?: () => boolean } | undefined)?.isSupported;
-    return typeof s === 'function' ? s() : false;
+    if (typeof s === 'function') return s();
+    // isSupported 를 안 주는 함수는 '있으면 쓸 수 있다' 로 본다.
+    return typeof fn === 'function';
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * 지금 토스 웹뷰 안인가.
+ *
+ * SDK 의 브릿지가 직접 보는 신호와 같은 것을 본다 - window.ReactNativeWebView
+ * 가 없으면 브릿지는 'ReactNativeWebView is not available in browser
+ * environment' 로 던진다. 네이티브가 실패했을 때 웹 폴백으로 내려갈지,
+ * 아니면 실패로 끝낼지를 이걸로 가른다.
+ */
+function inTossWebView(): boolean {
+  try {
+    return typeof window !== 'undefined'
+      && (window as { ReactNativeWebView?: unknown }).ReactNativeWebView != null;
   } catch {
     return false;
   }
@@ -30,7 +57,10 @@ export async function saveImageData(dataUrl: string, fileName: string): Promise<
   const mimeMatch = /^data:([^;]+);/.exec(dataUrl);
   const mimeType = mimeMatch ? mimeMatch[1] : 'image/png';
 
-  if (supported(tossSaveBase64Data)) {
+  // 토스 안에서는 네이티브 저장만 쓴다. 여기서 실패했는데 아래 웹 폴백으로
+  // 내려가면 <a download> 가 조용히 아무것도 안 하고 true 를 돌려줘서
+  // '저장 완료' 라고 거짓말을 하게 된다.
+  if (inTossWebView() && supported(tossSaveBase64Data)) {
     try {
       await tossSaveBase64Data({ data: base64, fileName, mimeType });
       return true;
