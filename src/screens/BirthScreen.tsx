@@ -314,48 +314,59 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
           ) : null}
         </div>
 
+        {/* 몰라요 는 이름표 바로 밑, 바뀌는 것들보다 위에 둔다.
+            전에는 휠 아래에 있었고, 몰라요를 켜도 휠 세 개가 흐려진 채
+            '오후 12시 00분' 을 고른 것처럼 남아 있었다. 값 줄은 모름, 체크는
+            켜짐, 안내는 '시각 없이 세 기둥으로' 라고 말하는데 그 옆에서 휠만
+            시각 하나를 계속 가리켰다. 안 쓸 값이면 안 보이는 게 맞다.
+            다만 접는 순간 아래 있던 체크가 손가락 밑에서 위로 튀어 올라 두 번
+            눌리기 쉬우므로, 켜고 끌 때 달라지는 것들보다 위로 올린다. */}
         <div className="wheel-group">
           <span className="wheel-group__k">태어난 시각</span>
-          <span className="wheel-group__v">
-            {unknownTime ? '모름' : `${isPm ? '오후' : '오전'} ${hour12}시 ${pad(minute)}분`}
-          </span>
-          <div className="wheel-row">
-            <WheelPicker
-              items={AMPM}
-              value={isPm}
-              onChange={(v) => setFrom12(v, hour12)}
-              label="오전 오후"
-              disabled={unknownTime}
-            />
-            <WheelPicker
-              items={HOURS12}
-              value={hour12}
-              onChange={(v) => setFrom12(isPm, v)}
-              label="시"
-              disabled={unknownTime}
-            />
-            <WheelPicker
-              items={MINUTES}
-              value={minute}
-              onChange={setMinute}
-              label="분"
-              disabled={unknownTime}
-            />
-          </div>
+          <button
+            type="button"
+            className={unknownTime ? 'birth-unknown birth-unknown--on' : 'birth-unknown'}
+            onClick={() => setUnknownTime((v) => !v)}
+            aria-pressed={unknownTime}
+          >
+            <span className="birth-unknown__box" aria-hidden />
+            태어난 시각을 몰라요
+          </button>
+          {/* 값 줄은 휠이 무엇을 가리키는지 알리는 자리다. 휠을 접으면 알릴 것이
+              없고, 바로 위의 체크가 이미 '몰라요' 라고 말한다. 굵은 '모름' 을
+              그대로 두면 한 가지 사실을 세 줄이 돌아가며 말하게 된다. */}
+          {unknownTime ? null : (
+            <span className="wheel-group__v">
+              {`${isPm ? '오후' : '오전'} ${hour12}시 ${pad(minute)}분`}
+            </span>
+          )}
+          {/* '30분만 달라도…' 같은 설득 문장은 넣지 않는다. 몰라요를 켰을 때만,
+              무엇이 빠지는지 한 문장. */}
+          {unknownTime ? (
+            <p className="birth-hint">시각 없이 세 기둥으로 봐요.</p>
+          ) : (
+            <div className="wheel-row">
+              <WheelPicker
+                items={AMPM}
+                value={isPm}
+                onChange={(v) => setFrom12(v, hour12)}
+                label="오전 오후"
+              />
+              <WheelPicker
+                items={HOURS12}
+                value={hour12}
+                onChange={(v) => setFrom12(isPm, v)}
+                label="시"
+              />
+              <WheelPicker
+                items={MINUTES}
+                value={minute}
+                onChange={setMinute}
+                label="분"
+              />
+            </div>
+          )}
         </div>
-
-        <button
-          type="button"
-          className={unknownTime ? 'birth-unknown birth-unknown--on' : 'birth-unknown'}
-          onClick={() => setUnknownTime((v) => !v)}
-          aria-pressed={unknownTime}
-        >
-          <span className="birth-unknown__box" aria-hidden />
-          태어난 시각을 몰라요
-        </button>
-        {/* '30분만 달라도…' 같은 설득 문장은 넣지 않는다. 몰라요를 켰을 때만,
-            무엇이 빠지는지 한 문장. */}
-        {unknownTime ? <p className="birth-hint">시각 없이 세 기둥으로 봐요.</p> : null}
 
         {/* 태어난 곳 — 한국 표준시는 동경 135°를 쓰는데 국토는 126~130°에 있다.
             목포와 포항은 해가 뜨는 시각이 12분 차이라, 시주 경계 근처에서

@@ -544,13 +544,32 @@ async function run(browser) {
       check(/2024년 2월 4일/.test(peek), '[사주입력] 고른 날짜가 요약 줄에 바로 반영');
 
       // 시각 모름 경로도 살아 있어야 한다 (모르는 사람이 많다)
+      const wheelsBefore = await page.locator('.wheel').count();
+      // 자리는 문서 기준으로 잰다. 화면 맨 아래에 걸쳐 있던 버튼을 누르면
+      // 브라우저가 그 버튼을 마저 보이게 스크롤하는데(여기선 46px), 그건
+      // 이 배치와 상관없이 일어나는 일이라 같이 재면 원인을 잘못 짚는다.
+      const docY = () => page.evaluate(() => {
+        const r = document.querySelectorAll('.birth-unknown');
+        const el = r[r.length - 1];
+        return el ? Math.round(el.getBoundingClientRect().y + window.scrollY) : null;
+      });
+      const toggleBefore = await docY();
       await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
       await wait(page, 500);
-      check((await page.locator('.wheel--off').count()) === 3,
-        '[사주입력] 시각 모름 선택 시 시각 휠 세 개가 비활성');
+      // 안 쓸 값이면 안 보여야 한다. 전에는 흐려진 채로 '오후 12시 00분' 을
+      // 고른 것처럼 남아서, 값 줄은 모름이라고 하는데 휠만 시각을 가리켰다.
+      const wheelsAfter = await page.locator('.wheel').count();
+      check(wheelsBefore === 6 && wheelsAfter === 3,
+        '[사주입력] 시각 모름을 켜면 시각 휠이 사라진다', `${wheelsBefore} -> ${wheelsAfter}`);
+      // 접히는 덩이보다 체크가 위에 있어야, 켜는 순간 손가락 밑에서 안 움직인다.
+      const toggleAfter = await docY();
+      const moved = Math.abs((toggleAfter ?? 0) - (toggleBefore ?? 0));
+      check(toggleBefore !== null && toggleAfter !== null && moved <= 2,
+        '[사주입력] 켜는 순간 체크가 손가락 밑에서 안 움직인다', `${moved}px`);
       check((await bodyText(page)).includes('세 기둥'), '[사주입력] 시각 없이도 되는 이유 설명');
       await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
       await wait(page, 400);
+      check((await page.locator('.wheel').count()) === 6, '[사주입력] 다시 끄면 시각 휠이 돌아온다');
 
       // 음력 — 생일을 음력으로만 아는 분이 많다. 음력을 양력인 줄 알고 넣으면
       // 여덟 글자가 통째로 남의 것이 되므로, 넣는 달력을 고를 수 있어야 한다.

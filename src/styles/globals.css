@@ -1918,10 +1918,6 @@ strong {
   min-width: 0;
   height: 132px; /* 44 × 3칸 */
 }
-.wheel--off {
-  opacity: 0.4;
-  pointer-events: none;
-}
 /* 가운데 선택 띠 — 칸마다 따로 깔면 파란 알약 세 개가 나란히 선 '버튼 줄'로
    보인다. 실제 휠은 줄 전체를 가로지르는 회색 띠 하나 위에서 숫자가 굴러간다. */
 .wheel-row {

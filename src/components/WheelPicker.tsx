@@ -11,7 +11,6 @@ type Props = {
   onChange: (v: number) => void;
   /** 스크린리더용 이름 (년/월/일…) */
   label: string;
-  disabled?: boolean;
 };
 
 // 돌려서 고르는 피커.
@@ -22,7 +21,7 @@ type Props = {
 //
 // 그래서 스크롤 스냅으로 굴러가고, 보이는 항목을 눌러도 선택되게 했다.
 // 돌려도 되고 눌러도 되는 게 손이 편하다.
-export function WheelPicker({ items, value, onChange, label, disabled = false }: Props) {
+export function WheelPicker({ items, value, onChange, label }: Props) {
   const ref = useRef<HTMLDivElement>(null);
   const settle = useRef<number | undefined>(undefined);
   const lastTick = useRef(-1);
@@ -37,7 +36,6 @@ export function WheelPicker({ items, value, onChange, label, disabled = false }:
   }, [idx]);
 
   function handleScroll() {
-    if (disabled) return;
     const el0 = ref.current;
     if (el0) {
       // 칸 하나를 지날 때마다 손끝에 틱. 실제 드럼 피커가 주는 그 느낌이다.
@@ -58,20 +56,19 @@ export function WheelPicker({ items, value, onChange, label, disabled = false }:
   }
 
   function pick(v: number) {
-    if (disabled) return;
     tap('tick');
     onChange(v);
   }
 
   return (
-    <div className={disabled ? 'wheel wheel--off' : 'wheel'}>
+    <div className="wheel">
       <div
         ref={ref}
         className="wheel__scroll"
         onScroll={handleScroll}
         role="listbox"
         aria-label={label}
-        tabIndex={disabled ? -1 : 0}
+        tabIndex={0}
       >
         {items.map((it) => (
           <button
