@@ -640,6 +640,36 @@ async function run(browser) {
       // 쪽지 이름이 실제로 고른 것과 같아야 한다 (아무 쪽지나 보여주면 의미 없다)
       const lead = (await page.locator('.drawn__lead').innerText()).trim();
       check(lead.length >= 5, '[쪽지] 쪽지별 풀이 한 줄이 함께 나옴', lead.slice(0, 24));
+
+      // ── 광고 자리 ──
+      // 결과를 보기 전에 막으면 그 자리에서 나간다. 본문 중간에 끼우면 어디까지가
+      // 내 사주고 어디부터가 광고인지 헷갈린다. 광고는 결과를 끝까지 본 사람에게
+      // 한 자리에서만 묻는다.
+      const ads = await page.locator('.ad-notice').count();
+      check(ads > 0, '[광고] 결과에 광고 자리가 있다', String(ads));
+      const geo = await page.evaluate(() => {
+        const body = document.documentElement.scrollHeight;
+        const badges = [...document.querySelectorAll('.ad-notice')];
+        const tops = badges.map((b) => b.getBoundingClientRect().top + window.scrollY);
+        const hero = document.querySelector('.score-hero');
+        const more = document.querySelector('.more');
+        return {
+          body,
+          first: tops.length ? Math.min(...tops) : -1,
+          heroBottom: hero ? hero.getBoundingClientRect().bottom + window.scrollY : -1,
+          inMore: badges.every((b) => !!more && more.contains(b)),
+          rows: more ? more.querySelectorAll('.more__row').length : 0,
+        };
+      });
+      check(geo.inMore, '[광고] 광고는 한 자리에만 모여 있다');
+      check(geo.first > geo.heroBottom, '[광고] 결과보다 뒤에 있다',
+        `광고 ${Math.round(geo.first)} / 결과 끝 ${Math.round(geo.heroBottom)}`);
+      check(geo.first > geo.body * 0.6, '[광고] 본문을 다 본 뒤에 나온다',
+        `${Math.round((geo.first / geo.body) * 100)}% 지점`);
+      // 본문은 전부 무료여야 한다 — 사주 계산은 이 앱의 본질이라 값을 매기지 않는다
+      check(!/잠금|잠겨|결제|유료|포인트로 보기/.test(t), '[광고] 본문에 잠긴 카드가 없다');
+      // 지금 보고 있는 고민을 다시 팔면 안 된다
+      check(geo.rows === 5, '[광고] 지금 보는 고민은 목록에서 빠진다', String(geo.rows));
       await diagnose(page, '쪽지결과');
     } catch (e) {
       bad('[쪽지] 컨셉 유지', e.message.split('\n')[0]);

@@ -81,6 +81,7 @@ const ads = {
   REPLACE_REWARD_SAVE: args['ad-save'] ?? args['ad-group'],
   REPLACE_REWARD_RETRY: args['ad-retry'] ?? args['ad-group'],
   REPLACE_REWARD_COMPAT: args['ad-compat'] ?? args['ad-group'],
+  REPLACE_REWARD_CONCERN: args['ad-concern'] ?? args['ad-group'],
 };
 // 3.5) 알림 템플릿 코드 (선택 — 아침 알림 리텐션용)
 if (args['noti-template'] && typeof args['noti-template'] === 'string') {

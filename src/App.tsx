@@ -27,7 +27,7 @@ import { findZodiac } from './data/zodiac.ts';
 import type { Zodiac, ZodiacId } from './data/zodiac.ts';
 import { findStarSign } from './data/starSign.ts';
 import type { StarSign, StarSignId } from './data/starSign.ts';
-import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, hasAskedReview, markReviewAsked, loadBirth, saveBirth, clearBirth,
+import { loadMyZodiac, saveMyZodiac, loadMyStarSign, saveMyStarSign, hasAskedReview, markReviewAsked, loadBirth, saveBirth, clearBirth, loadUnlockedConcerns, addUnlockedConcern,
   type StoredBirth } from './lib/storage.ts';
 
 import { HomeScreen } from './screens/HomeScreen.tsx';
@@ -419,6 +419,8 @@ export default function App() {
   const [birthNext, setBirthNext] = useState<'draw' | 'saju' | 'concern'>('saju');
   // 쪽지 뽑기 흐름 안에서 고민을 묻는 중인가. 아니면 '더 해보기' 로 들어온 단독 상담인가.
   const [concernInFlow, setConcernInFlow] = useState(false);
+  // 날이 바뀌면 자동으로 비워진다 (저장할 때 날짜를 같이 적어둔다)
+  const [unlockedConcerns, setUnlockedConcerns] = useState<string[]>(() => loadUnlockedConcerns(todayKey()));
 
   // 네 가지 운도 같은 점수 엔진에서 뽑는다. 난수로 흩뿌리면 바로 위 고민 점수와
   // 숫자가 어긋나고, 그 순간 둘 다 못 믿을 숫자가 된다.
@@ -533,6 +535,23 @@ export default function App() {
 
 
   // 친구 궁합 보상 광고 게이트 — rewarded/unsupported 만 잠금 해제.
+  // 광고로 다른 고민 하나를 연다. 본문은 전부 무료고 여기만 광고를 낀다.
+  // 한 번 연 고민은 그 날 다시 묻지 않는다 — 같은 값에 두 번 받으면 통행료다.
+  async function handleUnlockConcern(key: ConcernKey): Promise<boolean> {
+    const result = await showRewardAd('concern');
+    if (!isRewarded(result) && !isUnsupportedFreePass(result)) return false;
+    setUnlockedConcerns(addUnlockedConcern(dateKey, key));
+    logEvent('concern_unlocked', { concern: key });
+    openConcern(key);
+    return true;
+  }
+
+  function openConcern(key: ConcernKey) {
+    setConcernKey(key);
+    setConcernOption(null);
+    setScreen('concernAsk');
+  }
+
   async function handleCompatAdUnlock(): Promise<boolean> {
     const result = await showRewardAd('compat');
     return isRewarded(result) || isUnsupportedFreePass(result);
@@ -600,6 +619,9 @@ export default function App() {
           deep={concernKey && deep ? { concernKey, read: deep.read, timing: deep.timing } : null}
           zodiac={zodiac}
           chartScores={chartScores}
+          unlockedConcerns={unlockedConcerns}
+          onUnlockConcern={handleUnlockConcern}
+          onOpenConcern={openConcern}
           onShareWeek={handleShareWeek}
           onBack={() => goBack()}
         />

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Mascot } from '../components/Mascot.tsx';
 import { Icon } from '../components/Icon.tsx';
+import { MoreConcerns } from '../components/MoreConcerns.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
 import { GRADE_KO } from '../lib/luck.ts';
@@ -35,12 +36,18 @@ type Props = {
   onShareWeek: (text: string) => void;
   /** 명식에서 계산된 네 가지 운 점수. 생년월일이 없으면 null */
   chartScores?: Record<'love' | 'money' | 'work' | 'health', number> | null;
+  /** 오늘 광고로 열어둔 고민들 */
+  unlockedConcerns?: string[];
+  /** 광고를 보여주고 그 고민을 연다 */
+  onUnlockConcern?: (key: ConcernKey) => Promise<boolean>;
+  /** 이미 열린 고민으로 간다 */
+  onOpenConcern?: (key: ConcernKey) => void;
   onBack: () => void;
 };
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, deep = null, zodiac, chartScores = null, onShareWeek, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onShareWeek, onBack }: Props) {
   const { luck, dayPlan } = result;
   const isMonth = result.reading.scale === 'month';
   // 고민을 골라 들어왔으면 맨 위 점수는 그 고민의 점수다. 명식에서 계산된 값이라
@@ -320,6 +327,17 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
       </div>
 
       <WeekCard zodiac={zodiac} onShare={onShareWeek} />
+
+      {/* 광고는 여기 한 자리뿐이다. 결과를 끝까지 본 사람에게만, 더 볼 것을
+          열겠냐고 묻는다. 본문 중간이나 결과 앞에는 두지 않는다. */}
+      {deep && onUnlockConcern && onOpenConcern ? (
+        <MoreConcerns
+          current={deep.concernKey}
+          unlocked={unlockedConcerns}
+          onUnlock={onUnlockConcern}
+          onOpen={onOpenConcern}
+        />
+      ) : null}
 
       <Disclaimer />
 

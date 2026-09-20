@@ -25,6 +25,9 @@ export const AD_GROUPS = {
   // 쪽지를 누른 뒤 결과 전에 한 번
   note: 'REPLACE_REWARD_NOTE',
   compat: 'REPLACE_REWARD_COMPAT',
+  // 결과를 다 본 뒤 '다른 고민도' 를 여는 자리. 본문은 전부 무료이고
+  // 여기만 광고를 낀다 — 이미 값을 받은 사람에게만 더 받겠다고 묻는다.
+  concern: 'REPLACE_REWARD_CONCERN',
 } as const;
 
 export type AdPlacement = keyof typeof AD_GROUPS;

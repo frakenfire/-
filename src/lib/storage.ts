@@ -319,3 +319,28 @@ export function clearBirth(): boolean {
     return false;
   }
 }
+
+
+// ── 오늘 광고로 연 고민 ─────────────────────────────────────────────────────
+// 본문은 전부 무료다. 광고는 '고민 하나를 더 보는 것'에만 쓴다.
+// 한 번 열었으면 그 날은 다시 광고를 보게 하지 않는다. 같은 값에 두 번
+// 값을 치르게 하면 그때부터 광고가 아니라 통행료가 된다.
+const UNLOCKED_KEY = 'tomorrowNoteUnlockedConcerns';
+
+export function loadUnlockedConcerns(dateKey: string): string[] {
+  const raw = safeGet(UNLOCKED_KEY);
+  if (!raw) return [];
+  try {
+    const v = JSON.parse(raw) as { date?: unknown; keys?: unknown };
+    if (v?.date !== dateKey || !Array.isArray(v.keys)) return [];
+    return v.keys.filter((k): k is string => typeof k === 'string').slice(0, 12);
+  } catch {
+    return [];
+  }
+}
+
+export function addUnlockedConcern(dateKey: string, key: string): string[] {
+  const next = [...new Set([...loadUnlockedConcerns(dateKey), key])].slice(0, 12);
+  safeSet(UNLOCKED_KEY, JSON.stringify({ date: dateKey, keys: next }));
+  return next;
+}
