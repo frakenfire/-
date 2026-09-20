@@ -5,8 +5,12 @@
 // 기능을 지운 뒤 302개 클래스(전체의 38퍼센트)가 그대로 남아 있었고,
 // 빌드된 CSS 160kB 중 37kB 가 아무도 안 쓰는 규칙이었다.
 //
-// 템플릿으로 조립되는 modifier(`${base}--${값}`)는 바탕 이름이 소스에 있으면
-// 살아 있는 것으로 본다. 점검 스크립트도 클래스로 화면을 집으므로 같이 훑는다.
+// 템플릿으로 조립되는 modifier(`${base}--${값}`)는 이름 전체가 소스에 안 나온다.
+// 전에는 '바탕 이름이 소스에 있으면 살아 있다' 로 넘겼는데, 그러면 base 를 쓰는
+// 클래스가 하나라도 있는 한 그 집안의 modifier 는 전부 영영 안 죽는다.
+// 실제로 .rank-row--me 와 .rank-row__tone--great/--good 이 화면에서 사라진 뒤에도
+// 그렇게 살아남았다. 조립되는 자리(`base--${`)가 소스에 실제로 있을 때만 봐준다.
+// 점검 스크립트도 클래스로 화면을 집으므로 같이 훑는다.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -30,13 +34,15 @@ const classes = new Set();
 for (const m of css.matchAll(/\.([a-zA-Z][a-zA-Z0-9_-]*)/g)) classes.add(m[1]);
 
 const dead = [];
+const templated = [];
 for (const c of classes) {
   if (src.includes(c)) continue;
   const base = c.split('--')[0];
-  if (base !== c && src.includes(base)) continue;
+  if (base !== c && src.includes(`${base}--\${`)) { templated.push(c); continue; }
   dead.push(c);
 }
 dead.sort();
+templated.sort();
 
 if (dead.length) {
   console.error(`\n❌ 아무도 안 쓰는 CSS 클래스 ${dead.length}개:\n`);
@@ -45,3 +51,6 @@ if (dead.length) {
   process.exit(1);
 }
 console.log(`✅ 안 쓰는 CSS 클래스 없음 (클래스 ${classes.size}개, 검사 파일 ${files.length}개)`);
+if (templated.length) {
+  console.log(`   조립되는 이름 ${templated.length}개는 값까지는 못 봅니다: ${templated.join(' ')}`);
+}

@@ -253,6 +253,17 @@ function collect() {
     out.cardPads = [...new Set(out.cardPads)];
   }
 
+  // 카드 제목은 한 벌이다.
+  //
+  // 결과 화면을 재보니 17px(행운) / 18px(나머지 여섯) / 20px(이번 주) 세 가지였다.
+  // 17px 은 아래에서 18px 로 덮어써서 절반이 처음부터 일을 안 하고 있었고,
+  // 20px 은 이번 주 카드를 .sec--card 에서 .sec-card 로 옮기면서 바탕값이
+  // 드러난 것이다. 카드 간격과 여백은 재면서 제목 크기는 안 재고 있었다.
+  out.cardTitles = [...new Set([...document.querySelectorAll('.sec-card')]
+    .map((el) => el.querySelector('.cat4__head, .sec__title, .lucky4__head'))
+    .filter(Boolean)
+    .map((t) => { const c = getComputedStyle(t); return `${c.fontSize}/${c.lineHeight}/${c.fontWeight}`; }))];
+
   // 같은 자리에 있는 같은 말은 같은 색이어야 한다.
   //
   // 홈의 띠 서열이 색을 점수(tone)에서 가져오는 바람에, 4위와 9위가 똑같이
@@ -380,11 +391,16 @@ function auditScreen(name, data) {
     cardOk ? `카드 사이 ${data.cardGaps.join('·') || '없음'} / 안쪽 ${data.cardPads[0] ?? '없음'}`
       : `카드 사이 ${data.cardGaps.join('·')} / 안쪽 ${data.cardPads.join(' · ')}`);
 
-  // 13) 같은 클래스에 같은 글자면 같은 색으로 그려지는가
+  // 13) 카드 제목이 한 벌인가 (카드가 없는 화면은 0가지로 지나간다)
+  check(data.cardTitles.length <= 1, `[${name}] 카드 제목이 한 벌`,
+    data.cardTitles.length <= 1 ? `제목 ${data.cardTitles.length}가지${data.cardTitles[0] ? ` (${data.cardTitles[0]})` : ''}`
+      : data.cardTitles.join(' · '));
+
+  // 14) 같은 클래스에 같은 글자면 같은 색으로 그려지는가
   check(data.twoFaced.length === 0, `[${name}] 같은 말이 두 얼굴로 안 나옴`,
     data.twoFaced.length ? data.twoFaced.slice(0, 3).join(' / ') : `말 ${data.twoFacedSeen}가지 검사`);
 
-  // 14) 점수 막대와 바로 옆 숫자가 같은 말을 하는가 (막대가 없는 화면은 0개로 지나간다)
+  // 15) 점수 막대와 바로 옆 숫자가 같은 말을 하는가 (막대가 없는 화면은 0개로 지나간다)
   check(data.barGap.length === 0, `[${name}] 점수 막대가 옆 숫자와 어긋나지 않음`,
     data.barGap.length ? data.barGap.slice(0, 4).join(' / ') : `막대 ${data.barCount}개`);
 }

@@ -214,10 +214,6 @@ strong {
   color: var(--color-white);
   box-shadow: var(--shadow-cta);
 }
-.btn--secondary {
-  background: var(--brand-soft);
-  color: var(--brand-strong); /* Blue500 은 연파랑 위에서 3.31:1 → Blue700 로 4.82:1 */
-}
 .btn--ghost {
   background: var(--color-white);
   color: var(--color-dark-gray);
@@ -478,8 +474,7 @@ strong {
 .sec {
   margin-bottom: 20px;
 }
-.sec + .sec::before,
-.sec--band::before {
+.sec + .sec::before {
   content: '';
   display: block;
   height: 8px;
@@ -521,16 +516,6 @@ strong {
 }
 .sec__action:active {
   color: var(--gray-900);
-}
-/* 눌러주길 바라는 동작은 색으로만 구분한다 — 제목 옆에 검은 알약을 놓으면
-   섹션 제목보다 버튼이 먼저 읽혀 화면의 위계가 뒤집힌다. */
-.sec__action--go {
-  color: var(--brand-strong);
-  font-weight: 700;
-}
-.sec__action--go:active {
-  color: var(--brand-strong);
-  opacity: 0.7;
 }
 /* 목록 묶음 — 같은 성격의 줄은 한 상자 안에서 얇은 선으로만 나눈다.
    상자 하나당 그림자 하나가 아니라, 상자 하나에 줄 여럿. */
@@ -771,22 +756,6 @@ strong {
 
   padding: 0;
   background: none;}
-.chip--type {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  color: var(--gray-800);
-
-  padding: 0;
-  background: none;}
-.chip--score {
-  color: var(--brand-strong);
-
-  padding: 0;
-  background: none;}
-.chip--score b {
-  font-weight: 700;
-}
 /* 오늘의 행운 보고서 — 타이밍·색·음식 (하루 설계 훅) */
 .report {
   margin-top: var(--space-5);
@@ -832,8 +801,6 @@ strong {
 }
 .match__cell + .match__cell {
   border-left: 1px solid var(--gray-100);
-}
-.match__cell--good {
 }
 .match__badge {
   font-size: 13px;
@@ -1349,13 +1316,6 @@ strong {
 /* 인사+공감: 작게, 조용하게 */
 /* 콕 집은 한마디: 화면에서 제일 크게, 형광 강조 */
 /* 오늘의 부적: 파란 박스로 또렷하게 */
-/* ── 등급별 편지지 ── */
-.letter--rare {
-}
-.letter--epic {
-}
-.letter--legendary {
-}
 /* 예전엔 여기에 흰 빛이 카드를 가로지르는 스윕 애니메이션이 있었다.
    토스 어디에도 없는 처리이고, 가만히 있어야 할 화면에서 계속 움직였다. */
 /* ── 등급 뱃지 ── */
@@ -1541,10 +1501,6 @@ strong {
 
   padding: 12px 0;
   border-bottom: 1px solid var(--gray-100);}
-.rank-row--me .rank-row__name {
-  color: var(--brand-strong);
-  font-weight: 700;
-}
 .rank-row__no {
   flex: none;
   font-size: 13px;
@@ -1813,10 +1769,6 @@ strong {
   color: var(--gray-700);
   line-height: 18px;
 }
-.birth-hint--center {
-  margin-top: var(--space-3);
-  text-align: center;
-}
 /* 입력 도중 미리보기 — 다 채우기 전에 '이게 나오는구나'가 와야 이탈이 준다 */
 .birth-warn {
   margin: 0 0 var(--space-4);
@@ -1828,11 +1780,6 @@ strong {
   font-weight: 500;
   color: var(--score-low-text);
   line-height: 19.5px;
-}
-.birth-warn--info {
-  background: var(--brand-soft);
-  border-color: #c9e2ff;
-  color: var(--brand-strong);
 }
 /* ── 일간 히어로 ── 이 화면에서 "이게 나야"가 오는 자리 ── */
 /* 중앙정렬 큰 틴트 카드는 온보딩 완료 화면의 모양이지 정보 화면의 모양이 아니다.
@@ -2501,8 +2448,6 @@ strong {
   color: var(--gray-900);
   text-align: center;
 }
-/* 하나를 누르면 나머지는 멈추고 물러난다. 고른 장만 앞으로 크게 */
-.note-fan--opening .note { animation-play-state: paused; }
 .note-fan .note--dim {
   animation: none;
   transform: translateX(0) rotate(0deg) scale(0.86);
@@ -2762,9 +2707,10 @@ strong {
 }
 .cat4.sec-card { margin-top: var(--space-7); }
 .lucky4.sec-card { margin-top: var(--space-7); }
-.sec-card .cat4__head,
-.sec-card .lucky4__head { font-size: 17px; line-height: 25.5px; }
-.sec-card--plan { background: var(--white); padding: 22px 20px; }
+/* 카드 제목은 한 벌이다. 여기서 .cat4__head 를 17px 로 적어두고 아래에서 다시
+   18px 로 덮어써서, 이 줄의 절반은 처음부터 아무 일도 안 하고 있었다.
+   행운 카드만 혼자 17px 로 남아 있었고, 이번 주 카드는 .sec--card 를 떼면서
+   .sec__title 바탕값 20px 로 커졌다. 한 화면에 제목 크기가 셋이었다. */
 /* 여섯 칸의 바탕은 하나다. 색을 뜻 없이 나누면 눈이 먼저 색을 읽고
    글자는 나중에 읽는다. 뜻이 있는 색은 행운 색 동그라미 하나뿐이다. */
 .lucky4__grid--3 .lucky4__tile {
@@ -3183,7 +3129,8 @@ strong {
 /* 결과 카드 안 글자 크기를 한 벌로 맞춘다.
    제목 18, 본문 15, 곁말 13. 카드마다 다른 크기가 섞여 있었다. */
 .sec-card .cat4__head,
-.sec--card .sec__title { font-size: 18px; line-height: 27px; font-weight: 700; }
+.sec-card .sec__title,
+.sec-card .lucky4__head { font-size: 18px; line-height: 27px; font-weight: 700; }
 .sec-card .qa,
 .sec-card .qa--sub,
 .sec-card .read6__v,
