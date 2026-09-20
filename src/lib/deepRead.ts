@@ -257,10 +257,40 @@ const CAUTION: Record<ConcernKey, string> = {
   mind: '버거운 달엔 혼자 결론 내지 말아요. 하루만 자고 다시 봐요.',
 };
 
-const VERDICT_SUB: Record<Verdict, string> = {
-  now: '지금 흐름이 이 고민 쪽으로 열려 있어요.',
-  soon: '지금은 아니고, 가까운 달에 자리가 열려요.',
-  wait: '이 구간은 미는 것보다 지키는 쪽이 남아요.',
+// 결정 카드 둘째 줄. '이 구간은 미는 것보다 지키는 쪽이 남아요' 처럼 고민을
+// 안 보고 쓰면, 돈을 물어도 연애를 물어도 같은 말이 맨 위에 박힌다.
+// 무엇을 밀고 무엇을 지키는 건지 그 고민의 말로 적는다.
+const VERDICT_SUB: Record<ConcernKey, Record<Verdict, string>> = {
+  work: {
+    now: '지금 지원하고 움직여도 되는 때예요.',
+    soon: '지금 옮기기보다, 가까운 달에 면접을 몰아 잡는 게 나아요.',
+    wait: '나가는 것보다 지금 자리에서 조건을 올리는 쪽이 남아요.',
+  },
+  money: {
+    now: '지금 넣고 늘려도 되는 때예요.',
+    soon: '큰 지출과 계약은 흐름이 열리는 달로 미루세요.',
+    wait: '늘리기 전에 새는 곳을 막는 쪽이 남아요.',
+  },
+  love: {
+    now: '지금 먼저 연락하고 만나도 되는 때예요.',
+    soon: '고백과 결정은 가까운 달로 미루는 게 나아요.',
+    wait: '밀어붙이기보다 지금 사이를 지키는 쪽이 남아요.',
+  },
+  people: {
+    now: '지금 먼저 연락하고 풀어도 되는 때예요.',
+    soon: '껄끄러운 이야기는 가까운 달에 꺼내는 게 나아요.',
+    wait: '맞붙기보다 거리를 두는 쪽이 남아요.',
+  },
+  health: {
+    now: '지금 시작하고 예약해도 되는 때예요.',
+    soon: '큰 결심은 가까운 달로 미루고 지금은 잠부터 챙기세요.',
+    wait: '새로 벌이기보다 쉬는 시간을 지키는 쪽이 남아요.',
+  },
+  mind: {
+    now: '지금 꺼내놓고 말해도 되는 때예요.',
+    soon: '큰 결정은 가까운 달로 미루는 게 나아요.',
+    wait: '애쓰기보다 지금 상태를 지키는 쪽이 남아요.',
+  },
 };
 
 export function buildDeepRead(
@@ -410,8 +440,10 @@ export function buildDeepRead(
       k: ks.join(', '),
       v:
         ks.length > 1
-          ? `${TEN_GOD_KO[god]}이 겹쳐요. ${GOD_PULL[god]}으로 읽었어요. 층이 겹치면 그 방향이 더 또렷해져요.`
-          : `${TEN_GOD_KO[god]}이 들어와요. ${GOD_PULL[god]}으로 읽었어요.`,
+          // GOD_PULL 은 고민을 안 본다. '몫을 나누고 겨루게 되는 쪽' 이
+          // 돈을 물어도 일을 물어도 똑같이 나오던 자리다.
+          ? `${TEN_GOD_KO[god]}이 겹쳐요. ${CONCERN_GOD[concernKey][god].pull} 쪽으로 읽었어요. 층이 겹치면 그 방향이 더 또렷해져요.`
+          : `${TEN_GOD_KO[god]}이 들어와요. ${CONCERN_GOD[concernKey][god].pull} 쪽으로 읽었어요.`,
     })),
     ...(timing.daeunSlot
       ? []
@@ -449,7 +481,7 @@ export function buildDeepRead(
       ? `${withJosa(concern.label, '은는')} ${favorNames}로 봐요. 태어난 여덟 글자 중 ${focusCount}개가 거기 걸려 있어서 바탕은 ${focusCount >= 3 ? '두꺼운' : '얇은'} 편이에요.`
       : `${withJosa(concern.label, '은는')} ${favorNames}로 봐요. 태어난 글자에는 그 자리가 없어서, 해와 달이 들어올 때 열리는 구조예요.`;
 
-  const chartToday = `내 글자에 대면 ${TEN_GOD_KO[todayGod]}이라, ${GOD_PULL[todayGod]}이에요.`;
+  const chartToday = `내 글자에 대면 ${TEN_GOD_KO[todayGod]}이라, ${CONCERN_GOD[concernKey][todayGod].pull} 쪽이에요.`;
 
   // 조견표로 대조만 하는 것들. 해석을 고르지 않으니 누가 계산해도 같다.
   const stars = sinsalOf(pillars).map((x) => ({
@@ -630,7 +662,9 @@ export function buildDeepRead(
     label: slot.label,
     band: bandLabel(slot),
     bandKey: slot.band,
-    outer: GOD_SCALE[slot.tenGod].month,
+    // GOD_SCALE 은 고민을 안 본다. 돈을 물었는데 '안으로 파고드는 달'
+    // 같은 문장이 나오던 자리다. 고민별로 쓴 문장을 쓴다.
+    outer: CONCERN_GOD[concernKey][slot.tenGod].month,
     good: CONCERN_GOD[concernKey][slot.tenGod].good,
     care: CONCERN_GOD[concernKey][slot.branchGod].care,
   });
@@ -646,7 +680,7 @@ export function buildDeepRead(
     month: m.month ?? 0,
     band: bandLabel(m),
     bandKey: m.band,
-    outer: GOD_SCALE[m.tenGod].month,
+    outer: CONCERN_GOD[concernKey][m.tenGod].month,
     good: CONCERN_GOD[concernKey][m.tenGod].good,
     care: CONCERN_GOD[concernKey][m.branchGod].care,
   }));
@@ -656,7 +690,7 @@ export function buildDeepRead(
     label: y.label,
     band: bandLabel(y),
     bandKey: y.band,
-    v: `${GOD_SCALE[y.tenGod].year} ${CONCERN_GOD[concernKey][y.tenGod].line}`,
+    v: `${CONCERN_GOD[concernKey][y.tenGod].year} ${CONCERN_GOD[concernKey][y.tenGod].line}`,
   }));
 
   // 할 일 셋 중 하나는 이번 달 글자에서, 하나는 가장 좋은 달 글자에서 뽑는다.
@@ -683,7 +717,7 @@ export function buildDeepRead(
     headline: HEADLINE[concernKey][verdict],
     // month 를 쓰면 아래 '앞으로 열두 달'의 이번 달 칸과 글자 하나까지 같은
     // 문장이 된다. 결정 카드는 같은 기운을 '무엇을 정할 때인가'로 읽는다.
-    sub: `${GOD_SCALE[timing.thisMonth.tenGod].decide} ${VERDICT_SUB[verdict]}`,
+    sub: `${CONCERN_GOD[concernKey][timing.thisMonth.tenGod].decide} ${VERDICT_SUB[concernKey][verdict]}`,
     slots,
     monthSlots,
     yearLines,
