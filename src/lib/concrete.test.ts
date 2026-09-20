@@ -74,3 +74,40 @@ test('같은 기운도 고민마다 다른 문장이다', () => {
     assert.equal(new Set(pulls).size, pulls.length, `${god} 의 근거가 고민끼리 겹쳐요`);
   }
 });
+
+// 결과 화면에서 제일 큰 글자가 제일 추상적이었다.
+// '곧 돈이 도는 구간이 와요' 는 돈이 언제 어떻게 도는지 아무것도 말하지 않는다.
+test('맨 위 결론이 도망가는 말을 쓰지 않는다', () => {
+  const ESCAPE = /구간|흐름이 열|기운이 열|자리가 열/;
+  for (const c of CONCERNS) {
+    for (const opt of c.options) {
+      const t = computeTiming(INPUT, P, 'female', c.key, new Date('2026-09-21T09:00:00+09:00'));
+      const r = buildDeepRead(P, t, c.key, opt.key, '2026-09-21', '김한별');
+      assert.ok(!ESCAPE.test(r.headline), `${c.key}: ${r.headline}`);
+      assert.ok(WORD[c.key].test(r.headline), `${c.key} 결론에 고민 말이 없어요 — ${r.headline}`);
+    }
+  }
+});
+
+test('왜 N점인가요 줄이 그 고민의 말로 설명한다', () => {
+  for (const c of CONCERNS) {
+    const t = computeTiming(INPUT, P, 'female', c.key, new Date('2026-09-21T09:00:00+09:00'));
+    const r = buildDeepRead(P, t, c.key, c.options[0].key, '2026-09-21', '김한별');
+    assert.ok(WORD[c.key].test(r.scoreLine), `${c.key}: ${r.scoreLine}`);
+    assert.ok(!/구간/.test(r.scoreLine), `${c.key} 점수 줄에 구간 — ${r.scoreLine}`);
+  }
+});
+
+test('내일 한 줄도 그 고민의 말을 쓴다', () => {
+  for (const c of CONCERNS) {
+    for (let d = 18; d <= 24; d += 1) {
+      const at = new Date(Date.UTC(2026, 8, d, 3));
+      const t = computeTiming(INPUT, P, 'female', c.key, at);
+      const r = buildDeepRead(P, t, c.key, c.options[0].key, `2026-09-${d}`, '김한별');
+      const line = r.todayMeet.nextDay;
+      // '결이 비슷한 날' 갈래는 고민 말이 없어도 된다 (오늘과 같다는 뜻)
+      if (/결이 비슷|같은 기운/.test(line)) continue;
+      assert.ok(WORD[c.key].test(line), `${c.key} ${d}일: ${line}`);
+    }
+  }
+});

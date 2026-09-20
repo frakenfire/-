@@ -5,7 +5,7 @@ import { tenGodOf, mainHiddenStem, GOD_GROUP_OF, TEN_GOD_KO, type TenGod } from 
 import { scoreOf, slotOf, type Band, type Favor, type TimingRead, BAND_WORD } from './timing.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { withJosa } from './josa.ts';
-import { GOD_PULL } from '../data/concernReadings.ts';
+import { CONCERN_GOD } from '../data/concernReadings.ts';
 
 // 점수 엔진 — 문장 엔진과 분리한다.
 //
@@ -188,12 +188,29 @@ export function scoreVerdictLine(score: ConcernScore, concern: ConcernKey): stri
   const head = `${withJosa(c.label, '은는')} ${score.total}점이에요.`;
 
   if (!top || !low || top === low || top.score - low.score < 8) {
-    return `${head} 다섯 칸이 비슷한 높이라 어느 한쪽이 끌고 가지 않아요. 크게 벌이기보다 하던 것을 이어가는 쪽이 남는 구간이에요.`;
+    return `${head} 다섯 칸이 비슷한 높이라 어느 한쪽이 끌고 가지 않아요. 크게 벌이기보다 하던 것을 이어가는 쪽이 남아요.`;
   }
   // 합계는 아래 설명 줄이 말한다. 여기서는 어느 칸이 올리고 어느 칸이 눌렀는지만 짚는다.
+  //
+  // GOD_PULL 은 고민을 안 본다. 돈을 물어도 '밀어붙이는 힘과 부담이 같이
+  // 커지는 쪽' 이 나오던 자리다. 고민별로 쓴 pull 을 쓴다.
+  const pull = (god: TenGod) => CONCERN_GOD[concern][god].pull;
+  // 기운을 설명하는 말에는 좋고 나쁨이 없다. '챙겨주는 마음이 오가는 쪽이라
+  // 제일 낮게 잡혔고요' 처럼 앞뒤가 안 맞아 보이던 이유다. 그 기운이 이 고민에
+  // 보탬이 되는지 아닌지는 점수가 이미 알고 있으니, 그걸 뒤에 붙여 말한다.
+  const HIGH: Record<Band, string> = {
+    good: '이 고민에 바로 힘이 되는 자리예요',
+    ok: '이 고민에 무리 없이 붙는 자리예요',
+    hard: '눌러도 다른 칸보다는 나은 자리예요',
+  };
+  const LOW: Record<Band, string> = {
+    good: '다른 칸이 더 세서 밀렸어요',
+    ok: '이 고민에는 덜 보탬이 돼요',
+    hard: '이 고민에는 걸리는 자리예요',
+  };
   return (
-    `${head} 다섯 칸 중 ${withJosa(top.k, '이가')} 가장 높아요. ${GOD_PULL[top.god!]}이라서예요. ` +
-    `반대로 ${withJosa(low.k, '은는')} ${GOD_PULL[low.god!]}이라 제일 낮게 잡혔고요.`
+    `${head} 다섯 칸 중 ${withJosa(top.k, '이가')} 가장 높아요. ${pull(top.god!)} 쪽이고, ${HIGH[top.band]}. ` +
+    `반대로 ${withJosa(low.k, '은는')} ${pull(low.god!)} 쪽인데 ${LOW[low.band]}.`
   );
 }
 

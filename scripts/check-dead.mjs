@@ -56,8 +56,14 @@ function walk(dir, out = []) {
   return out;
 }
 
+// 주석 안의 이름을 '쓰고 있다' 로 세면 안 된다. 실제로 이것 때문에 죽은
+// GOD_PULL 을 못 잡았다 - 다른 파일 주석에 이름이 적혀 있었을 뿐인데.
+function stripComments(src) {
+  return src.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/(^|[^:])\/\/[^\n]*/g, '$1 ');
+}
+
 const files = walk(root);
-const text = new Map(files.map((f) => [f, readFileSync(f, 'utf8')]));
+const text = new Map(files.map((f) => [f, stripComments(readFileSync(f, 'utf8'))]));
 const isTest = (f) => /\.test\.tsx?$/.test(f);
 
 const dead = [];

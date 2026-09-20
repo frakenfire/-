@@ -2,7 +2,7 @@ import { DAY_MASTER_BY_INDEX } from '../data/dayMaster.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { TEN_GOD_KO } from './tenGods.ts';
 import { bandLabel, monthsAway, type Band, type TimingRead, type TimingSlot } from './timing.ts';
-import { CONCERN_GOD, GOD_SCALE, GOD_PULL, REFRESH_NOTE } from '../data/concernReadings.ts';
+import { CONCERN_GOD, GOD_SCALE, REFRESH_NOTE } from '../data/concernReadings.ts';
 import { computeConcernScore, scoreVerdictLine, type ConcernScore } from './concernScore.ts';
 import { withJosa } from './josa.ts';
 import { NATAL_SHAPE, SHAPE_LABELS, type ShapeRow } from '../data/natalShape.ts';
@@ -110,35 +110,40 @@ export type DeepRead = {
   refresh: string;
 };
 
+// 결과 화면에서 제일 큰 글자. 여기가 제일 구체적이어야 하는데 '구간' 이라는
+// 말로 열 번 넘게 도망가고 있었다. '곧 돈이 도는 구간이 와요' 는 돈이 언제
+// 어떻게 도는지 아무것도 말하지 않는다.
+//
+// 이 줄은 '지금이 어떤 상태인가' 를 말한다. 무엇을 할지는 바로 밑 줄이 말한다.
 const HEADLINE: Record<ConcernKey, Record<Verdict, string>> = {
   work: {
-    now: '지금 움직여도 되는 구간이에요',
-    soon: '조금만 더 있다가 움직이는 게 나아요',
-    wait: '올해는 자리를 지키면서 준비하는 해예요',
+    now: '지금 이직 문이 열려 있어요',
+    soon: '조금 더 준비하고 움직이는 게 나아요',
+    wait: '올해는 자리를 지키면서 조건을 올리는 해예요',
   },
   money: {
-    now: '지금은 들어오는 쪽이 큰 구간이에요',
-    soon: '곧 돈이 도는 구간이 와요',
-    wait: '지금은 늘리기보다 막아두는 구간이에요',
+    now: '지금은 들어오는 돈이 나가는 돈보다 커요',
+    soon: '두어 달 뒤에 수입이 도는 달이 와요',
+    wait: '지금은 늘리기보다 새는 돈을 막을 때예요',
   },
   love: {
-    now: '지금 자리가 열려 있어요',
-    soon: '곧 사람이 닿는 구간이 와요',
-    wait: '지금은 사람보다 나를 먼저 채우는 때예요',
+    now: '지금 연락하면 닿는 때예요',
+    soon: '두어 달 뒤에 사람이 들어오는 달이 와요',
+    wait: '지금은 상대보다 나를 먼저 채울 때예요',
   },
   people: {
-    now: '지금은 내 편이 늘어나는 구간이에요',
-    soon: '곧 사람 사이가 풀리는 구간이 와요',
-    wait: '지금은 관계를 넓히기보다 정리하는 때예요',
+    now: '지금은 내 편이 늘어나는 때예요',
+    soon: '두어 달 뒤에 틀어진 사이가 풀려요',
+    wait: '지금은 사람을 넓히기보다 정리할 때예요',
   },
   health: {
-    now: '지금은 회복이 잘 붙는 구간이에요',
-    soon: '곧 몸이 올라오는 구간이 와요',
-    wait: '지금은 무리가 바로 표시 나는 구간이에요',
+    now: '지금은 쉬면 바로 회복되는 몸이에요',
+    soon: '두어 달 뒤에 몸이 올라와요',
+    wait: '지금은 무리하면 바로 표시 나는 몸이에요',
   },
   mind: {
-    now: '지금은 마음이 가라앉는 구간이에요',
-    soon: '곧 마음이 풀리는 구간이 와요',
+    now: '지금은 마음이 가라앉는 때예요',
+    soon: '두어 달 뒤에 마음이 풀려요',
     wait: '지금은 결정을 미뤄도 되는 때예요',
   },
 };
@@ -587,7 +592,7 @@ export function buildDeepRead(
       ? '내일도 결이 비슷한 날이라, 오늘 잡아둔 것이 그대로 이어져요.'
       : tomorrowGod === todayGod
         ? `내일은 같은 기운이 오는데 내 글자와 닿는 자리가 달라져요. 오늘과 조금 다른 답이 나와요.`
-        : `내일은 ${GOD_PULL[tomorrowGod]}으로 기울어요. 오늘과 다른 답이 나와요.`;
+        : `내일은 ${CONCERN_GOD[concernKey][tomorrowGod].pull} 쪽으로 기울어요. 오늘과 다른 답이 나와요.`;
 
   const todayStep = unseongOf(pillars.dayStem, todayPillar.branch);
   const todayMeet = {
