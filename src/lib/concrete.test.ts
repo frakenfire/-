@@ -23,14 +23,38 @@ const WORD: Record<ConcernKey, RegExp> = {
   mind: /마음|기분|생각|불안|걱정|쉬|여유|감정|스트레스|잠|취미|기준|속|말|하루|취미|규칙|시간|자극/,
 };
 
-const INPUT = { year: 1992, month: 3, day: 3, hour: 20 };
+// 생년월일 하나로만 화면을 그리면 그 사람의 십성·밴드에 걸린 문장만 나온다.
+// 실제로 재보니 문구 삼백 개 중 백열 개(37퍼센트)만 화면에 닿았고, 결정 카드는
+// 스물네 칸 중 여섯 칸만 닿았다. 나머지는 한 번도 안 보고 통과시키고 있었다.
+// (지난 사이클에 조사 버그를 일부러 되돌려 넣었는데도 테스트가 통과한 이유다)
+//
+// 생년과 성별을 흩고 날짜도 여섯 개로 나눈다. 대운은 태어난 해·달·성별로
+// 갈리고, 이번 달 십성은 보는 날짜로 갈리기 때문에 둘 다 흔들어야 한다.
+// 스물네 명이면 98퍼센트가 닿는다. 0.3초면 돈다.
+const DATES = ['2026-01-15', '2026-03-20', '2026-05-11', '2026-07-02', '2026-09-21', '2026-11-08'];
+const PEOPLE = Array.from({ length: 24 }, (_, i) => ({
+  input: { year: 1960 + i * 2, month: (i % 12) + 1, day: ((i * 7) % 28) + 1, hour: [3, 9, 14, 20][i % 4] },
+  gender: (i % 2 ? 'female' : 'male') as 'female' | 'male',
+  dateKey: DATES[i % 6],
+}));
+
+const INPUT = PEOPLE[0].input;
 const P = computeFourPillars(INPUT);
 
+/** 스물네 명이 그 고민에서 보는 화면 문장 전부 */
 function screenLines(key: ConcernKey, option: string) {
-  const t = computeTiming(INPUT, P, 'female', key, new Date('2026-09-21T09:00:00+09:00'));
-  const r = buildDeepRead(P, t, key, option, '2026-09-21', '김한별');
+  return PEOPLE.flatMap((p) => onePersonLines(p, key, option));
+}
+
+function onePersonLines(p: (typeof PEOPLE)[number], key: ConcernKey, option: string) {
+  const pill = computeFourPillars(p.input);
+  const t = computeTiming(p.input, pill, p.gender, key, new Date(`${p.dateKey}T09:00:00+09:00`));
+  const r = buildDeepRead(pill, t, key, option, p.dateKey, '김한별');
   return [
     r.headline, r.sub, r.decision.verdict,
+    // 맨 위 카드의 한 줄. 화면에 늘 떠 있는데 이 목록에 빠져 있어서, 예순 줄을
+    // 다시 쓰는 동안 화면 검사는 한 번도 그 줄을 안 봤다.
+    r.monthWhy,
     ...r.slots.map((s) => s.outer),
     ...r.monthSlots.map((s) => s.outer),
     ...r.yearLines.map((y) => y.v),
@@ -265,4 +289,32 @@ test("화면에 '이 고민' 이 안 나온다", () => {
     }
   }
   assert.deepEqual(bad, [], `무엇을 물었는지 앱이 압니다:\n  ${bad.join('\n  ')}`);
+});
+
+
+// 화면을 훑는 검사가 문구의 몇 퍼센트를 보는가.
+//
+// 이 숫자를 안 재면 위의 검사들이 다 통과해도 아무 뜻이 없다. 생년월일 하나로
+// 돌던 때는 문구 삼백 개 중 백열 개(37퍼센트)만 봤다. 나머지 백구십 개는
+// 어떤 상태든 통과였다. 사람 스물넷·날짜 여섯으로 늘려 구십 퍼센트를 넘긴다.
+//
+// 못 닿는 나머지는 dead copy 가 아니다. daeun 은 한 사람에 한 칸뿐이라
+// 사람 수만큼만 닿고, decide 는 보는 날짜의 월 십성 하나만 닿는다.
+test('화면 검사가 문구의 90퍼센트 이상을 실제로 본다', () => {
+  const seen = new Set<string>();
+  for (const c of CONCERNS) for (const line of screenLines(c.key, c.options[0].key)) seen.add(line);
+  const blob = [...seen].join('\n');
+  let tot = 0, hit = 0;
+  const miss: string[] = [];
+  for (const [ck, gods] of Object.entries(CONCERN_GOD)) {
+    for (const [god, v] of Object.entries(gods)) {
+      for (const f of ['month', 'decide', 'pull', 'year', 'daeun'] as const) {
+        tot += 1;
+        if (blob.includes(v[f])) hit += 1;
+        else miss.push(`${ck}.${god}.${f}`);
+      }
+    }
+  }
+  const pct = Math.round((hit / tot) * 100);
+  assert.ok(pct >= 90, `화면 검사가 문구의 ${pct}퍼센트만 봅니다 (${hit}/${tot}). 안 닿은 것: ${miss.slice(0, 8).join(' ')}`);
 });
