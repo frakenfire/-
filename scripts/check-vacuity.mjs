@@ -245,6 +245,16 @@ await trial('[삭제] 물어보는 동안 다른 큰 버튼이 없다', ASK_PROB
   await wait(500);
 } });
 
+// 나란한 카드가 한 간격·한 여백
+const CARD_PROBE = (d) => ({ gaps: d.cardGaps, pads: d.cardPads });
+await designTrial('[디자인] 카드 하나만 다른 요리법이면 잡는다', CARD_PROBE, () => {
+  const cards = [...document.querySelector('.app__body').children]
+    .filter((el) => el.classList.contains('sec-card'));
+  const victim = cards[cards.length - 1];
+  victim.style.marginTop = '14px';
+  victim.style.padding = '18px';
+}, drawTo);
+
 await browser.close();
 srv.kill();
 

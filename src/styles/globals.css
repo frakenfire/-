@@ -3134,17 +3134,12 @@ strong {
 
 /* 구역은 전부 같은 흰 카드 위에 선다. 어떤 건 카드, 어떤 건 맨바닥이면
    같은 무게의 내용이 다른 급으로 읽힌다. */
-.sec--card {
-  margin-top: 14px;
-  padding: 18px;
-  border-radius: 20px;
-  background: var(--white);
-  box-shadow: 0 6px 20px rgba(0, 23, 51, 0.06);
-}
-.sec--card .sec__head { margin-bottom: 10px; }
-.sec--card .sec__title { font-size: 18px; line-height: 27px; }
-.sec--card .week-card { margin-top: 0; }
-.sec--card .rowlist { margin-top: 0; }
+/* 이번 주 카드는 흰 카드 한 장인데, 제 모양을 따로 들고 있었다 -
+   위 여백 14px(옆 카드들은 28px)에 안쪽 여백 18px(옆 카드들은 22/20/20).
+   같은 물건을 두 벌의 숫자로 그리면 반드시 이렇게 갈린다. 카드는 .sec-card
+   한 벌만 쓴다. */
+.sec-card .sec__head { margin-bottom: 10px; }
+.sec-card .week-card { margin-top: 0; }
 
 /* 카드 안에 들어간 하루 한 줄 */
 
@@ -3173,11 +3168,6 @@ strong {
 /* 고리 안의 마스코트가 테두리를 넘지 않게 */
 .score-ring .score-hero__mascot svg { width: 60px; height: 60px; }
 
-/* 구역 사이 회색 띠는 카드가 아닌 화면에서 구역을 가르는 장치다.
-   흰 카드 안에 들어가면 카드를 가로지르는 줄이 되어버린다. */
-.sec--card::before,
-.sec--card + .sec--card::before { content: none; }
-.sec--card { margin-bottom: 0; }
 
 /* '더 보기' 줄: 보러가기 글씨가 본문을 밀어 제목이 두 줄로 꺾였다 */
 
@@ -3465,8 +3455,10 @@ strong {
 }
 
 /* 여기부터는 재미 영역이라는 것을 한 줄로 갈라준다 */
+/* 아래를 -4px 로 당겨 두는 바람에 이 줄 다음 카드만 24px 로 붙었다.
+   다음 카드는 .sec-card 가 제 간격(28px)을 갖고 있으니 여기서 빼지 않는다. */
 .fun-head {
-  margin: 34px 0 -4px;
+  margin: var(--space-8) 0 0;
   padding-top: 26px;
   border-top: 1px solid var(--gray-100);
   font-size: 15px;
@@ -3907,8 +3899,9 @@ strong {
 .fold__body {
   padding: 4px 0 0;
 }
+/* 접힌 덩이 안의 카드는 한 간격이다. 첫 장만 10px 로 따로 두던 때가 있었는데,
+   2px 은 아무도 못 보고 숫자만 두 개가 된다. */
 .fold__body .sec-card { margin-top: 12px; }
-.fold__body .sec-card:first-child { margin-top: 10px; }
 
 /* 명식 네 기둥 - 근거를 그대로 펼쳐 보이는 자리 */
 .chart8 {
@@ -4337,7 +4330,7 @@ strong {
   grid-template-columns: 20px minmax(0, 1fr);
   align-items: start;
   gap: 8px;
-  margin: var(--space-6) 4px 0;
+  margin: var(--space-7) 4px 0;
 }
 .nextday__k {
   display: flex;

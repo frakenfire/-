@@ -230,6 +230,29 @@ function collect() {
     }
   }
 
+  // 나란히 선 흰 카드 사이는 한 간격이다.
+  //
+  // 이번 주 카드가 제 모양을 따로 들고 있었다 - 위 여백 14px(옆 카드들은 28px)에
+  // 안쪽 여백 18px(옆 카드들은 22/20/20). 같은 물건을 두 벌의 숫자로 그리면
+  // 반드시 갈린다. 카드와 카드 사이만 본다 - 히어로 다음이나 구역 제목 다음은
+  // 일부러 더 띄우는 자리라 여기서 세지 않는다.
+  out.cardGaps = [];
+  out.cardPads = [];
+  {
+    const body = document.querySelector('.app__body');
+    const kids = body ? [...body.children].filter((el) => el.getBoundingClientRect().height > 1) : [];
+    for (let i = 1; i < kids.length; i += 1) {
+      const a = kids[i - 1], b = kids[i];
+      if (!a.classList.contains('sec-card') || !b.classList.contains('sec-card')) continue;
+      out.cardGaps.push(Math.round(b.getBoundingClientRect().top - a.getBoundingClientRect().bottom));
+    }
+    for (const el of kids.filter((e) => e.classList.contains('sec-card'))) {
+      const c = getComputedStyle(el);
+      out.cardPads.push(`${c.paddingTop} ${c.paddingRight} ${c.paddingBottom} ${c.paddingLeft}`);
+    }
+    out.cardPads = [...new Set(out.cardPads)];
+  }
+
   // 점수 막대가 바로 옆 숫자와 같은 말을 하는가.
   // 이 앱에는 점수 막대가 세 종류 있다 — 왜 N점인가요, 네 가지 운, 궁합 세 칸.
   // 한때 '왜 N점인가요' 만 50~92 를 0~100 으로 펴서 그렸고, 그 바람에 73점
@@ -319,7 +342,14 @@ function auditScreen(name, data) {
     formOk ? `이름표 ${data.formLabels.length}가지 / 칸 사이 ${data.formGaps.join('·') || '없음'}`
       : `이름표 ${data.formLabels.join(' · ')} / 칸 사이 ${data.formGaps.join('·')}`);
 
-  // 12) 점수 막대와 바로 옆 숫자가 같은 말을 하는가 (막대가 없는 화면은 0개로 지나간다)
+  // 12) 나란히 선 카드 사이는 한 간격, 안쪽 여백도 한 벌 (카드가 없는 화면은 0쌍으로 지나간다)
+  const cardSpread = data.cardGaps.length ? Math.max(...data.cardGaps) - Math.min(...data.cardGaps) : 0;
+  const cardOk = cardSpread <= 2 && data.cardPads.length <= 1;
+  check(cardOk, `[${name}] 나란한 카드가 한 간격·한 여백`,
+    cardOk ? `카드 사이 ${data.cardGaps.join('·') || '없음'} / 안쪽 ${data.cardPads[0] ?? '없음'}`
+      : `카드 사이 ${data.cardGaps.join('·')} / 안쪽 ${data.cardPads.join(' · ')}`);
+
+  // 13) 점수 막대와 바로 옆 숫자가 같은 말을 하는가 (막대가 없는 화면은 0개로 지나간다)
   check(data.barGap.length === 0, `[${name}] 점수 막대가 옆 숫자와 어긋나지 않음`,
     data.barGap.length ? data.barGap.slice(0, 4).join(' / ') : `막대 ${data.barCount}개`);
 }
