@@ -117,7 +117,9 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         <p className="mflow__foot">맨 위 하나가 오늘 바로 할 수 있는 것이에요.</p>
       </div>
 
-      <Fold title="내 사주는 이렇게 생겼어요" hint="타고난 구조와, 지금 이 고민이 커진 이유">
+      {/* '이 고민' 은 앱이 아는 것을 일부러 안 말하는 것이다. 돈을 물었으면
+          돈이라고 적는다. */}
+      <Fold title="내 사주는 이렇게 생겼어요" hint={`타고난 구조와, 지금 ${concern.shortName} 생각이 커진 이유`}>
       {/* 평생 안 바뀌는 자리 — 오늘 어떠냐가 아니라 나는 원래 어떤 사람이냐 */}
       <div className="sec-card">
         <p className="cat4__head">{read.shape.head}</p>

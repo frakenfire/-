@@ -5,6 +5,7 @@ import { computeTiming } from './timing.ts';
 import { buildDeepRead } from './deepRead.ts';
 import { CONCERNS, type ConcernKey } from '../data/concerns.ts';
 import { CONCERN_GOD } from '../data/concernReadings.ts';
+import { bandPhrase } from './concernScore.ts';
 import { TEN_GOD_KO, type TenGod } from './tenGods.ts';
 
 const TEN_GODS = Object.keys(TEN_GOD_KO) as TenGod[];
@@ -227,4 +228,41 @@ test('지금 카드와 층 카드가 같은 말을 하지 않는다', async () =
     }
   }
   assert.equal(hits.length, 0, `겹치는 쌍 ${hits.length}개\n  ${hits.slice(0, 3).join('\n  ')}`);
+});
+
+// 점수를 푸는 줄은 '밀어붙이는 기운이 …' 로 시작한다. 뒤에 고민 이름을 넣을 때
+// 주격을 또 붙이면 '기운이 몸이 무리 없이' 가 된다. 화면을 찍어 보고서야 잡았다.
+//
+// 처음엔 화면 문장을 훑는 테스트로 짰는데, 고정 생년월일로는 good 밴드만
+// 걸려서 ok/hard 문장을 한 번도 안 봤다. 일부러 되돌려 넣어도 통과했다.
+// 그래서 문장을 밖으로 빼고 여섯 가지를 직접 검사한다.
+test('점수 푸는 줄에 주격이 두 번 붙지 않는다', () => {
+  const bad: string[] = [];
+  for (const c of CONCERNS) {
+    for (const side of ['high', 'low'] as const) {
+      for (const band of ['good', 'ok', 'hard'] as const) {
+        const tail = bandPhrase(side, band, c.shortName);
+        // 앞머리가 '…기운이' / '…기운이라' 이므로, 뒤가 주격으로 시작하면 겹친다
+        for (const head of [`${c.key} 기운이`, `${c.key} 기운이라`]) {
+          const line = `${head} ${tail}`;
+          assert.ok(!new RegExp(`기운(이|이라) ${c.shortName}[이가] `).test(line),
+            `주격이 겹쳤습니다: ${line}`);
+        }
+        if (/이 고민/.test(tail)) bad.push(`${c.key}.${side}.${band}  ${tail}`);
+      }
+    }
+  }
+  assert.deepEqual(bad, [], `무엇을 물었는지 앱이 압니다:\n  ${bad.join('\n  ')}`);
+});
+
+// '이 고민' 은 앱이 아는 것을 일부러 안 말하는 것이다. 소스 점검(check:vague)이
+// 막고 있지만, 화면에 실제로 안 뜨는지는 여기서 본다.
+test("화면에 '이 고민' 이 안 나온다", () => {
+  const bad: string[] = [];
+  for (const c of CONCERNS) {
+    for (const line of screenLines(c.key, c.options[0].key)) {
+      if (/이 고민/.test(line)) bad.push(`${c.key}  ${line}`);
+    }
+  }
+  assert.deepEqual(bad, [], `무엇을 물었는지 앱이 압니다:\n  ${bad.join('\n  ')}`);
 });

@@ -31,6 +31,9 @@ const ALLOW = new Map([
   ['lib/share.ts:copyText', '한 줄 복사 - 버튼 붙일지 형님 결정 대기'],
 
   // 검증 표면 — 테스트가 엔진을 바깥에서 재보려면 열려 있어야 한다
+  // (같은 파일 안에서만 쓰지만, 안에 두면 테스트가 못 본다. 화면 문장을 훑는
+  //  방식으로는 고정 생년월일에 걸리는 밴드 하나만 검사돼 헛돌았다)
+  ['lib/concernScore.ts:bandPhrase', '점수 푸는 줄의 밴드별 문장 - 여섯 가지를 직접 검사'],
   ['lib/goldenFixtures.ts:GOLDEN', 'golden 검증 자료'],
   ['lib/goldenFixtures.ts:DAY_ANCHOR', '일주 기준점 기록'],
   ['lib/goldenFixtures.ts:DAY_ANCHOR_CHECKED', '외부 대조한 기준점'],

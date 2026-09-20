@@ -12,6 +12,9 @@ import { join } from 'node:path';
 
 const BANNED = [
   ['구간', "'이 달'·'이번 달'·'올해' 처럼 실제 단위로. 아니면 그 고민의 명사로"],
+  // 앱은 무엇을 물었는지 안다. 돈을 물은 사람에게 '이 고민' 이라고 하는 건
+  // 아는 것을 일부러 안 말하는 것이다. concerns.ts 의 shortName 을 쓴다.
+  ['이 고민', "무엇을 물었는지 앱이 안다. concerns.ts 의 shortName('돈'·'몸'·'일')으로"],
 ];
 
 function walk(dir) {

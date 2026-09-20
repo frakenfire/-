@@ -172,6 +172,29 @@ export function computeConcernScore(
 }
 
 /**
+ * 점수를 푸는 줄의 뒷부분.
+ *
+ * 앞머리가 '밀어붙이는 기운이' 라 주격이 이미 쓰였다. 여기에 또 주격을 붙이면
+ * '기운이 몸이 무리 없이' 가 된다. 이 자리는 부사격('에')이다. 화면을 찍어
+ * 보고서야 잡았고, 밴드마다 다른 문장이라 한 번 뽑은 화면으로는 다 안 나온다.
+ * 그래서 문장을 밖으로 빼 여섯 가지를 직접 검사한다.
+ *
+ * '이 고민' 이라고 쓰면 앱이 아는 것을 일부러 안 말하는 게 된다. 돈을 물은
+ * 사람에게는 돈이라고 한다. label 을 그대로 쓰면 '몸과 컨디션은 70점이에요 …
+ * 몸과 컨디션에' 로 무거워져서 concerns.ts 의 shortName 을 쓴다.
+ */
+export function bandPhrase(side: 'high' | 'low', band: Band, shortName: string): string {
+  if (side === 'high') {
+    if (band === 'good') return `${shortName}에 바로 힘이 되는 자리예요`;
+    if (band === 'ok') return `${shortName}에 무리 없이 붙는 자리예요`;
+    return '눌러도 다른 칸보다는 나은 자리예요';
+  }
+  if (band === 'good') return '다른 칸이 더 세서 밀렸어요';
+  if (band === 'ok') return `${shortName}에는 덜 보탬이 돼요`;
+  return `${shortName}에 걸리는 자리예요`;
+}
+
+/**
  * 점수를 사람 말로 푼다.
  *
  * '오늘이 열려 있어서 점수가 올랐어요' 같은 말은 아무것도 설명하지 않는다.
@@ -199,19 +222,15 @@ export function scoreVerdictLine(score: ConcernScore, concern: ConcernKey): stri
   // 기운을 설명하는 말에는 좋고 나쁨이 없다. '챙겨주는 마음이 오가는 쪽이라
   // 제일 낮게 잡혔고요' 처럼 앞뒤가 안 맞아 보이던 이유다. 그 기운이 이 고민에
   // 보탬이 되는지 아닌지는 점수가 이미 알고 있으니, 그걸 뒤에 붙여 말한다.
-  const HIGH: Record<Band, string> = {
-    good: '이 고민에 바로 힘이 되는 자리예요',
-    ok: '이 고민에 무리 없이 붙는 자리예요',
-    hard: '눌러도 다른 칸보다는 나은 자리예요',
-  };
-  const LOW: Record<Band, string> = {
-    good: '다른 칸이 더 세서 밀렸어요',
-    ok: '이 고민에는 덜 보탬이 돼요',
-    hard: '이 고민에는 걸리는 자리예요',
-  };
+  // '이 고민에' 라고 쓰면 앱이 아는 것을 일부러 안 말하는 게 된다. 돈을 물은
+  // 사람에게는 돈이라고 해야 한다. label 을 그대로 쓰면 '몸과 컨디션은
+  // 70점이에요 … 몸과 컨디션에' 로 무거워져서 짧은 이름을 따로 둔다.
+  const it = c.shortName;
+  const HIGH = (b: Band) => bandPhrase('high', b, it);
+  const LOW = (b: Band) => bandPhrase('low', b, it);
   return (
-    `${head} 다섯 칸 중 ${withJosa(top.k, '이가')} 가장 높아요. ${TEN_GOD_KO[top.god!]}이 ${HIGH[top.band]}. ` +
-    `반대로 ${withJosa(low.k, '은는')} ${TEN_GOD_KO[low.god!]}이라 ${LOW[low.band]}.`
+    `${head} 다섯 칸 중 ${withJosa(top.k, '이가')} 가장 높아요. ${TEN_GOD_KO[top.god!]}이 ${HIGH(top.band)}. ` +
+    `반대로 ${withJosa(low.k, '은는')} ${TEN_GOD_KO[low.god!]}이라 ${LOW(low.band)}.`
   );
 }
 

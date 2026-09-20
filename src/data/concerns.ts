@@ -29,6 +29,14 @@ export type Concern = {
   resultTitle: string;
   /** 무엇을 보고 답했는지 */
   basis: string;
+  /**
+   * 문장 가운데서 이 고민을 부를 때 쓰는 짧은 이름.
+   *
+   * label 을 그대로 쓰면 '몸과 컨디션은 70점이에요 … 몸과 컨디션에 바로 힘이
+   * 되는 자리예요' 처럼 무거워진다. 그렇다고 '이 고민' 이라고 쓰면 앱이
+   * 아는 것을 일부러 안 말하는 게 된다.
+   */
+  shortName: string;
 };
 
 /** 이 고민에 힘이 되는 기운과 버거운 기운 */
@@ -47,6 +55,7 @@ export const LOVE_FAVOR_FEMALE = { good: ['authority'], ok: ['wealth', 'support'
 export const CONCERNS: Concern[] = [
   {
     key: 'work',
+    shortName: '일',
     label: '일과 이직',
     hook: '옮길까 말까, 언제가 좋을까',
     icon: 'briefcase',
@@ -63,6 +72,7 @@ export const CONCERNS: Concern[] = [
   },
   {
     key: 'money',
+    shortName: '돈',
     label: '돈',
     hook: '모을 때인지 지킬 때인지',
     icon: 'coin',
@@ -79,6 +89,7 @@ export const CONCERNS: Concern[] = [
   },
   {
     key: 'love',
+    shortName: '연애',
     label: '연애',
     hook: '만날 때인지 기다릴 때인지',
     icon: 'heart',
@@ -95,6 +106,7 @@ export const CONCERNS: Concern[] = [
   },
   {
     key: 'people',
+    shortName: '사람 사이',
     label: '사람 관계',
     hook: '누구를 믿고 누구를 거를까',
     icon: 'chat',
@@ -111,6 +123,7 @@ export const CONCERNS: Concern[] = [
   },
   {
     key: 'health',
+    shortName: '몸',
     label: '몸과 컨디션',
     hook: '어디를 먼저 챙길까',
     icon: 'leaf',
@@ -127,6 +140,7 @@ export const CONCERNS: Concern[] = [
   },
   {
     key: 'mind',
+    shortName: '마음',
     label: '마음',
     hook: '이 마음이 언제 가라앉을까',
     icon: 'balloon',
