@@ -27,7 +27,7 @@ export const CATEGORY_INTERP: Record<string, Record<Band, string>> = {
   },
   money: {
     high: '지갑에 볕이 드는 날이에요. 미뤄둔 환급이나 포인트를 챙겨보세요.',
-    mid: '평범한 돈운이에요. 크게 벌기보다 새는 돈을 막는 게 이득이에요.',
+    mid: '평범한 돈운이에요. 큰 건 없지만 챙긴 만큼은 남는 하루예요.',
     low: '오늘은 큰 지출을 미뤄요. 결제 버튼 앞에서 한 번 더 생각해요.',
   },
   work: {

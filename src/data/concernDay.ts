@@ -146,7 +146,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     },
     jeongjae: {
       doIt: '만나면 다음 약속을 그 자리에서 잡기',
-      avoid: '잘해주는 것으로 대화를 대신하는 것',
+      avoid: '서운한 티만 내고 무슨 일인지 말 안 하는 것',
       hold: '현실 조건을 저울질하는 일',
     },
     pyeongwan: {
@@ -302,7 +302,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     },
     jeongjae: {
       doIt: '눈에 보이는 것부터 하나 정리하기',
-      avoid: '못 정하는 것까지 통제하려 드는 것',
+      avoid: '답이 안 나오는 걸 오늘 안에 끝내려는 것',
       hold: '계획을 길게 세우는 일',
     },
     pyeongwan: {

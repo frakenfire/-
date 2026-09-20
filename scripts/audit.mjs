@@ -743,6 +743,39 @@ async function run(browser) {
       });
       check(echoes.length === 0, '[문구] 묶음 이름을 카드가 되풀이하지 않는다', echoes.join(' · '));
 
+      // 한 화면에 거의 같은 문장이 두 번 나오는지. 데이터를 보는 게 아니라
+      // 실제로 그려진 글자를 본다 - 두 층이 같은 기운을 가질 때만 만나므로
+      // 표만 봐서는 안 잡힌다. 문장 틀(달이라·해라·때예요)은 떼고 비교한다.
+      const dup = await page.evaluate(() => {
+        const FRAME = /쪽으로 읽었어요|기운이 들어와요|기운이 겹쳐요|이 고민에|자리예요|해라|달이라|때예요|좋아요|남아요|나와요/g;
+        const sents = document.body.innerText
+          .split(/\n|(?<=[.!?])\s+/)
+          .map((x) => x.trim())
+          .filter((x) => x.length >= 12);
+        const norm = (x) => x.replace(FRAME, '').replace(/[^가-힣]/g, '');
+        const out = [];
+        for (let i = 0; i < sents.length; i += 1) {
+          for (let j = i + 1; j < sents.length; j += 1) {
+            const a = norm(sents[i]);
+            const b = norm(sents[j]);
+            if (a.length < 8 || b.length < 8) continue;
+            let n = 0;
+            for (let k = 0; k + 6 <= a.length; k += 1) if (b.includes(a.slice(k, k + 6))) n += 1;
+            if (a === b || n >= 3) out.push(`${sents[i]} / ${sents[j]}`);
+          }
+        }
+        return [...new Set(out)];
+      });
+      // 맨 위 카드의 할 일과 결정 카드의 첫 할 일은 같아야 한다.
+      // '맨 위 하나가 오늘 바로 할 수 있는 것' 이라고 화면에 적어둔 약속이다.
+      const onPurpose = dup.filter((x) => {
+        const [a, b] = x.split(' / ');
+        return a === b;
+      });
+      const real = dup.filter((x) => !onPurpose.includes(x));
+      check(real.length <= 1, '[문구] 한 화면에 거의 같은 문장이 없다',
+        `${real.length}건${real.length ? ' — ' + real[0].slice(0, 70) : ''}`);
+
       // 서열에 등급 말을 붙이면 1~3위가 전부 같은 말로 뭉쳐 서열이 무색해진다.
       // 순서는 숫자가 말하고, 오른쪽은 왜 그 자리인지를 말한다.
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
