@@ -18,6 +18,23 @@ const require = createRequire(import.meta.url);
 const PORT = Number(process.env.AUDIT_PORT ?? 4173);
 const URL_BASE = `http://localhost:${PORT}/`;
 
+// 홈에서 버튼을 누르기 전에 읽어야 하는 글자 수 상한. 지금 실제 값은 50자 안팎이고,
+// 설득 문단 하나를 붙이면 바로 넘는다. '특정 문구가 없다' 로 적으면 그 문구가
+// 코드에 없는 한 늘 통과하므로, 길이로 잰다.
+const HOOK_CHAR_MAX = 70;
+
+// 열두 띠 아이디 — 저장된 띠가 아무 문자열이나여도 통과하지 않게 좁힌다.
+// 여기 손으로 적어두면 앱과 어긋나도 아무도 모른다(양띠는 goat 가 아니라 sheep 이다).
+// 실제 목록에서 읽고, 열둘이 아니면 그 자리에서 멈춘다.
+const ZODIAC_IDS = new Set(
+  [...readFileSync(new URL('../src/data/zodiac.ts', import.meta.url), 'utf8')
+    .matchAll(/\{\s*id:\s*'([a-z]+)'/g)].map((m) => m[1]),
+);
+if (ZODIAC_IDS.size !== 12) {
+  console.error(`❌ 띠 목록을 못 읽었어요 (${ZODIAC_IDS.size}개). src/data/zodiac.ts 를 확인하세요.`);
+  process.exit(1);
+}
+
 let chromium;
 try {
   ({ chromium } = require('playwright-core'));
@@ -328,9 +345,29 @@ async function run(browser) {
     check(/오늘은 \S+일/.test(t), '[홈] 일진 카드 노출');
     check(t.includes('오늘의 띠 서열'), '[홈] 띠 서열 노출');
     check(t.includes('오늘 쪽지 열어보기'), '[홈] 시작 CTA 노출');
-    // 앱인토스 반려 사유: 진입 직후 바텀시트/모달이 자동으로 뜨면 안 된다
-    const modalCount = await page.locator('[role="dialog"], [class*="bottom-sheet"], [class*="bottomsheet"], dialog[open]').count();
-    check(modalCount === 0, '[홈] 진입 즉시 모달/바텀시트 없음 (토스 정책)', `${modalCount}개 발견`);
+    // 앱인토스 반려 사유: 진입 직후 바텀시트/모달이 자동으로 뜨면 안 된다.
+    // role="dialog" 나 bottom-sheet 같은 이름으로 찾으면, 이 앱에는 그런 마크업이
+    // 아예 없어서 나중에 맨 div 로 덮개를 올려도 통과한다. 이름 말고 결과로 본다 —
+    // 시작 버튼 한가운데가 실제로 눌리는가, 화면 절반을 덮고 떠 있는 것이 있는가.
+    const ctaClear = await page.evaluate(() => {
+      const cta = document.querySelector('.today-hook__cta');
+      if (!cta) return { reach: false, veil: '시작 버튼이 없음' };
+      const r = cta.getBoundingClientRect();
+      const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+      const veil = [...document.body.querySelectorAll('*')].find((el) => {
+        const cs = getComputedStyle(el);
+        if (cs.position !== 'fixed' || cs.display === 'none' || parseFloat(cs.opacity) === 0) return false;
+        const b = el.getBoundingClientRect();
+        return b.width * b.height > window.innerWidth * window.innerHeight * 0.5;
+      });
+      return {
+        reach: !!top && cta.contains(top),
+        veil: veil ? `덮개 ${veil.className || veil.tagName}` : '',
+      };
+    });
+    check(ctaClear.reach && ctaClear.veil === '',
+      '[홈] 진입 즉시 시작 버튼을 가리는 것이 없다 (토스 정책)',
+      `${ctaClear.reach ? '' : '버튼이 안 눌림 '}${ctaClear.veil}`);
     await diagnose(page, '홈');
     await page.context().close();
   }
@@ -370,8 +407,29 @@ async function run(browser) {
 
       const open = await bodyText(page);
       check(open.includes('이번 주 내 운세'), '[주간] 띠 선택 후 캘린더 카드 노출');
-      // 광고 잠금을 걷어냈다 — 이번 주에 뭘 조심할지는 앱이 해주기로 한 말의 절반이다
-      check(!/무료로 열려요|연속 뽑으면/.test(open), '[주간] 잠금 문구가 남아 있지 않음');
+      // 광고 잠금을 걷어냈다 — 이번 주에 뭘 조심할지는 앱이 해주기로 한 말의 절반이다.
+      // 전에는 '무료로 열려요' 같은 문구가 없는지만 봤다. 그 문구는 코드에 아예
+      // 없어서 무슨 짓을 해도 통과하는 검사였다. 막는 건 글자가 아니라 덮개다 —
+      // 마지막 날 칸 한가운데가 실제로 눌리는지, 흐림이 걸려 있지 않은지를 본다.
+      // elementFromPoint 는 보이는 화면 안에서만 답한다. 스크롤을 안 하면
+      // '화면 밖이라 못 짚었다' 를 '덮개가 있다' 로 잘못 읽는다.
+      await page.locator('.week-row').last().scrollIntoViewIfNeeded();
+      await wait(page, 300);
+      const weekReach = await page.evaluate(() => {
+        const rows = [...document.querySelectorAll('.week-row')];
+        const last = rows[rows.length - 1];
+        if (!last) return { hit: false, veil: '칸 없음' };
+        const r = last.getBoundingClientRect();
+        const top = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+        const veiled = rows.find((el) => {
+          const cs = getComputedStyle(el);
+          return cs.filter !== 'none' || parseFloat(cs.opacity) < 0.99;
+        });
+        return { hit: !!top && last.contains(top), veil: veiled ? '흐림/투명 처리됨' : '' };
+      });
+      check(weekReach.hit && weekReach.veil === '',
+        '[주간] 마지막 날 칸까지 덮개 없이 바로 눌린다',
+        `${weekReach.hit ? '' : '위에 덮인 것이 있음 '}${weekReach.veil}`);
       check(/이번 주는 .+(트여요|순해요|잔잔해요)/.test(open), '[주간] 헤드라인 노출',
         (open.match(/이번 주는 [^\n]*/) || [''])[0]);
 
@@ -411,9 +469,20 @@ async function run(browser) {
 
       // 진입점은 '무엇을 넣는지' 만 말하면 된다. 왜 필요한지를 설득하는 문장은
       // 넣지 않는다 — 누르기 전에 읽어야 할 글이 늘어날 뿐이다.
-      const home = await bodyText(page);
-      check(!home.includes('생년월일 입력하기'), '[사주] 홈에 뽑기와 같은 곳으로 가는 행이 없음');
-      check(!/모두에게 같은 쪽지|쪽지가 달라져요/.test(home), '[사주] 설득 문구 없음');
+      // 전에는 '생년월일 입력하기' 같은 특정 문구가 없는지 봤다. 그 문구들은
+      // 코드에 없어서 늘 통과했다. 지켜야 할 건 문구가 아니라 두 가지다 —
+      // 홈에서 뽑기로 가는 큰 버튼은 하나, 누르기 전에 읽을 글은 짧다.
+      const homeShape = await page.evaluate(() => {
+        const hook = document.querySelector('.today-hook');
+        return {
+          primary: document.querySelectorAll('.btn--primary').length,
+          hookChars: hook ? (hook.innerText || '').replace(/\s+/g, '').length : -1,
+        };
+      });
+      check(homeShape.primary === 1, '[사주] 홈에서 뽑기로 가는 큰 버튼은 하나뿐',
+        `${homeShape.primary}개`);
+      check(homeShape.hookChars > 0 && homeShape.hookChars <= HOOK_CHAR_MAX,
+        '[사주] 누르기 전에 읽을 글이 짧다', `${homeShape.hookChars}자`);
 
       // 생년월일은 뽑기 흐름의 첫 장에서 받는다
       await page.getByText('오늘 쪽지 열어보기').first().click();
@@ -600,19 +669,25 @@ async function run(browser) {
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
 
-      // 사주를 세웠으면 띠를 다시 묻지 않아야 한다 (같은 걸 두 번 묻는 순간 "이게 뭐지"가 생긴다)
-      const homeAfter = await bodyText(page);
-      check(!homeAfter.includes('내 띠를 고르면'), '[사주] 사주가 있으면 띠를 다시 묻지 않음',
-        (homeAfter.match(/.{0,20}내 띠를 고르면.{0,20}/) || [''])[0]);
-      // 홈 서열은 '내 띠' 를 아는 척하지 않는다. 아무것도 안 넣은 사람과 같은 화면이어야 한다.
-      check((await page.locator('.me-rank').count()) === 0,
-        '[홈] 서열에 내 띠 표시가 없음');
+      // 띠를 고르라고 묻는 자리는 궁합 화면 하나뿐이다. 쪽지 흐름의 띠는
+      // 생년월일에서 딴다(명식 년지). 그래서 '띠를 다시 묻지 않는다' 를 문구로
+      // 확인하면 그 문구가 코드에 없어서 무슨 짓을 해도 통과했다. 두 가지로 본다 —
+      // 고르는 칸이 한 번도 안 떴는가, 그런데도 띠가 채워져 있는가.
+      const zodiacPickers = await page.locator('.zodiac-chip').count();
+      check(zodiacPickers === 0, '[사주] 뽑는 동안 띠를 고르라고 묻지 않는다', `${zodiacPickers}칸`);
+      const savedZodiac = await page.evaluate(() =>
+        window.localStorage.getItem('tomorrowNoteZodiac'));
+      check(ZODIAC_IDS.has(String(savedZodiac)), '[사주] 띠는 생년월일에서 따서 채워 둔다',
+        String(savedZodiac));
       // 주간 캘린더는 결과 화면에 있다. 사주에서 딴 띠로 거기서 열리는지 본다.
       await drawTo(page, { zodiac: null });
       check((await page.locator('.week-card').count()) === 1,
         '[사주] 띠가 채워져 주간 캘린더도 열림');
+      check((await page.locator('.week-card .week-row').count()) === 7,
+        '[사주] 띠를 묻지 않고도 이번 주 일곱 날이 다 찬다');
+      // 지우는 줄은 생년월일 화면 하나뿐이다 — 결과까지 따라오면 안 된다.
       check((await page.locator('.data-link').count()) === 0,
-        '[사주] 결과에 또 볼 것을 권하는 행이 없음');
+        '[사주] 결과 화면에 전부 지우기 줄이 따라오지 않음');
 
       // 사주를 넣은 사람의 '오늘 결과'가 실제로 개인 기준으로 바뀌는가.
       // 여기가 안 바뀌면 사주 화면만 따로 놀고, 매일 보는 결과는 여전히 띠 12분의 1이다.
@@ -724,8 +799,18 @@ async function run(browser) {
         `광고 ${Math.round(geo.first)} / 결과 끝 ${Math.round(geo.heroBottom)}`);
       check(geo.first > geo.body * 0.6, '[광고] 본문을 다 본 뒤에 나온다',
         `${Math.round((geo.first / geo.body) * 100)}% 지점`);
-      // 본문은 전부 무료여야 한다 — 사주 계산은 이 앱의 본질이라 값을 매기지 않는다
-      check(!/잠금|잠겨|결제|유료|포인트로 보기/.test(t), '[광고] 본문에 잠긴 카드가 없다');
+      // 본문은 전부 무료여야 한다 — 사주 계산은 이 앱의 본질이라 값을 매기지 않는다.
+      // '결제·유료' 같은 낱말로 찾으면 돈 고민 본문("결제 버튼 앞에서 한 밤만
+      // 자고 결정해요")까지 걸려서, 고민에 따라 되기도 안 되기도 하는 검사가 된다.
+      // 무료인지는 낱말이 아니라 동작으로 본다 — 접힌 덩이가 광고 없이 그냥 열린다.
+      const foldBodies = await page.evaluate(async () => {
+        const heads = [...document.querySelectorAll('.fold__head')];
+        for (const h of heads) h.click();
+        await new Promise((r) => setTimeout(r, 500));
+        return heads.map((h) => (h.parentElement?.querySelector('.fold__body')?.innerText || '').trim().length);
+      });
+      check(foldBodies.length === 3 && foldBodies.every((n) => n > 20),
+        '[광고] 접힌 본문이 광고 없이 그냥 열린다', foldBodies.join('/'));
       // 지금 보고 있는 고민을 다시 팔면 안 된다
       check(geo.rows === 5, '[광고] 지금 보는 고민은 목록에서 빠진다', String(geo.rows));
       // 잠겨 있을 때는 테두리 알약(광고)인데 풀리면 맨 글자였다. 지금 누를 수
@@ -956,7 +1041,8 @@ async function run(browser) {
     check(danglingRule.length === 0, '[결과] 목록 마지막 줄 밑에 선이 안 남음', danglingRule.join(', '));
     // 같은 일을 하는 버튼을 셋 세워두면 뭘 눌러야 하는지가 먼저 고민이 된다.
     // 아래 바의 '친구한테 보내기' 하나와 본문의 복사 하나로 줄였다.
-    check((await page.locator('.share-row__btn').count()) === 0, '[결과] 같은 공유 버튼이 겹치지 않음');
+    check((await page.getByRole('button', { name: '친구한테 보내기' }).count()) === 1,
+      '[결과] 친구한테 보내는 버튼이 정확히 하나');
     // 맨 위 쪽지 카드만 캡처해 보내도 뜻이 통해야 한다 - 결론과 지금 할 일까지 들어간다
     const heroText = (await page.locator('.score-hero').first().innerText()).replace(/\s+/g, ' ');
     check(/점수/.test(heroText) && /점/.test(heroText), '[쪽지카드] 주제와 점수');
@@ -977,10 +1063,15 @@ async function run(browser) {
     const hints = await page.locator('.fold__hint').allInnerTexts();
     check(hints.length === 3 && hints.every((h) => h.trim().length > 6),
       '[결정] 접힌 덩이마다 안내 한 줄', hints.join(' / '));
-    // 복사 버튼은 없앴다. shareMessage 가 공유 못 하는 환경에서 알아서 복사로 떨어지므로
-    // 같은 일을 하는 버튼을 둘 세울 이유가 없었다.
-    check((await page.getByText('복사하기', { exact: false }).count()) === 0,
-      '[결과] 공유와 같은 일을 하는 복사 버튼이 따로 없음');
+    // 복사 버튼은 없앴다. shareMessage 가 공유 못 하는 환경에서 알아서 복사로
+    // 떨어지므로 같은 일을 하는 버튼을 둘 세울 이유가 없었다. '복사하기' 라는
+    // 글자가 없는지 보는 건 그 글자가 코드에 없어서 늘 통과한다 — 대신 아래
+    // 고정 바에 버튼이 하나뿐인지를 센다.
+    const bottomBtns = await page.evaluate(() => {
+      const bar = document.querySelector('.app__bottom');
+      return bar ? bar.querySelectorAll('button').length : -1;
+    });
+    check(bottomBtns === 1, '[결과] 아래 고정 바의 버튼은 하나뿐', `${bottomBtns}개`);
     await page.context().close();
   }
 
@@ -1046,8 +1137,8 @@ async function run(browser) {
     check(/\d+세부터 \d+세까지|첫 대운이/.test(dt), '[상담] 십 년 대운 노출');
     check(/년 \d+월/.test(dt), '[상담] 답이 달로 나옴');
     await diagnose(page, '상담');
-    check((await page.getByText('복사하기', { exact: false }).count()) === 0,
-      '[상담] 공유와 같은 일을 하는 복사 버튼이 따로 없음');
+    check((await page.getByRole('button', { name: '친구한테 보내기' }).count()) === 1,
+      '[상담] 친구한테 보내는 버튼이 정확히 하나');
     await page.context().close();
   }
 
@@ -1150,7 +1241,8 @@ async function run(browser) {
 
     // 결과 화면과 같은 규칙 - 공유가 안 되는 환경에서는 알아서 복사로 떨어지므로
     // 같은 일을 하는 버튼을 둘 세우지 않는다
-    check((await page.locator('.share-row__btn').count()) === 0, '[궁합] 같은 공유 버튼이 겹치지 않음');
+    check((await page.getByRole('button', { name: '친구한테 보내기' }).count()) === 1,
+      '[궁합] 친구한테 보내는 버튼이 정확히 하나');
     for (const [label, expect] of [['친구한테 보내기', '궁합'], ['궁합 카드 이미지로 저장하기', '저장']]) {
       await page.getByText(label, { exact: true }).first().click();
       let toast = '(없음)';
@@ -1300,8 +1392,12 @@ async function run(browser) {
     await page.goto(URL_BASE, { waitUntil: 'networkidle' });
     await wait(page, 700);
     const home = await bodyText(page);
-    check(!home.includes('오늘 받은 편지') && !/오늘 점수/.test(home),
-      '[홈] 뽑고 와도 점수나 기록이 안 남는다');
+    // '오늘 받은 편지' 는 주석에만 있는 말이라, 그 말이 없는지 보는 검사는
+    // 홈이 어제 결과를 통째로 그려도 통과했다. 결과 화면의 실물을 센다.
+    check((await page.locator('.score-hero').count()) === 0,
+      '[홈] 뽑고 와도 점수 카드가 안 남는다');
+    check(!/점수\s*\d+\s*점/.test(home), '[홈] 뽑고 와도 점수 숫자가 안 남는다',
+      (home.match(/점수\s*\d+\s*점/) || [''])[0]);
     check(home.includes('오늘 쪽지 열어보기'), '[홈] CTA 문구가 그대로다');
     await page.context().close();
   }
@@ -1359,7 +1455,8 @@ async function run(browser) {
     await page.getByText('네, 지울게요', { exact: false }).first().click();
     await wait(page, 1500);
     const t = await bodyText(page);
-    check(!t.includes('오늘 받은 편지') && t.includes('오늘 쪽지 열어보기'), '[삭제] 초기 상태로 복귀');
+    check(t.includes('오늘 쪽지 열어보기'), '[삭제] 초기 상태로 복귀');
+    check((await page.locator('.score-hero').count()) === 0, '[삭제] 지운 뒤 결과 카드가 안 남음');
     const left = await page.evaluate(() =>
       Object.keys(window.localStorage).filter((k) => k.startsWith('tomorrowNote')));
     check(left.length === 0, '[삭제] 저장소에 남는 값 없음', left.join(' '));

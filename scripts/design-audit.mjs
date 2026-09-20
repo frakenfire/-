@@ -149,6 +149,35 @@ function collect() {
   out.floatingList = body ? [...body.children].filter((e) => isSurface(e) && !isWhiteCard(e))
     .map((e) => (typeof e.className === 'string' ? e.className : '').split(' ')[0] || e.tagName) : [];
   out.floating = out.floatingList.length;
+
+  // 점수 막대가 바로 옆 숫자와 같은 말을 하는가.
+  // 이 앱에는 점수 막대가 세 종류 있다 — 왜 N점인가요, 네 가지 운, 궁합 세 칸.
+  // 한때 '왜 N점인가요' 만 50~92 를 0~100 으로 펴서 그렸고, 그 바람에 73점
+  // 막대가 트랙의 56% 에서 끝났다. 같은 화면에서 같은 종류의 숫자를 두 가지
+  // 자로 재면, 숫자를 읽은 사람과 그림을 본 사람이 다른 결론에 이른다.
+  // (오행 막대는 점수가 아니라 다섯 몫의 비율이라 여기 넣지 않는다)
+  const BARS = [
+    ['.why-score__row', '.why-score__bar', '.why-score__bar i', '.why-score__v'],
+    ['.cat4__row', '.cat4__bar', '.cat4__bar i', '.cat4__v'],
+    ['.compat-cat', '.compat-cat__bar', '.compat-cat__fill', '.compat-cat__score'],
+  ];
+  out.barGap = [];
+  out.barCount = 0;
+  for (const [rowSel, trackSel, fillSel, valSel] of BARS) {
+    for (const row of document.querySelectorAll(rowSel)) {
+      const track = row.querySelector(trackSel);
+      const fill = row.querySelector(fillSel);
+      const val = row.querySelector(valSel);
+      if (!track || !fill || !val) continue;
+      const tw = track.getBoundingClientRect().width;
+      if (tw < 1) continue;
+      const shown = Math.round((fill.getBoundingClientRect().width / tw) * 100);
+      const said = parseInt((val.textContent || '').replace(/[^0-9]/g, ''), 10);
+      if (!Number.isFinite(said)) continue;
+      out.barCount += 1;
+      if (Math.abs(shown - said) > 4) out.barGap.push(`${rowSel} 숫자 ${said} / 막대 ${shown}%`);
+    }
+  }
   return out;
 }
 
@@ -198,6 +227,9 @@ function auditScreen(name, data) {
   // 10) 떠 있는 면이 세 장을 넘으면 '카드 더미' 로 읽힌다
   check(data.floating <= 3, `[${name}] 떠 있는 면 3장 이하`, `${data.floating}장: ${data.floatingList.join(' ')}`);
   check(data.stuck.length === 0, `[${name}] 버튼끼리 붙어 있지 않음`, data.stuck.join(' '));
+  // 11) 점수 막대와 바로 옆 숫자가 같은 말을 하는가 (막대가 없는 화면은 0개로 지나간다)
+  check(data.barGap.length === 0, `[${name}] 점수 막대가 옆 숫자와 어긋나지 않음`,
+    data.barGap.length ? data.barGap.slice(0, 4).join(' / ') : `막대 ${data.barCount}개`);
 }
 
 async function run() {

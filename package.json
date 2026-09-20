@@ -32,7 +32,8 @@
     "check:dead": "node scripts/check-dead.mjs",
     "check:vague": "node scripts/check-vague.mjs",
     "check:deadcss": "node scripts/check-dead-css.mjs",
-    "check:granite": "node scripts/check-granite.mjs"
+    "check:granite": "node scripts/check-granite.mjs",
+    "check:vacuity": "node scripts/check-vacuity.mjs"
   },
   "dependencies": {
     "@apps-in-toss/web-framework": "^2.10.5",

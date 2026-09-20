@@ -75,10 +75,11 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
                 <i className="why-score__label">{p.label}</i>
               </span>
               <span className="why-score__bar" aria-hidden>
-                {/* 점수는 실제로 50~92 사이에 모인다. 0~100 을 그대로 그리면
-                    67과 78이 눈으로 구분이 안 된다. 실제 범위로 펴서 그린다.
-                    숫자는 바로 옆에 그대로 있으니 과장이 아니라 확대다. */}
-                <i style={{ width: `${Math.max(6, Math.min(100, ((p.score - 45) / 50) * 100))}%` }} />
+                {/* 네 가지 운·궁합·오행 막대와 같은 자로 잰다. 전에는 50~92 를
+                    0~100 으로 펴서 67과 78을 벌려 놨는데, 그러면 73점 막대가
+                    트랙의 56% 에서 끝나 바로 옆에 적힌 73과 어긋났다. 벌어지는
+                    폭은 좁아지지만 숫자와 그림이 같은 말을 하는 쪽을 택한다. */}
+                <i style={{ width: `${Math.max(0, Math.min(100, p.score))}%` }} />
               </span>
               <span className="why-score__v num">{p.score}</span>
               <span className="why-score__w num">{p.weight}%</span>

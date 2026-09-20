@@ -1523,15 +1523,6 @@ strong {
 .rank-card {
 
   padding: 0;}
-/* 내 순위 카드 — 띠를 고른 직후 '내 것'이 한눈에 보이는 확인 장치 */
-.me-rank {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0;
-  padding: 12px 0;
-  border-bottom: 1px solid var(--gray-100);
-}
 .rank-list--top {
   margin-top: 0;
 }
@@ -2397,17 +2388,6 @@ strong {
   color: var(--gray-900);
   word-break: keep-all;
 }
-.share-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-2);
-  margin-top: var(--space-4);
-}
-.share-row__btn {
-  min-height: 54px;
-  font-size: 16px;
-  line-height: 24px;
-}
 
 /* ── 생동감: 여백은 줄이고, 색은 늘리고, 들어올 때 살짝 움직인다 ── */
 .note-stage {
@@ -2755,7 +2735,6 @@ strong {
 .lucky4__grid--3 .lucky4__icon { width: 32px; height: 32px; margin-bottom: 10px; }
 .lucky4__grid--3 .lucky4__icon svg { width: 26px; height: 26px; }
 .lucky4__grid--3 .lucky4__v { font-size: 17px; line-height: 25.5px; }
-.lucky4 .share-row { display: none; }
 
 /* 쪽지 부채꼴: 덜 겹치게. 옆 장이 3분의 2는 보여야 뭘 고르는지 안다 */
 .note-fan { height: 236px; }
@@ -3524,18 +3503,23 @@ strong {
   font-weight: 500;
   color: var(--gray-600);
 }
+/* 점수 막대는 이 앱에 네 군데 있다(네 가지 운, 궁합 세 칸, 오행, 여기).
+   나머지 셋은 점수를 그대로 폭으로 쓰는데 여기만 50~92 를 0~100 으로 펴서
+   그렸다. 그래서 73점 막대가 트랙의 56% 자리에서 끝났다 - 바로 옆에 73이라고
+   적어두고 그림은 절반쯤이라고 말한 셈이다. 같은 화면에서 같은 종류의 숫자를
+   두 가지 자로 재지 않는다. 폭은 점수 그대로, 색도 나머지와 같은 파랑으로. */
 .why-score__bar {
   display: block;
   height: 6px;
-  border-radius: 3px;
+  border-radius: 999px;
   background: var(--gray-100);
   overflow: hidden;
 }
 .why-score__bar i {
   display: block;
   height: 100%;
-  border-radius: 3px;
-  background: var(--gray-400);
+  border-radius: 999px;
+  background: var(--brand);
 }
 .why-score__row--good .why-score__bar i { background: var(--score-high); }
 .why-score__row--hard .why-score__bar i { background: var(--score-low); }
