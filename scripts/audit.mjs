@@ -809,7 +809,32 @@ async function run(browser) {
     await diagnose(page, '결과');
 
     check((await page.locator('.lucky4__tile').count()) === 6, '[결과] 오늘의 행운 여섯 칸');
+    // 여섯 칸에 파랑·노랑·주황을 뜻 없이 흩뿌려 놨었다. 뜻 없는 색은 소음이고,
+    // 칸마다 바탕이 다른 격자는 AI 가 만든 화면의 표시로 자주 꼽힌다.
+    const tileBg = await page.evaluate(() =>
+      [...document.querySelectorAll('.lucky4__tile')].map((e) => getComputedStyle(e).backgroundColor));
+    check(new Set(tileBg).size === 1, '[결과] 행운 여섯 칸의 바탕이 하나', [...new Set(tileBg)].join(' / '));
+    // 숫자 칸이 큰 숫자 + 라벨 + 같은 숫자로 '8 / 숫자 / 8' 로 읽혔다.
+    const tileDup = await page.evaluate(() =>
+      [...document.querySelectorAll('.lucky4__tile')]
+        .map((e) => e.innerText.trim().split('\n').map((t) => t.trim()).filter(Boolean))
+        .filter((ls) => new Set(ls).size !== ls.length).length);
+    check(tileDup === 0, '[결과] 행운 칸이 같은 말을 두 번 안 함', `${tileDup}칸`);
     check((await page.locator('.cat4__row').count()) === 4, '[결과] 네 가지 운 점수');
+    // 줄마다 아래에 선을 긋는 목록은 마지막 줄 밑에도 선을 남긴다. 카드 안쪽
+    // 여백만 남은 자리에 선이 떠 있으면 잘린 화면으로 보인다.
+    const danglingRule = await page.evaluate(() => {
+      const out = [];
+      for (const list of document.querySelectorAll('.cat4__list, .read6, .drawn3, .lucky-grid, .rank-list')) {
+        const rows = [...list.children].filter((e) => e.getBoundingClientRect().height > 0);
+        const last = rows[rows.length - 1];
+        if (!last) continue;
+        const w = parseFloat(getComputedStyle(last).borderBottomWidth);
+        if (w > 0) out.push(`${list.className}>${last.className}`);
+      }
+      return out;
+    });
+    check(danglingRule.length === 0, '[결과] 목록 마지막 줄 밑에 선이 안 남음', danglingRule.join(', '));
     // 같은 일을 하는 버튼을 셋 세워두면 뭘 눌러야 하는지가 먼저 고민이 된다.
     // 아래 바의 '친구한테 보내기' 하나와 본문의 복사 하나로 줄였다.
     check((await page.locator('.share-row__btn').count()) === 0, '[결과] 같은 공유 버튼이 겹치지 않음');
@@ -887,6 +912,17 @@ async function run(browser) {
     check(/언제가 좋을까요/.test(dt), '[상담] 시기 구역 노출');
     check((await page.locator('.when4__row').count()) === 4, '[상담] 시기 네 줄');
     check((await page.locator('.mflow__col').count()) === 12, '[상담] 열두 달 막대');
+    // 축에 9 10 11 12 1 2 로만 적혀 있으면 1 이 올해인지 내년인지 알 수 없다.
+    check((await page.locator('.mflow__col--newyear').count()) === 1, '[상담] 해가 바뀌는 자리에 선이 하나');
+    // 명식 네 기둥은 나란히 놓고 보는 것이라 줄이 어긋나면 보는 방식이 깨진다.
+    // 칸마다 꼬리표 줄 수가 달라 일주 칸만 아래로 내려가 있었다.
+    const pillarRows = await page.evaluate(() => {
+      const cols = [...document.querySelectorAll('.chart8__col')];
+      const rowTop = (sel) => cols.map((c) => Math.round(c.querySelector(sel).getBoundingClientRect().top));
+      return ['.chart8__k', '.chart8__stem', '.chart8__branch', '.chart8__god', '.chart8__step']
+        .map((sel) => { const t = rowTop(sel); return Math.max(...t) - Math.min(...t); });
+    });
+    check(Math.max(...pillarRows) <= 1, '[상담] 명식 네 기둥의 줄이 서로 맞음', `${pillarRows.join('/')}px`);
     check((await page.locator('.decide__list--do .decide__row').count()) === 3, '[상담] 지금 할 것 세 가지');
     check(/\d+세부터 \d+세까지|첫 대운이/.test(dt), '[상담] 십 년 대운 노출');
     check(/년 \d+월/.test(dt), '[상담] 답이 달로 나옴');

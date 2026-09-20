@@ -185,7 +185,8 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           {timing.months.map((m, i) => (
             <li
               key={m.label}
-              className={`mflow__col mflow__col--${m.band}${i === openMonth ? ' mflow__col--on' : ''}`}
+              className={`mflow__col mflow__col--${m.band}${i === openMonth ? ' mflow__col--on' : ''}`
+                + (i > 0 && m.year !== timing.months[i - 1].year ? ' mflow__col--newyear' : '')}
             >
               <span className="mflow__barbox">
                 <span className="mflow__bar" style={{ height: `${Math.round((m.score / max) * 56) + 8}px` }} />
@@ -194,7 +195,13 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <p className="mflow__foot">맨 왼쪽이 이번 달이에요. 차트를 문지르면 그 달 풀이가 펴져요.</p>
+        {/* 가로축에 1 2 3 만 적혀 있으면 그게 내년인지 올해인지 알 수가 없다.
+            해가 바뀌는 자리에 세로선을 긋고, 아래 한 줄이 범위를 말한다. */}
+        <p className="mflow__foot">
+          {timing.months[0].label}부터 {timing.months[timing.months.length - 1].label}까지예요.
+          맨 왼쪽이 이번 달이고, 세로선 오른쪽이 {timing.months[timing.months.length - 1].year}년이에요.
+          차트를 문지르면 그 달 풀이가 펴져요.
+        </p>
         <div className="mpick">
           <p className="mpick__head">
             <button

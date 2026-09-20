@@ -4486,11 +4486,6 @@ strong {
   justify-content: center;
   color: var(--brand-strong);
 }
-.lucky4__tile--blue { background: #e8f3ff; border-color: #e8f3ff; }
-.lucky4__tile--yellow { background: #fff9e7; border-color: #fff9e7; }
-.lucky4__tile--yellow .lucky4__icon { color: #9c5d00; }
-.lucky4__tile--orange { background: #fff3e0; border-color: #fff3e0; }
-.lucky4__tile--orange .lucky4__icon { color: #e45600; }
 
 @keyframes rise-in {
   from { opacity: 0; transform: translateY(8px); }
@@ -4944,15 +4939,6 @@ strong {
 .lucky4__grid--3 .lucky4__swatch,
 .lucky4__grid--3 .lucky4__icon { width: 32px; height: 32px; margin-bottom: 10px; }
 .lucky4__grid--3 .lucky4__icon svg { width: 26px; height: 26px; }
-.lucky4__grid--3 .lucky4__big {
-  display: block;
-  height: 37px;
-  margin-bottom: 6px;
-  font-size: 28px;
-  line-height: 37px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
 .lucky4__grid--3 .lucky4__v { font-size: 17px; line-height: 25.5px; }
 .lucky4 .share-row { display: none; }
 
@@ -5137,14 +5123,14 @@ strong {
 .sec-card .lucky4__head { font-size: 17px; line-height: 25.5px; }
 .sec-card--plan { background: var(--white); padding: 22px 20px; }
 .sec-card--plan .plan__title { font-size: 18px; line-height: 27px; color: var(--gray-900); }
+/* 여섯 칸의 바탕은 하나다. 색을 뜻 없이 나누면 눈이 먼저 색을 읽고
+   글자는 나중에 읽는다. 뜻이 있는 색은 행운 색 동그라미 하나뿐이다. */
 .lucky4__grid--3 .lucky4__tile {
   background: var(--gray-50);
   border-color: var(--gray-50);
   box-shadow: none;
 }
-.lucky4__tile--blue { background: #e8f3ff; border-color: #e8f3ff; }
-.lucky4__tile--yellow { background: #fff9e7; border-color: #fff9e7; }
-.lucky4__tile--orange { background: #fff3e0; border-color: #fff3e0; }
+.lucky4__grid--3 .lucky4__icon { color: var(--gray-700); }
 
 .lucky-extra {
   list-style: none;
@@ -5858,6 +5844,16 @@ strong {
   border-top: 1px solid var(--gray-100);
 }
 .why-score__row:first-child { border-top: 0; }
+/* 줄마다 아래에 선을 긋는 목록은 마지막 줄 밑에도 선을 남긴다. 카드 안쪽
+   여백만 남은 자리에 선이 하나 떠 있으면 '아래에 뭔가 더 있다가 잘린' 것처럼
+   보인다. 위에 쓴 border-top + first-child 가 맞는 모양인데, 아래 목록들은
+   그렇게 안 돼 있었다. 마지막 줄의 선을 지운다. */
+/* 행운 네 칸은 2열 격자라 마지막 줄이 칸 두 개다. 하나만 지우면 옆이 남는다. */
+.lucky-cell:nth-last-child(-n + 2),
+.rank-row:last-child,
+.drawn3__row:last-child,
+.cat4__row--rich:last-child,
+.read6__row:last-child { border-bottom: 0; }
 .why-score__k {
   min-width: 0;
   font-size: 14px;
@@ -5964,6 +5960,9 @@ strong {
   cursor: pointer;
   user-select: none;
 }
+/* 열두 달이 해를 넘어간다. 축에 9 10 11 12 1 2 로만 적혀 있으면 1 이
+   올해인지 내년인지 알 길이 없다. 해가 바뀌는 칸 왼쪽에 선을 긋는다. */
+.mflow__col--newyear { border-left: 1px solid var(--gray-200); }
 .mflow__col--on .mflow__bar { outline: 2px solid var(--brand-strong); outline-offset: 1px; }
 .mflow__col--on .mflow__m { color: var(--brand-strong); font-weight: 700; }
 
@@ -6404,6 +6403,12 @@ strong {
 }
 .chart8__col {
   display: grid;
+  /* 네 칸은 같은 높이로 늘어나는데 줄은 자동이라, 맨 아래 꼬리표가 한 줄인
+     칸만 남는 자리를 위 네 줄에 나눠 가졌다. 그래서 일주(나) 칸의 글자와
+     기운 이름이 옆 칸보다 17px 아래로 내려가 있었다. 명식은 네 기둥을 나란히
+     놓고 보는 것이라 줄이 안 맞으면 보는 방식 자체가 깨진다.
+     위 네 줄은 내용 높이로 고정하고, 남는 자리는 맨 아래 한 줄이 받는다. */
+  grid-template-rows: auto auto auto auto 1fr;
   min-width: 0;
   justify-items: center;
   gap: 2px;
@@ -6411,6 +6416,7 @@ strong {
   border-radius: 14px;
   background: var(--gray-50);
 }
+.chart8__step { align-self: start; }
 .chart8__col--me {
   background: var(--brand-soft);
 }

@@ -269,7 +269,12 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
         </ul>
       </div>
 
-      {/* 3. 오늘의 행운 여섯 칸 — 색깔·숫자·방향·시간·음식·행동 */}
+      {/* 3. 오늘의 행운 여섯 칸 — 색깔·숫자·방향·시간·음식·물건.
+          여섯 칸에 파랑·노랑·주황 세 가지 바탕색을 아무 규칙 없이 흩뿌려
+          놨었다. 색이 뜻하는 게 없으면 색은 소음이다. 바탕은 하나로 두고
+          유일하게 뜻이 있는 색(행운 색)만 동그라미로 보여준다.
+          숫자 칸은 큰 숫자를 아이콘 자리에 놓고 값으로 또 한 번 써서
+          '8 / 숫자 / 8' 로 읽혔다. 다른 다섯 칸과 같은 아이콘 자리로 맞춘다. */}
       <div className="lucky4 sec-card">
         <p className="lucky4__head">{isMonth ? '이번 달의 행운' : LUCKY_HEADS[spin % LUCKY_HEADS.length]}</p>
         <div className="lucky4__grid lucky4__grid--3">
@@ -278,27 +283,27 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
             <span className="lucky4__k">색깔</span>
             <strong className="lucky4__v">{luck.color.name}</strong>
           </div>
-          <div className="lucky4__tile lucky4__tile--blue">
-            <span className="lucky4__big num" aria-hidden>{luck.number}</span>
+          <div className="lucky4__tile">
+            <span className="lucky4__icon" aria-hidden><Icon name="hash" size={26} /></span>
             <span className="lucky4__k">숫자</span>
             <strong className="lucky4__v">{luck.number}</strong>
           </div>
-          <div className="lucky4__tile lucky4__tile--yellow">
+          <div className="lucky4__tile">
             <span className="lucky4__icon" aria-hidden><Icon name="compass" size={26} /></span>
             <span className="lucky4__k">방향</span>
             <strong className="lucky4__v">{luck.direction}</strong>
           </div>
-          <div className="lucky4__tile lucky4__tile--blue">
+          <div className="lucky4__tile">
             <span className="lucky4__icon" aria-hidden><Icon name="clock" size={26} /></span>
             <span className="lucky4__k">시간</span>
             <strong className="lucky4__v">{when.label}</strong>
           </div>
-          <div className="lucky4__tile lucky4__tile--orange">
+          <div className="lucky4__tile">
             <span className="lucky4__icon" aria-hidden><Icon name="bowl" size={26} /></span>
             <span className="lucky4__k">음식</span>
             <strong className="lucky4__v">{luck.food.name}</strong>
           </div>
-          <div className="lucky4__tile lucky4__tile--yellow">
+          <div className="lucky4__tile">
             <span className="lucky4__icon" aria-hidden><Icon name="gift" size={26} /></span>
             <span className="lucky4__k">물건</span>
             <strong className="lucky4__v">{luck.item}</strong>
