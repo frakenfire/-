@@ -612,11 +612,27 @@ async function run(browser) {
       await drawTo(page, {});
       const t = await bodyText(page);
       check((await page.locator('.drawn').count()) === 1, '[쪽지] 결과에 뽑은 쪽지 카드 노출');
-      const name = (await page.locator('.drawn__name').innerText()).trim();
+      // 쪽지 이름은 라벨 줄 안에 한 줄로 들어간다. 따로 큰 글씨로 세우면
+      // 바로 밑 결론과 굵기가 같아져 무엇이 제목인지 안 읽힌다.
+      const name = (await page.locator('.drawn__kw').innerText()).trim();
       check(name.length >= 2, '[쪽지] 뽑은 쪽지 이름이 결과에 남음', name);
       check(t.includes('내가 뽑은 쪽지'), '[쪽지] 내가 뽑았다는 사실을 명시');
-      const kw = (await page.locator('.drawn__kw').innerText()).trim();
-      check(kw.length >= 1, '[쪽지] 쪽지 키워드 표시', kw);
+      // 위계 가드 — 결론이 쪽지 이름보다 반드시 커야 한다
+      const sizes = await page.evaluate(() => {
+        const px = (el) => (el ? Number.parseFloat(getComputedStyle(el).fontSize) : 0);
+        return {
+          name: px(document.querySelector('.drawn__kw')),
+          verdict: px(document.querySelector('.drawn__verdict')),
+        };
+      });
+      check(sizes.verdict > sizes.name + 3,
+        '[쪽지] 결론이 쪽지 이름보다 크다', `${sizes.name} vs ${sizes.verdict}`);
+      // 배지와 할 일이 한 줄에 섞이면 줄바꿈이 사고처럼 보인다
+      const stance = await page.locator('.drawn__stance').boundingBox();
+      const doBox = await page.locator('.drawn__do').boundingBox();
+      check(!!stance && !!doBox && doBox.y >= stance.y + stance.height - 1,
+        '[쪽지] 결정 배지가 제 줄을 갖는다',
+        `배지 ${stance?.y}+${stance?.height} / 할 일 ${doBox?.y}`);
       // 뽑기 화면에서 고른 그 색이 결과까지 이어져야 '같은 종이'로 느껴진다
       const cls = await page.locator('.drawn').getAttribute('class');
       check(/drawn--(softGreen|cream|softYellow|softPink)/.test(cls),

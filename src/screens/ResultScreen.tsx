@@ -109,15 +109,20 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
         {/* 캡처해서 친구에게 보내도 뜻이 통해야 하는 자리. 결론과 지금 할 일까지
             여기서 끝낸다. 아래 상세를 안 읽어도 무엇을 할지는 알 수 있어야 한다. */}
         <div className="score-hero__note">
-          <span className="drawn__k">내가 뽑은 쪽지 · <span className="drawn__kw">{note.keyword}</span></span>
-          <strong className="drawn__name">{note.name}</strong>
+          {/* 뽑은 쪽지 이름은 한 줄로 끝낸다. 18px 굵은 글씨로 따로 세우면
+              바로 밑 결론(20px)과 굵기가 같아져 무엇이 제목인지 안 읽힌다. */}
+          <span className="drawn__k">
+            내가 뽑은 쪽지 · <span className="drawn__kw">{note.name}</span>
+          </span>
           {deep ? (
             <>
               <strong className="drawn__verdict">{softBreak(deep.read.headline, 16)}</strong>
               <Sentences className="drawn__lead" text={deep.read.sub} />
+              {/* 배지와 문장을 한 줄에 흘리면 문장이 배지 뒤에서 접혀
+                  줄바꿈이 사고처럼 보인다. 배지는 제 줄을 갖는다. */}
               <span className="drawn__now">
-                <b>{deep.read.decision.stanceWord}</b>
-                {deep.read.decision.dos[0]}
+                <b className="drawn__stance">{deep.read.decision.stanceWord}</b>
+                <span className="drawn__do">{deep.read.decision.dos[0]}</span>
               </span>
             </>
           ) : (

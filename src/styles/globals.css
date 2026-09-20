@@ -99,8 +99,9 @@ a:focus-visible {
   flex: 1;
   display: flex;
   flex-direction: column;
-  /* TDS 스크린 마진 — 좌우 24px. 위는 네비가 이미 띄웠으니 8px 만. */
-  padding: var(--space-2) var(--space-6) var(--space-6);
+  /* TDS 스크린 마진 — 좌우 24px. 위는 네비 밑으로 한 칸 띄운다.
+     8px 이면 제목이 네비에 얹혀 있어 화면이 시작하는 느낌이 안 난다. */
+  padding: var(--space-4) var(--space-6) var(--space-8);
   overflow-y: auto;
 }
 /* 헤더는 상단에 고정하고, 선택 콘텐츠(그리드·카드)만 남은 공간을
@@ -3891,12 +3892,6 @@ strong {
   font-weight: 700;
   color: var(--gray-700);
 }
-.drawn__name {
-  font-size: 18px;
-  line-height: 27px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
 .drawn__lead {
   margin-top: 3px;
   font-size: 13px;
@@ -3905,16 +3900,9 @@ strong {
   line-height: 19.5px;
 }
 .drawn__kw {
-  flex: 0 0 auto;
-  margin-top: 6px;
-  font-size: 12px;
-  line-height: 18px;
   font-weight: 700;
   color: var(--gray-800);
-  white-space: nowrap;
-
-  padding: 0;
-  color: var(--gray-600);}
+}
 .mygod__why {
   margin: var(--space-3) 0 0;
   padding-top: var(--space-3);
@@ -4167,13 +4155,7 @@ strong {
   background: none;
   padding: 0;
 }
-.score-hero .drawn__name {
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 600;
-  color: var(--gray-700);
-}
-
+.score-hero 
 .score-hero .drawn__k,
 .score-hero .drawn__lead {
   color: var(--gray-700); /* 파란 틴트 위 AA */
@@ -4935,7 +4917,7 @@ strong {
 /* ── 결과: 네 가지 운 막대 ── */
 .cat4 { margin-top: 24px; }
 .cat4__head {
-  margin: 0 0 10px;
+  margin: 0 0 var(--space-4);
   font-size: 17px;
   line-height: 25.5px;
   font-weight: 700;
@@ -5143,17 +5125,17 @@ strong {
 
 /* 회색 바탕 위 흰 카드: 구역이 한눈에 나뉘고 입체감이 생긴다 */
 .sec-card {
-  margin-top: 20px;
-  padding: 18px 18px 16px;
+  margin-top: var(--space-7);
+  padding: 22px 20px 20px;
   border-radius: 20px;
   background: var(--white);
   box-shadow: 0 6px 20px rgba(0, 23, 51, 0.06);
 }
-.cat4.sec-card { margin-top: 20px; }
-.lucky4.sec-card { margin-top: 20px; }
+.cat4.sec-card { margin-top: var(--space-7); }
+.lucky4.sec-card { margin-top: var(--space-7); }
 .sec-card .cat4__head,
 .sec-card .lucky4__head { font-size: 17px; line-height: 25.5px; }
-.sec-card--plan { background: var(--white); padding: 18px; }
+.sec-card--plan { background: var(--white); padding: 22px 20px; }
 .sec-card--plan .plan__title { font-size: 18px; line-height: 27px; color: var(--gray-900); }
 .lucky4__grid--3 .lucky4__tile {
   background: var(--gray-50);
@@ -5960,7 +5942,7 @@ strong {
 
 /* 한 카드 안에서 두 번째 덩이의 제목 */
 .cat4__head--sub {
-  margin-top: 22px;
+  margin-top: var(--space-8);
   padding-top: 18px;
   border-top: 1px solid var(--gray-100);
 }
@@ -6271,7 +6253,7 @@ strong {
 /* 쪽지 카드 안의 결론 - 캡처해서 보내도 뜻이 통해야 하는 세 줄 */
 .drawn__verdict {
   display: block;
-  margin-top: 6px;
+  margin-top: 10px;
   font-size: 20px;
   line-height: 29px;
   font-weight: 700;
@@ -6306,6 +6288,20 @@ strong {
   line-height: 18px;
   font-weight: 700;
   color: #ffffff;
+}
+/* 배지는 제 줄을 갖는다. 문장과 한 줄에 흘리면 문장이 배지 뒤에서 접혀
+   줄바꿈이 실수처럼 보인다. */
+.drawn__now .drawn__stance {
+  display: block;
+  width: fit-content;
+  margin: 0 0 8px;
+}
+.drawn__do {
+  display: block;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 600;
+  color: var(--gray-900);
 }
 
 /* 지우기 확인 - 되돌릴 수 없는 일이라 한 번 더 묻는다 */
