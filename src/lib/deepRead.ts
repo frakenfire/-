@@ -1,7 +1,7 @@
 import { DAY_MASTER_BY_INDEX } from '../data/dayMaster.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { TEN_GOD_KO } from './tenGods.ts';
-import { BAND_WORD, monthsAway, type TimingRead, type TimingSlot } from './timing.ts';
+import { bandLabel, monthsAway, type TimingRead, type TimingSlot } from './timing.ts';
 import { CONCERN_GOD, GOD_SCALE, GOD_PULL, REFRESH_NOTE } from '../data/concernReadings.ts';
 import { computeConcernScore, scoreVerdictLine, type ConcernScore } from './concernScore.ts';
 import { withJosa } from './josa.ts';
@@ -357,24 +357,24 @@ export function buildDeepRead(
     {
       k: '이번 달',
       v: timing.thisMonth.label,
-      band: BAND_WORD[timing.thisMonth.band],
+      band: bandLabel(timing.thisMonth),
     },
     {
       k: '가장 좋은 때',
       v: away === 0 ? `${timing.bestMonth.label}, 바로 이번 달이에요` : `${timing.bestMonth.label}, ${away}달 뒤`,
-      band: BAND_WORD[timing.bestMonth.band],
+      band: bandLabel(timing.bestMonth),
       act: act.best,
     },
     {
       k: '피할 때',
       v: `${timing.hardMonth.label}`,
-      band: BAND_WORD[timing.hardMonth.band],
+      band: bandLabel(timing.hardMonth),
       act: act.hard,
     },
     {
       k: '좋은 해',
       v: `${timing.bestYear.label}`,
-      band: BAND_WORD[timing.bestYear.band],
+      band: bandLabel(timing.bestYear),
       act: act.year,
     },
   ];
@@ -572,15 +572,17 @@ export function buildDeepRead(
   const [y0, y1] = timing.years;
   const yearCompare = [
     { k: '한 해의 결', thisYear: GOD_KEYWORD[y0.tenGod], nextYear: GOD_KEYWORD[y1.tenGod] },
+    // good/care 는 달 단위 문장이다. 여기에 그대로 쓰면 그 해와 같은 기운을 가진
+    // 달이 아래 차트에 뜰 때 글자 하나까지 같은 문장이 두 번 나온다.
     {
       k: '유리하게 쓰는 법',
-      thisYear: CONCERN_GOD[concernKey][y0.tenGod].good,
-      nextYear: CONCERN_GOD[concernKey][y1.tenGod].good,
+      thisYear: CONCERN_GOD[concernKey][y0.tenGod].yearGood,
+      nextYear: CONCERN_GOD[concernKey][y1.tenGod].yearGood,
     },
     {
       k: '조심할 것',
-      thisYear: CONCERN_GOD[concernKey][y0.branchGod].care,
-      nextYear: CONCERN_GOD[concernKey][y1.branchGod].care,
+      thisYear: CONCERN_GOD[concernKey][y0.branchGod].yearCare,
+      nextYear: CONCERN_GOD[concernKey][y1.branchGod].yearCare,
     },
   ];
   const yearGap =
@@ -592,7 +594,7 @@ export function buildDeepRead(
   const slotBlock = (k: string, slot: TimingSlot) => ({
     k,
     label: slot.label,
-    band: BAND_WORD[slot.band],
+    band: bandLabel(slot),
     outer: GOD_SCALE[slot.tenGod].month,
     good: CONCERN_GOD[concernKey][slot.tenGod].good,
     care: CONCERN_GOD[concernKey][slot.branchGod].care,
@@ -607,7 +609,7 @@ export function buildDeepRead(
   const monthSlots = timing.months.map((m) => ({
     label: m.label,
     month: m.month ?? 0,
-    band: BAND_WORD[m.band],
+    band: bandLabel(m),
     outer: GOD_SCALE[m.tenGod].month,
     good: CONCERN_GOD[concernKey][m.tenGod].good,
     care: CONCERN_GOD[concernKey][m.branchGod].care,
@@ -616,7 +618,7 @@ export function buildDeepRead(
   const yearLines = timing.years.slice(0, 2).map((y, i) => ({
     k: i === 0 ? '올해' : '내년',
     label: y.label,
-    band: BAND_WORD[y.band],
+    band: bandLabel(y),
     v: `${GOD_SCALE[y.tenGod].year} ${CONCERN_GOD[concernKey][y.tenGod].line}`,
   }));
 
@@ -642,7 +644,9 @@ export function buildDeepRead(
     decision,
     now,
     headline: HEADLINE[concernKey][verdict],
-    sub: `${GOD_SCALE[timing.thisMonth.tenGod].month} ${VERDICT_SUB[verdict]}`,
+    // month 를 쓰면 아래 '앞으로 열두 달'의 이번 달 칸과 글자 하나까지 같은
+    // 문장이 된다. 결정 카드는 같은 기운을 '무엇을 정할 때인가'로 읽는다.
+    sub: `${GOD_SCALE[timing.thisMonth.tenGod].decide} ${VERDICT_SUB[verdict]}`,
     slots,
     monthSlots,
     yearLines,

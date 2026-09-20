@@ -166,6 +166,17 @@ export const BAND_WORD: Record<Band, string> = {
   hard: '조심할 때',
 };
 
+/**
+ * 밴드 칩에 붙이는 말.
+ *
+ * 말만 붙이면 61점과 83점이 똑같이 '무난해요'로 나온다. 같은 화면 위쪽 표에는
+ * 이번 달 78점이 찍혀 있는데 아래 칩은 무난해요라고만 하니, 78점이 왜 무난인지
+ * 확인할 길이 없었다. 숫자를 같이 적어 말과 점수가 서로를 설명하게 한다.
+ */
+export function bandLabel(slot: { band: Band; score: number }): string {
+  return `${BAND_WORD[slot.band]} ${slot.score}`;
+}
+
 export function godWord(tenGod: TenGod): string {
   return TEN_GOD_KO[tenGod];
 }

@@ -230,3 +230,61 @@ test('이름 판정이 앞뒤로 어긋나지 않는다', () => {
     assert.ok(v.length > 30, `${n}: 판정이 너무 짧음`);
   }
 });
+
+// 밴드 말만 붙이면 61점과 83점이 똑같이 '무난해요'가 된다. 같은 화면 위쪽 표에는
+// 이번 달 78점이 찍혀 있는데 아래 칩은 무난해요라고만 하니 앞뒤가 안 맞아 보인다.
+test('밴드 칩은 말과 숫자를 같이 단다', () => {
+  const bandOf = (n: number) => (n >= 84 ? '좋아요' : n <= 60 ? '조심할 때' : '무난해요');
+  for (const c of CONCERNS) {
+    const { r } = read(new Date('2026-09-15T09:00:00+09:00'), c.key);
+    const chips = [
+      ...r.when.map((w) => w.band),
+      ...r.slots.map((s) => s.band),
+      ...r.monthSlots.map((m) => m.band),
+      ...r.yearLines.map((y) => y.band),
+    ].filter((b): b is string => typeof b === 'string');
+    assert.ok(chips.length >= 12, `${c.key}: 칩이 ${chips.length}개뿐`);
+    for (const chip of chips) {
+      const m = /^(좋아요|무난해요|조심할 때) (\d+)$/.exec(chip);
+      assert.ok(m, `${c.key}: 칩에 숫자가 없어요 — ${chip}`);
+      assert.equal(m![1], bandOf(Number(m![2])), `${c.key}: 말과 점수가 어긋나요 — ${chip}`);
+    }
+  }
+  // 위 점수표의 이번 달 칸과 아래 칩의 숫자가 같은 값이어야 한다
+  const { t, r } = read(new Date('2026-09-15T09:00:00+09:00'));
+  const chip = r.when.find((w) => w.k === '이번 달')!.band!;
+  assert.equal(chip, `${'좋아요 무난해요 조심할 때'.split(' ')[['good', 'ok', 'hard'].indexOf(t.thisMonth.band)]} ${t.thisMonth.score}`);
+});
+
+// 결정 카드가 아래 열두 달 차트의 이번 달 칸을 그대로 다시 적고 있었다.
+// 200줄 떨어져 있어도 같은 문장이면 '맨날 같네'가 된다.
+test('결정 카드와 열두 달 차트가 같은 문장을 쓰지 않는다', () => {
+  for (const c of CONCERNS) {
+    for (let m = 0; m < 12; m += 1) {
+      const { r } = read(new Date(Date.UTC(2026, m, 15, 3)), c.key);
+      const chartLine = r.monthSlots[0].outer;
+      assert.ok(
+        !r.sub.includes(chartLine),
+        `${c.key} ${m + 1}월: 결정 카드가 차트 문장을 그대로 씀 — ${chartLine}`,
+      );
+    }
+  }
+});
+
+// 같은 십성이 두 자리에 걸리면 같은 문장이 두 번 나온다.
+// 올해·내년 표의 '유리하게 쓰는 법'과 열두 달 차트의 '좋아요'가 그랬다.
+test('해 표와 달 차트가 같은 문장을 쓰지 않는다', () => {
+  const hits: string[] = [];
+  for (const c of CONCERNS) {
+    for (let m = 0; m < 12; m += 1) {
+      const { r } = read(new Date(Date.UTC(2026, m, 15, 3)), c.key);
+      const cells = r.yearCompare.flatMap((y) => [y.thisYear, y.nextYear]);
+      for (const slot of r.monthSlots) {
+        for (const line of [slot.good, slot.care, slot.outer]) {
+          if (cells.includes(line)) hits.push(`${c.key} ${m + 1}월 ${slot.label}: ${line}`);
+        }
+      }
+    }
+  }
+  assert.equal(hits.length, 0, `겹치는 문장 ${hits.length}개\n  ${hits.slice(0, 6).join('\n  ')}`);
+});
