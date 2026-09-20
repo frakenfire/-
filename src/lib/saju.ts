@@ -11,6 +11,7 @@
 // 정확도: 일진 계산은 (JDN + 49) % 60, 甲子=0 (표준 만세력과 일치. 1970-01-01=辛巳, 2000-01-01=戊午 검증).
 // 주의: 오락용이며 절기 기준 월주/시주는 다루지 않는다(일진·띠 관계에 집중).
 
+import { GRADE } from './gradeWords.ts';
 import type { ZodiacId } from '../data/zodiac.ts';
 
 // 결정적 해시/선택 — dateSeed 와 동일한 FNV-1a 방식을 내장(이 모듈을 순수 leaf 로
@@ -298,11 +299,12 @@ export const REL_KO: Record<BranchRelation, string> = {
   none: '평운',
 };
 
+// 등급 말은 gradeWords.ts 의 사다리에서만 가져온다. 여기서 새로 짓지 않는다.
 const TONE_WORD: Record<SajuTone, string> = {
-  great: '아주 좋음',
-  good: '좋음',
-  steady: '잔잔함',
-  caution: '조심',
+  great: GRADE.best,
+  good: GRADE.good,
+  steady: GRADE.plain,
+  caution: GRADE.care,
 };
 
 // 히어로 큰 제목용 짧은 문구 — 톤별 풀에서 seed로 골라 같은 톤이라도 날마다 변주

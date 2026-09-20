@@ -1,3 +1,4 @@
+import { GRADE } from './gradeWords.ts';
 import { seededRandom } from './dateSeed.ts';
 import { LUCKY_FOODS, type LuckyFood } from '../data/luckyFood.ts';
 
@@ -91,8 +92,10 @@ const TONE_BAND: Record<'great' | 'good' | 'steady' | 'caution', [number, number
 };
 
 /** 등급을 화면에 보일 때 쓰는 말. '중길' 은 아이가 모른다. */
+// 다섯 칸을 다섯 낱말로 가르면 '괜찮음' 과 '보통' 과 '잔잔함' 의 차이를
+// 아무도 모른다. 사다리 넷으로 누르고, 그 안의 차이는 점수가 말한다.
 export const GRADE_KO: Record<string, string> = {
-  대길: '아주 좋음', 길: '좋음', 중길: '괜찮음', 소길: '보통', 평: '잔잔함',
+  대길: GRADE.best, 길: GRADE.good, 중길: GRADE.plain, 소길: GRADE.plain, 평: GRADE.plain,
 };
 
 export function luckBandForTone(tone: 'great' | 'good' | 'steady' | 'caution'): [number, number] {

@@ -2,6 +2,7 @@
 // 숫자에 '의미'를 붙여서, 광고를 눌러서라도 보고 싶은 보상 페이지로 만든다.
 // 톤: 해요체, 구체적, 잡초 없이.
 
+import { GRADE } from '../lib/gradeWords.ts';
 export type Band = 'high' | 'mid' | 'low';
 
 export function band(score: number): Band {
@@ -10,10 +11,11 @@ export function band(score: number): Band {
   return 'low';
 }
 
+// 등급 말은 gradeWords.ts 의 사다리에서만 가져온다.
 export const BAND_TAG: Record<Band, string> = {
-  high: '아주 좋아요',
-  mid: '무난해요',
-  low: '살살 가요',
+  high: GRADE.good,
+  mid: GRADE.plain,
+  low: GRADE.care,
 };
 
 // 항목(애정/재물/직장/건강) × 점수대별 한 줄 해석 → 점수가 '뭘 하라는 건지' 알려준다.

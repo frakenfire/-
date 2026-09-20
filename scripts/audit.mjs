@@ -704,7 +704,12 @@ async function run(browser) {
       check(clash.length === 0, '[문구] 점수 말과 줄 이름이 안 겹친다', clash.slice(0, 4).join(' / '));
       // 밴드 말은 칩에만 있어야 한다
       const bandOutside = await page.evaluate((words) => {
-        const chips = '.when4__b, .yline__b, .mpick__band, .score-hero__grade';
+        // 등급을 보여주는 자리는 전부 여기 적는다. 새 자리를 만들면 여기도
+        // 같이 늘려야 한다 — 안 늘리면 이 검사가 먼저 걸린다.
+        const chips = [
+          '.when4__b', '.yline__b', '.mpick__band', '.score-hero__grade',
+          '.week-row__tone', '.rank-row__tone', '.cat4__tag', '.cat-top__tag',
+        ].join(', ');
         const inChip = new Set(document.querySelectorAll(chips));
         return [...document.querySelectorAll('span, b, strong')]
           .filter((el) => el.children.length === 0)

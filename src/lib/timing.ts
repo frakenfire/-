@@ -1,3 +1,4 @@
+import { GRADE } from './gradeWords.ts';
 import { computeFourPillars, type BirthInput, type FourPillars } from './fourPillars.ts';
 import { tenGodOf, mainHiddenStem, GOD_GROUP_OF, TEN_GOD_KO, type GodGroup, type TenGod } from './tenGods.ts';
 import { computeDaeun, type DaeunSet, type Gender } from './daeun.ts';
@@ -160,10 +161,11 @@ export function monthsAway(slot: TimingSlot, months: TimingSlot[]): number {
   return Math.max(0, months.findIndex((m) => m.label === slot.label));
 }
 
+// 등급 말은 gradeWords.ts 의 사다리에서만 가져온다.
 export const BAND_WORD: Record<Band, string> = {
-  good: '좋아요',
-  ok: '무난해요',
-  hard: '조심할 때',
+  good: GRADE.good,
+  ok: GRADE.plain,
+  hard: GRADE.care,
 };
 
 /**
