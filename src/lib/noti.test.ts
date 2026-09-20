@@ -37,3 +37,28 @@ test('SDK 모양대로 감쌌다', () => {
   assert.match(toss, /onError:/);
   assert.match(toss, /templateCode: NOTI_TEMPLATE_CODE/);
 });
+
+// 알림 줄은 콘솔 템플릿을 채워야 화면에 뜬다. 즉 제출 뒤에 처음 나타나는
+// UI 라서, 개발 중에는 아무도 못 본다. 조건과 문구만이라도 여기서 박아둔다.
+// (CSS 가 내는 값은 scripts/audit.mjs 의 '[알림] …' 셋이 실제 화면에서 잰다)
+test('알림 줄은 템플릿이 채워져야 뜬다', () => {
+  const toss = readFileSync(new URL('./toss.ts', import.meta.url), 'utf8');
+  // 템플릿이 비면 canAskNotification 이 false 여야 한다
+  assert.match(toss, /return !NOTI_TEMPLATE_CODE\.startsWith\('REPLACE_'\)/);
+
+  const screen = readFileSync(new URL('../screens/ResultScreen.tsx', import.meta.url), 'utf8');
+  // 줄을 그리는 조건이 onAskNoti 에 달려 있어야 한다 (App 이 canAskNotification 으로 준다)
+  assert.match(screen, /\{deep && onAskNoti \? \(/);
+  assert.match(screen, /className="notiask"/);
+  // 무엇을 묻는지 문구로 분명해야 한다. 그냥 '알림 받기' 면 왜 받는지가 없다.
+  assert.match(screen, /내일 쪽지가 바뀌면 알려드릴까요/);
+});
+
+test('알림 줄이 결과를 다 본 자리에 있다', () => {
+  const screen = readFileSync(new URL('../screens/ResultScreen.tsx', import.meta.url), 'utf8');
+  const noti = screen.indexOf('className="notiask"');
+  const more = screen.indexOf('MoreConcerns');
+  const disc = screen.indexOf('<Disclaimer');
+  assert.ok(noti > more, '알림은 결과를 다 본 뒤에 묻는다');
+  assert.ok(noti < disc, '면책 문구가 화면을 닫는다');
+});

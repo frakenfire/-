@@ -774,6 +774,41 @@ async function run(browser) {
       const popped = await page.evaluate(() => document.body.innerText.includes('알림 동의'));
       check(!popped, '[알림] 화면 진입에 동의 창을 띄우지 않는다');
 
+      // 그런데 템플릿을 채우면 이 줄이 화면에 뜬다. 즉 형님이 콘솔 값을 넣은
+      // 순간 처음 나타나는 UI 인데, 여기까지 어떤 검사도 그걸 본 적이 없었다.
+      // 빌드를 한 번 더 돌리지 않고도 보려면, 실제 화면에 그 마크업을 심어
+      // CSS 가 내는 값을 잰다. 다른 줄들과 같은 자로 재는 게 핵심이다.
+      const noti = await page.evaluate(() => {
+        const host = document.querySelector('.nextday')?.parentElement ?? document.body;
+        const el = document.createElement('button');
+        el.type = 'button';
+        el.className = 'notiask';
+        el.innerHTML = '<span class="notiask__k">내일 쪽지가 바뀌면 알려드릴까요</span>'
+          + '<span class="notiask__c" aria-hidden>\u203a</span>';
+        host.appendChild(el);
+        const r = el.getBoundingClientRect();
+        const k = getComputedStyle(el.querySelector('.notiask__k'));
+        const box = getComputedStyle(el);
+        const out = {
+          h: Math.round(r.height),
+          w: Math.round(r.width),
+          size: k.fontSize,
+          line: k.lineHeight,
+          color: k.color,
+          bg: box.backgroundColor,
+        };
+        el.remove();
+        return out;
+      });
+      // 터치로 누르는 줄이다. 44px 미만이면 손가락이 빗나간다.
+      check(noti.h >= 44, '[알림] 줄 높이가 44px 이상', `${noti.h}px`);
+      // 글자 크기를 안 주면 버튼의 브라우저 기본값(13.33px)이 나온다.
+      check(noti.size === '15px' && noti.line === '22.5px',
+        '[알림] 글자가 앱의 자를 따른다', `${noti.size}/${noti.line}`);
+      // 브랜드 색이어야 '누를 수 있는 것' 으로 읽힌다. 기본 검정이면 안 된다.
+      check(noti.color !== 'rgb(0, 0, 0)' && noti.bg !== 'rgba(0, 0, 0, 0)',
+        '[알림] 색이 기본값이 아님', `${noti.color} / ${noti.bg}`);
+
       // ── 한 단어는 한 뜻만 ──
       // 밴드 칩이 '좋아요 92' 로 점수를 말하는데 같은 화면의 줄 이름도
       // '좋아요' 였다. 한 단어가 두 가지 뜻이면 읽는 사람이 둘을 잇는다.
