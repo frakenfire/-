@@ -476,14 +476,25 @@ async function run(browser) {
       check((await page.getByText('태어난 곳', { exact: true }).count()) === 1,
         '[출생지] 태어난 곳을 받는다');
       check(/서울/.test(await bodyText(page)), '[출생지] 기본값이 서울로 보인다');
-      await page.getByText('바꾸기', { exact: false }).first().click();
+      await page.locator('.field__pick').first().click();
       await wait(page, 500);
-      check((await page.getByRole('button', { name: '부산', exact: true }).count()) === 1,
-        '[출생지] 목록이 열린다');
+      check((await page.locator('.field__opt').count()) >= 10, '[출생지] 목록이 열린다');
       await page.getByRole('button', { name: '부산', exact: true }).first().click();
       await wait(page, 500);
-      check(/부산/.test(await page.locator('.me-pick__k').first().innerText()),
+      check(/부산/.test(await page.locator('.field__pick').first().innerText()),
         '[출생지] 고른 곳이 줄에 남는다');
+      // 같은 폼 안에서 칸마다 생김새가 다르면 무엇을 넣는 자리인지가 안 읽힌다
+      const [inputBox, pickBox] = await Promise.all([
+        page.locator('.field__input').first().boundingBox(),
+        page.locator('.field__pick').first().boundingBox(),
+      ]);
+      check(
+        !!inputBox && !!pickBox &&
+          Math.abs(inputBox.width - pickBox.width) < 1 &&
+          Math.abs(inputBox.height - pickBox.height) < 1,
+        '[출생지] 고르는 줄이 이름 칸과 같은 크기',
+        `${inputBox?.width}x${inputBox?.height} vs ${pickBox?.width}x${pickBox?.height}`,
+      );
 
       // 달력을 바꿔도 가리키는 날은 같아야 한다
       const before = (await bodyText(page)).match(/양력 (\d{4})년 (\d{1,2})월 (\d{1,2})일/);

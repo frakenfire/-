@@ -338,29 +338,44 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
           </div>
         </div>
 
+        <button
+          type="button"
+          className={unknownTime ? 'birth-unknown birth-unknown--on' : 'birth-unknown'}
+          onClick={() => setUnknownTime((v) => !v)}
+          aria-pressed={unknownTime}
+        >
+          <span className="birth-unknown__box" aria-hidden />
+          태어난 시각을 몰라요
+        </button>
+        {/* '30분만 달라도…' 같은 설득 문장은 넣지 않는다. 몰라요를 켰을 때만,
+            무엇이 빠지는지 한 문장. */}
+        {unknownTime ? <p className="birth-hint">시각 없이 세 기둥으로 봐요.</p> : null}
+
         {/* 태어난 곳 — 한국 표준시는 동경 135°를 쓰는데 국토는 126~130°에 있다.
             목포와 포항은 해가 뜨는 시각이 12분 차이라, 시주 경계 근처에서
-            태어난 사람은 전원 서울로 계산하면 시주가 한 칸 밀린다. */}
+            태어난 사람은 전원 서울로 계산하면 시주가 한 칸 밀린다.
+            모양은 이름 칸과 같은 줄을 쓴다 — 같은 폼 안에서 칸마다 생김새가
+            다르면 무엇을 넣는 자리인지가 안 읽힌다. */}
         <div className="field">
           <span className="field__k">태어난 곳</span>
           <button
             type="button"
-            className={placeOpen ? 'me-pick me-pick--on' : 'me-pick'}
+            className={placeOpen ? 'field__pick field__pick--on' : 'field__pick'}
+            aria-expanded={placeOpen}
             onClick={() => setPlaceOpen((v) => !v)}
           >
-            <span className="me-pick__k">{place.label}</span>
-            <span className="me-pick__v">
-              바꾸기
-              <span className="me-pick__chev" aria-hidden> </span>
+            <span>{place.label}</span>
+            <span className="field__pick__c" aria-hidden>
+              {placeOpen ? '닫기' : '바꾸기'}
             </span>
           </button>
           {placeOpen ? (
-            <div className="zodiac-grid zodiac-grid--full me-grid">
+            <div className="field__opts">
               {BIRTH_PLACES.map((p) => (
                 <button
                   key={p.id}
                   type="button"
-                  className={p.id === placeId ? 'zodiac-chip zodiac-chip--on' : 'zodiac-chip'}
+                  className={p.id === placeId ? 'field__opt field__opt--on' : 'field__opt'}
                   aria-pressed={p.id === placeId}
                   onClick={() => {
                     setPlaceId(p.id);
@@ -377,18 +392,6 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
           </span>
         </div>
 
-        <button
-          type="button"
-          className={unknownTime ? 'birth-unknown birth-unknown--on' : 'birth-unknown'}
-          onClick={() => setUnknownTime((v) => !v)}
-          aria-pressed={unknownTime}
-        >
-          <span className="birth-unknown__box" aria-hidden />
-          태어난 시각을 몰라요
-        </button>
-        {/* '30분만 달라도…' 같은 설득 문장은 넣지 않는다. 몰라요를 켰을 때만,
-            무엇이 빠지는지 한 문장. */}
-        {unknownTime ? <p className="birth-hint">시각 없이 세 기둥으로 봐요.</p> : null}
       </div>
 
       {notice ? <p className="birth-warn">{notice}</p> : null}
