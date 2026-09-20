@@ -34,6 +34,7 @@ function screenLines(key: ConcernKey, option: string) {
     ...r.monthSlots.map((s) => s.outer),
     ...r.yearLines.map((y) => y.v),
     ...r.why.map((x) => x.v),
+    r.daeunLine,
   ].filter((x): x is string => typeof x === 'string' && x.length > 6);
 }
 
@@ -58,7 +59,9 @@ test('고민별 문장 네 벌이 다 채워져 있다', () => {
       const g = CONCERN_GOD[c.key][god];
       // 네 벌 전부가 그 고민의 말을 써야 한다. '구간이 열려요' 같은 문장은
       // 어느 고민에 붙여도 말이 되고, 그래서 아무 말도 안 하는 것과 같다.
-      for (const [k, v] of Object.entries({ month: g.month, decide: g.decide, pull: g.pull, year: g.year })) {
+      for (const [k, v] of Object.entries({
+        month: g.month, decide: g.decide, pull: g.pull, year: g.year, daeun: g.daeun,
+      })) {
         assert.ok(v && v.length >= 8, `${c.key}.${god}.${k} 가 비었어요`);
         assert.ok(WORD[c.key].test(v), `${c.key}.${god}.${k} 에 고민 말이 없어요 — ${v}`);
       }
@@ -72,6 +75,8 @@ test('같은 기운도 고민마다 다른 문장이다', () => {
     assert.equal(new Set(months).size, months.length, `${god} 의 달 문장이 고민끼리 겹쳐요`);
     const pulls = CONCERNS.map((c) => CONCERN_GOD[c.key][god].pull);
     assert.equal(new Set(pulls).size, pulls.length, `${god} 의 근거가 고민끼리 겹쳐요`);
+    const daeuns = CONCERNS.map((c) => CONCERN_GOD[c.key][god].daeun);
+    assert.equal(new Set(daeuns).size, daeuns.length, `${god} 의 십 년 줄이 고민끼리 겹쳐요`);
   }
 });
 
@@ -108,6 +113,22 @@ test('내일 한 줄도 그 고민의 말을 쓴다', () => {
       // '결이 비슷한 날' 갈래는 고민 말이 없어도 된다 (오늘과 같다는 뜻)
       if (/결이 비슷|같은 기운/.test(line)) continue;
       assert.ok(WORD[c.key].test(line), `${c.key} ${d}일: ${line}`);
+    }
+  }
+});
+
+// 고민별 문장을 붙이면서 같은 말이 한 문단에 두 번 들어가기 쉽다.
+// 돈에서 '빌려주는 돈은 못 돌아오기 쉬워요' 가 십 년 줄에 두 번 나왔다.
+test('한 문단 안에서 같은 문장이 두 번 안 나온다', () => {
+  for (const c of CONCERNS) {
+    for (const opt of c.options) {
+      const t = computeTiming(INPUT, P, 'female', c.key, new Date('2026-09-21T09:00:00+09:00'));
+      const r = buildDeepRead(P, t, c.key, opt.key, '2026-09-21', '김한별');
+      for (const para of [r.daeunLine, r.sub, r.scoreLine, r.decision.verdict]) {
+        if (!para) continue;
+        const sents = para.split(/(?<=[.!?])\s+/).map((x) => x.trim()).filter((x) => x.length > 6);
+        assert.equal(new Set(sents).size, sents.length, `${c.key}/${opt.key}: ${para}`);
+      }
     }
   }
 });
