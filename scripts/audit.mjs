@@ -590,16 +590,22 @@ async function run(browser) {
       await page.getByText('윤2월에 태어났어요', { exact: false }).first().click();
       await wait(page, 500);
       check(/음력 2023년 윤2월/.test(await bodyText(page)), '[음력] 윤달을 켜면 윤달로 적힌다');
-      // 켜면 위아래 가로줄까지 파랗게 칠해져서, 바로 밑의 '태어난 시각을 몰라요'
-      // 체크줄과 전혀 다른 물건처럼 보였다. 체크됐다는 사실은 네모와 글자색이
-      // 이미 말한다. 줄은 옆 줄들과 같은 회색이어야 리듬이 안 깨진다.
+      // 체크줄은 목록의 한 줄이던 시절에 위아래 가로줄을 달고 있었다. 켜면
+      // 그 줄까지 파랗게 칠해져 옆 체크줄과 전혀 다른 물건처럼 보였고, 폼으로
+      // 들어온 뒤에는 이름표와 값 사이에 들어앉아 한 칸을 둘로 갈라놨다.
+      // 줄 색을 맞추는 게 아니라 줄을 안 긋는 게 맞다 - 체크됐다는 사실은
+      // 네모와 글자색과 바탕이 이미 말한다.
       const checkRule = await page.evaluate(() => {
         const rows = [...document.querySelectorAll('.birth-unknown')];
         if (rows.length < 2) return null;
-        return rows.map((r) => getComputedStyle(r).borderTopColor);
+        return rows.map((r) => {
+          const c = getComputedStyle(r);
+          return ['Top', 'Right', 'Bottom', 'Left']
+            .map((k) => parseFloat(c[`border${k}Width`]) || 0).join('/');
+        });
       });
-      check(checkRule !== null && new Set(checkRule).size === 1,
-        '[음력] 켠 체크줄의 가로줄이 옆 줄과 같은 색', checkRule ? [...new Set(checkRule)].join(' / ') : '줄 없음');
+      check(checkRule !== null && checkRule.every((w) => w === '0/0/0/0'),
+        '[음력] 체크줄은 가로줄을 긋지 않는다', checkRule ? checkRule.join(' · ') : '체크줄 둘을 못 찾음');
       await page.getByText('윤2월에 태어났어요', { exact: false }).first().click();
       await wait(page, 400);
 

@@ -211,6 +211,25 @@ function collect() {
     .map((e) => (typeof e.className === 'string' ? e.className : '').split(' ')[0] || e.tagName) : [];
   out.floating = out.floatingList.length;
 
+  // 입력 폼의 리듬 — 이름표는 한 글자, 칸 사이는 한 간격.
+  //
+  // 생년월일 화면에서 이름표가 13px 셋과 12px 둘로 갈려 있었고, 칸 사이가
+  // 28 / 27 / 12 / 11 로 오갔다. 게다가 휠 덩이 둘 사이에만 가로줄이 하나
+  // 있어서 다섯 칸 중 둘만 한 묶음처럼 보였다. 아무도 그렇게 정한 적이 없고,
+  // .field 와 .wheel-group 이 각자 간격을 들고 있어서 그냥 그렇게 된 것이다.
+  out.formLabels = [...new Set([...document.querySelectorAll('.field__k, .wheel-group__k')]
+    .map((el) => { const c = getComputedStyle(el); return `${c.fontSize}/${c.lineHeight}/${c.fontWeight}`; }))];
+  out.formGaps = [];
+  {
+    const form = document.querySelector('.birth-form');
+    const kids = form ? [...form.children].filter((el) => el.getBoundingClientRect().height > 1) : [];
+    for (let i = 1; i < kids.length; i += 1) {
+      const a = kids[i - 1].getBoundingClientRect();
+      const b = kids[i].getBoundingClientRect();
+      out.formGaps.push(Math.round(b.top - a.bottom));
+    }
+  }
+
   // 점수 막대가 바로 옆 숫자와 같은 말을 하는가.
   // 이 앱에는 점수 막대가 세 종류 있다 — 왜 N점인가요, 네 가지 운, 궁합 세 칸.
   // 한때 '왜 N점인가요' 만 50~92 를 0~100 으로 펴서 그렸고, 그 바람에 73점
@@ -293,7 +312,14 @@ function auditScreen(name, data) {
   check(data.floating <= 3, `[${name}] 떠 있는 면 3장 이하`, `${data.floating}장: ${data.floatingList.join(' ')}`);
   check(data.stuck.length === 0, `[${name}] 버튼끼리 붙어 있지 않음`,
     data.stuck.length ? data.stuck.join(' ') : `나란한 버튼 ${data.btnPairs}쌍`);
-  // 11) 점수 막대와 바로 옆 숫자가 같은 말을 하는가 (막대가 없는 화면은 0개로 지나간다)
+  // 11) 입력 폼의 이름표는 한 글자, 칸 사이는 한 간격 (폼이 없는 화면은 0가지로 지나간다)
+  const gapSpread = data.formGaps.length ? Math.max(...data.formGaps) - Math.min(...data.formGaps) : 0;
+  const formOk = data.formLabels.length <= 1 && gapSpread <= 2;
+  check(formOk, `[${name}] 입력 폼의 이름표와 간격이 한 벌`,
+    formOk ? `이름표 ${data.formLabels.length}가지 / 칸 사이 ${data.formGaps.join('·') || '없음'}`
+      : `이름표 ${data.formLabels.join(' · ')} / 칸 사이 ${data.formGaps.join('·')}`);
+
+  // 12) 점수 막대와 바로 옆 숫자가 같은 말을 하는가 (막대가 없는 화면은 0개로 지나간다)
   check(data.barGap.length === 0, `[${name}] 점수 막대가 옆 숫자와 어긋나지 않음`,
     data.barGap.length ? data.barGap.slice(0, 4).join(' / ') : `막대 ${data.barCount}개`);
 }

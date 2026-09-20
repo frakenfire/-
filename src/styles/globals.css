@@ -1751,10 +1751,14 @@ strong {
    모양이다. 사주를 넣었다는 사실은 아이콘과 문구가 이미 말하고 있다. */
 /* 셰브런도 정보다 — gray-400 은 흰 배경에서 2.01:1 로 AA 미달이라 한 단계 올린다 */
 /* ── 생년월일시 입력 ── */
+/* 다섯 칸은 같은 간격으로 선다. 전에는 .field 가 flex gap(12px) 위에
+   margin-bottom(16px) 을 더 얹어 28px 이었고, .wheel-group 은 gap 만 받아
+   12px 이었다. 같은 폼 안에서 칸 사이가 28 / 27 / 12 / 11 로 오갔다.
+   간격은 한 군데(여기)에서만 정한다. */
 .birth-form {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-7);
   margin: var(--space-5) 0 var(--space-4);
 }
 .birth-unknown {
@@ -1769,12 +1773,12 @@ strong {
   color: var(--gray-700);
   text-align: left;
 
-  padding: 14px 0;
-  border-top: 1px solid var(--gray-100);
-  border-bottom: 1px solid var(--gray-100);}
-/* 켜면 위아래 가로줄까지 파랗게 칠해져서, 같은 화면에 있는 '태어난 시각을
-   몰라요' 체크줄과 전혀 다른 물건처럼 보였다. 체크됐다는 사실은 네모와
-   글자색이 이미 말한다. 줄은 옆 줄들과 같은 회색으로 둬서 리듬을 지킨다. */
+  padding: 12px 0;
+}
+/* 위아래 가로줄은 뺐다. 체크가 목록의 한 줄이던 시절의 흔적인데, 지금은
+   '태어난 시각' 이름표와 그 값 사이에 들어앉아 한 칸을 둘로 갈라놨다.
+   폼 안에서 가로줄을 쓰는 데가 여기 하나뿐이라 더 그렇게 보였다.
+   체크됐다는 사실은 네모와 글자색과 바탕이 이미 말한다. */
 .birth-unknown--on {
   background: var(--brand-soft);
   color: var(--brand-strong);
@@ -1980,19 +1984,20 @@ strong {
   align-items: center;
   gap: var(--space-2);
 }
+/* 휠 덩이 둘 사이에만 가로줄이 하나 있었다. 다섯 칸 중 두 칸만 한 묶음인
+   것처럼 보였는데, 묶음이 아니다. 줄은 없애고 간격만 남긴다. */
 .wheel-group {
-
-  padding: var(--space-3) 0;}
-.wheel-group + .wheel-group {
-  border-top: 1px solid var(--gray-100);
-}
-.wheel-group__k {
   display: block;
-  margin-bottom: 2px;
-  font-size: 12px;
-  line-height: 18px;
+}
+/* 이름표는 다섯 칸이 같은 글자여야 한다. 13px 셋과 12px 둘이 섞여 있었다. */
+.wheel-group__k,
+.field__k {
+  display: block;
+  font-size: 13px;
+  line-height: 19.5px;
   font-weight: 600;
   color: var(--gray-700);
+  margin-bottom: 6px;
 }
 .wheel-group__v {
   display: block;
@@ -2188,15 +2193,6 @@ strong {
 /* ── 이름 입력: 토스 텍스트 필드 ── */
 .field {
   display: block;
-  margin-bottom: 16px;
-}
-.field__k {
-  display: block;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  color: var(--gray-700);
-  margin-bottom: 6px;
 }
 .field__input {
   width: 100%;
