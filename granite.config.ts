@@ -8,8 +8,8 @@ import { defineConfig } from '@apps-in-toss/web-framework/config';
 //   - brand.icon: 콘솔에 업로드한 아이콘 이미지 URL 로 교체
 // 위 두 값은 콘솔 등록값과 반드시 일치해야 배포가 정상 동작한다.
 export default defineConfig({
-  // 콘솔에서 발급받은 앱 ID. (등록 전까지는 임시 slug)
-  appName: 'today-note',
+  // 콘솔에 등록한 appName 과 글자 하나까지 같아야 한다.
+  appName: 'todaymyheart',
   web: {
     host: 'localhost',
     port: 5173,
@@ -25,7 +25,9 @@ export default defineConfig({
   // Vite 빌드 산출물 경로와 일치해야 한다.
   outdir: 'dist',
   brand: {
-    displayName: '오늘쪽지 뽑기',
+    // 콘솔 '한국어 앱 이름' 과 글자 하나까지 같아야 한다.
+    // 등록 정보와 다르면 반려 1순위다.
+    displayName: '오늘의 마음 한장',
     // TODO: 콘솔에 업로드한 아이콘 URL 로 교체 (static.toss.im/appsintoss/...)
     icon: 'https://static.toss.im/appsintoss/placeholder-today-note.png',
     primaryColor: '#3182f6',

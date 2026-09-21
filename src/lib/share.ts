@@ -64,7 +64,7 @@ function tossSupported(fn: unknown): fn is { isSupported?: () => boolean } {
 // 앱인토스 딥링크 슬러그 — 콘솔 발급 앱 ID 와 반드시 같아야 링크가 열린다.
 // apply-console-values.mjs 가 granite.config.ts 의 appName 과 함께 교체하고,
 // check-release-ready 가 둘의 불일치를 잡는다.
-export const INTOSS_APP_SLUG = 'today-note';
+export const INTOSS_APP_SLUG = 'todaymyheart';
 
 // 앱인토스 딥링크를 붙여 수신자가 미니앱으로 바로 진입하게 한다. (토스 웹뷰에서만 동작)
 // getTossShareLink 는 'intoss://<앱이름>[/경로]' 형식만 받는다 — '/' 같은 상대경로를
@@ -134,7 +134,7 @@ export async function shareMessage(text: string, path = '/'): Promise<ShareOutco
   };
   if (typeof nav.share === 'function') {
     try {
-      await nav.share({ title: '오늘쪽지 뽑기', text });
+      await nav.share({ title: '오늘의 마음 한장', text });
       return 'shared';
     } catch (e) {
       if (isAbort(e)) return 'cancelled'; // 사용자가 취소 복사로 넘어가지 않는다

@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "오늘쪽지 뽑기 — 토스 앱인토스용 서버리스 운세 쪽지 미니앱",
+  "description": "오늘의 마음 한장 — 토스 앱인토스용 서버리스 사주 쪽지 미니앱",
   "license": "UNLICENSED",
   "engines": {
     "node": ">=20"

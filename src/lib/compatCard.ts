@@ -175,12 +175,12 @@ export async function saveCompatCard(input: CompatCardInput): Promise<boolean> {
     ctx.fillText('너도 우리 궁합 봐봐', cx, cardY + cardH - 120);
     ctx.fillStyle = '#8b95a1';
     ctx.font = `bold 34px ${CARD_FONT}`;
-    ctx.fillText('오늘쪽지 뽑기 · 친구 궁합', cx, cardY + cardH - 60);
+    ctx.fillText('오늘의 마음 한장 · 친구 궁합', cx, cardY + cardH - 60);
 
     const dataUrl = canvas.toDataURL('image/png');
     const now = new Date();
     const stamp = `${now.getFullYear()}${`${now.getMonth() + 1}`.padStart(2, '0')}${`${now.getDate()}`.padStart(2, '0')}-${`${now.getHours()}`.padStart(2, '0')}${`${now.getMinutes()}`.padStart(2, '0')}`;
-    return await saveImageData(dataUrl, `today-note-compat-${stamp}.png`);
+    return await saveImageData(dataUrl, `todaymyheart-compat-${stamp}.png`);
   } catch {
     return false;
   }
