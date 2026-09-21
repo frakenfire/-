@@ -3008,12 +3008,13 @@ strong {
 .note-fan__hint { font-size: 14px; line-height: 21px; }
 
 /* 달 카드의 좋아요·조심해요 — 뭘 하면 되고 뭘 피하면 되는지 두 줄로 끝낸다 */
-.slot__pts { list-style: none; margin: 12px 0 0; padding: 0; }
+.slot__pts { list-style: none; margin: 16px 0 0; padding: 0; }
 .slot__pt {
   display: grid;
   grid-template-columns: 62px minmax(0, 1fr);
   gap: 10px;
-  padding: 10px 0;
+  /* 달 풀이 칸이 위아래로 붙어 답답해 보였다. 줄 사이를 열어준다. */
+  padding: 14px 0;
   border-top: 1px solid var(--gray-100);
 }
 .slot__pt-k {
@@ -3247,14 +3248,14 @@ strong {
 /* 고른 달 한 덩이 */
 .mpick {
   margin-top: 12px;
-  padding-top: 14px;
+  padding-top: 16px;
   border-top: 1px solid var(--gray-100);
 }
 .mpick__head {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 0 0 6px;
+  margin: 0 0 10px;
 }
 /* 정확히 집어야 할 때 쓰는 좌우 버튼 — 손가락이 닿는 면을 44px 로 준다 */
 .mpick__step {
@@ -3283,7 +3284,7 @@ strong {
 .mpick__label { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--gray-900); }
 .mpick__band { font-size: 13px; line-height: 19.5px; font-weight: 600; color: var(--gray-600); }
 .mpick__line {
-  margin: 0 0 10px;
+  margin: 0 0 14px;
   font-size: 15px;
   line-height: 22.5px;
   font-weight: 500;

@@ -80,6 +80,24 @@ export default function App() {
     setScreenRaw(prev ?? fallback);
   }
 
+  /**
+   * 쪽지를 새로 뽑아 결과가 확정됐을 때 쌓인 길을 정리한다.
+   *
+   * 쌓아두는 건 화면 이름뿐이다. 지나온 길에 'result' 가 남아 있으면
+   * 뒤로가기로 거기 닿았을 때 그 자리에 지금 쪽지가 그려진다. 결과 화면에서
+   * 다른 고민을 눌러 한 번 더 뽑고 뒤로 세 번 누르면, 아까 보던 쪽지가
+   * 아니라 방금 뽑은 쪽지가 또 나왔다.
+   *
+   * 쪽지도 고민도 한 번에 하나다. 앞서 뽑은 결과 화면은 물론, 그 앞의
+   * 고민·쪽지 고르기 화면도 되돌아가면 지금 고민으로 다시 그려진다.
+   * 그래서 앞의 결과까지를 통째로 잘라내고 홈만 남긴다.
+   */
+  function commitDraw() {
+    const last = backStack.current.lastIndexOf('result');
+    if (last < 0) return;
+    backStack.current = ['home', ...backStack.current.slice(last + 1)];
+  }
+
   /** 처음으로 — 쌓인 길도 비운다 */
   function goHome() {
     backStack.current = [];
@@ -330,6 +348,7 @@ export default function App() {
       }
       setStreak(updateStreak(dateKey, yesterdayKey)); // 실제 뽑은 날에만 스트릭 갱신
       logEvent('result_viewed', { fortuneType, engineVersion: generated.engineVersion });
+      commitDraw();
       replaceScreen('result');
       setSpin((v) => v + 7);
       // 기분 좋은 순간(대길·3일 스트릭)에 미니앱 리뷰를 한 번만 요청.

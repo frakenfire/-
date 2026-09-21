@@ -1513,6 +1513,41 @@ async function run(browser) {
     await page.context().close();
   }
 
+  // 12.9 두 번째로 뽑은 뒤 뒤로가기 - 지나간 결과 화면으로 다시 떨어지지 않는가
+  {
+    const page = await newPage(browser);
+    await drawTo(page);
+    const first = await bodyText(page);
+    const firstScore = first.match(/(\d+)점/)?.[1] ?? '';
+    // 결과 화면 아래 '다른 고민도 궁금하면' 에서 다른 고민을 눌러 한 번 더 뽑는다
+    await page.getByText('모을 때인지 지킬 때인지', { exact: false }).first().click();
+    await wait(page, 1200);
+    if (!(await page.getByText('쪽지를 골라보세요', { exact: false }).count())) {
+      await page.getByText('모으고 싶어요', { exact: true }).first().click();
+      await wait(page, 900);
+    }
+    await page.locator('button.note').first().dispatchEvent('click');
+    await page.waitForSelector('.drawn', { timeout: 20000 });
+    await wait(page, 1600);
+    const second = await bodyText(page);
+    check(second.includes('돈 점수'), '[두 번 뽑기] 두 번째 결과가 새 고민으로 나온다', second.slice(0, 40));
+
+    // 뒤로가기를 눌러 홈에 닿을 때까지, 결과 화면이 다시 나오면 안 된다.
+    // 지나간 결과 자리에는 지금 쪽지가 그려져서 '아까 그 쪽지' 가 아니다.
+    let seenResultAgain = false;
+    for (let i = 0; i < 6; i += 1) {
+      const back = page.locator('button.app__nav-back').first();
+      if (!(await back.count())) break;
+      await back.click();
+      await wait(page, 700);
+      const t = await bodyText(page);
+      if (/점수/.test(t) && /왜 \d+점인가요/.test(t)) { seenResultAgain = true; break; }
+    }
+    check(!seenResultAgain, '[두 번 뽑기] 뒤로가기가 지나간 결과로 안 떨어진다',
+      seenResultAgain ? `${firstScore}점 자리에 새 쪽지가 그려졌어요` : '홈까지 결과 화면 없음');
+    await page.context().close();
+  }
+
   // 13. 화면별 뒤로가기
   {
     const BACKS = [

@@ -119,13 +119,6 @@ function personalScore(fit: NeedFit, rel: BranchRelation, hitsUseful: boolean): 
   return s;
 }
 
-const GEN: Record<Element, Element> = {
-  wood: 'fire',
-  fire: 'earth',
-  earth: 'metal',
-  metal: 'water',
-  water: 'wood',
-};
 
 /** 오늘, 이 사람에게. */
 export function dailyForMe(dateKey: string, pillars: FourPillars, profile: SajuProfile): DailyMe {
@@ -164,8 +157,18 @@ export function dailyForMe(dateKey: string, pillars: FourPillars, profile: SajuP
   };
 
   const myElement = pillars.dayMaster.el;
-  // 개운 오행 — 나를 생해주는 오행(인성). 오늘 색의 근거가 된다.
-  const boostElement = (Object.keys(GEN) as Element[]).find((e) => GEN[e] === myElement)!;
+  // 개운 오행 — 억부용신(profile.usefulElement)을 그대로 쓴다.
+  //
+  // 전에는 무조건 인성(나를 생해주는 오행)이었다. 두 가지가 틀어졌다.
+  // 첫째, 개운법은 '모자란 기운을 채운다' 는 말인데 인성은 내 힘이 이미
+  // 많은 사람에게도 힘을 더 얹는다. 신강한 사람에게는 오히려 무겁다.
+  // 둘째, 같은 화면 위쪽 '채워주는 기운' 칸은 이미 억부용신을 쓰고 있었다.
+  // 그래서 한 화면에서 '채워주는 기운은 나무' 라고 해놓고 바로 아래
+  // '오늘 힘이 되는 건 쇠' 라고 말하고 있었다. 두 줄이 서로를 부정했다.
+  //
+  // 억부용신은 신강이면 설기(내가 생하는 오행), 신약이면 인성이다.
+  // 신약한 사람은 전과 같은 답이 나오고, 신강한 사람만 바뀐다.
+  const boostElement = profile.usefulElement;
   const colors = ELEMENT_COLORS[boostElement];
   // 날짜와 일간으로 고르므로 하루 동안 고정되고, 사람마다 다르다.
   const luckyColor = colors[(idx + pillars.dayStem) % colors.length];
