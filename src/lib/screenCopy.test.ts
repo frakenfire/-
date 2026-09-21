@@ -132,3 +132,34 @@ test('오늘 글자를 간지 이름으로 들이밀지 않는다', () => {
     assert.ok(/띠$/.test(r.todayMeet.pillar), r.todayMeet.pillar);
   }
 });
+
+test('네 가지 나가 네 층을 다 보여준다', () => {
+  for (const { r } of ALL) {
+    assert.equal(r.selves.length, 4, '네 줄이 아니에요');
+    assert.deepEqual(r.selves.map((x) => x.k),
+      ['타고난 나', '오늘의 나', '가까운 미래의 나', '먼 미래의 나']);
+    // 타고난 나는 기준이라 견줄 대상이 없다. 나머지 셋은 반드시 견준다.
+    assert.equal(r.selves[0].vs, null);
+    for (const x of r.selves.slice(1)) {
+      assert.ok(x.vs && /타고난 것(보다 (높|낮)아요|과 비슷해요)$/.test(x.vs), `${x.k}: ${x.vs}`);
+    }
+    // 점수는 다섯 칸에서 그대로 와야 한다. 따로 만든 숫자면 표와 어긋난다.
+    const part = (k: string) => r.score.parts.find((p) => p.k === k)!.score;
+    assert.equal(r.selves[0].score, part('타고난 구조'));
+    assert.equal(r.selves[1].score, part('오늘'));
+    assert.equal(r.selves[3].score, part('지금 지나는 십 년'));
+    assert.equal(r.selves[2].score, Math.round((part('올해') + part('이번 달')) / 2));
+  }
+});
+
+test('타고난 것과 견주는 말이 실제 점수와 맞다', () => {
+  for (const { r } of ALL) {
+    const base = r.selves[0].score;
+    for (const x of r.selves.slice(1)) {
+      const gap = x.score - base;
+      const want = Math.abs(gap) <= 5 ? '타고난 것과 비슷해요'
+        : gap > 0 ? '타고난 것보다 높아요' : '타고난 것보다 낮아요';
+      assert.equal(x.vs, want, `${x.k} ${x.score} vs ${base}`);
+    }
+  }
+});

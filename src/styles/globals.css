@@ -4177,3 +4177,55 @@ strong {
 .ask-foot--pin {
   margin-top: 0;
 }
+
+/* ── 네 가지 나 ──
+   점수 표(.why-score)와 같은 자로 잰다. 같은 다섯 칸을 다르게 묶어 보여주는
+   자리라, 둘이 다르게 생기면 읽는 사람은 다른 계산으로 본다. */
+.selves { list-style: none; margin: 12px 0 0; padding: 0; }
+.selves__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px;
+  align-items: baseline;
+  column-gap: 10px;
+  padding: 14px 0;
+  border-top: 1px solid var(--gray-100);
+}
+.selves__row:first-child { border-top: 0; padding-top: 4px; }
+.selves__k {
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.selves__label {
+  display: block;
+  font-style: normal;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+.selves__v {
+  grid-column: 2;
+  grid-row: 1;
+  text-align: right;
+  font-size: 17px;
+  line-height: 25.5px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.selves__god,
+.selves__vs {
+  grid-column: 1 / -1;
+  font-size: 13px;
+  line-height: 19.5px;
+}
+.selves__god {
+  margin-top: 6px;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+.selves__vs {
+  font-weight: 500;
+  color: var(--gray-700);
+}

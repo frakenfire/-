@@ -1513,6 +1513,21 @@ async function run(browser) {
     await page.context().close();
   }
 
+  // 12.8 마지막에 '네 가지 나' 가 한자리에 모여 있는가
+  {
+    const page = await newPage(browser);
+    await drawTo(page);
+    const t = await bodyText(page);
+    const HAVE = ['네 가지 나', '타고난 나', '오늘의 나', '가까운 미래의 나', '먼 미래의 나'];
+    const miss = HAVE.filter((x) => !t.includes(x));
+    check(miss.length === 0, '[결과] 네 가지 나를 한자리에 모아 보여준다', miss.join(', ') || '네 층 다 있음');
+    // 기준이 되는 줄과, 견주는 말이 실제로 그려지는지
+    check(t.includes('여기가 기준이에요'), '[결과] 타고난 나가 기준이라고 말한다');
+    check(/타고난 것(보다 (높|낮)아요|과 비슷해요)/.test(t),
+      '[결과] 나머지 셋을 타고난 나와 견준다');
+    await page.context().close();
+  }
+
   // 12.9 두 번째로 뽑은 뒤 뒤로가기 - 지나간 결과 화면으로 다시 떨어지지 않는가
   {
     const page = await newPage(browser);

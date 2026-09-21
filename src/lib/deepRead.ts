@@ -102,6 +102,17 @@ export type DeepRead = {
   monthSlots: { label: string; month: number; band: string; bandKey: Band; outer: string; good: string; care: string }[];
   /** 올해와 내년 */
   yearLines: { k: string; label: string; band: string; bandKey: Band; v: string }[];
+  /**
+   * 네 가지 나 — 타고난 나 · 오늘의 나 · 가까운 미래의 나 · 먼 미래의 나.
+   *
+   * 다섯 칸은 점수 표가 이미 숫자로 보여준다. 그런데 그 표를 다 읽고 나서도
+   * '그래서 나는 어떤 사람인가' 는 화면 어디에도 한자리에 모여 있지 않았다.
+   * 층마다 풀이가 있지만 접힌 덩이 여기저기에 흩어져 있다.
+   *
+   * 여기서는 타고난 나를 기준으로 나머지 셋이 위인지 아래인지만 말한다.
+   * 그건 다른 어디서도 안 하는 말이고, 계산에서 바로 나온다.
+   */
+  selves: { k: string; label: string; score: number; godWord: string; vs: string | null }[];
   /** 이 답이 언제 다시 계산되는지 */
   refresh: string;
 };
@@ -620,6 +631,47 @@ export function buildDeepRead(
         : `내일은 ${CONCERN_GOD[concernKey][tomorrowGod].pull} 쪽으로 기울어요. 오늘과 다른 답이 나와요.`;
 
   const todayStep = unseongOf(pillars.dayStem, todayPillar.branch);
+  // 네 가지 나. 다섯 칸을 사람이 자기를 생각하는 말로 다시 묶는다.
+  // 가까운 미래는 올해와 이번 달을 반씩 섞는다 - 둘 다 몫이 20 으로 같아서
+  // 한쪽만 고르면 나머지 하나를 버리게 된다. 섞은 값이라고 화면에 적는다.
+  const partOf = (k: string) => score.parts.find((x) => x.k === k)!;
+  const natal = partOf('타고난 구조');
+  const thisYear = partOf('올해');
+  const thisMonthPart = partOf('이번 달');
+  const near = Math.round((thisYear.score + thisMonthPart.score) / 2);
+  // 타고난 것과 견줘 어느 쪽인가. 5점 안쪽이면 비슷한 것으로 본다.
+  const vsNatal = (n: number): string | null => {
+    const gap = n - natal.score;
+    if (Math.abs(gap) <= 5) return '타고난 것과 비슷해요';
+    return gap > 0 ? '타고난 것보다 높아요' : '타고난 것보다 낮아요';
+  };
+  const selves = [
+    {
+      k: '타고난 나', label: natal.label, score: natal.score, godWord: natal.godWord, vs: null,
+    },
+    {
+      k: '오늘의 나',
+      label: partOf('오늘').label,
+      score: partOf('오늘').score,
+      godWord: partOf('오늘').godWord,
+      vs: vsNatal(partOf('오늘').score),
+    },
+    {
+      k: '가까운 미래의 나',
+      label: '올해와 이번 달',
+      score: near,
+      godWord: thisMonthPart.godWord,
+      vs: vsNatal(near),
+    },
+    {
+      k: '먼 미래의 나',
+      label: partOf('지금 지나는 십 년').label,
+      score: partOf('지금 지나는 십 년').score,
+      godWord: partOf('지금 지나는 십 년').godWord,
+      vs: vsNatal(partOf('지금 지나는 십 년').score),
+    },
+  ];
+
   const todayMeet = {
     // '무술날' 이라고 적어 놓고 있었다. 간지 이름은 읽는 사람에게 아무것도
     // 아니고, 하필 무술은 운동으로 읽힌다. 오행과 띠로 풀어 적는다.
@@ -781,6 +833,7 @@ export function buildDeepRead(
     chart,
     name: nameRead,
     todayMeet,
+    selves,
     daeunLine,
     decade,
     yearCompare,

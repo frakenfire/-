@@ -253,6 +253,34 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
         </>
       )}
 
+      {/* 네 가지 나 — 마지막에 한 번 모아 보여준다.
+          층마다 풀이는 있는데 접힌 덩이 여기저기 흩어져 있어서, 다 읽고
+          나서도 '그래서 나는 어떤 사람인가' 가 한자리에 없었다.
+          점수 표와 겹치지 않게, 여기서는 타고난 나를 기준으로 나머지 셋이
+          위인지 아래인지를 말한다. 그 말은 다른 어디서도 안 한다. */}
+      {deep ? (
+        <div className="sec-card">
+          <p className="cat4__head">네 가지 나</p>
+          <ul className="selves">
+            {deep.read.selves.map((x) => (
+              <li key={x.k} className="selves__row">
+                <span className="selves__k">
+                  {x.k}
+                  <i className="selves__label">{x.label}</i>
+                </span>
+                <span className="selves__v num">{x.score}</span>
+                <span className="selves__god">{x.godWord}</span>
+                <span className="selves__vs">{x.vs ?? '여기가 기준이에요'}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mflow__foot">
+            가까운 미래는 올해와 이번 달을 반씩 섞은 값이에요. 타고난 나는 평생 그대로고,
+            나머지 셋은 때가 지나면 바뀌어요.
+          </p>
+        </div>
+      ) : null}
+
       {/* 6. 공유 */}
       {/* 내 사주 · 오늘 나에게 · 이번 주 — 전부 생년월일을 넣어야 의미가 있는 것들.
           그래서 홈이 아니라 결과를 받은 이 자리에 둔다. */}
