@@ -108,7 +108,7 @@ if (done.length === 0 && errors.length === 0) {
     --ad-group=광고그룹ID
 
 지면별로 다른 광고 그룹을 쓰려면 --ad-group 대신:
-  --ad-detail=... --ad-save=... --ad-retry=... --ad-compat=...
+  --ad-note=... --ad-concern=... --ad-compat=...
 
 선택(리텐션 부스터): 콘솔에서 알림 템플릿을 등록했으면
   --noti-template=템플릿코드   ← 결과 화면에 '아침 알림 받기' 카드가 켜져요

@@ -35,21 +35,39 @@ npm run build          # = ait build → today-note.ait 생성 (검증됨)
 > `displayName: '오늘쪽지 뽑기'`, `primaryColor: '#3182f6'` 는 이미 설정돼 있어요.
 > `appName`·`displayName` 은 **콘솔 등록값과 반드시 일치**해야 배포가 됩니다.
 
-## 4단계. 광고 SDK 연결 (30분) — 수익의 핵심
+## 4단계. 광고 adGroupId 채우기 (10분) — 수익의 핵심
 
-`src/lib/ads.ts` 의 mock 5개를 앱인토스 광고 SDK 호출로 교체:
+SDK 연결은 이미 끝나 있습니다. `src/lib/ads.ts` 는 앱인토스 공식
+`showFullScreenAd` 를 그대로 부르고, 남은 일은 콘솔에서 발급받은
+`adGroupId` 세 개를 채우는 것뿐입니다.
 
-| mock 함수 | 광고 유형 | 노출 지점 |
+| `AD_GROUPS` | 광고 유형 | 노출 지점 |
 |---|---|---|
-| `showInterstitialBeforeResult` | 전면형 | 쪽지 선택 → 결과 진입 전 |
-| `showRewardAdForDetail` | 보상형 | "오늘의 심층 리포트 열기" |
-| `showRewardAdForSaveImage` | 보상형 | "결과 카드로 저장하기" |
-| `showRewardAdForRetry` | 보상형 | "다른 쪽지도 뽑아볼래요" |
-| `showRewardAdForCompat` | 보상형 | 친구 궁합 "광고 보고 결과 열기" |
+| `note` | 보상형 | **오늘 두 번째 쪽지부터**, 결과 직전 (첫 장은 광고 없음) |
+| `concern` | 보상형 | 결과 맨 아래 '다른 고민도 궁금하면' 다섯 줄 |
+| `compat` | 보상형 | 친구 궁합 '광고 보고 결과 열기' |
 
-- SDK 문서의 전면형/보상형 함수를 각 mock 자리에 넣고 `Promise<boolean>` 그대로 반환
-- **광고 실패 시 true 반환 유지** (사용자 불이익 금지 — 검수 기준)
-- 결과 하단 배너: `AdNotice.tsx` 의 `AdBanner` mock 을 배너 컴포넌트로 교체
+```bash
+# 셋 다 같은 광고 그룹이면
+node scripts/apply-console-values.mjs --ad-group=광고그룹ID
+# 지면별로 다르면
+node scripts/apply-console-values.mjs --ad-note=... --ad-concern=... --ad-compat=...
+npm run check:release -- --release   # 남은 REPLACE_ 값이 있으면 실패
+```
+
+- **보상 무결성**: `userEarnedReward` 가 왔을 때만 보상. 닫힘·실패·미지원을
+  rewarded 로 위장하지 않습니다 (`src/lib/adResult.ts`, 검수 기준)
+- **광고가 없는 환경에서는 그냥 지나갑니다** — 사용자 불이익 금지
+- 광고 자리는 이 셋이 전부입니다. 결과 카드 저장과 공유는 무료로 둡니다 —
+  저장하고 공유해서 들어오는 길에 마찰을 안 넣습니다
+
+### 광고가 화면의 어디에 있나 (실측)
+
+| 자리 | 위치 | 비중 |
+|---|---|---|
+| 결과 '다른 고민도' | 87% 지점(접힌 기본 상태) / 94%(다 펼침) | 화면의 7% / 3% |
+| 친구 궁합 | 결과 전체가 잠김 | 그 화면 글자의 59% |
+| `note` | 오늘 두 번째 쪽지부터, 결과 직전 | 첫 장은 0회 |
 
 ## 5단계. 리텐션 — 로그인/푸시 없이 가는 전략
 
@@ -92,7 +110,8 @@ npm run build                # today-note.ait 파일이 생성됨 (이게 콘솔
    - **보안 검수** — 개인정보·보안 (이 앱: 서버·로그인·자유입력 저장 없음 ✓,
      선택형 값만 localStorage 저장 ✓, 외부 호출 없음 ✓, CSP 설정 ✓)
 3. 승인되면 콘솔 **'출시하기'** → 즉시 전체 사용자 공개 (되돌리기 어려우니 충분히 테스트)
-4. 검수 대비 콘텐츠 항목: 진입 즉시 광고 없음 ✓ / 무료 결과 광고 없이 제공 ✓ /
+4. 검수 대비 콘텐츠 항목: 진입 즉시 광고 없음 ✓ / 오늘 첫 결과는 광고 없이 제공 ✓
+   (`src/lib/adPolicy.ts` + `src/lib/noteAd.test.ts` 가 못 박습니다) /
    의료·단정 표현 없음 ✓ / 해요체 ✓
 
 ## 7단계. 출시 후 — 수익 운영 플레이북

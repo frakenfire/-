@@ -25,7 +25,8 @@ export type { AdResult } from './adResult.ts';
 // 쓰지도 않을 광고 자리 셋을 콘솔에서 더 만들라고 시키고 있었다.
 // 카드 저장은 무료로 둔다 - 저장하고 공유해서 들어오는 길에 마찰을 안 넣는다.
 export const AD_GROUPS = {
-  // 쪽지를 누른 뒤 결과 전에 한 번
+  // 쪽지를 누른 뒤 결과 전에 한 번. 단 오늘 첫 장은 건너뛴다 — 규칙은
+  // adPolicy.ts 의 shouldShowNoteAd 에 있고 테스트가 못 박는다.
   note: 'REPLACE_REWARD_NOTE',
   compat: 'REPLACE_REWARD_COMPAT',
   // 결과를 다 본 뒤 '다른 고민도' 를 여는 자리. 본문은 전부 무료이고
@@ -34,6 +35,7 @@ export const AD_GROUPS = {
 } as const;
 
 export type AdPlacement = keyof typeof AD_GROUPS;
+
 
 const AD_TIMEOUT_MS = 20_000;
 

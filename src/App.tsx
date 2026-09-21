@@ -7,6 +7,7 @@ import { pickNotesFor } from './lib/pickNotes.ts';
 import { generateFortune } from './lib/generateFortune.ts';
 import { luckPercentile } from './lib/luck.ts';
 import { showRewardAd, isRewarded, isUnsupportedFreePass } from './lib/ads.ts';
+import { shouldShowNoteAd } from './lib/adPolicy.ts';
 import { shareBriefing, shareForUnlock, shareMessage } from './lib/share.ts';
 import { ConcernScreen } from './screens/ConcernScreen.tsx';
 import { ConcernAskScreen } from './screens/ConcernAskScreen.tsx';
@@ -310,18 +311,23 @@ export default function App() {
       });
       setResult(generated);
       // 쪽지 오픈 모션(0.5s)을 보여준 뒤 몽글 로딩 연출로 전환.
-      // 무료 첫 결과에는 광고를 넣지 않는다(정책: 무료 결과는 광고 없이 제공).
       await wait(550);
       setScreen('reveal');
       await wait(1400);
-      // 쪽지를 누른 다음, 결과 전에 광고 한 번. 광고가 없는 곳(브라우저)에서는 그냥 지나간다.
-      try {
-        const ad = await showRewardAd('note');
-        logEvent('reward_ad', { placement: 'note', status: ad.status });
-      } catch (e) {
-        reportError('noteAd', e);
+      // 오늘 몇 번째인지 먼저 센다. 첫 장은 광고 없이 연다 - 이 앱이 세 군데에
+      // 적어둔 약속인데(여기 주석, AD_GROUPS.note, release/LAUNCH.md 검수 항목)
+      // 코드는 뽑을 때마다 광고를 물리고 있었다. 브라우저에서는 광고가
+      // 'unsupported' 로 지나가므로 점검 셋 중 무엇도 이걸 못 봤다.
+      // 두 번째부터가 '한 번 더' 이고, 거기가 광고 자리다.
+      const drawsToday = incrementDailyDrawCount(dateKey);
+      if (shouldShowNoteAd(drawsToday)) {
+        try {
+          const ad = await showRewardAd('note');
+          logEvent('reward_ad', { placement: 'note', status: ad.status, draws: drawsToday });
+        } catch (e) {
+          reportError('noteAd', e);
+        }
       }
-      incrementDailyDrawCount(dateKey);
       setStreak(updateStreak(dateKey, yesterdayKey)); // 실제 뽑은 날에만 스트릭 갱신
       logEvent('result_viewed', { fortuneType, engineVersion: generated.engineVersion });
       replaceScreen('result');
