@@ -27,3 +27,62 @@ test('App 은 횟수를 세고 나서 부른다', () => {
   const count = src.indexOf('incrementDailyDrawCount(');
   assert.ok(count > 0 && count < guard, '횟수를 먼저 센 다음에 판단해야 해요');
 });
+
+// ── 앱인토스 인앱광고 문서와 코드를 맞대본다 ──────────────────────────
+// 문서의 규칙은 브라우저에서 한 번도 안 밟힌다. isSupported() 가 false 라
+// 실제 SDK 길이 통째로 지나가기 때문이다. 그래서 소스를 직접 읽는다.
+const ADS = readFileSync(new URL('./ads.ts', import.meta.url), 'utf8');
+const APP = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8');
+
+test('보여주기 전에 반드시 불러온다', () => {
+  // 문서: '광고는 반드시 load -> show -> (다음 load) 순서로 호출해 주세요.'
+  assert.ok(/loadFullScreenAd\(/.test(ADS), 'loadFullScreenAd 를 아예 안 불러요');
+  // showRewardAd 본문 안에서만 순서를 본다. 파일 전체로 보면 함수 선언이
+  // 먼저 나와서 늘 통과한다 - 처음 쓸 때 실제로 그렇게 헛돌았다.
+  const body = ADS.slice(ADS.indexOf('export async function showRewardAd'));
+  const awaitLoad = body.indexOf('await awaitLoaded(placement)');
+  const show = body.indexOf('realRewardAd(placement');
+  assert.ok(awaitLoad > 0, '불러오기를 기다리지 않아요');
+  assert.ok(show > awaitLoad, '불러오기를 기다리기 전에 보여주고 있어요');
+});
+
+test('보여준 뒤에 다음 것을 미리 불러둔다', () => {
+  const at = ADS.indexOf('const done = (r: AdResult)');
+  const block = ADS.slice(at, ADS.indexOf('resolve(r);', at));
+  assert.ok(/preloadAd\(placement\)/.test(block), '다음 광고를 안 불러둬요');
+});
+
+test('콜백 등록을 풀어준다', () => {
+  assert.ok(/unregister\(\)/.test(ADS), 'unregister 를 안 불러요');
+});
+
+test("보상은 'userEarnedReward' 일 때만 준다", () => {
+  assert.ok(/earned = true/.test(ADS));
+  // dismissed 가지에서 earned 를 안 보고 rewarded 를 주면 안 된다
+  const m = ADS.match(/event\.type === 'dismissed'\) \{\s*\n\s*done\(([^)]*)\)/);
+  assert.ok(m, "dismissed 처리를 못 찾았어요");
+  assert.ok(m[1].includes('earned ?'), `보상을 그냥 줘요: ${m[1]}`);
+});
+
+test('개발 중에는 테스트 광고 ID 를 쓴다', () => {
+  // 문서: '실제 광고 ID로 테스트하면 정책 위반으로 간주해 불이익을 받을 수 있어요.'
+  assert.ok(ADS.includes("'ait-ad-test-rewarded-id'"), '문서에 적힌 테스트 ID 가 없어요');
+  assert.ok(/startsWith\('REPLACE_'\) \? AD_TEST_GROUP/.test(ADS),
+    '콘솔 값이 비었을 때 테스트 ID 로 넘어가지 않아요');
+});
+
+test('화면에 들어설 때 미리 불러온다', () => {
+  // 문서의 '나쁜 예': 버튼 클릭 시 load 하고 바로 show
+  assert.ok(/preloadAd\('note'\)/.test(APP), '쪽지 화면에서 미리 안 불러요');
+  assert.ok(/preloadAd\('concern'\)/.test(APP), '결과 화면에서 미리 안 불러요');
+  assert.ok(/preloadAd\('compat'\)/.test(APP), '궁합 화면에서 미리 안 불러요');
+});
+
+test('한 흐름에 광고를 두 번 붙이지 않는다', () => {
+  // 입구에서 광고를 보고 들어온 길이면 쪽지 광고는 안 붙인다
+  assert.equal(shouldShowNoteAd(2, true), false);
+  assert.equal(shouldShowNoteAd(9, true), false);
+  assert.equal(shouldShowNoteAd(2, false), true);
+  assert.ok(/shouldShowNoteAd\(drawsToday, paidAtEntry\.current\)/.test(APP),
+    'App 이 입구에서 낸 값을 안 보고 있어요');
+});

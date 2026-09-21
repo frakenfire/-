@@ -6,7 +6,7 @@
 //  - 토스 웹뷰(실기기/샌드박스): 실제 SDK 호출 (isSupported() === true)
 //  - 그 외(로컬 개발·웹 프리뷰): mock (개발 편의). 단, mock 은 운영 번들에서
 //    빌드 가드(CI: scripts/check-no-mock, .github/workflows/ci.yml)로 차단한다.
-import { showFullScreenAd } from '@apps-in-toss/web-framework';
+import { loadFullScreenAd, showFullScreenAd } from '@apps-in-toss/web-framework';
 import type { AdResult } from './adResult.ts';
 
 export { isRewarded, isUnsupportedFreePass, adResultMessage } from './adResult.ts';
@@ -37,14 +37,67 @@ export const AD_GROUPS = {
 export type AdPlacement = keyof typeof AD_GROUPS;
 
 
+// 개발용 테스트 광고 ID. 문서에 적힌 값 그대로다.
+//
+// 콘솔에서 받은 adGroupId 를 아직 안 넣었으면 이걸 쓴다. 전에는 그냥
+// 'no-ad-group' 으로 돌려보냈는데, 그러면 실기기에 올려도 광고 흐름을
+// 한 번도 못 밟아본 채로 제출하게 된다. 반대로 실제 ID 로 개발 중에
+// 테스트하는 건 정책 위반이라, 둘 다 피하려면 테스트 ID 가 맞다.
+//
+// 제출을 막는 건 scripts/check-release.mjs 다 - REPLACE_ 가 남아 있으면
+// npm run check:release -- --release 가 실패한다.
+const AD_TEST_GROUP = 'ait-ad-test-rewarded-id';
+
 const AD_TIMEOUT_MS = 20_000;
+// 미리 불러오는 데 쓰는 시간. show 를 누른 뒤 이만큼은 기다려 준다.
+const AD_LOAD_TIMEOUT_MS = 8_000;
 
 function realAdSupported(): boolean {
   try {
-    return typeof showFullScreenAd?.isSupported === 'function' && showFullScreenAd.isSupported();
+    return typeof showFullScreenAd?.isSupported === 'function' && showFullScreenAd.isSupported()
+      && typeof loadFullScreenAd?.isSupported === 'function' && loadFullScreenAd.isSupported();
   } catch {
     return false;
   }
+}
+
+/** 이 자리에 실제로 넘길 adGroupId. 콘솔 값이 없으면 테스트 ID. */
+function groupIdOf(placement: AdPlacement): string {
+  const id = AD_GROUPS[placement];
+  return id.startsWith('REPLACE_') ? AD_TEST_GROUP : id;
+}
+
+// 자리마다 미리 불러둔 광고 하나. 문서 규칙 그대로다 -
+// 같은 adGroupId 는 한 번에 하나만 미리 불러둘 수 있다.
+type Pending = { ready: Promise<boolean>; unregister: () => void };
+const loaded = new Map<AdPlacement, Pending>();
+
+/**
+ * 광고를 미리 불러둔다. 화면에 들어설 때 부른다.
+ *
+ * 문서: '광고는 반드시 load -> show -> (다음 load) 순서로 호출해 주세요.'
+ * 전에는 show 만 부르고 load 를 아예 안 불렀다. 그러면 실기기에서 광고가
+ * 안 뜬다. 브라우저에서는 isSupported() 가 false 라 이 길을 한 번도 안
+ * 밟아서, 검사 셋 중 무엇도 이걸 못 봤다.
+ */
+export function preloadAd(placement: AdPlacement): void {
+  if (USE_MOCK || !realAdSupported()) return;
+  if (loaded.has(placement)) return;
+  const adGroupId = groupIdOf(placement);
+  let settle: (ok: boolean) => void = () => {};
+  const ready = new Promise<boolean>((resolve) => { settle = resolve; });
+  let unregister: () => void = () => {};
+  try {
+    unregister = loadFullScreenAd({
+      options: { adGroupId },
+      onEvent: (event) => { if (event.type === 'loaded') settle(true); },
+      onError: () => { settle(false); loaded.delete(placement); },
+    });
+  } catch {
+    settle(false);
+    return;
+  }
+  loaded.set(placement, { ready, unregister });
 }
 
 // 로컬 개발 서버(npm run dev)에서만 mock. 운영/프리뷰 빌드는 실 SDK 경로를 타고,
@@ -70,19 +123,27 @@ function withTimeout(p: Promise<AdResult>, ms: number): Promise<AdResult> {
   });
 }
 
-function realRewardAd(adGroupId: string): Promise<AdResult> {
+function realRewardAd(placement: AdPlacement, adGroupId: string): Promise<AdResult> {
   return new Promise((resolve) => {
     let earned = false;
     let settled = false;
+    let unregister: () => void = () => {};
     const done = (r: AdResult) => {
       if (settled) return;
       settled = true;
+      // 콜백 등록을 풀어준다. 안 풀면 화면을 오갈수록 쌓인다.
+      try { unregister(); } catch { /* 이미 풀린 경우 */ }
+      // 문서 권장: 하나 보여준 뒤에는 다음 것을 미리 불러둔다.
+      loaded.delete(placement);
+      preloadAd(placement);
       resolve(r);
     };
     try {
-      showFullScreenAd({
+      unregister = showFullScreenAd({
         options: { adGroupId },
-        onEvent: (event: { type: string; data?: { unitType?: string; unitAmount?: number } }) => {
+        onEvent: (event) => {
+          // 보상은 'userEarnedReward' 가 왔을 때만이다. 'dismissed' 만으로
+          // 주면 안 된다 - 문서에 못 박혀 있고, 이 앱의 첫 번째 원칙이다.
           if (event.type === 'userEarnedReward') {
             earned = true;
           } else if (event.type === 'dismissed') {
@@ -99,15 +160,23 @@ function realRewardAd(adGroupId: string): Promise<AdResult> {
   });
 }
 
+/** 미리 불러둔 게 없으면 지금 불러서 기다린다. 오래 걸리면 포기한다. */
+async function awaitLoaded(placement: AdPlacement): Promise<boolean> {
+  preloadAd(placement);
+  const pending = loaded.get(placement);
+  if (!pending) return false;
+  return await Promise.race([
+    pending.ready,
+    new Promise<boolean>((r) => setTimeout(() => r(false), AD_LOAD_TIMEOUT_MS)),
+  ]);
+}
+
 /** 지정한 지점의 보상형 광고를 노출하고, 구조화된 결과를 돌려준다. 절대 throw 하지 않는다. */
 export async function showRewardAd(placement: AdPlacement): Promise<AdResult> {
   if (USE_MOCK) return withTimeout(mockRewardAd(), AD_TIMEOUT_MS);
   if (!realAdSupported()) return { status: 'unsupported' };
-  const adGroupId = AD_GROUPS[placement];
-  if (adGroupId.startsWith('REPLACE_')) {
-    // 콘솔 adGroupId 미설정 — 운영에서 광고를 못 여니 보상도 없음(위장 금지).
-    return { status: 'failed', code: 'no-ad-group' };
-  }
-  return withTimeout(realRewardAd(adGroupId), AD_TIMEOUT_MS);
+  // load -> show 순서를 지킨다. 못 불러왔으면 보여주지 않는다.
+  if (!(await awaitLoaded(placement))) return { status: 'failed', code: 'not-loaded' };
+  return withTimeout(realRewardAd(placement, groupIdOf(placement)), AD_TIMEOUT_MS);
 }
 

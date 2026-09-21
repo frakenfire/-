@@ -6,7 +6,7 @@ import { todayKey } from './lib/dateSeed.ts';
 import { pickNotesFor } from './lib/pickNotes.ts';
 import { generateFortune } from './lib/generateFortune.ts';
 import { luckPercentile } from './lib/luck.ts';
-import { showRewardAd, isRewarded, isUnsupportedFreePass } from './lib/ads.ts';
+import { showRewardAd, preloadAd, isRewarded, isUnsupportedFreePass } from './lib/ads.ts';
 import { shouldShowNoteAd } from './lib/adPolicy.ts';
 import { shareBriefing, shareForUnlock, shareMessage } from './lib/share.ts';
 import { ConcernScreen } from './screens/ConcernScreen.tsx';
@@ -103,6 +103,18 @@ export default function App() {
     backStack.current = [];
     setScreenRaw('home');
   }
+  // 광고는 화면에 들어설 때 미리 불러둔다. 누른 뒤에 불러오면 그 자리에서
+  // 기다리게 된다 - 문서가 '나쁜 예' 로 든 모양이 정확히 그거다.
+  useEffect(() => {
+    if (screen === 'pick') preloadAd('note');
+    else if (screen === 'result') preloadAd('concern');
+    else if (screen === 'compat') preloadAd('compat');
+  }, [screen]);
+
+  // '다른 고민도 궁금하면' 에서 광고를 보고 들어왔는지. 이 흐름에서는
+  // 쪽지 광고를 한 번 더 붙이지 않는다.
+  const paidAtEntry = useRef(false);
+
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
 
@@ -338,7 +350,7 @@ export default function App() {
       // 'unsupported' 로 지나가므로 점검 셋 중 무엇도 이걸 못 봤다.
       // 두 번째부터가 '한 번 더' 이고, 거기가 광고 자리다.
       const drawsToday = incrementDailyDrawCount(dateKey);
-      if (shouldShowNoteAd(drawsToday)) {
+      if (shouldShowNoteAd(drawsToday, paidAtEntry.current)) {
         try {
           const ad = await showRewardAd('note');
           logEvent('reward_ad', { placement: 'note', status: ad.status, draws: drawsToday });
@@ -348,6 +360,7 @@ export default function App() {
       }
       setStreak(updateStreak(dateKey, yesterdayKey)); // 실제 뽑은 날에만 스트릭 갱신
       logEvent('result_viewed', { fortuneType, engineVersion: generated.engineVersion });
+      paidAtEntry.current = false;
       commitDraw();
       replaceScreen('result');
       setSpin((v) => v + 7);
@@ -516,6 +529,7 @@ export default function App() {
     if (!isRewarded(result) && !isUnsupportedFreePass(result)) return false;
     setUnlockedConcerns(addUnlockedConcern(dateKey, key));
     logEvent('concern_unlocked', { concern: key });
+    paidAtEntry.current = true;
     openConcern(key);
     return true;
   }

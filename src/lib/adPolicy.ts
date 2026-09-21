@@ -13,6 +13,13 @@
  *
  * 오늘의 첫 장은 그냥 연다. 두 번째부터가 '한 번 더' 이고, 거기가 광고 자리다.
  */
-export function shouldShowNoteAd(drawsToday: number): boolean {
+export function shouldShowNoteAd(drawsToday: number, paidAtEntry = false): boolean {
+  // paidAtEntry: '다른 고민도 궁금하면' 에서 광고를 한 번 보고 들어온 길이다.
+  //
+  // 그 길로 오면 들어올 때 한 번, 쪽지를 뽑을 때 또 한 번, 한 흐름에 광고가
+  // 두 번 붙었다. 한 번 값을 치른 사람에게 두 걸음 만에 또 받는 모양이라
+  // '사용자 의도와 무관한 광고 소비' 로 읽힌다. 입구에서 받았으면 여기서는
+  // 안 받는다.
+  if (paidAtEntry) return false;
   return drawsToday > 1;
 }
