@@ -5,8 +5,8 @@ import { computeTiming } from './timing.ts';
 import { buildDeepRead } from './deepRead.ts';
 import { CONCERNS, type ConcernKey } from '../data/concerns.ts';
 import { CONCERN_GOD } from '../data/concernReadings.ts';
-import { bandPhrase } from './concernScore.ts';
 import { TEN_GOD_KO, type TenGod } from './tenGods.ts';
+import { withJosa } from './josa.ts';
 
 const TEN_GODS = Object.keys(TEN_GOD_KO) as TenGod[];
 
@@ -254,29 +254,33 @@ test('지금 카드와 층 카드가 같은 말을 하지 않는다', async () =
   assert.equal(hits.length, 0, `겹치는 쌍 ${hits.length}개\n  ${hits.slice(0, 3).join('\n  ')}`);
 });
 
-// 점수를 푸는 줄은 '밀어붙이는 기운이 …' 로 시작한다. 뒤에 고민 이름을 넣을 때
-// 주격을 또 붙이면 '기운이 몸이 무리 없이' 가 된다. 화면을 찍어 보고서야 잡았다.
-//
-// 처음엔 화면 문장을 훑는 테스트로 짰는데, 고정 생년월일로는 good 밴드만
-// 걸려서 ok/hard 문장을 한 번도 안 봤다. 일부러 되돌려 넣어도 통과했다.
-// 그래서 문장을 밖으로 빼고 여섯 가지를 직접 검사한다.
-test('점수 푸는 줄에 주격이 두 번 붙지 않는다', () => {
+// 점수를 푸는 줄은 이제 '무슨 일이 일어나는가(pull)' 뒤에 '무엇을 하라(good/care)'
+// 를 붙인다. 전에는 뒤에 점수를 붙였는데, pull 에는 좋고 나쁨이 없어서
+// '미뤄둔 다툼이 상대와의 사이에서 올라오는 때라 연애에 바로 보탬이 돼요' 처럼
+// 앞뒤가 거꾸로인 문장이 나왔다. 여섯 고민 × 열 기운을 전부 세워 확인한다.
+test('점수 푸는 줄이 앞뒤 거꾸로가 아니다', () => {
   const bad: string[] = [];
   for (const c of CONCERNS) {
-    for (const side of ['high', 'low'] as const) {
-      for (const band of ['good', 'ok', 'hard'] as const) {
-        const tail = bandPhrase(side, band, c.shortName);
-        // 앞머리가 '…기운이' / '…기운이라' 이므로, 뒤가 주격으로 시작하면 겹친다
-        for (const head of [`${c.key} 기운이`, `${c.key} 기운이라`]) {
-          const line = `${head} ${tail}`;
-          assert.ok(!new RegExp(`기운(이|이라) ${c.shortName}[이가] `).test(line),
-            `주격이 겹쳤습니다: ${line}`);
-        }
-        if (/이 고민/.test(tail)) bad.push(`${c.key}.${side}.${band}  ${tail}`);
+    for (const g of Object.keys(CONCERN_GOD[c.key]) as TenGod[]) {
+      const cell = CONCERN_GOD[c.key][g];
+      const body = cell.good.endsWith('것')
+        ? `${cell.good.slice(0, -1)}게`
+        : withJosa(cell.good, '이가');
+      const high = `${cell.pull} 때예요. 지금은 ${body} 통해요.`;
+      const low = `${cell.pull} 때예요. ${cell.care}만 조심하면 돼요.`;
+      for (const line of [high, low]) {
+        // 점수 말('보탬이 돼요' / '발목을 잡아요')은 이 줄에 다시 오면 안 된다
+        if (/보탬이|발목을 잡/.test(line)) bad.push(`${c.key}.${g}  ${line}`);
+        // 같은 조사가 잇달아 붙는 자리
+        if (/것만 것|게 게/.test(line)) bad.push(`${c.key}.${g}  ${line}`);
+        if (/이 고민/.test(line)) bad.push(`${c.key}.${g}  ${line}`);
       }
+      // 조사 없이 낱말이 그냥 붙는 자리가 없어야 한다
+      assert.ok(/(게|이|가) 통해요\.$/.test(high), `${c.key}.${g}: ${high}`);
+      assert.ok(/만 조심하면 돼요\.$/.test(low), `${c.key}.${g}: ${low}`);
     }
   }
-  assert.deepEqual(bad, [], `무엇을 물었는지 앱이 압니다:\n  ${bad.join('\n  ')}`);
+  assert.deepEqual(bad, [], `앞뒤가 어긋납니다:\n  ${bad.join('\n  ')}`);
 });
 
 // '이 고민' 은 앱이 아는 것을 일부러 안 말하는 것이다. 소스 점검(check:vague)이

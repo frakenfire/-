@@ -15,11 +15,14 @@ import type { ConcernKey } from './concerns.ts';
 
 export type Stance = 'run' | 'prep' | 'hold' | 'keep';
 
+// '지금 유지하기' 는 '아무것도 하지 마' 로 읽혔다. 뜻은 그게 아니라
+// '새로 벌이지 말고 하던 것을 이어가라' 다. 바로 아래 줄이 '연봉이나 맡는
+// 범위를 올리는 쪽' 이라고 말하는데 칩은 유지하라고 하니 서로 반대로 들렸다.
 export const STANCE_WORD: Record<Stance, string> = {
   run: '지금 실행하기',
   prep: '지금 준비하기',
   hold: '지금 결정하지 않기',
-  keep: '지금 유지하기',
+  keep: '하던 대로 이어가기',
 };
 
 export type DecisionCell = {

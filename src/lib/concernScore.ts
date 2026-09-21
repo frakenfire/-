@@ -184,27 +184,29 @@ export function computeConcernScore(
  * 사람에게는 돈이라고 한다. label 을 그대로 쓰면 '몸과 컨디션은 70점이에요 …
  * 몸과 컨디션에' 로 무거워져서 concerns.ts 의 shortName 을 쓴다.
  */
-export function bandPhrase(side: 'high' | 'low', band: Band, shortName: string): string {
-  // '자리' 는 사주 책의 말이다. 돈을 물어본 사람에게 '돈에 바로 힘이 되는
-  // 자리예요' 라고 하면, 힘이 된다는 건지 자리가 있다는 건지가 안 잡힌다.
-  // 보탬이 되는지 발목을 잡는지만 말한다.
-  if (side === 'high') {
-    if (band === 'good') return `${shortName}에 바로 보탬이 돼요`;
-    if (band === 'ok') return `${shortName}에 무난히 보탬이 돼요`;
-    return `${shortName}에는 보탬이 적지만 다른 줄보다는 나아요`;
-  }
-  if (band === 'good') return '다른 줄이 더 세서 밀렸어요';
-  if (band === 'ok') return `${shortName}에는 덜 보탬이 돼요`;
-  return `${shortName}에는 오히려 발목을 잡아요`;
+/**
+ * 점수가 높은 줄과 낮은 줄에 붙이는 뒷말.
+ *
+ * 전에는 '돈에 바로 보탬이 돼요' 처럼 점수만 말했다. 그런데 앞에 붙는 말
+ * (pull)은 무슨 일이 일어나는지를 적은 것이라 좋고 나쁨이 없다. 둘을 이으니
+ * '미뤄둔 다툼이 상대와의 사이에서 올라오는 때라 연애에 바로 보탬이 돼요'
+ * 처럼 앞뒤가 거꾸로인 문장이 나왔다. 다툼이 나는데 보탬이 된다는 말이다.
+ *
+ * 점수 대신 할 일을 말한다. 높은 줄에는 지금 통하는 것을, 낮은 줄에는
+ * 조심할 것을. CONCERN_GOD 에 고민마다 이미 적혀 있다.
+ */
+function highTail(good: string): string {
+  // 예순 개 중 여덟은 '것' 이 아니라 딴 말로 끝난다('동료와 나눠서 하는 일',
+  // '받을 수 있는 지원금이나 환급'). '것' 만 보고 자르면 '지금은 동료와
+  // 나눠서 하는 일 통해요' 가 된다. 받침을 보고 조사를 붙인다.
+  const body = good.endsWith('것') ? `${good.slice(0, -1)}게` : withJosa(good, '이가');
+  return `지금은 ${body} 통해요`;
+}
+function lowTail(care: string): string {
+  // '한 사람을 두고 경쟁이 붙는 것' -> '한 사람을 두고 경쟁이 붙는 것만 조심하면 돼요'
+  return `${care}만 조심하면 돼요`;
 }
 
-/**
- * 점수를 사람 말로 푼다.
- *
- * '오늘이 열려 있어서 점수가 올랐어요' 같은 말은 아무것도 설명하지 않는다.
- * 제일 높은 칸과 제일 낮은 칸을 맞대 놓고, 그 둘이 서로 다른 쪽으로 민다는 것을
- * 보여야 숫자가 어디서 왔는지 읽힌다.
- */
 export function scoreVerdictLine(score: ConcernScore, concern: ConcernKey): string {
   const c = findConcern(concern);
   const named = score.parts.filter((p) => p.god !== null);
@@ -223,15 +225,6 @@ export function scoreVerdictLine(score: ConcernScore, concern: ConcernKey): stri
   // pull 은 '왜 이렇게 봤나요' 줄의 몫이다. 여기서도 쓰면 같은 문장이 한
   // 화면에 두 번 나온다. 이 줄은 '어느 칸이 올리고 어느 칸이 눌렀나' 만 말하고,
   // 그 기운이 무엇인지는 아래 근거 줄이 맡는다.
-  // 기운을 설명하는 말에는 좋고 나쁨이 없다. '챙겨주는 마음이 오가는 쪽이라
-  // 제일 낮게 잡혔고요' 처럼 앞뒤가 안 맞아 보이던 이유다. 그 기운이 이 고민에
-  // 보탬이 되는지 아닌지는 점수가 이미 알고 있으니, 그걸 뒤에 붙여 말한다.
-  // '이 고민에' 라고 쓰면 앱이 아는 것을 일부러 안 말하는 게 된다. 돈을 물은
-  // 사람에게는 돈이라고 해야 한다. label 을 그대로 쓰면 '몸과 컨디션은
-  // 70점이에요 … 몸과 컨디션에' 로 무거워져서 짧은 이름을 따로 둔다.
-  const it = c.shortName;
-  const HIGH = (b: Band) => bandPhrase('high', b, it);
-  const LOW = (b: Band) => bandPhrase('low', b, it);
   return (
     // '다섯 칸' 이라고만 하면 어느 다섯인지 화면에서 못 찾는다. 바로 위에
     // 다섯 줄짜리 표가 있으니 그걸 가리킨다.
@@ -241,9 +234,15 @@ export function scoreVerdictLine(score: ConcernScore, concern: ConcernKey): stri
     // 기운이 실제로 무슨 일을 일으키는지가 이미 적혀 있다 - 돈이면
     // '들어올 돈의 폭이 넓어지는', '갚을 빚과 이자가 먼저 보이는'.
     // 그걸 그대로 쓴다. 초등학생도 돈 들어올 구멍이 넓어진다는 말은 안다.
+    //
+    // 그 뒤에 점수를 붙이면 안 된다. pull 에는 좋고 나쁨이 없어서
+    // '다툼이 올라오는 때라 연애에 바로 보탬이 돼요' 같은 거꾸로 된 문장이 된다.
+    // 점수 대신 할 일을 붙인다 - 높은 줄에는 지금 통하는 것, 낮은 줄에는 조심할 것.
     `${head} 위 다섯 줄 중 ${withJosa(top.k, '이가')} 가장 높아요. ` +
-    `${withJosa(top.k, '은는')} ${CONCERN_GOD[concern][top.god!].pull} 때라 ${HIGH(top.band)}. ` +
-    `반대로 ${withJosa(low.k, '은는')} ${CONCERN_GOD[concern][low.god!].pull} 때라 ${LOW(low.band)}.`
+    `${withJosa(top.k, '은는')} ${CONCERN_GOD[concern][top.god!].pull} 때예요. ` +
+    `${highTail(CONCERN_GOD[concern][top.god!].good)}. ` +
+    `반대로 ${withJosa(low.k, '은는')} ${CONCERN_GOD[concern][low.god!].pull} 때예요. ` +
+    `${lowTail(CONCERN_GOD[concern][low.god!].care)}.`
   );
 }
 
