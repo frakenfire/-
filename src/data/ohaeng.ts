@@ -109,29 +109,44 @@ export const OHAENG: Record<Element, OhaengFacts> = {
 };
 
 /**
- * 여섯 칸이 왜 그렇게 나왔는지 한 문단으로 푼다.
+ * 여섯 칸이 왜 그렇게 나왔는지 풀어 쓴다.
  *
  * 칸에는 답만 적고, 이유는 여기 한 덩이로 모은다. 칸마다 한 줄씩 붙이면
  * 여섯 줄이 각자 떠들어서 정작 답이 안 읽힌다.
+ *
+ * 줄바꿈을 직접 넣는다. 다섯 문장을 한 덩이로 붙여두면 벽이 되어서,
+ * 눈이 어디서 끊어 읽을지를 못 찾는다.
+ *
+ * where/when 은 고른 고민의 말이다. 돈을 물은 사람에게 '중요한 건 늦은 오후에'
+ * 라고만 하면, 위에서 촘촘히 돈 얘기를 하다가 아래로 갈수록 아무 고민에나
+ * 똑같이 붙는 말로 바뀐다. 고민을 골랐으면 끝까지 그 고민의 말로 말한다.
  */
-export function ohaengWhy(boost: Element, colorName: string): string {
+export function ohaengWhy(
+  boost: Element,
+  colorName: string,
+  concern?: { luckyWhere: string; luckyWhen: string },
+): string {
   const f = OHAENG[boost];
-  // 기운 이름은 첫 문장에서 한 번만 부른다. 문장마다 '쇠 기운' 을 되풀이하면
-  // 다섯 줄이 같은 말을 네 번 하는 것처럼 읽힌다.
   const hasBatchim = (w: string) => /[가-힣]$/.test(w)
     && (w.charCodeAt(w.length - 1) - 0xac00) % 28 !== 0;
-  const dirJosa = hasBatchim(f.direction) ? '이' : '가';
   // 숫자는 소리로 읽어서 받침을 본다. 2(이)·4(사)·5(오)·9(구)는 받침이 없어
   // '와', 1(일)·3(삼)·6(육)·7(칠)·8(팔)·10(십)은 '과'. '2과 7' 이라고 적으면
   // 계산이 맞아도 읽는 사람은 대충 만든 글로 본다.
   const numJosa = [2, 4, 5, 9].includes(f.numbers[0]) ? '와' : '과';
+  const dirLine = concern
+    ? `${f.directionWhy} ${f.direction}이 ${concern.luckyWhere}이에요.`
+    : `${f.directionWhy} ${f.direction}${hasBatchim(f.direction) ? '이' : '가'} 오늘 내 자리예요.`;
+  const timeLine = concern
+    ? `${f.timeWhy} ${concern.luckyWhen} ${f.time}에 놓으면 수월해요.`
+    : `${f.timeWhy} 중요한 건 ${f.time}에 놓으면 수월해요.`;
+  // 기운 이름은 첫 문장에서 한 번만 부른다. 문장마다 '쇠 기운' 을 되풀이하면
+  // 다섯 줄이 같은 말을 네 번 하는 것처럼 읽힌다.
   return [
     `오늘 나한테 힘이 되는 건 ${f.ko} 기운이에요.`,
-    `${f.directionWhy} ${f.direction}${dirJosa} 오늘 내 자리예요.`,
-    `${f.timeWhy} 중요한 건 ${f.time}에 놓으면 수월해요.`,
-    `붙는 숫자는 ${f.numbers[0]}${numJosa} ${f.numbers[1]}, 빛깔은 ${colorName}이에요.`,
-    `먹는 건 ${f.taste}이 드는 쪽이 좋아요.`,
+    dirLine,
+    timeLine,
+    `붙는 숫자는 ${f.numbers[0]}${numJosa} ${f.numbers[1]}, 빛깔은 ${colorName}이에요. 먹는 건 ${f.taste}이 드는 쪽이 좋아요.`,
     // 여섯 칸이 어제와 같은 이유를 먼저 말해준다. 안 말하면 '왜 안 바뀌지' 가 남는다.
-    `이건 태어난 날의 글자로 정해져서 날마다 바뀌지 않아요. 오늘 바뀐 건 빛깔이에요.`,
-  ].join(' ');
+    '이건 태어난 날의 글자로 정해져서 날마다 바뀌지 않아요. 오늘 바뀐 건 빛깔이에요.',
+  ].join('\n');
 }

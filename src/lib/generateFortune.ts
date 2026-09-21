@@ -6,7 +6,6 @@ import { findStarSign } from '../data/starSign.ts';
 import { ZODIAC_TRAIT, STAR_TRAIT } from '../data/traits.ts';
 import { hashSeed } from './dateSeed.ts';
 import { RULESET } from './sajuRuleset.ts';
-import { ohaengWhy } from '../data/ohaeng.ts';
 import { computeLuck, luckBandForTone } from './luck.ts';
 import { sajuToday } from './saju.ts';
 import { computeFourPillars, type BirthInput } from './fourPillars.ts';
@@ -115,10 +114,7 @@ export function generateFortune(input: FortuneInput): FortuneResult {
   // '내 오행을 생해주는 오행(인성)'의 오방색에서 나온다. 매일의 색에 근거가 생긴다.
   // 방향·숫자·시각·음식·물건은 computeLuck 이 같은 기운에서 이미 뽑아뒀다.
   // 여기서 색까지 확정된 다음에야 '왜 이렇게 나왔나' 한 문단을 쓸 수 있다.
-  if (saju) {
-    luck.color = saju.luckyColor;
-    luck.why = ohaengWhy(saju.boostElement, saju.luckyColor.name);
-  }
+  if (saju) luck.color = saju.luckyColor;
   const detail = computeDetail(daySeed, luck, zodiac);
   const rarity = computeRarity(seed);
 

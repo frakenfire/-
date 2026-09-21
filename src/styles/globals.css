@@ -2924,6 +2924,8 @@ strong {
 
 /* 여섯 칸이 왜 그렇게 나왔는지. 칸들과 한 덩이로 읽히되 답보다는 뒤로 물러난다. */
 .lucky4__why {
+  /* 다섯 줄을 한 덩이로 붙여두면 벽이 된다. 문장마다 줄을 나눠 적는다. */
+  white-space: pre-line;
   margin: var(--space-4) 0 0;
   padding-top: var(--space-4);
   border-top: 1px solid var(--gray-100);

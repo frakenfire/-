@@ -16,6 +16,7 @@ import { DeepSections } from '../components/DeepSections.tsx';
 import { WeekCard } from '../components/WeekCard.tsx';
 import type { Zodiac } from '../data/zodiac.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
+import { ohaengWhy } from '../data/ohaeng.ts';
 import type { Band } from '../lib/timing.ts';
 
 // 고민 점수의 등급말 - 숫자 옆에 한 단어가 있어야 '이게 높은 건가' 가 안 생긴다
@@ -55,6 +56,12 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
   // 고민을 골라 들어왔으면 맨 위 점수는 그 고민의 점수다. 명식에서 계산된 값이라
   // 오늘 점수(날짜 seed 기반)보다 이 화면이 하는 말과 더 붙는다.
   const concernLabel = deep ? findConcern(deep.concernKey).label : null;
+  // 여섯 칸을 푸는 문단. 고민을 골라 들어왔으면 그 고민의 말로 쓴다 - 돈을 물은
+  // 사람에게 '중요한 건 늦은 오후에' 라고만 하면, 위에서는 촘촘히 돈 얘기를
+  // 하다가 아래로 갈수록 아무 고민에나 붙는 말로 바뀐다.
+  const luckyWhy = luck.boost
+    ? ohaengWhy(luck.boost, luck.color.name, deep ? findConcern(deep.concernKey) : undefined)
+    : null;
   const headScore = deep ? deep.read.score.total : luck.total;
   const headGrade = deep ? BAND_LABEL[deep.read.score.band] : (GRADE_KO[luck.grade] ?? luck.grade);
 
@@ -318,7 +325,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
             칸마다 한 줄씩 붙이면 여섯 줄이 각자 떠들어서 답이 안 읽힌다.
             생년월일이 없어 근거가 없을 때는 이 문단을 아예 안 그린다 -
             없는 근거를 있는 척 적는 게 제일 나쁘다. */}
-        {luck.why ? <p className="lucky4__why">{luck.why}</p> : null}
+        {luckyWhy ? <p className="lucky4__why">{luckyWhy}</p> : null}
       </div>
 
       {/* 5. 오늘 잘 맞는 띠 */}

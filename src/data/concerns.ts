@@ -37,6 +37,18 @@ export type Concern = {
    * 아는 것을 일부러 안 말하는 게 된다.
    */
   shortName: string;
+  /**
+   * 행운 여섯 칸을 이 고민의 말로 풀 때 쓰는 두 구절.
+   *
+   * 왜 필요한가: 돈을 물은 사람에게 화면 아래쪽이 '서쪽이 오늘 내 자리예요,
+   * 중요한 건 늦은 오후에 놓으면 수월해요' 라고만 말했다. 위에서는 촘촘히
+   * 돈 얘기를 하다가 내려갈수록 아무 고민에나 똑같이 붙는 말로 바뀌었다.
+   * 실제로 돈 화면 361줄 중 돈을 말하는 줄은 49줄(13%)뿐이었고,
+   * 아래쪽에는 돈이 한 번도 안 나오는 90줄짜리 구간이 있었다.
+   */
+  luckyWhere: string;
+  /** 같은 이유로, 시각을 말할 때 쓰는 구절 */
+  luckyWhen: string;
 };
 
 /** 이 고민에 힘이 되는 기운과 버거운 기운 */
@@ -56,6 +68,8 @@ export const CONCERNS: Concern[] = [
   {
     key: 'work',
     shortName: '일',
+    luckyWhere: '일 얘기를 꺼내기 좋은 쪽',
+    luckyWhen: '중요한 일은',
     label: '일과 이직',
     hook: '옮길까 말까, 언제가 좋을까',
     icon: 'briefcase',
@@ -73,6 +87,8 @@ export const CONCERNS: Concern[] = [
   {
     key: 'money',
     shortName: '돈',
+    luckyWhere: '돈 얘기를 꺼내기 좋은 쪽',
+    luckyWhen: '큰 돈이 오가는 일은',
     label: '돈',
     hook: '모을 때인지 지킬 때인지',
     icon: 'coin',
@@ -90,6 +106,8 @@ export const CONCERNS: Concern[] = [
   {
     key: 'love',
     shortName: '연애',
+    luckyWhere: '만날 약속을 잡기 좋은 쪽',
+    luckyWhen: '만나는 약속은',
     label: '연애',
     hook: '만날 때인지 기다릴 때인지',
     icon: 'heart',
@@ -107,6 +125,8 @@ export const CONCERNS: Concern[] = [
   {
     key: 'people',
     shortName: '사람 사이',
+    luckyWhere: '사람을 만나기 좋은 쪽',
+    luckyWhen: '어려운 말을 꺼낼 일은',
     label: '사람 관계',
     hook: '누구를 믿고 누구를 거를까',
     icon: 'chat',
@@ -124,6 +144,8 @@ export const CONCERNS: Concern[] = [
   {
     key: 'health',
     shortName: '몸',
+    luckyWhere: '몸을 움직이기 좋은 쪽',
+    luckyWhen: '몸을 챙기는 일은',
     label: '몸과 컨디션',
     hook: '어디를 먼저 챙길까',
     icon: 'leaf',
@@ -141,6 +163,8 @@ export const CONCERNS: Concern[] = [
   {
     key: 'mind',
     shortName: '마음',
+    luckyWhere: '마음이 놓이는 쪽',
+    luckyWhen: '마음이 무거워지는 일은',
     label: '마음',
     hook: '이 마음이 언제 가라앉을까',
     icon: 'balloon',

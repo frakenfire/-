@@ -14,8 +14,12 @@ export type LuckColor = { name: string; hex: string };
 export type CategoryScore = { key: string; label: string; emoji: string; score: number };
 
 export type LuckSet = {
-  /** 여섯 칸이 왜 그렇게 나왔는지. 제비뽑기가 아니라 계산일 때만 채워진다 */
-  why: string | null;
+  /**
+   * 여섯 칸을 만든 기운. 제비뽑기가 아니라 계산일 때만 채워진다.
+   * 왜 그렇게 나왔는지 푸는 문단은 화면이 만든다 - 고른 고민의 말로 써야 하는데
+   * 여기는 고민을 모른다.
+   */
+  boost: Element | null;
   total: number; // 65~99 (긍정 스큐)
   grade: string; // 대길 / 길 / 중길 / 소길 / 평 (내부 키. 화면은 GRADE_KO 로)
   categories: CategoryScore[];
@@ -151,7 +155,7 @@ export function computeLuck(seed: number, band?: [number, number], boost?: Eleme
   return {
     total, grade: grade(total), categories, color, number,
     direction, time, item, food,
-    why: null, // 색을 사주 개운 컬러로 덮어쓴 뒤 generateFortune 이 채운다
+    boost: boost ?? null,
   };
 }
 
