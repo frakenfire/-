@@ -14,6 +14,7 @@ import { CATEGORY_INTERP, band } from '../data/detailContent.ts';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { DeepSections } from '../components/DeepSections.tsx';
 import { WeekCard } from '../components/WeekCard.tsx';
+import { Fold } from '../components/Fold.tsx';
 import type { Zodiac } from '../data/zodiac.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { ohaengWhy } from '../data/ohaeng.ts';
@@ -257,8 +258,19 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           그래서 홈이 아니라 결과를 받은 이 자리에 둔다. */}
       {/* 재미로 하나 더 — 여기부터는 사주 계산이 아니다. 본 풀이 사이에 끼우면
           색깔과 음식이 분석 행세를 하게 되므로 아래로 내려 따로 묶는다. */}
-      <p className="fun-head">재미로 하나 더</p>
-      {/* 2. 네 가지 운 — 사랑·돈·일·건강 점수 */}
+      {/* 여기부터는 고민과 상관없는 것들이다. 행운 여섯 칸도, 잘 맞는 띠도,
+          이번 주 흐름도 '돈을 물어본 사람' 한테 하는 말이 아니라 누구에게나
+          같은 말이다. 돈 화면 348줄 중 돈을 말하는 줄이 52줄뿐이었고, 그중
+          69줄짜리 한 덩이가 통째로 여기였다.
+          버리지는 않는다 - 매일 보는 재미는 이쪽에 있다. 대신 접는다.
+          답을 받으러 온 사람에게는 답까지만 보이고, 더 볼 사람만 연다. */}
+      <Fold title="재미로 하나 더" hint="행운 여섯 가지, 오늘 잘 맞는 띠, 이번 주 흐름">
+      {/* 2. 네 가지 운 — 사랑·돈·일·건강 점수.
+          고민을 골라 들어왔으면 안 그린다. 돈을 물어본 사람에게 사랑운·일운·
+          건강운을 같이 내밀면 화면이 물어본 것 말고 딴 얘기로 채워진다.
+          게다가 돈운 점수는 화면 맨 위가 이미 '돈 76점' 이라고 말한 그 값이다.
+          같은 숫자를 두 번 말하면서 안 물어본 것 셋을 끼워 넣는 카드였다. */}
+      {deep ? null : (
       <div className="cat4 sec-card">
         <p className="cat4__head">{isMonth ? '이번 달 네 가지 운' : '오늘 네 가지 운'}</p>
         <ul className="cat4__list">
@@ -275,6 +287,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           })}
         </ul>
       </div>
+      )}
 
       {/* 3. 오늘의 행운 여섯 칸 — 색깔·숫자·방향·시간·음식·물건.
           여섯 칸에 파랑·노랑·주황 세 가지 바탕색을 아무 규칙 없이 흩뿌려
@@ -348,6 +361,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
       </div>
 
       <WeekCard zodiac={zodiac} onShare={onShareWeek} />
+      </Fold>
 
       {/* 광고는 여기 한 자리뿐이다. 결과를 끝까지 본 사람에게만, 더 볼 것을
           열겠냐고 묻는다. 본문 중간이나 결과 앞에는 두지 않는다. */}

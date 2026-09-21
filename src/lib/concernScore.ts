@@ -1,9 +1,10 @@
 import { computeFourPillars, type BirthInput, type FourPillars } from './fourPillars.ts';
 import { computeTiming } from './timing.ts';
 import type { Gender } from './daeun.ts';
-import { tenGodOf, mainHiddenStem, GOD_GROUP_OF, TEN_GOD_KO, TEN_GOD_PHRASE, type TenGod } from './tenGods.ts';
+import { tenGodOf, mainHiddenStem, GOD_GROUP_OF, TEN_GOD_KO, type TenGod } from './tenGods.ts';
 import { scoreOf, slotOf, type Band, type Favor, type TimingRead, BAND_WORD } from './timing.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
+import { CONCERN_GOD } from '../data/concernReadings.ts';
 import { withJosa } from './josa.ts';
 
 // 점수 엔진 — 문장 엔진과 분리한다.
@@ -184,14 +185,17 @@ export function computeConcernScore(
  * 몸과 컨디션에' 로 무거워져서 concerns.ts 의 shortName 을 쓴다.
  */
 export function bandPhrase(side: 'high' | 'low', band: Band, shortName: string): string {
+  // '자리' 는 사주 책의 말이다. 돈을 물어본 사람에게 '돈에 바로 힘이 되는
+  // 자리예요' 라고 하면, 힘이 된다는 건지 자리가 있다는 건지가 안 잡힌다.
+  // 보탬이 되는지 발목을 잡는지만 말한다.
   if (side === 'high') {
-    if (band === 'good') return `${shortName}에 바로 힘이 되는 자리예요`;
-    if (band === 'ok') return `${shortName}에 무리 없이 붙는 자리예요`;
-    return '눌러도 다른 칸보다는 나은 자리예요';
+    if (band === 'good') return `${shortName}에 바로 보탬이 돼요`;
+    if (band === 'ok') return `${shortName}에 무난히 보탬이 돼요`;
+    return `${shortName}에는 보탬이 적지만 다른 줄보다는 나아요`;
   }
-  if (band === 'good') return '다른 칸이 더 세서 밀렸어요';
+  if (band === 'good') return '다른 줄이 더 세서 밀렸어요';
   if (band === 'ok') return `${shortName}에는 덜 보탬이 돼요`;
-  return `${shortName}에 걸리는 자리예요`;
+  return `${shortName}에는 오히려 발목을 잡아요`;
 }
 
 /**
@@ -231,13 +235,15 @@ export function scoreVerdictLine(score: ConcernScore, concern: ConcernKey): stri
   return (
     // '다섯 칸' 이라고만 하면 어느 다섯인지 화면에서 못 찾는다. 바로 위에
     // 다섯 줄짜리 표가 있으니 그걸 가리킨다.
-    // 그리고 짧은 이름 대신 긴 이름을 쓴다 - 칸에 넣으려고 줄인 말을 문장에
-    // 그대로 넣으면 무슨 힘인지가 안 남는다.
+    //
+    // 기운 이름('기회를 잡아채는 기운')은 아무리 풀어 써도 결국 기운 얘기라
+    // 돈을 물어본 사람에게는 남는 게 없다. CONCERN_GOD 에는 고민마다 그
+    // 기운이 실제로 무슨 일을 일으키는지가 이미 적혀 있다 - 돈이면
+    // '들어올 돈의 폭이 넓어지는', '갚을 빚과 이자가 먼저 보이는'.
+    // 그걸 그대로 쓴다. 초등학생도 돈 들어올 구멍이 넓어진다는 말은 안다.
     `${head} 위 다섯 줄 중 ${withJosa(top.k, '이가')} 가장 높아요. ` +
-    // '올해가 가장 높아요. 기회를 잡아채는 기운이라 …' 로 끊으면 둘째 문장의
-    // 주어가 사라져서 붕 뜬다. '들어와서' 가 그 자리를 메운다.
-    `${TEN_GOD_PHRASE[top.god!]}이 들어와서 ${HIGH(top.band)}. ` +
-    `반대로 ${withJosa(low.k, '은는')} ${TEN_GOD_PHRASE[low.god!]}이라 ${LOW(low.band)}.`
+    `${withJosa(top.k, '은는')} ${CONCERN_GOD[concern][top.god!].pull} 때라 ${HIGH(top.band)}. ` +
+    `반대로 ${withJosa(low.k, '은는')} ${CONCERN_GOD[concern][low.god!].pull} 때라 ${LOW(low.band)}.`
   );
 }
 

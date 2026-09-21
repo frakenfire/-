@@ -404,6 +404,9 @@ async function run(browser) {
     try {
       await setZodiac(page, '쥐띠');
       await drawTo(page, { zodiac: null });
+      // 이번 주 캘린더는 '재미로 하나 더' 접힘 안으로 들어갔다. 고민을 물어본
+      // 사람에게 띠 기반 일반 운세를 기본으로 펴두지 않기로 했기 때문이다.
+      await openFolds(page);
 
       const open = await bodyText(page);
       check(open.includes('이번 주 내 운세'), '[주간] 띠 선택 후 캘린더 카드 노출');
@@ -704,8 +707,9 @@ async function run(browser) {
         window.localStorage.getItem('tomorrowNoteZodiac'));
       check(ZODIAC_IDS.has(String(savedZodiac)), '[사주] 띠는 생년월일에서 따서 채워 둔다',
         String(savedZodiac));
-      // 주간 캘린더는 결과 화면에 있다. 사주에서 딴 띠로 거기서 열리는지 본다.
+      // 주간 캘린더는 결과 화면 '재미로 하나 더' 접힘 안에 있다.
       await drawTo(page, { zodiac: null });
+      await openFolds(page);
       check((await page.locator('.week-card').count()) === 1,
         '[사주] 띠가 채워져 주간 캘린더도 열림');
       check((await page.locator('.week-card .week-row').count()) === 7,
@@ -834,7 +838,7 @@ async function run(browser) {
         await new Promise((r) => setTimeout(r, 500));
         return heads.map((h) => (h.parentElement?.querySelector('.fold__body')?.innerText || '').trim().length);
       });
-      check(foldBodies.length === 3 && foldBodies.every((n) => n > 20),
+      check(foldBodies.length >= 3 && foldBodies.every((n) => n > 20),
         '[광고] 접힌 본문이 광고 없이 그냥 열린다', foldBodies.join('/'));
       // 지금 보고 있는 고민을 다시 팔면 안 된다
       check(geo.rows === 5, '[광고] 지금 보는 고민은 목록에서 빠진다', String(geo.rows));
@@ -1037,7 +1041,11 @@ async function run(browser) {
     await drawTo(page);
     await diagnose(page, '결과');
 
-    check((await page.locator('.lucky4__tile').count()) === 6, '[결과] 오늘의 행운 여섯 칸');
+    // 고민과 상관없는 것들은 '재미로 하나 더' 로 접었다. 접힌 채로는 없는 게 맞다.
+    check((await page.locator('.lucky4__tile').count()) === 0,
+      '[결과] 고민과 상관없는 칸은 접힌 채로 안 보인다');
+    await openFolds(page);
+    check((await page.locator('.lucky4__tile').count()) === 6, '[결과] 펼치면 행운 여섯 칸');
     // 여섯 칸에 파랑·노랑·주황을 뜻 없이 흩뿌려 놨었다. 뜻 없는 색은 소음이고,
     // 칸마다 바탕이 다른 격자는 AI 가 만든 화면의 표시로 자주 꼽힌다.
     const tileBg = await page.evaluate(() =>
@@ -1049,7 +1057,11 @@ async function run(browser) {
         .map((e) => e.innerText.trim().split('\n').map((t) => t.trim()).filter(Boolean))
         .filter((ls) => new Set(ls).size !== ls.length).length);
     check(tileDup === 0, '[결과] 행운 칸이 같은 말을 두 번 안 함', `${tileDup}칸`);
-    check((await page.locator('.cat4__row').count()) === 4, '[결과] 네 가지 운 점수');
+    // 네 가지 운(사랑·돈·일·건강)은 고민을 골라 들어왔으면 안 그린다.
+    // 돈을 물어본 사람에게 사랑운·일운·건강운을 같이 내미는 카드였고,
+    // 돈운 점수는 화면 맨 위가 이미 말한 그 값이라 같은 숫자를 두 번 말했다.
+    check((await page.locator('.cat4__row--rich').count()) === 0,
+      '[결과] 고민을 골랐으면 네 가지 운을 또 내밀지 않는다');
     // 줄마다 아래에 선을 긋는 목록은 마지막 줄 밑에도 선을 남긴다. 카드 안쪽
     // 여백만 남은 자리에 선이 떠 있으면 잘린 화면으로 보인다.
     const danglingRule = await page.evaluate(() => {
@@ -1085,8 +1097,11 @@ async function run(browser) {
     });
     check(order === true, '[결정] 접히는 상세보다 먼저 나옴');
     // 접힌 채로도 안에 뭐가 있는지는 말해줘야 '사라졌나' 가 안 생긴다
+    // 상세 셋에 '재미로 하나 더' 까지 넷이다. 수를 박아두면 덩이가 늘 때마다
+    // 검사가 깨지는데, 여기서 볼 것은 개수가 아니라 '접힌 채로도 안에 뭐가
+    // 있는지 말해주는가' 다.
     const hints = await page.locator('.fold__hint').allInnerTexts();
-    check(hints.length === 3 && hints.every((h) => h.trim().length > 6),
+    check(hints.length >= 3 && hints.every((h) => h.trim().length > 6),
       '[결정] 접힌 덩이마다 안내 한 줄', hints.join(' / '));
     // 복사 버튼은 없앴다. shareMessage 가 공유 못 하는 환경에서 알아서 복사로
     // 떨어지므로 같은 일을 하는 버튼을 둘 세울 이유가 없었다. '복사하기' 라는
@@ -1140,7 +1155,8 @@ async function run(browser) {
     await page.waitForSelector('.sec-card--decide', { timeout: 25000 });
     await wait(page, 600);
     // 상세는 접혀 있다. 접힌 채로도 무엇이 들었는지 보여야 하고, 펴면 다 있어야 한다.
-    check((await page.locator('.fold').count()) === 3, '[상담] 상세가 세 덩이로 접혀 있음');
+    check((await page.locator('.fold').count()) >= 3, '[상담] 상세가 접혀 있음',
+      `${await page.locator('.fold').count()}덩이`);
     check((await page.locator('.when4__row').count()) === 0, '[상담] 접힌 채로는 안 그린다');
     await openFolds(page);
     const dt = await bodyText(page);

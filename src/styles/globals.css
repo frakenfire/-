@@ -3231,17 +3231,6 @@ strong {
 }
 
 /* 여기부터는 재미 영역이라는 것을 한 줄로 갈라준다 */
-/* 아래를 -4px 로 당겨 두는 바람에 이 줄 다음 카드만 24px 로 붙었다.
-   다음 카드는 .sec-card 가 제 간격(28px)을 갖고 있으니 여기서 빼지 않는다. */
-.fun-head {
-  margin: var(--space-8) 0 0;
-  padding-top: 26px;
-  border-top: 1px solid var(--gray-100);
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 700;
-  color: var(--gray-600);
-}
 
 /* 차트 위를 문질러 달을 고른다. 막대 하나는 22px 라 버튼으로 두면 옆 달이 눌린다. */
 .mflow {
