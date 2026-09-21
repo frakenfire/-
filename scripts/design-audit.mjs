@@ -253,6 +253,38 @@ function collect() {
     out.cardPads = [...new Set(out.cardPads)];
   }
 
+  // 종결형이 이어지는가.
+  //
+  // '종결형 반복' 은 오래 남은 숙제였는데, 재보니 생각보다 나았다 - 결과 화면
+  // 문장 108개에서 제일 흔한 끝(예요)이 20%, 같은 끝이 잇달아 나온 최장이 3번,
+  // 그마저 가운데 한 줄은 제목이었다. 고칠 게 아니라 지킬 것이었다.
+  // 화면에 실제로 그려진 차례대로 세서, 넷이 잇달으면 빨개지게 둔다.
+  {
+    const SENT = /[가-힣]{2}요[.!?]?$/;
+    const ends = [];
+    for (const el of document.querySelectorAll('body *')) {
+      const r = el.getBoundingClientRect();
+      if (r.width < 1 || r.height < 1) continue;
+      const own = [...el.childNodes].filter((n) => n.nodeType === 3)
+        .map((n) => n.textContent.trim()).filter(Boolean).join(' ');
+      if (!own) continue;
+      for (const raw of own.split(/(?<=[.!?])\s+/)) {
+        const t = raw.trim();
+        if (t.length >= 6 && SENT.test(t)) ends.push(t.replace(/[.!?]$/, '').slice(-2));
+      }
+    }
+    let best = ends.length ? 1 : 0;
+    let cur = 1;
+    let worst = '';
+    for (let i = 1; i < ends.length; i += 1) {
+      if (ends[i] === ends[i - 1]) { cur += 1; if (cur > best) { best = cur; worst = ends[i]; } } else cur = 1;
+    }
+    const count = new Map();
+    for (const e of ends) count.set(e, (count.get(e) ?? 0) + 1);
+    const top = [...count.entries()].sort((a, b) => b[1] - a[1])[0] ?? ['-', 0];
+    out.endings = { n: ends.length, run: best, runWord: worst, top: top[0], topShare: ends.length ? Math.round((top[1] / ends.length) * 100) : 0 };
+  }
+
   // 카드 제목은 한 벌이다.
   //
   // 결과 화면을 재보니 17px(행운) / 18px(나머지 여섯) / 20px(이번 주) 세 가지였다.
@@ -391,16 +423,22 @@ function auditScreen(name, data) {
     cardOk ? `카드 사이 ${data.cardGaps.join('·') || '없음'} / 안쪽 ${data.cardPads[0] ?? '없음'}`
       : `카드 사이 ${data.cardGaps.join('·')} / 안쪽 ${data.cardPads.join(' · ')}`);
 
-  // 13) 카드 제목이 한 벌인가 (카드가 없는 화면은 0가지로 지나간다)
+  // 13) 같은 종결형이 넷 잇달지 않는가 (문장이 열 미만이면 비율은 안 본다)
+  const e = data.endings;
+  const endOk = e.run <= 3 && (e.n < 10 || e.topShare <= 35);
+  check(endOk, `[${name}] 말끝이 이어지지 않음`,
+    `문장 ${e.n} · 최장연속 ${e.run}${e.runWord ? `(${e.runWord})` : ''} · 1위 ${e.top} ${e.topShare}%`);
+
+  // 14) 카드 제목이 한 벌인가 (카드가 없는 화면은 0가지로 지나간다)
   check(data.cardTitles.length <= 1, `[${name}] 카드 제목이 한 벌`,
     data.cardTitles.length <= 1 ? `제목 ${data.cardTitles.length}가지${data.cardTitles[0] ? ` (${data.cardTitles[0]})` : ''}`
       : data.cardTitles.join(' · '));
 
-  // 14) 같은 클래스에 같은 글자면 같은 색으로 그려지는가
+  // 15) 같은 클래스에 같은 글자면 같은 색으로 그려지는가
   check(data.twoFaced.length === 0, `[${name}] 같은 말이 두 얼굴로 안 나옴`,
     data.twoFaced.length ? data.twoFaced.slice(0, 3).join(' / ') : `말 ${data.twoFacedSeen}가지 검사`);
 
-  // 15) 점수 막대와 바로 옆 숫자가 같은 말을 하는가 (막대가 없는 화면은 0개로 지나간다)
+  // 16) 점수 막대와 바로 옆 숫자가 같은 말을 하는가 (막대가 없는 화면은 0개로 지나간다)
   check(data.barGap.length === 0, `[${name}] 점수 막대가 옆 숫자와 어긋나지 않음`,
     data.barGap.length ? data.barGap.slice(0, 4).join(' / ') : `막대 ${data.barCount}개`);
 }
