@@ -1,7 +1,7 @@
 import { computeFourPillars, type BirthInput, type FourPillars } from './fourPillars.ts';
 import { computeTiming } from './timing.ts';
 import type { Gender } from './daeun.ts';
-import { tenGodOf, mainHiddenStem, GOD_GROUP_OF, TEN_GOD_KO, type TenGod } from './tenGods.ts';
+import { tenGodOf, mainHiddenStem, GOD_GROUP_OF, TEN_GOD_KO, TEN_GOD_PHRASE, type TenGod } from './tenGods.ts';
 import { scoreOf, slotOf, type Band, type Favor, type TimingRead, BAND_WORD } from './timing.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { withJosa } from './josa.ts';
@@ -229,8 +229,15 @@ export function scoreVerdictLine(score: ConcernScore, concern: ConcernKey): stri
   const HIGH = (b: Band) => bandPhrase('high', b, it);
   const LOW = (b: Band) => bandPhrase('low', b, it);
   return (
-    `${head} 다섯 칸 중 ${withJosa(top.k, '이가')} 가장 높아요. ${TEN_GOD_KO[top.god!]}이 ${HIGH(top.band)}. ` +
-    `반대로 ${withJosa(low.k, '은는')} ${TEN_GOD_KO[low.god!]}이라 ${LOW(low.band)}.`
+    // '다섯 칸' 이라고만 하면 어느 다섯인지 화면에서 못 찾는다. 바로 위에
+    // 다섯 줄짜리 표가 있으니 그걸 가리킨다.
+    // 그리고 짧은 이름 대신 긴 이름을 쓴다 - 칸에 넣으려고 줄인 말을 문장에
+    // 그대로 넣으면 무슨 힘인지가 안 남는다.
+    `${head} 위 다섯 줄 중 ${withJosa(top.k, '이가')} 가장 높아요. ` +
+    // '올해가 가장 높아요. 기회를 잡아채는 기운이라 …' 로 끊으면 둘째 문장의
+    // 주어가 사라져서 붕 뜬다. '들어와서' 가 그 자리를 메운다.
+    `${TEN_GOD_PHRASE[top.god!]}이 들어와서 ${HIGH(top.band)}. ` +
+    `반대로 ${withJosa(low.k, '은는')} ${TEN_GOD_PHRASE[low.god!]}이라 ${LOW(low.band)}.`
   );
 }
 

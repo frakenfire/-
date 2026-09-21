@@ -21,17 +21,43 @@ export type TenGod =
   | 'pyeonin' // 편인 — 치우친 배움
   | 'jeongin'; // 정인 — 나를 먹이는 배움
 
+// 명식 표처럼 칸이 좁은 자리에 쓰는 짧은 이름.
+//
+// '튀는 기운' 과 '엉뚱한 기운' 은 뜻을 안 실어주면서 나쁜 쪽 인상만 줬다.
+// 상관은 규칙을 깨고 드러내는 힘이고, 편인은 남들과 다른 방식으로 익히는
+// 힘이다. 둘 다 '이게 이 고민에 보탬이 된다' 는 문장에 들어갈 수 있어야 하는데,
+// 엉뚱한 게 일에 힘이 된다는 말은 아무도 못 알아듣는다.
 export const TEN_GOD_KO: Record<TenGod, string> = {
-  bijian: '닮은 기운',
+  bijian: '버티는 기운',
   geopjae: '겨루는 기운',
-  siksin: '표현하는 기운',
-  sanggwan: '튀는 기운',
-  pyeonjae: '기회 기운',
-  jeongjae: '모으는 기운',
+  siksin: '만드는 기운',
+  sanggwan: '드러내는 기운',
+  pyeonjae: '잡아채는 기운',
+  jeongjae: '쌓는 기운',
   pyeongwan: '밀어붙이는 기운',
-  jeonggwan: '규칙 기운',
-  pyeonin: '엉뚱한 기운',
+  jeonggwan: '지키는 기운',
+  pyeonin: '달리 배우는 기운',
   jeongin: '배우는 기운',
+};
+
+/**
+ * 문장 안에서 쓰는 긴 이름.
+ *
+ * 짧은 이름은 칸에 넣으려고 줄인 것이라, 문장에 그대로 넣으면 무슨 힘인지가
+ * 안 남는다. '엉뚱한 기운이 일에 바로 힘이 되는 자리예요' 를 읽고 뭘 하라는
+ * 건지 아는 사람은 없다. 문장에서는 무엇을 하는 힘인지까지 말한다.
+ */
+export const TEN_GOD_PHRASE: Record<TenGod, string> = {
+  bijian: '혼자서도 버티는 기운',
+  geopjae: '남과 겨뤄서 가져오는 기운',
+  siksin: '꾸준히 만들어내는 기운',
+  sanggwan: '틀을 깨고 드러내는 기운',
+  pyeonjae: '기회를 잡아채는 기운',
+  jeongjae: '조금씩 쌓아 두는 기운',
+  pyeongwan: '부담을 지고 밀어붙이는 기운',
+  jeonggwan: '정해진 대로 지키는 기운',
+  pyeonin: '남들과 다른 방식으로 익히는 기운',
+  jeongin: '배워서 채우는 기운',
 };
 
 /** 십신을 성격 축으로 묶은 다섯 무리 — 화면에서는 이 단위로 말하는 게 알아듣기 쉽다. */
