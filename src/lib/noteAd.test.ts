@@ -98,3 +98,14 @@ test('그룹 하나를 세 자리에 같이 써도 한 번만 불러온다', () 
   assert.ok(/loaded\.get\(groupIdOf\(placement\)\)/.test(ADS),
     '기다릴 때도 그룹으로 찾아야 해요');
 });
+
+test('콘솔 광고 그룹이 없으면 운영에서는 광고를 안 부르고 그냥 열어준다', () => {
+  // 광고 그룹은 '구글의 광고 시스템에 반영된 후' 에야 나온다. 그걸 기다리느라
+  // 출시를 미루지 않는다. 대신 테스트 광고를 실사용자에게 띄우지도 않는다.
+  assert.ok(/function adsConfigured\(\): boolean/.test(ADS), 'adsConfigured 가 없어요');
+  assert.ok(/!adsConfigured\(\) && import\.meta\.env\.PROD\) return \{ status: 'unsupported' \}/.test(ADS),
+    '광고 그룹이 없는 운영 빌드에서 광고를 부르려고 해요');
+  // unsupported 는 '광고를 못 보는 사람에게는 그냥 열어준다' 는 뜻이라
+  // 이 상태에서 기능이 잠기지 않는다
+  assert.ok(/isUnsupportedFreePass/.test(APP), 'App 이 무료 통과를 안 보고 있어요');
+});

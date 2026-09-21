@@ -61,6 +61,11 @@ function realAdSupported(): boolean {
   }
 }
 
+/** 콘솔에서 받은 광고 그룹을 다 채웠는가. */
+function adsConfigured(): boolean {
+  return Object.values(AD_GROUPS).every((id) => !id.startsWith('REPLACE_'));
+}
+
 /** 이 자리에 실제로 넘길 adGroupId. 콘솔 값이 없으면 테스트 ID. */
 function groupIdOf(placement: AdPlacement): string {
   const id = AD_GROUPS[placement];
@@ -87,6 +92,8 @@ const loaded = new Map<string, Pending>();
  */
 export function preloadAd(placement: AdPlacement): void {
   if (USE_MOCK || !realAdSupported()) return;
+  // 광고를 안 부를 거면 미리 불러오지도 않는다.
+  if (!adsConfigured() && import.meta.env.PROD) return;
   const adGroupId = groupIdOf(placement);
   if (loaded.has(adGroupId)) return;
   let settle: (ok: boolean) => void = () => {};
@@ -179,6 +186,18 @@ async function awaitLoaded(placement: AdPlacement): Promise<boolean> {
 /** 지정한 지점의 보상형 광고를 노출하고, 구조화된 결과를 돌려준다. 절대 throw 하지 않는다. */
 export async function showRewardAd(placement: AdPlacement): Promise<AdResult> {
   if (USE_MOCK) return withTimeout(mockRewardAd(), AD_TIMEOUT_MS);
+  // 콘솔 광고 그룹을 아직 못 받았으면, 운영 빌드에서는 광고를 아예 안 부른다.
+  //
+  // 광고 그룹은 콘솔에서 신청하면 '시스템에 반영된 후 알려준다' 고 하고
+  // 기다려야 한다. 그렇다고 출시를 미룰 이유는 없다. 이때 테스트 광고를
+  // 실사용자에게 띄우면 돈도 안 되고 검수자 눈에는 덜 만든 앱으로 보인다.
+  // 그래서 운영에서는 'unsupported' 로 돌려보낸다 - 이 값은 보상 위장이
+  // 아니라 '광고를 못 보는 사람에게는 그냥 열어준다' 는 뜻이고
+  // (adResult.ts 의 isUnsupportedFreePass), 그러면 두 번째 쪽지도 궁합도
+  // 다른 고민도 전부 무료로 열린다. 수익만 없고 앱은 온전하다.
+  //
+  // 운영이 아닌 빌드에서는 문서에 적힌 테스트 ID 로 흐름을 밟아볼 수 있다.
+  if (!adsConfigured() && import.meta.env.PROD) return { status: 'unsupported' };
   if (!realAdSupported()) return { status: 'unsupported' };
   // load -> show 순서를 지킨다. 못 불러왔으면 보여주지 않는다.
   if (!(await awaitLoaded(placement))) return { status: 'failed', code: 'not-loaded' };

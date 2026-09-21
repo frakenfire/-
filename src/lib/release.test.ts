@@ -36,12 +36,34 @@ function fixture(filled: boolean): string {
   return dir;
 }
 
-test('제출용 빌드는 임시값이 남아 있으면 실패한다', () => {
+test('제출용 빌드는 꼭 필요한 값이 비면 실패한다', () => {
   const dir = fixture(false);
   const r = run([`--dir=${dir}`, '--release']);
   rmSync(dir, { recursive: true, force: true });
   assert.notEqual(r.code, 0, '임시값이 있는데 통과했어요');
-  assert.match(r.out, /채울 값이/);
+  assert.match(r.out, /꼭 채워야 할 값이/);
+});
+
+// 광고 그룹은 콘솔에서 신청해도 구글 반영을 기다려야 나온다. 그것 때문에
+// 출시를 못 하면 이 검사가 제출을 돕는 게 아니라 막는 문이 된다.
+// 안 채우면 광고를 아예 안 부르고 기능을 전부 무료로 연다.
+test('광고 그룹과 알림 템플릿만 비면 제출을 막지 않는다', () => {
+  const dir = fixture(true);
+  writeFileSync(join(dir, 'src/lib/ads.ts'), "export const AD_GROUPS = { note: 'REPLACE_REWARD_NOTE' } as const;\n");
+  writeFileSync(join(dir, 'src/lib/toss.ts'), "export const NOTI_TEMPLATE_CODE = 'REPLACE_NOTI_TEMPLATE';\n");
+  const r = run([`--dir=${dir}`, '--release']);
+  rmSync(dir, { recursive: true, force: true });
+  assert.equal(r.code, 0, r.out);
+  assert.match(r.out, /광고 없이 나갑니다/);
+});
+
+test('아이콘이 비면 제출을 막는다', () => {
+  const dir = fixture(true);
+  writeFileSync(join(dir, 'granite.config.ts'),
+    "export default { appName: 'todaynote-ab12', brand: { icon: 'https://static.toss.im/appsintoss/placeholder-today-note.png' } };\n");
+  const r = run([`--dir=${dir}`, '--release']);
+  rmSync(dir, { recursive: true, force: true });
+  assert.notEqual(r.code, 0, '깨진 아이콘으로 통과했어요');
 });
 
 test('값을 다 채우면 제출용 빌드가 통과한다', () => {

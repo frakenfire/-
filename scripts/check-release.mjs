@@ -33,12 +33,19 @@ const TODOS = [
   {
     id: 'ad-groups',
     what: '광고 그룹 ID',
+    // 없어도 출시된다. 광고 그룹은 콘솔에서 신청해도 '구글의 광고 시스템에
+    // 반영된 후' 에야 나오는데, 그걸 기다리느라 출시를 미룰 이유가 없다.
+    // 안 채운 채로 나가면 운영 빌드는 광고를 아예 안 부르고 잠긴 기능을
+    // 전부 무료로 연다(ads.ts 의 adsConfigured). 수익만 없고 앱은 온전하다.
+    optional: '광고 없이 나갑니다. 두 번째 쪽지·궁합·다른 고민이 전부 무료로 열리고, 수익은 없어요',
     where: 'src/lib/ads.ts 의 AD_GROUPS',
-    how: '앱인토스 개발자센터 > 광고 에서 지점별로 발급',
+    how: '앱인토스 개발자센터 > 광고 에서 리워드(보상형) 유형으로 발급. 전면형 그룹은 못 씁니다',
     find: (s) => [...s.matchAll(/'(REPLACE_REWARD_[A-Z]+)'/g)].map((m) => m[1]),
     files: ['src/lib/ads.ts'],
   },
   {
+    // 없어도 출시된다. 템플릿이 없으면 알림 동의 줄 자체가 화면에 안 나온다.
+    optional: '알림 기능 없이 나갑니다. 동의 줄이 화면에 안 나와요',
     id: 'noti',
     what: '알림 템플릿 코드',
     where: 'src/lib/toss.ts 의 NOTI_TEMPLATE_CODE',
@@ -113,6 +120,7 @@ for (const x of left) {
   console.log(`    자리  ${x.where}`);
   console.log(`    받는 곳  ${x.how}`);
   console.log(`    남은 값  ${x.hits.join(', ')}`);
+  if (x.optional) console.log(`    안 채우면  ${x.optional}`);
   console.log('');
 }
 console.log('  scripts/apply-console-values.mjs 로 한 번에 넣을 수 있어요.');
@@ -123,7 +131,22 @@ if (hardFail > 0) {
   process.exit(1);
 }
 if (release) {
-  console.error(`❌ 제출용 빌드인데 채울 값이 ${left.length}가지 남았어요`);
-  process.exit(1);
+  // 없어도 앱이 온전히 도는 항목은 막지 않는다. 광고 그룹은 콘솔에서
+  // 신청해도 구글 반영을 기다려야 하는데, 그걸로 출시를 붙잡아두면
+  // 이 검사가 '제출을 돕는 도구' 가 아니라 '제출을 막는 문' 이 된다.
+  const blocking = left.filter((x) => !x.optional);
+  const skipped = left.filter((x) => x.optional);
+  if (skipped.length) {
+    console.log('제출은 가능하지만 이렇게 나갑니다');
+    console.log('───────────────────────────────────');
+    for (const x of skipped) console.log(`  ${x.what}  ${x.optional}`);
+    console.log('');
+  }
+  if (blocking.length > 0) {
+    console.error(`❌ 제출용 빌드인데 꼭 채워야 할 값이 ${blocking.length}가지 남았어요`);
+    process.exit(1);
+  }
+  console.log('✅ 제출용 빌드 준비됨');
+  process.exit(0);
 }
 console.log('개발 중에는 임시값이 정상이에요. 제출 전에 --release 로 다시 확인하세요.');
