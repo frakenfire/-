@@ -70,7 +70,12 @@ function groupIdOf(placement: AdPlacement): string {
 // 자리마다 미리 불러둔 광고 하나. 문서 규칙 그대로다 -
 // 같은 adGroupId 는 한 번에 하나만 미리 불러둘 수 있다.
 type Pending = { ready: Promise<boolean>; unregister: () => void };
-const loaded = new Map<AdPlacement, Pending>();
+// 열쇠는 자리 이름이 아니라 adGroupId 다.
+//
+// 문서: 'adGroupId가 같으면 한 번에 하나의 광고만 미리 로드할 수 있어요.'
+// 세 자리에 콘솔 그룹 하나를 같이 쓰면(그래도 된다) 자리 이름으로 세는 순간
+// 같은 그룹을 세 번 불러오게 된다. 그룹으로 세면 한 번만 부른다.
+const loaded = new Map<string, Pending>();
 
 /**
  * 광고를 미리 불러둔다. 화면에 들어설 때 부른다.
@@ -82,8 +87,8 @@ const loaded = new Map<AdPlacement, Pending>();
  */
 export function preloadAd(placement: AdPlacement): void {
   if (USE_MOCK || !realAdSupported()) return;
-  if (loaded.has(placement)) return;
   const adGroupId = groupIdOf(placement);
+  if (loaded.has(adGroupId)) return;
   let settle: (ok: boolean) => void = () => {};
   const ready = new Promise<boolean>((resolve) => { settle = resolve; });
   let unregister: () => void = () => {};
@@ -91,13 +96,13 @@ export function preloadAd(placement: AdPlacement): void {
     unregister = loadFullScreenAd({
       options: { adGroupId },
       onEvent: (event) => { if (event.type === 'loaded') settle(true); },
-      onError: () => { settle(false); loaded.delete(placement); },
+      onError: () => { settle(false); loaded.delete(adGroupId); },
     });
   } catch {
     settle(false);
     return;
   }
-  loaded.set(placement, { ready, unregister });
+  loaded.set(adGroupId, { ready, unregister });
 }
 
 // 로컬 개발 서버(npm run dev)에서만 mock. 운영/프리뷰 빌드는 실 SDK 경로를 타고,
@@ -134,7 +139,7 @@ function realRewardAd(placement: AdPlacement, adGroupId: string): Promise<AdResu
       // 콜백 등록을 풀어준다. 안 풀면 화면을 오갈수록 쌓인다.
       try { unregister(); } catch { /* 이미 풀린 경우 */ }
       // 문서 권장: 하나 보여준 뒤에는 다음 것을 미리 불러둔다.
-      loaded.delete(placement);
+      loaded.delete(adGroupId);
       preloadAd(placement);
       resolve(r);
     };
@@ -163,7 +168,7 @@ function realRewardAd(placement: AdPlacement, adGroupId: string): Promise<AdResu
 /** 미리 불러둔 게 없으면 지금 불러서 기다린다. 오래 걸리면 포기한다. */
 async function awaitLoaded(placement: AdPlacement): Promise<boolean> {
   preloadAd(placement);
-  const pending = loaded.get(placement);
+  const pending = loaded.get(groupIdOf(placement));
   if (!pending) return false;
   return await Promise.race([
     pending.ready,

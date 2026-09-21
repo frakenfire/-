@@ -86,3 +86,15 @@ test('한 흐름에 광고를 두 번 붙이지 않는다', () => {
   assert.ok(/shouldShowNoteAd\(drawsToday, paidAtEntry\.current\)/.test(APP),
     'App 이 입구에서 낸 값을 안 보고 있어요');
 });
+
+test('그룹 하나를 세 자리에 같이 써도 한 번만 불러온다', () => {
+  // 문서: 'adGroupId가 같으면 한 번에 하나의 광고만 미리 로드할 수 있어요.'
+  // 콘솔 그룹을 하나만 만들어 셋에 같이 넣는 것도 되는 길이라, 그때
+  // 같은 그룹을 세 번 불러오면 안 된다.
+  assert.ok(/const loaded = new Map<string, Pending>/.test(ADS),
+    '미리 불러둔 것을 자리 이름으로 세고 있어요. adGroupId 로 세야 해요');
+  assert.ok(/if \(loaded\.has\(adGroupId\)\) return;/.test(ADS),
+    '같은 그룹을 또 불러오는 걸 안 막아요');
+  assert.ok(/loaded\.get\(groupIdOf\(placement\)\)/.test(ADS),
+    '기다릴 때도 그룹으로 찾아야 해요');
+});
