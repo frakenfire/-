@@ -2588,23 +2588,6 @@ strong {
 }
 .lucky4__grid--3 .lucky4__icon { color: var(--gray-700); }
 
-.lucky-extra {
-  list-style: none;
-  margin: 12px 0 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-}
-.lucky-extra__row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 0;
-  border-top: 1px solid var(--gray-100);
-}
-.lucky-extra__k { font-size: 14px; line-height: 21px; font-weight: 500; color: var(--gray-700); }
-.lucky-extra__v { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--gray-900); text-align: right; }
 
 /* 내 사주 · 올해 아래 이번 달·다음 달 두 줄 */
 
@@ -2939,12 +2922,22 @@ strong {
   line-height: 24px;
 }
 
+/* 여섯 칸이 왜 그렇게 나왔는지. 칸들과 한 덩이로 읽히되 답보다는 뒤로 물러난다. */
+.lucky4__why {
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--gray-100);
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
+
 /* 점수 카드: 고리를 조금 줄이고 숫자 쪽으로 무게를 옮긴다 */
 .score-ring { width: 96px; height: 96px; }
 .score-hero__top { gap: 14px; }
 
-/* 행동은 한 줄짜리 칸으로 뺀다. 여섯 칸 안에 넣으면 문장이 잘린다. */
-.lucky-extra { margin-top: 4px; }
 
 /* 고리 안의 마스코트가 테두리를 넘지 않게 */
 .score-ring .score-hero__mascot svg { width: 60px; height: 60px; }

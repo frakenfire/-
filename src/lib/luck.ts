@@ -1,6 +1,8 @@
 import { GRADE } from './gradeWords.ts';
 import { seededRandom } from './dateSeed.ts';
 import { LUCKY_FOODS, type LuckyFood } from '../data/luckyFood.ts';
+import { OHAENG } from '../data/ohaeng.ts';
+import type { Element } from './saju.ts';
 
 // 입소문 요소: 총운 점수 + 카테고리별 점수 + 행운 세트.
 // 인기 '오늘의 운세' 앱(포스텔러/펭귄도사/운세도사)의 공통 히트 요소를 반영.
@@ -12,18 +14,17 @@ export type LuckColor = { name: string; hex: string };
 export type CategoryScore = { key: string; label: string; emoji: string; score: number };
 
 export type LuckSet = {
+  /** 여섯 칸이 왜 그렇게 나왔는지. 제비뽑기가 아니라 계산일 때만 채워진다 */
+  why: string | null;
   total: number; // 65~99 (긍정 스큐)
   grade: string; // 대길 / 길 / 중길 / 소길 / 평 (내부 키. 화면은 GRADE_KO 로)
   categories: CategoryScore[];
   color: LuckColor;
   number: number; // 1~45
-  numbers6: number[]; // 행운 번호 6개 (1~45, 재미용)
   direction: string;
   time: string;
   item: string;
-  tag: string;
   food: LuckyFood; // 오늘의 행운 음식 (하루 설계 훅)
-  luckyWeek: number; // 이번 달 행운의 주 (1~4, month 리포트용)
 };
 
 // 토스 팔레트에 맞춘 차분한 색 — 형광 핑크·보라·주황 같은 튀는 색은 톤다운.
@@ -57,8 +58,6 @@ const ITEMS = [
   '향기 좋은 핸드크림',
   '작은 간식',
 ];
-const TAGS = ['정리', '연결', '회복', '기회', '여유', '집중', '다정', '도전', '안정', '설렘'];
-
 const CATEGORY_META = [
   { key: 'love', label: '사랑운', emoji: '' },
   { key: 'money', label: '돈운', emoji: '' },
@@ -102,7 +101,18 @@ export function luckBandForTone(tone: 'great' | 'good' | 'steady' | 'caution'): 
   return TONE_BAND[tone];
 }
 
-export function computeLuck(seed: number, band?: [number, number]): LuckSet {
+/**
+ * 행운 여섯 칸.
+ *
+ * boost(오늘 나한테 힘이 되는 기운)를 주면 방향·숫자·시각·음식·물건이
+ * 제비뽑기가 아니라 그 기운에 정해진 값에서 나온다. 색은 부르는 쪽에서
+ * 사주 개운 컬러로 덮어쓴다(예전부터 그랬다).
+ *
+ * boost 가 없으면(생년월일을 안 넣은 사람) 예전처럼 목록에서 뽑는다.
+ * 그때는 why 가 null 이고, 화면도 이유를 적지 않는다 - 없는 근거를
+ * 있는 척 적는 게 제일 나쁘다.
+ */
+export function computeLuck(seed: number, band?: [number, number], boost?: Element): LuckSet {
   const r = seededRandom(seed);
 
   // 난수 소비량은 밴드 유무와 무관하게 1회로 고정 — 띠를 저장해도 행운 세트(색·숫자·
@@ -121,21 +131,28 @@ export function computeLuck(seed: number, band?: [number, number]): LuckSet {
   }));
 
   const color = pick(COLORS, r);
-  const number = 1 + Math.floor(r() * 45);
-  const direction = pick(DIRECTIONS, r);
-  const time = pick(TIMES, r);
-  const item = pick(ITEMS, r);
-  const tag = pick(TAGS, r);
+  // 난수는 boost 유무와 상관없이 같은 횟수만 돌린다 - 생년월일을 넣고 안 넣고에
+  // 따라 뒤쪽 뽑기(행운 번호·음식·주차)가 통째로 밀리지 않게.
+  const rNumber = 1 + Math.floor(r() * 45);
+  const rDirection = pick(DIRECTIONS, r);
+  const rTime = pick(TIMES, r);
+  const rItem = pick(ITEMS, r);
+  const facts = boost ? OHAENG[boost] : null;
+  const number = facts ? facts.numbers[seed % 2] : rNumber;
+  const direction = facts ? facts.direction : rDirection;
+  const time = facts ? facts.time : rTime;
+  const item = facts ? facts.items[seed % facts.items.length] : rItem;
 
-  // 행운 번호 6개 (1~45 중복 없이, 오름차순 — 재미용)
-  const set = new Set<number>();
-  while (set.size < 6) set.add(1 + Math.floor(r() * 45));
-  const numbers6 = [...set].sort((a, b) => a - b);
+  const rFood = pick(LUCKY_FOODS, r);
+  const food: LuckyFood = facts
+    ? { name: facts.foods[seed % facts.foods.length], why: `${facts.ko} 기운에 드는 ${facts.taste} 쪽이에요.` }
+    : rFood;
 
-  const food = pick(LUCKY_FOODS, r);
-  const luckyWeek = 1 + Math.floor(r() * 4); // 1~4주차
-
-  return { total, grade: grade(total), categories, color, number, numbers6, direction, time, item, tag, food, luckyWeek };
+  return {
+    total, grade: grade(total), categories, color, number,
+    direction, time, item, food,
+    why: null, // 색을 사주 개운 컬러로 덮어쓴 뒤 generateFortune 이 채운다
+  };
 }
 
 // 총운  "상위 N%" 자랑 배지.

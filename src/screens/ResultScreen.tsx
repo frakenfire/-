@@ -309,12 +309,16 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
             <strong className="lucky4__v">{luck.item}</strong>
           </div>
         </div>
-        <ul className="lucky-extra">
-          <li className="lucky-extra__row">
-            <span className="lucky-extra__k">{isMonth ? '이번 달 기운' : '오늘의 기운'}</span>
-            <strong className="lucky-extra__v">{luck.tag}</strong>
-          </li>
-        </ul>
+        {/* 여섯 칸 밑에 '왜 이렇게 나왔나' 한 문단.
+            전에는 여기가 '오늘의 기운 | 정리' 한 줄이었다. 이름표와 낱말 하나.
+            그 낱말은 날짜 해시로 열 개 중 하나를 뽑은 제비였고, 왜 그 낱말인지는
+            화면 어디에도 없었다. 칸 여섯 개 중 다섯도 같은 방식이었다.
+            지금은 방향도 숫자도 시각도 음식도 물건도 '오늘 나한테 힘이 되는
+            기운' 하나에서 계산으로 떨어진다. 그 계산을 그대로 풀어 적는다.
+            칸마다 한 줄씩 붙이면 여섯 줄이 각자 떠들어서 답이 안 읽힌다.
+            생년월일이 없어 근거가 없을 때는 이 문단을 아예 안 그린다 -
+            없는 근거를 있는 척 적는 게 제일 나쁘다. */}
+        {luck.why ? <p className="lucky4__why">{luck.why}</p> : null}
       </div>
 
       {/* 5. 오늘 잘 맞는 띠 */}
