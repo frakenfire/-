@@ -3,29 +3,23 @@ import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { TEN_GOD_KO } from './tenGods.ts';
 import { bandLabel, monthsAway, type Band, type TimingRead, type TimingSlot } from './timing.ts';
 import { CONCERN_GOD, REFRESH_NOTE } from '../data/concernReadings.ts';
+import { FAVOR_WORD } from '../data/concernFocus.ts';
 import { computeConcernScore, scoreVerdictLine, type ConcernScore } from './concernScore.ts';
-import { withJosa } from './josa.ts';
+import { withJosa, withRo } from './josa.ts';
 import { NATAL_SHAPE, SHAPE_LABELS, type ShapeRow } from '../data/natalShape.ts';
 import { CONCERN_DAY } from '../data/concernDay.ts';
 import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
 import { DECADE_AREAS, GOD_KEYWORD, type DecadeAreas } from '../data/decadeAreas.ts';
 import { DECISION, STANCE_WORD, WHEN_ACT, type Stance } from '../data/decision.ts';
-import { GOD_GROUP_OF, analyzeSaju, tenGodOf, mainHiddenStem, type GodGroup, type TenGod } from './tenGods.ts';
+import { GOD_GROUP_OF, analyzeSaju, tenGodOf, mainHiddenStem, type TenGod } from './tenGods.ts';
 import { ELEMENT_KO, STEMS, BRANCHES, type Element } from './saju.ts';
 import {
   unseongOf, UNSEONG_KO, branchRelations, RELATION_KO, sinsalOf, SINSAL_KO, gongmangOf,
 } from './sinsal.ts';
 import { readNameSound, FLOW_KO } from './nameSound.ts';
 import { computeFourPillars, type FourPillars } from './fourPillars.ts';
+import { findZodiac } from '../data/zodiac.ts';
 
-// 이 주제를 볼 때 무엇을 보는지 - 명리 이름 대신 뜻으로 말한다
-const FAVOR_WORD: Record<GodGroup, string> = {
-  self: '나를 세우는 자리',
-  output: '꺼내 보이는 자리',
-  wealth: '거두는 자리',
-  authority: '자리와 규칙',
-  support: '받쳐주고 배우는 자리',
-};
 
 // 고민 하나에 대한 심층 답 — 결론, 시기, 근거, 할 일.
 // 모든 문장은 규칙에서 나온다. 같은 생년월일과 같은 고민이면 언제 봐도 같은 답이다.
@@ -117,35 +111,40 @@ export type DeepRead = {
 // 어떻게 도는지 아무것도 말하지 않는다.
 //
 // 이 줄은 '지금이 어떤 상태인가' 를 말한다. 무엇을 할지는 바로 밑 줄이 말한다.
+//
+// soon 줄의 {when} 은 실제로 잰 거리로 채운다. 전에는 '두어 달 뒤' 라고
+// 박아뒀는데, 이 갈래는 한 달 뒤부터 세 달 뒤까지 다 들어온다. 그래서
+// 화면 아래 표에 '2026년 10월, 1달 뒤' 가 떠 있는데 맨 위 큰 글자는
+// '두어 달 뒤' 라고 말하고 있었다. 두 줄이 서로 다른 달을 가리켰다.
 const HEADLINE: Record<ConcernKey, Record<Verdict, string>> = {
   work: {
     now: '지금 이직 문이 열려 있어요',
-    soon: '조금 더 준비하고 움직이는 게 나아요',
+    soon: '{when} 이직 문이 열려요',
     wait: '올해는 옮기기보다 자리를 지키는 해예요',
   },
   money: {
     now: '지금은 들어오는 돈이 나가는 돈보다 커요',
-    soon: '두어 달 뒤에 수입이 도는 달이 와요',
+    soon: '{when} 수입이 도는 때가 와요',
     wait: '지금은 늘리기보다 새는 돈을 막을 때예요',
   },
   love: {
     now: '지금 연락하면 닿는 때예요',
-    soon: '두어 달 뒤에 사람이 들어오는 달이 와요',
+    soon: '{when} 사람이 들어오는 자리가 열려요',
     wait: '지금은 상대보다 나를 먼저 채울 때예요',
   },
   people: {
     now: '지금은 내 편이 늘어나는 때예요',
-    soon: '두어 달 뒤에 틀어진 사이가 풀려요',
+    soon: '{when} 틀어진 사이가 풀려요',
     wait: '지금은 사람을 넓히기보다 정리할 때예요',
   },
   health: {
     now: '지금은 쉬면 바로 회복되는 몸이에요',
-    soon: '두어 달 뒤에 몸이 올라와요',
+    soon: '{when} 몸이 올라와요',
     wait: '지금은 무리하면 바로 표시 나는 몸이에요',
   },
   mind: {
     now: '지금은 마음이 가벼워지는 때예요',
-    soon: '두어 달 뒤에 마음이 풀려요',
+    soon: '{when} 마음이 풀려요',
     wait: '지금은 결정을 미뤄도 되는 때예요',
   },
 };
@@ -324,7 +323,9 @@ export function buildDeepRead(
   // 그래서 '지금' 은 이번 달이 열려 있고 총점도 받쳐줄 때만 쓴다.
   let verdict: Verdict;
   if (timing.thisMonth.band === 'good' && score.total >= 74) verdict = 'now';
-  else if (timing.bestMonth.band === 'good' && away <= 3) verdict = 'soon';
+  // away 가 0 이면 가장 좋은 달이 이번 달이다. '곧 와요' 라고 할 수 없고
+  // stance 쪽도 away > 0 일 때만 '지금 준비하기' 로 간다. 조건을 맞춘다.
+  else if (timing.bestMonth.band === 'good' && away >= 1 && away <= 3) verdict = 'soon';
   else verdict = 'wait';
 
   const option = concern.options.find((o) => o.key === optionKey) ?? null;
@@ -406,7 +407,11 @@ export function buildDeepRead(
     },
     {
       k: '가장 좋은 때',
-      v: away === 0 ? `${timing.bestMonth.label}, 바로 이번 달이에요` : `${timing.bestMonth.label}, ${away}달 뒤`,
+      v: away === 0
+        ? `${timing.bestMonth.label}, 바로 이번 달이에요`
+        : away === 1
+          ? `${timing.bestMonth.label}, 다음 달이에요`
+          : `${timing.bestMonth.label}, ${away}달 뒤`,
       band: bandLabel(timing.bestMonth),
       bandKey: timing.bestMonth.band,
       act: act.best,
@@ -493,16 +498,16 @@ export function buildDeepRead(
   }));
 
   // 이 주제에서 실제로 본 자리 — 원국 여덟 글자 중 몇 개가 그 자리인지 센다
-  const favorNames = timing.favor.good.map((g) => FAVOR_WORD[g]).join(', ');
+  const favorNames = timing.favor.good.map((g) => FAVOR_WORD[concernKey][g]).join(', ');
   const focusCount = prof.gods.filter((g) => timing.favor.good.includes(GOD_GROUP_OF[g.god])).length;
   const focus =
     focusCount > 0
-      ? `${withJosa(concern.label, '은는')} ${favorNames}로 봐요. 태어난 여덟 글자 중 ${focusCount}개가 거기 걸려 있어서 바탕은 ${focusCount >= 3 ? '두꺼운' : '얇은'} 편이에요.`
-      : `${withJosa(concern.label, '은는')} ${favorNames}로 봐요. 태어난 글자에는 그 자리가 없어서, 해와 달이 들어올 때 열리는 구조예요.`;
+      ? `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 태어난 여덟 글자 중 ${focusCount}개가 거기 걸려 있어서 바탕은 ${focusCount >= 3 ? '두꺼운' : '얇은'} 편이에요.`
+      : `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 태어난 글자에는 그 자리가 없어서, 해와 달이 들어올 때 열리는 구조예요.`;
 
   // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
   // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
-  const chartToday = `내 글자에 대면 ${TEN_GOD_KO[todayGod]}이에요. ${CONCERN_GOD[concernKey][todayGod].line}`;
+  const chartToday = `내가 타고난 글자에 대보면 ${TEN_GOD_KO[todayGod]}이에요. ${CONCERN_GOD[concernKey][todayGod].line}`;
 
   // 조견표로 대조만 하는 것들. 해석을 고르지 않으니 누가 계산해도 같다.
   const stars = sinsalOf(pillars).map((x) => ({
@@ -511,7 +516,11 @@ export function buildDeepRead(
     v: SINSAL_KO[x.key].line,
   }));
   const [g1, g2] = gongmangOf(pillars.day.ganzhi);
-  const gongmang = `${withJosa(BRANCHES[g1].kor, '과와')} ${withJosa(BRANCHES[g2].kor, '이가')} 비어 있어요. 이 두 글자가 들어오는 해와 달에는 손에 잡히는 결과가 덜 남아요.`;
+  // 전에는 '오와 미가 비어 있어요' 라고 적었다. 오·미 는 지지 이름이라
+  // 읽는 사람은 그게 언제 오는 해인지 알 길이 없다. 지지 차례와 띠 차례가
+  // 같으니 띠 이름으로 적는다. 달은 뺐다 - 띠로는 달을 가리킬 수 없다.
+  const gongmangZodiac = (b: number) => findZodiac(BRANCHES[b].animal)?.label ?? BRANCHES[b].kor;
+  const gongmang = `${withJosa(gongmangZodiac(g1), '과와')} ${gongmangZodiac(g2)} 해가 비어 있어요. 이 두 해에는 크게 벌여도 손에 남는 게 덜해요.`;
 
   const chart = {
     pillars: chartPillars,
@@ -612,7 +621,11 @@ export function buildDeepRead(
 
   const todayStep = unseongOf(pillars.dayStem, todayPillar.branch);
   const todayMeet = {
-    pillar: `${STEMS[todayPillar.stem].kor}${BRANCHES[todayPillar.branch].kor}`,
+    // '무술날' 이라고 적어 놓고 있었다. 간지 이름은 읽는 사람에게 아무것도
+    // 아니고, 하필 무술은 운동으로 읽힌다. 오행과 띠로 풀어 적는다.
+    pillar: `${ELEMENT_KO[STEMS[todayPillar.stem].el]} 기운의 ${
+      findZodiac(BRANCHES[todayPillar.branch].animal)?.label ?? BRANCHES[todayPillar.branch].kor
+    }`,
     step: UNSEONG_KO[todayStep].word,
     stepLine: UNSEONG_KO[todayStep].line,
     rows: meetRows,
@@ -740,7 +753,10 @@ export function buildDeepRead(
     today,
     decision,
     now,
-    headline: HEADLINE[concernKey][verdict],
+    // {when} 은 verdict 가 soon 일 때만 들어 있고, 그때 away 는 1~3 이다.
+    headline: HEADLINE[concernKey][verdict].replace(
+      '{when}', away === 1 ? '다음 달에' : `${away}달 뒤에`,
+    ),
     // month 를 쓰면 아래 '앞으로 열두 달'의 이번 달 칸과 글자 하나까지 같은
     // 문장이 된다. 결정 카드는 같은 기운을 '무엇을 정할 때인가'로 읽는다.
     // 큰 글씨와 이 줄은 둘 다 판정에서 나와야 한 목소리가 된다.

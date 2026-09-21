@@ -16,3 +16,19 @@ export function withJosa(word: string, kind: '은는' | '이가' | '을를' | '�
   const [withB, withoutB] = [kind[0], kind[1]];
   return `${word}${hasBatchim(word) ? withB : withoutB}`;
 }
+
+/**
+ * '으로 / 로'. 받침이 없거나 받침이 ㄹ 이면 '로', 나머지는 '으로'.
+ *
+ * '자리와 규칙' + '로' 를 그냥 이어 붙여 '자리와 규칙로 봐요' 가 화면에
+ * 나가 있었다. 은는·이가 와 달리 이 조사는 ㄹ 받침이 예외라 withJosa 의
+ * 두 글자 규칙으로는 안 된다.
+ */
+export function withRo(word: string): string {
+  const ch = word.trim().slice(-1);
+  const code = ch.charCodeAt(0);
+  if (code < 0xac00 || code > 0xd7a3) return `${word}로`;
+  const batchim = (code - 0xac00) % 28;
+  // 8 = ㄹ
+  return `${word}${batchim === 0 || batchim === 8 ? '로' : '으로'}`;
+}

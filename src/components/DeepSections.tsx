@@ -408,7 +408,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
       <div className="sec-card">
         <p className="cat4__head">오늘 글자와 내 글자</p>
         <p className="meet__pillar">
-          오늘은 <b>{read.todayMeet.pillar}</b>날이에요
+          오늘은 <b>{read.todayMeet.pillar}</b> 날이에요
         </p>
         <Sentences className="qa qa--sub" text={read.chart.today} />
         <ul className="read6 read6--tight">
