@@ -6,7 +6,6 @@ import {
   elementOfZodiac,
   PAIR_FLOW_KO,
   ELEMENT_KO,
-  ELEMENT_EMOJI,
   type BranchRelation,
   type PairElementFlow,
   type Element,
@@ -44,8 +43,6 @@ export type CompatResult = {
     flowGloss: string;
     aKo: string;
     bKo: string;
-    aEmoji: string;
-    bEmoji: string;
   };
 };
 
@@ -322,8 +319,6 @@ export function computeCompat(dateKey: string, a: ZodiacId, b: ZodiacId): Compat
       flowGloss: { generate: '서로 살리는 기운', control: '자극 있는 기운', same: '같은 기운' }[flow],
       aKo: ELEMENT_KO[elementOfZodiac(a)],
       bKo: ELEMENT_KO[elementOfZodiac(b)],
-      aEmoji: ELEMENT_EMOJI[elementOfZodiac(a)],
-      bEmoji: ELEMENT_EMOJI[elementOfZodiac(b)],
     },
   };
 }

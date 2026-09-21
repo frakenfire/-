@@ -33,6 +33,7 @@
     "check:vague": "node scripts/check-vague.mjs",
     "check:deadcss": "node scripts/check-dead-css.mjs",
     "check:shadow": "node scripts/check-shadow-css.mjs",
+    "check:visual": "node scripts/check-visual.mjs",
     "check:granite": "node scripts/check-granite.mjs",
     "check:vacuity": "node scripts/check-vacuity.mjs"
   },

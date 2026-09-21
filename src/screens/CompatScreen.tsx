@@ -413,9 +413,12 @@ export function CompatScreen({
               <div className="compat-ohaeng">
                 <span className="compat-ohaeng__label">속 기운</span>
                 <span className="compat-ohaeng__pair">
-                  {result.elements.aEmoji} {result.elements.aKo}
+                  {/* 앞에 오행 이모지를 붙이던 자리다. 이모지를 다 걷어내면서
+                      빈 문자열 다섯 개짜리 맵만 남았고, 화면에는 글자 앞에
+                      공백 한 칸이 되어 나왔다. 값이 없으면 자리도 없앤다. */}
+                  {result.elements.aKo}
                   <i>×</i>
-                  {result.elements.bEmoji} {result.elements.bKo}
+                  {result.elements.bKo}
                 </span>
                 <span className={`compat-ohaeng__flow compat-ohaeng__flow--${result.elements.flow}`}>
                   {result.elements.flowKo}

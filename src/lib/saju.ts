@@ -37,14 +37,6 @@ export const ELEMENT_KO: Record<Element, string> = {
   metal: '쇠',
   water: '물',
 };
-export const ELEMENT_EMOJI: Record<Element, string> = {
-  wood: '',
-  fire: '',
-  earth: '',
-  metal: '',
-  water: '',
-};
-
 // 오행별 개운(開運) 컬러 — 전통 오방색을 토스 팔레트로 톤다운한 색들.
 // 목=청록 계열, 화=적·분홍 계열, 토=황·베이지 계열, 금=백·회 계열, 수=흑·청 계열.
 export const ELEMENT_COLORS: Record<Element, { name: string; hex: string }[]> = {

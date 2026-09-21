@@ -38,6 +38,12 @@ npm run dev              # http://localhost:5173 (광고는 mock)
 npm run verify           # 타입체크 + 테스트 + 빌드 + mock광고 가드 — 커밋 전 이거 하나면 됨
 npm run audit            # 실제 브라우저로 전 화면 클릭 점검 (playwright 필요)
 npm run check:release    # 콘솔 발급값 3종이 채워졌는지
+
+# CSS 를 건드릴 때 — 정말 의도한 것만 바뀌었는지 눈 대신 브라우저에게 묻는다
+npm run check:visual -- --twice            # 스냅샷이 흔들리지 않는지 먼저
+npm run check:visual -- --save before.snap # 고치기 전
+npm run check:visual -- --save after.snap  # 고친 뒤
+npm run check:visual -- --diff before.snap after.snap
 npx ait build            # .ait 번들
 npx ait deploy           # 심사 제출
 ```
