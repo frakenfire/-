@@ -62,10 +62,22 @@ const TODOS = [
     files: ['granite.config.ts'],
   },
   {
+    // 스토어 목록에 보이는 아이콘은 이 값이 아니다. 그건 콘솔 2단계
+    // '노출 정보 > 앱 로고' 에 올리는 파일이다.
+    //
+    // 이 값(brand.icon)은 빌드할 때 런타임 설정 스크립트로 들어간다
+    // (@apps-in-toss/plugins 의 setupRuntimeSetupScript -> brandIcon).
+    // 타입은 string 으로 필수라 빈 값은 못 넣지만, 아무 문자열이나
+    // 검증을 통과한다. 지금 들어 있는 placeholder 주소는 실제로 없는
+    // 파일이라 이 값을 쓰는 자리에서 그림이 깨진다.
+    //
+    // 전에는 이걸 제출을 막는 값으로 뒀는데, 근거가 약했다. 콘솔이
+    // 이 용도의 URL 을 돌려주는지 확인하지 못했다. 막지 않고 적어만 둔다.
+    optional: '앱 안에서 이 주소를 쓰는 자리에 그림이 깨집니다. 스토어 목록 아이콘은 콘솔에 올린 앱 로고라 이것과 무관해요',
     id: 'icon',
-    what: '앱 아이콘 URL',
+    what: '앱 아이콘 URL (brand.icon)',
     where: 'granite.config.ts 의 brand.icon',
-    how: '개발자센터에 아이콘 업로드 후 static.toss.im 주소 복사',
+    how: '콘솔에 올린 로고의 주소를 쓸 수 있으면 그것으로, 아니면 직접 올린 이미지 주소로',
     find: (s) => [...s.matchAll(/'(https:\/\/[^']*placeholder[^']*)'/g)].map((m) => m[1]),
     files: ['granite.config.ts'],
   },

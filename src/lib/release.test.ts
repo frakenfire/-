@@ -57,13 +57,14 @@ test('광고 그룹과 알림 템플릿만 비면 제출을 막지 않는다', (
   assert.match(r.out, /광고 없이 나갑니다/);
 });
 
-test('아이콘이 비면 제출을 막는다', () => {
+test('앱 ID 가 임시 slug 면 제출을 막는다', () => {
+  // 이건 진짜 막아야 한다. 콘솔 등록값과 다르면 반려 1순위다.
   const dir = fixture(true);
   writeFileSync(join(dir, 'granite.config.ts'),
-    "export default { appName: 'todaynote-ab12', brand: { icon: 'https://static.toss.im/appsintoss/placeholder-today-note.png' } };\n");
+    "export default { appName: 'today-note', brand: { icon: 'https://static.toss.im/appsintoss/real.png' } };\n");
   const r = run([`--dir=${dir}`, '--release']);
   rmSync(dir, { recursive: true, force: true });
-  assert.notEqual(r.code, 0, '깨진 아이콘으로 통과했어요');
+  assert.notEqual(r.code, 0, '임시 slug 로 통과했어요');
 });
 
 test('값을 다 채우면 제출용 빌드가 통과한다', () => {
