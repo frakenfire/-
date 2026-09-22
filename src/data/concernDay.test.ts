@@ -51,3 +51,62 @@ test('예순 칸이 다 차 있고 서로 다른 말이다', () => {
   assert.equal(all.length, 180);
   assert.equal(new Set(all).size, 180, '한 고민 안에서 같은 말을 두 번 써요');
 });
+
+// 상황을 알고 나면 더 엄하게 잴 수 있다. '내 일을 해볼까 해요' 를 고른
+// 사람에게 '채용 조건을 열어보기' 는 남의 얘기다. 부딪히는 칸은
+// concernDayOverride.ts 가 덮는다. 여기서는 덮은 뒤에도 남았는지 본다.
+const BY_SITUATION: Record<string, RegExp> = {
+  'work/stay': /개업|사업|손님|매출|첫 자리/,
+  'work/rest': /맡은|동료|같은 팀|사내|출근|승진|지금 회사|개업|사업|손님|매출/,
+  'work/start': /승진|경력을|재직|이직|지금 회사|개업|사업|손님|매출/,
+  'work/own': /지원(?!금)|채용|이력서|면접|입사|취업|합격|승진|이직|연봉/,
+  // '다음 약속' 자체는 괜찮다. 전제하는 말은 '만나면'(이미 만나는 중) 쪽이다.
+  'love/alone': /상대|사귀는|연인|우리 사이|만나면/,
+  'love/some': /연인|우리 사이/,
+  'love/couple': /소개받|새 사람/,
+  'love/past': /사귀자|만나면/,
+  'people/work': /가족/,
+  'people/friend': /가족|동료/,
+  'people/family': /동료|회사/,
+  'people/new': /가족|오래 못 본|오래 안 본/,
+};
+
+test('상황마다 부딪히는 오늘 할 일이 없다', async () => {
+  const { dayActOf } = await import('./concernDayOverride.ts');
+  const { TEN_GOD_KO } = await import('../lib/tenGods.ts');
+  const TEN_GODS = Object.keys(TEN_GOD_KO) as (keyof typeof TEN_GOD_KO)[];
+  const bad: string[] = [];
+  for (const c of CONCERNS) {
+    for (const o of c.options) {
+      const re = BY_SITUATION[`${c.key}/${o.key}`];
+      if (!re) continue;
+      for (const god of TEN_GODS) {
+        const act = dayActOf(c.key, o.key, god);
+        for (const [k, t] of Object.entries(act)) {
+          const m = t.match(re);
+          if (m) bad.push(`${c.key}/${o.key} ${god}.${k} [${m[0]}] ${t}`);
+        }
+      }
+    }
+  }
+  assert.deepEqual(bad, [], `상황과 부딪히는 줄이 남아 있습니다:\n  ${bad.join('\n  ')}`);
+});
+
+test('덮는 칸은 원래 칸과 다른 말이다', async () => {
+  const { dayActOf } = await import('./concernDayOverride.ts');
+  const { TEN_GOD_KO } = await import('../lib/tenGods.ts');
+  const TEN_GODS = Object.keys(TEN_GOD_KO) as (keyof typeof TEN_GOD_KO)[];
+  let n = 0;
+  for (const c of CONCERNS) {
+    for (const o of c.options) {
+      for (const god of TEN_GODS) {
+        const a = dayActOf(c.key, o.key, god);
+        const b = CONCERN_DAY[c.key][god];
+        for (const k of ['doIt', 'avoid', 'hold'] as const) {
+          if (a[k] !== b[k]) { n += 1; assert.ok(a[k].length > 8, `${c.key}/${o.key}: ${a[k]}`); }
+        }
+      }
+    }
+  }
+  assert.equal(n, 9, `덮은 칸이 ${n}개예요`);
+});

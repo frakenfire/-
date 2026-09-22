@@ -7,7 +7,7 @@ import { FAVOR_WORD } from '../data/concernFocus.ts';
 import { computeConcernScore, scoreVerdictLine, type ConcernScore } from './concernScore.ts';
 import { withJosa, withRo } from './josa.ts';
 import { NATAL_SHAPE, SHAPE_LABELS, type ShapeRow } from '../data/natalShape.ts';
-import { CONCERN_DAY } from '../data/concernDay.ts';
+import { dayActOf } from '../data/concernDayOverride.ts';
 import { todayAskOf } from '../data/todayVerdict.ts';
 import { verdictTwoOf } from '../data/verdictBySituation.ts';
 import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
@@ -290,7 +290,7 @@ export function buildDeepRead(
   };
 
   // 오늘 칸이 버거울 때만 '미뤄도 돼요' 를 낸다. 늘 띄우면 접어두라는 말만 쌓인다.
-  const dayAct = CONCERN_DAY[concernKey][score.dayGod];
+  const dayAct = dayActOf(concernKey, optionKey, score.dayGod);
   const today = {
     doIt: dayAct.doIt,
     avoid: dayAct.avoid,
