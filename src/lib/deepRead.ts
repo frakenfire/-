@@ -12,7 +12,8 @@ import { todayAskOf } from '../data/todayVerdict.ts';
 import { verdictTwoOf } from '../data/verdictBySituation.ts';
 import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
 import { DECADE_AREAS, GOD_KEYWORD, type DecadeAreas } from '../data/decadeAreas.ts';
-import { DECISION, STANCE_WORD, WHEN_ACT, type Stance } from '../data/decision.ts';
+import { STANCE_WORD, WHEN_ACT, type Stance } from '../data/decision.ts';
+import { planOf, STANCE_LEAD } from '../data/situationPlan.ts';
 import { GOD_GROUP_OF, analyzeSaju, tenGodOf, mainHiddenStem, type TenGod } from './tenGods.ts';
 import { ELEMENT_KO, STEMS, BRANCHES, type Element } from './saju.ts';
 import {
@@ -276,13 +277,16 @@ export function buildDeepRead(
   else if (timing.bestMonth.band === 'good' && away > 0 && away <= 3) stance = 'prep';
   else stance = 'keep';
 
-  const cell = DECISION[concernKey][stance];
+  // 결정 카드는 판정과 상황을 둘 다 본다. 판정은 '지금 움직일 때인가' 만
+  // 말하고, 무엇을 할지는 고른 상황이 말한다. 전에는 판정만 봐서 '일과 이직'
+  // 을 고른 네 사람이 상황과 무관하게 같은 할 일을 받았다.
+  const plan = planOf(concernKey, optionKey);
   const decision = {
     stance,
     stanceWord: STANCE_WORD[stance],
-    verdict: cell.verdict,
-    dos: [...cell.dos],
-    donts: [...cell.donts],
+    verdict: `${STANCE_LEAD[stance]} ${plan.focus}`,
+    dos: [...plan.dos],
+    donts: [...plan.donts],
   };
 
   // 오늘 칸이 버거울 때만 '미뤄도 돼요' 를 낸다. 늘 띄우면 접어두라는 말만 쌓인다.
