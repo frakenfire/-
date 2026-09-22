@@ -2,7 +2,7 @@ import { AppLayout } from '../components/AppLayout.tsx';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { Icon } from '../components/Icon.tsx';
 import { Mascot } from '../components/Mascot.tsx';
-import { Fold } from '../components/Fold.tsx';
+import { Chapter } from '../components/Chapter.tsx';
 import { GREETINGS } from '../data/copy.ts';
 import { HOW_ROWS, HOW_HEAD, HOW_LEAD, HOW_FOOT } from '../data/howItWorks.ts';
 import { todayVibe } from '../lib/dayVibe.ts';
@@ -197,12 +197,11 @@ export function HomeScreen({
 
       {/* 이 답은 이렇게 나와요 — 찍는 게 아니라 계산한다는 걸 밝히는 자리.
           적중률 같은 숫자는 쓰지 않는다. 증명할 수 없는 숫자 한 줄이 나머지 전부의 신뢰를 깎는다.
-          다만 여섯 문단을 매일 펴둘 이유는 없다. 처음 온 사람에게는 필요한 글이고
-          내일 또 온 사람에게는 지나갈 길이다. 결과 화면이 쓰는 것과 같은 방식으로
-          한 줄로 접는다 - 안에 뭐가 있는지는 접힌 채로도 말해준다.
-          면책은 접지 않는다. 열어봐야 보이는 면책은 면책이 아니다. */}
+          전에는 접어뒀다. 매일 오는 사람에게는 지나갈 길이라서. 그런데 접는
+          것을 화면에서 전부 걷어내기로 해서 여기도 폈다. 매일 오는 사람이
+          여섯 문단을 지나쳐야 하는 건 그대로 남는 값이다. */}
       <section className="sec how">
-        <Fold title={HOW_HEAD} hint={HOW_LEAD}>
+        <Chapter title={HOW_HEAD} hint={HOW_LEAD}>
           <ol className="how__list">
             {HOW_ROWS.map((r, i) => (
               <li key={r.title} className="how__row">
@@ -215,7 +214,7 @@ export function HomeScreen({
               </li>
             ))}
           </ol>
-        </Fold>
+        </Chapter>
         <p className="how__foot">{HOW_FOOT}</p>
       </section>
 

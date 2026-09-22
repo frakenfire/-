@@ -496,8 +496,7 @@ async function run() {
 
   await page.locator('button.note').first().dispatchEvent('click');
   await page.waitForSelector('.drawn', { timeout: 20000 }); await w(1500);
-  // 접힌 덩이도 규칙을 지켜야 한다. 다 펴놓고 잰다.
-  for (const b of await page.locator('.fold__head').all()) { await b.click(); await w(200); }
+  // 접는 것은 전부 걷어냈다. 이제 다 보이는 채로 잰다.
   await w(600);
   await grab('결과');
 
@@ -520,8 +519,7 @@ async function run() {
     await page.getByText(option, { exact: true }).first().click(); await w(800);
     await page.locator('button.note').first().dispatchEvent('click');
     await page.waitForSelector('.drawn', { timeout: 20000 }); await w(1500);
-    for (const b of await page.locator('.fold__head').all()) { await b.click(); await w(200); }
-    await w(500);
+        await w(500);
     await grab(`결과(${concern})`);
   }
 
@@ -531,8 +529,7 @@ async function run() {
   // 홈의 '이 답은 이렇게 나와요' 는 접혀 있다. 접힌 채로만 훑으면 그 안의
   // 여섯 문단은 한자도 이모지도 명리 용어도 한 번도 안 본 채로 지나간다.
   // 접었다고 검사에서 빠지면, 접는 순간 그 글은 아무도 안 보는 글이 된다.
-  for (const b of await page.locator('.fold__head').all()) { await b.click(); await w(200); }
-  await w(500);
+    await w(500);
   await grab('홈(원리 펼침)');
 
   // 궁합은 결과 화면에서 뺐다. 따로 메뉴로 나갈 자리라 딥링크로 확인한다.

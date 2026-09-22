@@ -3,7 +3,7 @@ import { Icon } from './Icon.tsx';
 import { Mascot } from '../components/Mascot.tsx';
 import { softBreak } from '../lib/softBreak.ts';
 import { Sentences } from './Sentences.tsx';
-import { Fold } from './Fold.tsx';
+import { Chapter } from './Chapter.tsx';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import type { DeepRead } from '../lib/deepRead.ts';
 import type { TimingRead } from '../lib/timing.ts';
@@ -22,6 +22,17 @@ const VERDICT_WORD = { now: '지금', soon: '곧', wait: '아직' } as const;
 // 고민에 대한 답 한 벌. 상담 화면과 쪽지 결과 화면이 같은 것을 쓴다.
 // 순서는 결론, 언제, 열두 달, 달별 풀이, 올해와 내년, 십 년, 근거, 할 일.
 export function DeepSections({ concernKey, read, timing, userName, compact = false }: Props) {
+  // '그럼 언제가 좋아요' 는 이미 재놓은 '가장 좋은 때' 줄을 그대로 쓴다.
+  // 따로 고르면 아래 시기 덩이와 다른 달을 가리키게 된다.
+  const bestRow = read.when.find((x) => x.k === '가장 좋은 때');
+  const bestWhen = bestRow ? (bestRow.act ? `${bestRow.v}.\n${bestRow.act}` : `${bestRow.v}.`) : null;
+  // '네, 오늘 꺼내도 돼요' 바로 밑에 '가장 좋은 때는 4달 뒤' 가 붙으면 두 줄이
+  // 서로 싸우는 것처럼 읽힌다. 층이 달라서 그런 건데 읽는 사람이 알 리 없다.
+  const whenAsk = read.todayAsk.band === 'good'
+    ? '오늘도 되고, 크게 움직인다면'
+    : read.todayAsk.band === 'hard'
+      ? '오늘 말고 언제가 좋아요?'
+      : '그럼 언제가 좋아요?';
   const concern = findConcern(concernKey);
   const max = Math.max(...timing.months.map((m) => m.score));
   // 막대만 보여주면 '그래서 그 달에 뭐가 있는데' 가 남는다. 눌러서 펴 볼 수 있게 한다.
@@ -62,6 +73,73 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </div>
       )}
 
+      {/* (1) 지금 어떻게 하면 될까요 — 오늘 얘기다. 매일 쪽지를 뽑는 앱이라
+          맨 먼저 오늘 하나만 놓고 묻고 답한다. 고른 상황까지 보고 묻는다. */}
+      <Chapter title="지금 어떻게 하면 될까요" hint="오늘 해도 되는지와, 오늘 할 일">
+      <div className="sec-card">
+        <p className="today-ask__q">{read.todayAsk.q}</p>
+        <Sentences className="today-ask__a" text={read.todayAsk.a} />
+        {bestWhen ? (
+          <p className="today-ask__when">
+            <span className="today-ask__when-k">{whenAsk}</span>
+            <Sentences className="today-ask__when-v" text={bestWhen} />
+          </p>
+        ) : null}
+      </div>
+
+      {/* 오늘 하면 좋은 것 / 피할 것 — 오늘 답 바로 밑이 제자리다. */}
+      <div className="sec-card">
+        <p className="cat4__head">오늘은 이렇게</p>
+        <ul className="today2">
+          <li className="today2__row today2__row--do">
+            <span className="today2__k">하면 좋은 것</span>
+            <Sentences className="today2__v" text={read.today.doIt} />
+          </li>
+          <li className="today2__row today2__row--dont">
+            <span className="today2__k">피할 것</span>
+            <Sentences className="today2__v" text={read.today.avoid} />
+          </li>
+          {read.today.hold ? (
+            <li className="today2__row today2__row--hold">
+              <span className="today2__k">오늘은 미뤄도 돼요</span>
+              <Sentences className="today2__v" text={read.today.hold} />
+            </li>
+          ) : null}
+        </ul>
+      </div>
+
+      {/* 결정 카드 — 이 리포트가 실패하지 않으려면 여기서 끝이 나야 한다.
+          다 읽고 '그래서 뭘 하라는 거지' 가 남으면 진 것이다. */}
+      <div className="sec-card sec-card--decide">
+        <p className="cat4__head">지금 할 것과 하지 말 것</p>
+        <span className={`decide__stance decide__stance--${read.decision.stance}`}>{read.decision.stanceWord}</span>
+        <Sentences className="decide__verdict" text={read.decision.verdict} />
+        <p className="decide__sub">지금 할 것</p>
+        <ol className="decide__list decide__list--do">
+          {read.decision.dos.map((d, i) => (
+            <li key={d} className="decide__row">
+              <span className="decide__no num">{i + 1}</span>
+              <span className="decide__v">{d}</span>
+            </li>
+          ))}
+        </ol>
+        <p className="decide__sub">지금 하지 말 것</p>
+        <ul className="decide__list decide__list--dont">
+          {read.decision.donts.map((d) => (
+            <li key={d} className="decide__row">
+              <span className="decide__x" aria-hidden />
+              <span className="decide__v">{d}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="mflow__foot">맨 위 하나가 오늘 바로 할 수 있는 것이에요.</p>
+      </div>
+
+      </Chapter>
+
+      {/* '이 고민' 은 앱이 아는 것을 일부러 안 말하는 것이다. 돈을 물었으면
+          돈이라고 적는다. */}
+      <Chapter title="왜 그렇게 해야 할까요" hint={`점수가 나온 자리와, 지금 ${concern.shortName} 생각이 커진 이유`}>
       {/* 점수가 어디서 나왔는지 — '87점입니다' 하고 끝내면 아무도 안 믿는다.
           바탕 30, 십 년 20, 올해 20, 이번 달 20, 오늘 10 을 그대로 펼쳐 보여준다. */}
       <div className="sec-card">
@@ -91,36 +169,6 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </p>
       </div>
 
-      {/* 결정 카드 — 이 리포트가 실패하지 않으려면 여기서 끝이 나야 한다.
-          다 읽고 '그래서 뭘 하라는 거지' 가 남으면 진 것이다. */}
-      <div className="sec-card sec-card--decide">
-        <p className="cat4__head">지금 어떻게 하면 될까요</p>
-        <span className={`decide__stance decide__stance--${read.decision.stance}`}>{read.decision.stanceWord}</span>
-        <Sentences className="decide__verdict" text={read.decision.verdict} />
-        <p className="decide__sub">지금 할 것</p>
-        <ol className="decide__list decide__list--do">
-          {read.decision.dos.map((d, i) => (
-            <li key={d} className="decide__row">
-              <span className="decide__no num">{i + 1}</span>
-              <span className="decide__v">{d}</span>
-            </li>
-          ))}
-        </ol>
-        <p className="decide__sub">지금 하지 말 것</p>
-        <ul className="decide__list decide__list--dont">
-          {read.decision.donts.map((d) => (
-            <li key={d} className="decide__row">
-              <span className="decide__x" aria-hidden />
-              <span className="decide__v">{d}</span>
-            </li>
-          ))}
-        </ul>
-        <p className="mflow__foot">맨 위 하나가 오늘 바로 할 수 있는 것이에요.</p>
-      </div>
-
-      {/* '이 고민' 은 앱이 아는 것을 일부러 안 말하는 것이다. 돈을 물었으면
-          돈이라고 적는다. */}
-      <Fold title="내 사주는 이렇게 생겼어요" hint={`타고난 구조와, 지금 ${concern.shortName} 생각이 커진 이유`}>
       {/* 평생 안 바뀌는 자리 — 오늘 어떠냐가 아니라 나는 원래 어떤 사람이냐 */}
       <div className="sec-card">
         <p className="cat4__head">{read.shape.head}</p>
@@ -154,9 +202,9 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         <p className="mflow__foot">십 년이 배경을 깔고, 올해가 방향을 정하고, 이번 달이 눈앞에 밀어놓은 거예요.</p>
       </div>
 
-      </Fold>
+      </Chapter>
 
-      <Fold title="언제 움직일까요" hint="가장 좋은 때와 조심할 때, 앞으로 열두 달">
+      <Chapter title="시기별로는 이렇게 하는 게 좋아요" hint="가장 좋은 때와 조심할 때, 앞으로 열두 달">
       <div className="sec-card">
         <p className="cat4__head">언제가 좋을까요</p>
         <ul className="when4">
@@ -302,25 +350,40 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </div>
       )}
 
-      </Fold>
+      </Chapter>
 
-      <Fold title="왜 이렇게 봤나요" hint="내 글자와 올해, 이번 달에서 본 것">
+      <Chapter title="다양한 관점에서 본 나의 사주" hint="네 가지 나, 내 명식 여덟 글자, 오늘 글자">
+      {/* 네 가지 나 — 여러 각도에서 본 요약이라 이 덩이 머리에 둔다.
+          오늘이 맨 위다. 매일 새로 뽑는 건 그 줄뿐이다. */}
       <div className="sec-card">
-        {/* 묶음 이름이 바로 위에서 '왜 이렇게 봤나요' 라고 묻고 있다.
-            여기서 '왜 이렇게 봤냐면요' 라고 다시 쓰면 같은 질문을 두 번 한다.
-            이 카드가 실제로 보여주는 것(네 층에서 각각 무엇을 봤나)을 적는다. */}
-        <p className="cat4__head">층마다 본 것</p>
-        <ul className="read6 read6--tight">
-          {read.why.map((w) => (
-            <li key={w.k} className="read6__row">
-              <span className="read6__k">{w.k}</span>
-              <Sentences className="read6__v" text={w.v} />
+        <p className="cat4__head">네 가지 나</p>
+        <ul className="selves">
+          {read.selves.map((x) => (
+            <li key={x.k} className="selves__row">
+              <span className="selves__k">
+                {x.k}
+                <i className="selves__label">{x.label}</i>
+              </span>
+              <span className="selves__v num">{x.score}</span>
+              <Sentences className="selves__line" text={x.line} />
+              <span className="selves__vs">{x.vs ?? '여기가 기준이에요'}</span>
             </li>
           ))}
         </ul>
-        <p className="mflow__foot">{read.basis}</p>
+        <Sentences
+          className="mflow__foot"
+          text={'오늘이 맨 위예요. 쪽지는 날마다 새로 뽑으니까요.\n가까운 미래는 올해와 이번 달을 반씩 섞은 값이에요.\n타고난 나는 평생 그대로고, 나머지 셋은 때가 지나면 바뀌어요.'}
+        />
       </div>
 
+      {/* '층마다 본 것' 카드는 지웠다.
+          네 층을 하나씩 짚어주던 카드인데, 바로 위 '네 가지 나' 가 같은 네
+          층을 같은 재료(pull)로 말한다. 접는 것을 걷어내면서 둘이 한 화면에
+          같이 서게 됐고, '연봉과 조건이 숫자로 정해지는 때예요' 와
+          '연봉과 조건이 숫자로 정해지는 쪽으로 읽었어요' 가 나란히 나왔다.
+          게다가 지운 쪽은 '겨루는 기운이 들어와요' 처럼 기운 이름을 쓴다.
+          읽고 나서 정해지는 게 없는 말이라 남길 이유가 없다.
+          무엇을 보고 읽었는지 한 줄(basis)은 아래 '이 주제에서 본 자리' 가 맡는다. */}
       {/* 명식을 그대로 펼친다. 근거를 안 보여주면 '아무 말이나 하는 앱' 이 된다. */}
       <div className="sec-card">
         <p className="cat4__head">내 명식 여덟 글자</p>
@@ -429,7 +492,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         {read.todayMeet.quiet ? <Sentences className="qa qa--sub" text={read.todayMeet.quiet} /> : null}
         <Sentences className="mflow__foot" text={read.refresh} />
       </div>
-      </Fold>
+      </Chapter>
     </>
   );
 }

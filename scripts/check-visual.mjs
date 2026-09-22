@@ -105,7 +105,7 @@ async function snapshot() {
   // 흐름 그대로 훑는다. 화면을 하나 빼면 그 화면은 영영 안 보게 된다.
   await page.goto(BASE, { waitUntil: 'networkidle' }); await w(800);
   await take('홈');
-  await page.locator('.fold__head').first().click(); await w(500);
+  await w(300);
   await take('홈펼침');
   await page.goto(BASE, { waitUntil: 'networkidle' }); await w(600);
   await page.locator('.today-hook__cta').first().click(); await w(800);
@@ -123,7 +123,7 @@ async function snapshot() {
   await page.locator('button.note').first().dispatchEvent('click');
   await page.waitForSelector('.drawn', { timeout: 20000 }); await w(1800);
   await take('결과');
-  for (const b of await page.locator('.fold__head').all()) { await b.click(); await w(200); }
+  await w(300);
   await w(600);
   await take('결과펼침');
   await page.goto(`${BASE}#/compat`, { waitUntil: 'networkidle' }); await w(1200);

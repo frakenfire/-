@@ -8,6 +8,7 @@ import { withRo, withJosa } from './josa.ts';
 import { CONCERN_GOD } from '../data/concernReadings.ts';
 import { TEN_GOD_KO } from './tenGods.ts';
 import { CONCERNS, findConcern, type ConcernKey } from '../data/concerns.ts';
+import { todayAskOf } from '../data/todayVerdict.ts';
 
 // 화면에 실제로 찍히는 글자를 사람이 읽듯 훑는 검사.
 //
@@ -198,7 +199,10 @@ test('오늘 하나만 놓고 묻고 답한다', () => {
     const lines = r.todayAsk.a.split('\n');
     assert.equal(lines.length, 2, `두 줄이 아니에요: ${r.todayAsk.a}`);
     assert.ok(lines.every((l) => l.endsWith('.')), r.todayAsk.a);
-    assert.ok(!/기운/.test(r.todayAsk.a), `기운 이름이 들어갔어요: ${r.todayAsk.a}`);
+    // '기운' 이라는 낱말 자체는 막지 않는다. 몸과 컨디션에는 '기운이
+    // 돌아와요' 처럼 몸의 기운을 말하는 자리가 있다. 막을 것은 십신 이름이다.
+    const god = Object.values(TEN_GOD_KO).find((g) => r.todayAsk.a.includes(g));
+    assert.equal(god, undefined, `십신 이름이 들어갔어요: ${r.todayAsk.a}`);
     // 오늘 점수 밴드에서 나와야 한다. 따로 고르면 위 표와 어긋난다.
     assert.equal(r.todayAsk.band, r.score.parts.find((p) => p.k === '오늘')!.band, k);
   }
@@ -213,4 +217,40 @@ test('오늘 답이 밴드마다 갈린다', () => {
   }
   const all = [...byBand.values()].flatMap((v) => [...v]);
   assert.equal(new Set(all).size, all.length, '다른 밴드가 같은 답을 써요');
+});
+
+test('오늘 묻는 말이 고른 상황마다 다르다', () => {
+  // '지금은 쉬는 중이에요' 를 고른 사람에게 '이직 얘기를 꺼내도 될까요' 라고
+  // 물으면 꺼낼 자리가 없는 사람에게 묻는 말이 된다. 상황을 물어놓고 답에
+  // 안 쓰는 것이 이 앱에서 제일 오래된 구멍이었다.
+  for (const c of CONCERNS) {
+    const qs = new Set(c.options.map((o) => todayAskOf(c.key, o.key, 'ok').q));
+    assert.equal(qs.size, c.options.length,
+      `${c.key}: 상황 ${c.options.length}가지인데 묻는 말은 ${qs.size}가지`);
+  }
+});
+
+test('상황마다 답도 다르고, 밴드마다 또 갈린다', () => {
+  const seen = new Set<string>();
+  for (const c of CONCERNS) {
+    for (const o of c.options) {
+      for (const b of ['good', 'ok', 'hard'] as const) {
+        const { a } = todayAskOf(c.key, o.key, b);
+        assert.ok(!seen.has(a), `같은 답을 두 자리에서 써요: ${a}`);
+        seen.add(a);
+        assert.equal(a.split('\n').length, 2, `두 줄이 아니에요: ${a}`);
+      }
+    }
+  }
+  // 고민 여섯 x 상황 넷 x 밴드 셋
+  assert.equal(seen.size, 72, `${seen.size}개만 있어요`);
+});
+
+test('상황을 안 골라도 답이 나온다', () => {
+  for (const c of CONCERNS) {
+    const r = todayAskOf(c.key, null, 'ok');
+    assert.ok(r.q.endsWith('?') && r.a.includes('\n'), `${c.key}: ${r.q}`);
+    // 없는 상황 키가 와도 터지지 않는다
+    assert.equal(todayAskOf(c.key, 'nope', 'ok').q, r.q);
+  }
 });

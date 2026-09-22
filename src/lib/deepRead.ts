@@ -8,7 +8,7 @@ import { computeConcernScore, scoreVerdictLine, type ConcernScore } from './conc
 import { withJosa, withRo } from './josa.ts';
 import { NATAL_SHAPE, SHAPE_LABELS, type ShapeRow } from '../data/natalShape.ts';
 import { CONCERN_DAY } from '../data/concernDay.ts';
-import { TODAY_ASK, TODAY_ANSWER } from '../data/todayVerdict.ts';
+import { todayAskOf } from '../data/todayVerdict.ts';
 import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
 import { DECADE_AREAS, GOD_KEYWORD, type DecadeAreas } from '../data/decadeAreas.ts';
 import { DECISION, STANCE_WORD, WHEN_ACT, type Stance } from '../data/decision.ts';
@@ -681,21 +681,20 @@ export function buildDeepRead(
       k: '타고난 나',
       label: natal.label,
       score: natal.score,
-      // pull 은 '일이 일어나는' 서술이라 '원래 ~한 사람이에요' 에 붙으면
-      // '원래 같은 자리를 두고 겹치는 사람이 생기는 사람이에요' 가 된다.
-      // 타고난 층은 원국 모양(NATAL_SHAPE)이 맡는다 - 그게 평생 안 바뀌는
-      // 자리를 적은 표다. 첫 문장만 가져온다.
-      line: `${lab.inflow}: ${shapeRow.inflow.split('. ')[0].replace(/\.?$/, '.')}`,
+      // 원국 모양(NATAL_SHAPE)을 여기 쓰면 '왜 그렇게 해야 할까요' 덩이의
+      // 카드와 글자 하나까지 같은 문장이 한 화면에 두 번 나온다. 접는 것을
+      // 걷어내면서 둘 다 보이게 됐고, 거기서 드러났다.
+      // 여기서는 원국에서 이 고민 자리가 몇 글자인지를 말한다. 그건 다른
+      // 어디서도 숫자로는 안 나오고, '기준' 이라는 역할과도 맞는다.
+      line: `여덟 글자 중 ${score.natalCount}개가 이 자리라 바탕은 ${score.natalCount >= 3 ? '두꺼운' : '얇은'} 편이에요.`,
       vs: null,
     },
   ];
 
   // 오늘 하나만 놓고 답하는 줄. 오늘 점수 밴드로 고른다.
-  const todayAsk = {
-    q: TODAY_ASK[concernKey],
-    a: TODAY_ANSWER[concernKey][todayPart.band],
-    band: todayPart.band,
-  };
+  // 고른 상황까지 보고 묻는다. '쉬는 중' 인 사람에게 '이직 얘기를 꺼내도
+  // 될까요' 라고 물으면 꺼낼 자리가 없는 사람에게 묻는 말이 된다.
+  const todayAsk = todayAskOf(concernKey, optionKey, todayPart.band);
 
   const todayMeet = {
     // '무술날' 이라고 적어 놓고 있었다. 간지 이름은 읽는 사람에게 아무것도

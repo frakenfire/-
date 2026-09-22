@@ -14,7 +14,7 @@ import { CATEGORY_INTERP, band } from '../data/detailContent.ts';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { DeepSections } from '../components/DeepSections.tsx';
 import { WeekCard } from '../components/WeekCard.tsx';
-import { Fold } from '../components/Fold.tsx';
+import { Chapter } from '../components/Chapter.tsx';
 import type { Zodiac } from '../data/zodiac.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { ohaengWhy } from '../data/ohaeng.ts';
@@ -52,7 +52,7 @@ type Props = {
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
 export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onShareWeek, onBack }: Props) {
-  const { luck, dayPlan } = result;
+  const { luck } = result;
   const isMonth = result.reading.scale === 'month';
   // 고민을 골라 들어왔으면 맨 위 점수는 그 고민의 점수다. 명식에서 계산된 값이라
   // 오늘 점수(날짜 seed 기반)보다 이 화면이 하는 말과 더 붙는다.
@@ -63,23 +63,6 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
   const luckyWhy = luck.boost
     ? ohaengWhy(luck.boost, luck.color.name, deep ? findConcern(deep.concernKey) : undefined)
     : null;
-  // '그럼 언제가 좋아요' 는 이미 재놓은 '가장 좋은 때' 줄을 그대로 쓴다.
-  // 여기서 따로 고르면 아래 시기 카드와 다른 달을 가리키게 된다.
-  const bestWhen = deep
-    ? (() => {
-        const row = deep.read.when.find((x) => x.k === '가장 좋은 때');
-        if (!row) return null;
-        return row.act ? `${row.v}.\n${row.act}` : `${row.v}.`;
-      })()
-    : null;
-  // '네, 오늘 꺼내도 돼요' 바로 밑에 '가장 좋은 때는 4달 뒤' 가 붙으면
-  // 두 줄이 서로 싸우는 것처럼 읽힌다. 층이 달라서 그런 건데, 그걸
-  // 읽는 사람이 알 리 없다. 오늘 답에 맞춰 묻는 말을 바꾼다.
-  const whenAsk = deep && deep.read.todayAsk.band === 'good'
-    ? '오늘도 되고, 크게 움직인다면'
-    : deep && deep.read.todayAsk.band === 'hard'
-      ? '오늘 말고 언제가 좋아요?'
-      : '그럼 언제가 좋아요?';
   const headScore = deep ? deep.read.score.total : luck.total;
   const headGrade = deep ? BAND_LABEL[deep.read.score.band] : (GRADE_KO[luck.grade] ?? luck.grade);
 
@@ -168,58 +151,6 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
         </div>
       </div>
 
-      {/* 오늘은 이렇게 — 주제를 골라 들어왔으면 그 주제 얘기만 한다.
-          일과 이직을 물어본 사람에게 물 많이 마시라는 말을 하면 거기서 끝이다. */}
-      {deep ? (
-        <div className="sec-card">
-          <p className="cat4__head">오늘은 이렇게</p>
-          <ul className="today2">
-            <li className="today2__row today2__row--do">
-              <span className="today2__k">하면 좋은 것</span>
-              <Sentences className="today2__v" text={deep.read.today.doIt} />
-            </li>
-            <li className="today2__row today2__row--dont">
-              <span className="today2__k">피할 것</span>
-              <Sentences className="today2__v" text={deep.read.today.avoid} />
-            </li>
-            {deep.read.today.hold ? (
-              <li className="today2__row today2__row--hold">
-                <span className="today2__k">오늘은 미뤄도 돼요</span>
-                <Sentences className="today2__v" text={deep.read.today.hold} />
-              </li>
-            ) : null}
-          </ul>
-        </div>
-      ) : (
-        <div className="sec-card">
-          <p className="cat4__head">{isMonth ? '이번 달은 이렇게' : '오늘은 이렇게'}</p>
-          <p className="today2__line">{softBreak(dayPlan.headline, 18)}</p>
-          <p className="today2__vibe">{dayPlan.vibe}</p>
-          <ul className="today2">
-            <li className="today2__row today2__row--do">
-              <span className="today2__k">하면 좋은 것</span>
-              <Sentences className="today2__v" text={result.daily?.reading.doThis ?? result.dos[0]} />
-            </li>
-            <li className="today2__row today2__row--dont">
-              <span className="today2__k">피할 것</span>
-              <Sentences className="today2__v" text={result.daily?.reading.avoid ?? result.dont} />
-            </li>
-            <li className="today2__row today2__row--hold">
-              <span className="today2__k">{isMonth ? '이번 달은 접어둬요' : '오늘은 접어둬요'}</span>
-              <Sentences className="today2__v" text={dayPlan.holdOff} />
-            </li>
-          </ul>
-          <ol className="today3">
-            {dayPlan.steps.map((st) => (
-              <li className="today3__row" key={st.when}>
-                <span className="today3__when">{st.when}</span>
-                <Sentences className="today3__text" text={st.text} />
-              </li>
-            ))}
-          </ol>
-        </div>
-      )}
-
       {/* 고민 답 — 뽑은 쪽지와 오늘 할 일 다음에 온다 */}
       {deep ? (
         <div className="deep-block">
@@ -270,46 +201,6 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
         </>
       )}
 
-      {/* 오늘 어떻게 할까 — 결론 카드.
-          이 앱은 매일 쪽지를 뽑는 앱인데, 화면은 올해와 십 년 얘기로 가득 차
-          있고 '오늘 어떻게 하라는 건데' 에 답하는 자리가 없었다. 맨 앞에서
-          오늘 하나만 놓고 예·아니요로 답하고, 그 다음에 언제가 좋은지,
-          그리고 네 층을 풀어 쓴 말로 보여준다. */}
-      {deep ? (
-        <div className="sec-card">
-          <p className="cat4__head">오늘 어떻게 할까요</p>
-
-          <p className="today-ask__q">{deep.read.todayAsk.q}</p>
-          <Sentences className="today-ask__a" text={deep.read.todayAsk.a} />
-
-          {bestWhen ? (
-            <p className="today-ask__when">
-              <span className="today-ask__when-k">{whenAsk}</span>
-              <Sentences className="today-ask__when-v" text={bestWhen} />
-            </p>
-          ) : null}
-
-          <p className="cat4__head cat4__head--sub">네 가지 나</p>
-          <ul className="selves">
-            {deep.read.selves.map((x) => (
-              <li key={x.k} className="selves__row">
-                <span className="selves__k">
-                  {x.k}
-                  <i className="selves__label">{x.label}</i>
-                </span>
-                <span className="selves__v num">{x.score}</span>
-                <Sentences className="selves__line" text={x.line} />
-                <span className="selves__vs">{x.vs ?? '여기가 기준이에요'}</span>
-              </li>
-            ))}
-          </ul>
-          <Sentences
-            className="mflow__foot"
-            text={'오늘이 맨 위예요. 쪽지는 날마다 새로 뽑으니까요.\n가까운 미래는 올해와 이번 달을 반씩 섞은 값이에요.\n타고난 나는 평생 그대로고, 나머지 셋은 때가 지나면 바뀌어요.'}
-          />
-        </div>
-      ) : null}
-
       {/* 6. 공유 */}
       {/* 내 사주 · 오늘 나에게 · 이번 주 — 전부 생년월일을 넣어야 의미가 있는 것들.
           그래서 홈이 아니라 결과를 받은 이 자리에 둔다. */}
@@ -321,7 +212,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           69줄짜리 한 덩이가 통째로 여기였다.
           버리지는 않는다 - 매일 보는 재미는 이쪽에 있다. 대신 접는다.
           답을 받으러 온 사람에게는 답까지만 보이고, 더 볼 사람만 연다. */}
-      <Fold title="재미로 하나 더" hint="행운 여섯 가지, 오늘 잘 맞는 띠, 이번 주 흐름">
+      <Chapter title="재미로 하나 더" hint="행운 여섯 가지, 오늘 잘 맞는 띠, 이번 주 흐름">
       {/* 2. 네 가지 운 — 사랑·돈·일·건강 점수.
           고민을 골라 들어왔으면 안 그린다. 돈을 물어본 사람에게 사랑운·일운·
           건강운을 같이 내밀면 화면이 물어본 것 말고 딴 얘기로 채워진다.
@@ -418,7 +309,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
       </div>
 
       <WeekCard zodiac={zodiac} onShare={onShareWeek} />
-      </Fold>
+      </Chapter>
 
       {/* 광고는 여기 한 자리뿐이다. 결과를 끝까지 본 사람에게만, 더 볼 것을
           열겠냐고 묻는다. 본문 중간이나 결과 앞에는 두지 않는다. */}

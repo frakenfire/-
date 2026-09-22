@@ -35,7 +35,7 @@ const trial = async (name, probe, inject, opts = {}) => {
   await page.evaluate(inject);
   await wait(300);
   const dirty = opts.reprobe
-    ? await page.evaluate(() => [...document.querySelectorAll('.fold__body')]
+    ? await page.evaluate(() => [...document.querySelectorAll('.chap__body')]
         .map((b) => (b.innerText || '').trim().length))
     : await page.evaluate(probe);
   out.push({ name, clean: JSON.stringify(clean), dirty: JSON.stringify(dirty),
@@ -119,14 +119,10 @@ await trial('[사주] 결과에 지우기 줄이 안 따라옴', RESULT_PROBE, (
 }, { before: drawTo });
 
 // audit.mjs 가 실제로 쓰는 것과 같은 프로브여야 증명이 성립한다
-const FOLD_PROBE = async () => {
-  const heads = [...document.querySelectorAll('.fold__head')];
-  for (const h of heads) h.click();
-  await new Promise((r) => setTimeout(r, 500));
-  return heads.map((h) => (h.parentElement?.querySelector('.fold__body')?.innerText || '').trim().length);
-};
-await trial('[광고] 접힌 본문이 그냥 열린다', FOLD_PROBE, () => {
-  for (const b of document.querySelectorAll('.fold__body')) b.textContent = '광고를 보면 열려요';
+const CHAP_PROBE = () =>
+  [...document.querySelectorAll('.chap__body')].map((b) => (b.innerText || '').trim().length);
+await trial('[광고] 본문 덩이가 그냥 보인다', CHAP_PROBE, () => {
+  for (const b of document.querySelectorAll('.chap__body')) b.textContent = '광고를 보면 열려요';
 }, { before: drawTo, reprobe: true });
 
 const WEEK_PROBE = () => {

@@ -147,13 +147,11 @@ async function fillName(page, who = '김한별') {
   }
 }
 
-// 상세는 접혀 있다. 안을 보는 점검 전에 다 펴놓는다.
+// 전에는 상세가 접혀 있어서 펴놓고 재야 했다. 접는 것을 전부 걷어냈으니
+// 지금은 펼 게 없다. 부르는 자리를 다 지우는 대신 여기만 비워 둔다 -
+// 다시 접는 날이 오면 여기만 채우면 된다.
 async function openFolds(page) {
-  for (const b of await page.locator('.fold__head').all()) {
-    await b.click();
-    await wait(page, 150);
-  }
-  await wait(page, 400);
+  await wait(page, 200);
 }
 
 // 고민마다 카드 수와 문장 길이가 다르다. 한 고민만 열어보고 '결과 화면은
@@ -832,14 +830,10 @@ async function run(browser) {
       // '결제·유료' 같은 낱말로 찾으면 돈 고민 본문("결제 버튼 앞에서 한 밤만
       // 자고 결정해요")까지 걸려서, 고민에 따라 되기도 안 되기도 하는 검사가 된다.
       // 무료인지는 낱말이 아니라 동작으로 본다 — 접힌 덩이가 광고 없이 그냥 열린다.
-      const foldBodies = await page.evaluate(async () => {
-        const heads = [...document.querySelectorAll('.fold__head')];
-        for (const h of heads) h.click();
-        await new Promise((r) => setTimeout(r, 500));
-        return heads.map((h) => (h.parentElement?.querySelector('.fold__body')?.innerText || '').trim().length);
-      });
-      check(foldBodies.length >= 3 && foldBodies.every((n) => n > 20),
-        '[광고] 접힌 본문이 광고 없이 그냥 열린다', foldBodies.join('/'));
+      const chapBodies = await page.evaluate(() =>
+        [...document.querySelectorAll('.chap__body')].map((b) => (b.innerText || '').trim().length));
+      check(chapBodies.length >= 3 && chapBodies.every((n) => n > 20),
+        '[광고] 본문 덩이가 광고 없이 그냥 보인다', chapBodies.join('/'));
       // 지금 보고 있는 고민을 다시 팔면 안 된다
       check(geo.rows === 5, '[광고] 지금 보는 고민은 목록에서 빠진다', String(geo.rows));
       // 잠겨 있을 때는 테두리 알약(광고)인데 풀리면 맨 글자였다. 지금 누를 수
@@ -875,7 +869,7 @@ async function run(browser) {
         if (!el) return false;
         let cur = el.parentElement;
         while (cur) {
-          if (cur.classList?.contains('fold')) return false;
+          if (cur.classList?.contains('chap')) return false;
           cur = cur.parentElement;
         }
         return true;
@@ -964,8 +958,8 @@ async function run(browser) {
       await openFolds(page);
       const echoes = await page.evaluate(() => {
         const out = [];
-        for (const fold of document.querySelectorAll('.fold')) {
-          const t = fold.querySelector('.fold__title')?.textContent?.trim() ?? '';
+        for (const fold of document.querySelectorAll('.chap')) {
+          const t = fold.querySelector('.chap__title')?.textContent?.trim() ?? '';
           const h = fold.querySelector('.cat4__head')?.textContent?.trim() ?? '';
           if (!t || !h) continue;
           let n = 0;
@@ -1041,9 +1035,16 @@ async function run(browser) {
     await drawTo(page);
     await diagnose(page, '결과');
 
-    // 고민과 상관없는 것들은 '재미로 하나 더' 로 접었다. 접힌 채로는 없는 게 맞다.
-    check((await page.locator('.lucky4__tile').count()) === 0,
-      '[결과] 고민과 상관없는 칸은 접힌 채로 안 보인다');
+    // 고민과 상관없는 것들은 '재미로 하나 더' 덩이로 묶어 맨 아래 둔다.
+    // 접는 것은 걷어냈으니 보이기는 한다. 대신 답보다 뒤에 있어야 한다.
+    const funOrder = await page.evaluate(() => {
+      const titles = [...document.querySelectorAll('.chap__title')].map((t) => t.textContent?.trim() ?? '');
+      const fun = titles.indexOf('재미로 하나 더');
+      const now = titles.indexOf('지금 어떻게 하면 될까요');
+      return { fun, now, titles };
+    });
+    check(funOrder.fun > 0 && funOrder.now === 0 && funOrder.fun > funOrder.now,
+      '[결과] 고민과 상관없는 칸은 답 뒤에 온다', funOrder.titles.join(' > '));
     await openFolds(page);
     check((await page.locator('.lucky4__tile').count()) === 6, '[결과] 펼치면 행운 여섯 칸');
     // 여섯 칸에 파랑·노랑·주황을 뜻 없이 흩뿌려 놨었다. 뜻 없는 색은 소음이고,
@@ -1088,21 +1089,21 @@ async function run(browser) {
     check((await page.locator('.drawn__now').count()) === 1, '[쪽지카드] 지금 할 일 한 줄');
     // 같은 결론을 아래에서 또 카드로 세우지 않는다
     check((await page.locator('.deep-hero').count()) === 0, '[쪽지카드] 결론 카드가 두 번 안 나옴');
-    // 결정 카드가 접히는 상세보다 먼저 온다 — 위쪽만 읽어도 뭘 할지 알 수 있어야 한다
+    // 결정 카드가 '왜 그렇게 해야 할까요' 보다 먼저 온다 — 위쪽만 읽어도
+    // 뭘 할지 알 수 있어야 한다. 근거는 그 다음이다.
     const order = await page.evaluate(() => {
       const d = document.querySelector('.sec-card--decide');
-      const fold = document.querySelector('.fold');
-      if (!d || !fold) return null;
-      return d.getBoundingClientRect().top < fold.getBoundingClientRect().top;
+      const why = [...document.querySelectorAll('.chap__title')]
+        .find((t) => t.textContent?.includes('왜 그렇게'));
+      if (!d || !why) return null;
+      return d.getBoundingClientRect().top < why.getBoundingClientRect().top;
     });
-    check(order === true, '[결정] 접히는 상세보다 먼저 나옴');
-    // 접힌 채로도 안에 뭐가 있는지는 말해줘야 '사라졌나' 가 안 생긴다
-    // 상세 셋에 '재미로 하나 더' 까지 넷이다. 수를 박아두면 덩이가 늘 때마다
-    // 검사가 깨지는데, 여기서 볼 것은 개수가 아니라 '접힌 채로도 안에 뭐가
-    // 있는지 말해주는가' 다.
-    const hints = await page.locator('.fold__hint').allInnerTexts();
+    check(order === true, '[결정] 근거 덩이보다 먼저 나옴');
+    // 덩이마다 안에 뭐가 들었는지 한 줄로 말해줘야 제목만 보고도 건너뛸지
+    // 읽을지 정할 수 있다. 수를 박아두면 덩이가 늘 때마다 깨지므로 안 센다.
+    const hints = await page.locator('.chap__hint').allInnerTexts();
     check(hints.length >= 3 && hints.every((h) => h.trim().length > 6),
-      '[결정] 접힌 덩이마다 안내 한 줄', hints.join(' / '));
+      '[결정] 덩이마다 안내 한 줄', hints.join(' / '));
     // 복사 버튼은 없앴다. shareMessage 가 공유 못 하는 환경에서 알아서 복사로
     // 떨어지므로 같은 일을 하는 버튼을 둘 세울 이유가 없었다. '복사하기' 라는
     // 글자가 없는지 보는 건 그 글자가 코드에 없어서 늘 통과한다 — 대신 아래
@@ -1154,10 +1155,10 @@ async function run(browser) {
     // 결론 카드는 맨 위 쪽지 카드로 합쳤다. 상세가 붙었는지는 결정 카드로 본다.
     await page.waitForSelector('.sec-card--decide', { timeout: 25000 });
     await wait(page, 600);
-    // 상세는 접혀 있다. 접힌 채로도 무엇이 들었는지 보여야 하고, 펴면 다 있어야 한다.
-    check((await page.locator('.fold').count()) >= 3, '[상담] 상세가 접혀 있음',
-      `${await page.locator('.fold').count()}덩이`);
-    check((await page.locator('.when4__row').count()) === 0, '[상담] 접힌 채로는 안 그린다');
+    // 접는 것은 전부 걷어냈다. 덩이 제목이 순서를 잡아주고, 안은 늘 보인다.
+    check((await page.locator('.chap').count()) >= 3, '[상담] 덩이 제목으로 나뉨',
+      `${await page.locator('.chap').count()}덩이`);
+    check((await page.locator('.when4__row').count()) > 0, '[상담] 접지 않고 그대로 보여줌');
     await openFolds(page);
     const dt = await bodyText(page);
     check(/언제가 좋을까요/.test(dt), '[상담] 시기 구역 노출');
@@ -1518,9 +1519,9 @@ async function run(browser) {
     const page = await newPage(browser);
     await drawTo(page);
     const t = await bodyText(page);
-    const HAVE = ['오늘 어떻게 할까요', '네 가지 나', '오늘의 나', '가까운 미래의 나', '먼 미래의 나', '타고난 나'];
+    const HAVE = ['지금 어떻게 하면 될까요', '왜 그렇게 해야 할까요', '네 가지 나', '오늘의 나', '가까운 미래의 나', '먼 미래의 나', '타고난 나'];
     const miss = HAVE.filter((x) => !t.includes(x));
-    check(miss.length === 0, '[결과] 오늘 결론과 네 가지 나가 한자리에 있다', miss.join(', ') || '다 있음');
+    check(miss.length === 0, '[결과] 네 덩이가 순서대로 있다', miss.join(', ') || '다 있음');
     // 오늘 하나만 놓고 묻고 답하는가
     check(/오늘 [^\n?]{2,30}\?/.test(t), '[결과] 오늘만 놓고 묻는 줄이 있다');
     check(t.includes('여기가 기준이에요'), '[결과] 타고난 나가 기준이라고 말한다');
