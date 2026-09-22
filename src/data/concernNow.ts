@@ -25,7 +25,7 @@ export const NOW_HEAD: Record<ConcernKey, string> = {
 export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
   work: {
     bijian: {
-      decade: '회사 이름을 빼면 뭐가 남나 세어보게 되는 때예요. 그 생각이 지금 이직 생각을 키웠어요.',
+      decade: '내 이름만으로 뭐가 남나 세어보게 되는 때예요. 그 생각이 지금 일 고민을 키웠어요.',
       year: '올해는 내가 직접 뚫어야 길이 열려요. 누가 자리를 넣어주기를 기다리면 시간만 가요.',
       month: '이번 달은 비슷한 처지의 사람들이 눈에 많이 들어와요. 비교가 시작되면 판단이 흐려져요.',
     },

@@ -38,11 +38,15 @@ function flat(v: unknown, path = '', out: [string, string][] = []): [string, str
   return out;
 }
 
+// 남녀는 대운이 반대로 돌고 연애에서 보는 자리도 달라진다. 태어난 시각을
+// 모르면 여섯 글자로만 센다. 한쪽만 재고 '다 봤다' 고 하면 안 된다.
 const BIRTHS = [
   { year: 1992, month: 3, day: 3, hour: 20 },
   { year: 1988, month: 11, day: 27, hour: 7 },
   { year: 2001, month: 6, day: 14, hour: 13 },
+  { year: 1979, month: 8, day: 8, hour: null },
 ];
+const GENDERS = ['female', 'male'] as const;
 
 test('고른 상황과 부딪히는 말이 화면 어디에도 없다', () => {
   const bad = new Set<string>();
@@ -51,6 +55,7 @@ test('고른 상황과 부딪히는 말이 화면 어디에도 없다', () => {
     for (let m = 0; m < 12; m += 1) {
       const at = new Date(Date.UTC(2026, m, 15, 3));
       const dateKey = `2026-${String(m + 1).padStart(2, '0')}-15`;
+      for (const gender of GENDERS) {
       for (const c of CONCERNS) {
         // 고민 이름 자체는 고른 사람이 읽고 온 말이라 뺀다.
         // '일과 이직은 75점이에요' 의 '이직' 은 전제가 아니라 제목이다.
@@ -58,13 +63,14 @@ test('고른 상황과 부딪히는 말이 화면 어디에도 없다', () => {
         for (const o of c.options) {
           const re = FORBIDDEN[`${c.key}/${o.key}`];
           if (!re) continue;
-          const t = computeTiming(input, p, 'female', c.key, at);
+          const t = computeTiming(input, p, gender, c.key, at);
           const r = buildDeepRead(p, t, c.key, o.key, dateKey, '김한별');
           for (const [path, s] of flat(r)) {
             const hit = s.split(label).join(' ').match(re);
             if (hit) bad.add(`${c.key}/${o.key} ${path} [${hit[0]}] ${s.slice(0, 60)}`);
           }
         }
+      }
       }
     }
   }
