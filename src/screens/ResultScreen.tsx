@@ -63,6 +63,23 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
   const luckyWhy = luck.boost
     ? ohaengWhy(luck.boost, luck.color.name, deep ? findConcern(deep.concernKey) : undefined)
     : null;
+  // '그럼 언제가 좋아요' 는 이미 재놓은 '가장 좋은 때' 줄을 그대로 쓴다.
+  // 여기서 따로 고르면 아래 시기 카드와 다른 달을 가리키게 된다.
+  const bestWhen = deep
+    ? (() => {
+        const row = deep.read.when.find((x) => x.k === '가장 좋은 때');
+        if (!row) return null;
+        return row.act ? `${row.v}.\n${row.act}` : `${row.v}.`;
+      })()
+    : null;
+  // '네, 오늘 꺼내도 돼요' 바로 밑에 '가장 좋은 때는 4달 뒤' 가 붙으면
+  // 두 줄이 서로 싸우는 것처럼 읽힌다. 층이 달라서 그런 건데, 그걸
+  // 읽는 사람이 알 리 없다. 오늘 답에 맞춰 묻는 말을 바꾼다.
+  const whenAsk = deep && deep.read.todayAsk.band === 'good'
+    ? '오늘도 되고, 크게 움직인다면'
+    : deep && deep.read.todayAsk.band === 'hard'
+      ? '오늘 말고 언제가 좋아요?'
+      : '그럼 언제가 좋아요?';
   const headScore = deep ? deep.read.score.total : luck.total;
   const headGrade = deep ? BAND_LABEL[deep.read.score.band] : (GRADE_KO[luck.grade] ?? luck.grade);
 
@@ -253,14 +270,26 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
         </>
       )}
 
-      {/* 네 가지 나 — 마지막에 한 번 모아 보여준다.
-          층마다 풀이는 있는데 접힌 덩이 여기저기 흩어져 있어서, 다 읽고
-          나서도 '그래서 나는 어떤 사람인가' 가 한자리에 없었다.
-          점수 표와 겹치지 않게, 여기서는 타고난 나를 기준으로 나머지 셋이
-          위인지 아래인지를 말한다. 그 말은 다른 어디서도 안 한다. */}
+      {/* 오늘 어떻게 할까 — 결론 카드.
+          이 앱은 매일 쪽지를 뽑는 앱인데, 화면은 올해와 십 년 얘기로 가득 차
+          있고 '오늘 어떻게 하라는 건데' 에 답하는 자리가 없었다. 맨 앞에서
+          오늘 하나만 놓고 예·아니요로 답하고, 그 다음에 언제가 좋은지,
+          그리고 네 층을 풀어 쓴 말로 보여준다. */}
       {deep ? (
         <div className="sec-card">
-          <p className="cat4__head">네 가지 나</p>
+          <p className="cat4__head">오늘 어떻게 할까요</p>
+
+          <p className="today-ask__q">{deep.read.todayAsk.q}</p>
+          <Sentences className="today-ask__a" text={deep.read.todayAsk.a} />
+
+          {bestWhen ? (
+            <p className="today-ask__when">
+              <span className="today-ask__when-k">{whenAsk}</span>
+              <Sentences className="today-ask__when-v" text={bestWhen} />
+            </p>
+          ) : null}
+
+          <p className="cat4__head cat4__head--sub">네 가지 나</p>
           <ul className="selves">
             {deep.read.selves.map((x) => (
               <li key={x.k} className="selves__row">
@@ -269,15 +298,15 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
                   <i className="selves__label">{x.label}</i>
                 </span>
                 <span className="selves__v num">{x.score}</span>
-                <span className="selves__god">{x.godWord}</span>
+                <Sentences className="selves__line" text={x.line} />
                 <span className="selves__vs">{x.vs ?? '여기가 기준이에요'}</span>
               </li>
             ))}
           </ul>
-          <p className="mflow__foot">
-            가까운 미래는 올해와 이번 달을 반씩 섞은 값이에요. 타고난 나는 평생 그대로고,
-            나머지 셋은 때가 지나면 바뀌어요.
-          </p>
+          <Sentences
+            className="mflow__foot"
+            text={'오늘이 맨 위예요. 쪽지는 날마다 새로 뽑으니까요.\n가까운 미래는 올해와 이번 달을 반씩 섞은 값이에요.\n타고난 나는 평생 그대로고, 나머지 셋은 때가 지나면 바뀌어요.'}
+          />
         </div>
       ) : null}
 

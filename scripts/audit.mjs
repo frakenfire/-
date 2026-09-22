@@ -1513,18 +1513,23 @@ async function run(browser) {
     await page.context().close();
   }
 
-  // 12.8 마지막에 '네 가지 나' 가 한자리에 모여 있는가
+  // 12.8 마지막에 오늘 결론과 '네 가지 나' 가 한자리에 있는가
   {
     const page = await newPage(browser);
     await drawTo(page);
     const t = await bodyText(page);
-    const HAVE = ['네 가지 나', '타고난 나', '오늘의 나', '가까운 미래의 나', '먼 미래의 나'];
+    const HAVE = ['오늘 어떻게 할까요', '네 가지 나', '오늘의 나', '가까운 미래의 나', '먼 미래의 나', '타고난 나'];
     const miss = HAVE.filter((x) => !t.includes(x));
-    check(miss.length === 0, '[결과] 네 가지 나를 한자리에 모아 보여준다', miss.join(', ') || '네 층 다 있음');
-    // 기준이 되는 줄과, 견주는 말이 실제로 그려지는지
+    check(miss.length === 0, '[결과] 오늘 결론과 네 가지 나가 한자리에 있다', miss.join(', ') || '다 있음');
+    // 오늘 하나만 놓고 묻고 답하는가
+    check(/오늘 [^\n?]{2,30}\?/.test(t), '[결과] 오늘만 놓고 묻는 줄이 있다');
     check(t.includes('여기가 기준이에요'), '[결과] 타고난 나가 기준이라고 말한다');
     check(/타고난 것(보다 (높|낮)아요|과 비슷해요)/.test(t),
       '[결과] 나머지 셋을 타고난 나와 견준다');
+    // 오늘 줄이 네 줄 중 맨 위인가 - 매일 뽑는 앱이라 여기가 먼저여야 한다
+    const order = ['오늘의 나', '가까운 미래의 나', '먼 미래의 나', '타고난 나'].map((k) => t.indexOf(k));
+    check(order.every((v, i) => v > 0 && (i === 0 || v > order[i - 1])),
+      '[결과] 오늘의 나가 네 줄 중 맨 위다', order.join(' < '));
     await page.context().close();
   }
 

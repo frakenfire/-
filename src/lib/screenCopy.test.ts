@@ -6,6 +6,7 @@ import { buildDeepRead } from './deepRead.ts';
 import { FAVOR_WORD } from '../data/concernFocus.ts';
 import { withRo, withJosa } from './josa.ts';
 import { CONCERN_GOD } from '../data/concernReadings.ts';
+import { TEN_GOD_KO } from './tenGods.ts';
 import { CONCERNS, findConcern, type ConcernKey } from '../data/concerns.ts';
 
 // 화면에 실제로 찍히는 글자를 사람이 읽듯 훑는 검사.
@@ -133,33 +134,83 @@ test('오늘 글자를 간지 이름으로 들이밀지 않는다', () => {
   }
 });
 
-test('네 가지 나가 네 층을 다 보여준다', () => {
+test('네 가지 나가 오늘을 맨 앞에 놓고 네 층을 다 보여준다', () => {
   for (const { r } of ALL) {
     assert.equal(r.selves.length, 4, '네 줄이 아니에요');
+    // 매일 쪽지를 뽑는 앱이다. 오늘이 맨 위여야 한다.
     assert.deepEqual(r.selves.map((x) => x.k),
-      ['타고난 나', '오늘의 나', '가까운 미래의 나', '먼 미래의 나']);
+      ['오늘의 나', '가까운 미래의 나', '먼 미래의 나', '타고난 나']);
     // 타고난 나는 기준이라 견줄 대상이 없다. 나머지 셋은 반드시 견준다.
-    assert.equal(r.selves[0].vs, null);
-    for (const x of r.selves.slice(1)) {
+    assert.equal(r.selves[3].vs, null);
+    for (const x of r.selves.slice(0, 3)) {
       assert.ok(x.vs && /타고난 것(보다 (높|낮)아요|과 비슷해요)$/.test(x.vs), `${x.k}: ${x.vs}`);
     }
-    // 점수는 다섯 칸에서 그대로 와야 한다. 따로 만든 숫자면 표와 어긋난다.
     const part = (k: string) => r.score.parts.find((p) => p.k === k)!.score;
-    assert.equal(r.selves[0].score, part('타고난 구조'));
-    assert.equal(r.selves[1].score, part('오늘'));
-    assert.equal(r.selves[3].score, part('지금 지나는 십 년'));
-    assert.equal(r.selves[2].score, Math.round((part('올해') + part('이번 달')) / 2));
+    assert.equal(r.selves[0].score, part('오늘'));
+    assert.equal(r.selves[1].score, Math.round((part('올해') + part('이번 달')) / 2));
+    assert.equal(r.selves[2].score, part('지금 지나는 십 년'));
+    assert.equal(r.selves[3].score, part('타고난 구조'));
   }
 });
 
 test('타고난 것과 견주는 말이 실제 점수와 맞다', () => {
   for (const { r } of ALL) {
-    const base = r.selves[0].score;
-    for (const x of r.selves.slice(1)) {
+    const base = r.selves[3].score;
+    for (const x of r.selves.slice(0, 3)) {
       const gap = x.score - base;
       const want = Math.abs(gap) <= 5 ? '타고난 것과 비슷해요'
         : gap > 0 ? '타고난 것보다 높아요' : '타고난 것보다 낮아요';
       assert.equal(x.vs, want, `${x.k} ${x.score} vs ${base}`);
     }
   }
+});
+
+test('네 줄에 십신 이름이 안 나온다', () => {
+  // '겨루는 기운' 이라고 적으면 읽고 나서 아무것도 안 정해진다.
+  //
+  // '기운' 이라는 낱말 자체를 막으면 안 된다. 몸과 컨디션에는 '기운이 차는
+  // 방식' 처럼 몸의 기운을 말하는 자리가 있다. 막을 것은 십신 이름이다.
+  const GODS = Object.values(TEN_GOD_KO);
+  for (const { r } of ALL) {
+    for (const x of r.selves) {
+      const hit = GODS.find((g) => x.line.includes(g));
+      assert.equal(hit, undefined, `${x.k}: ${x.line}`);
+      assert.ok(x.line.endsWith('.'), `문장으로 안 끝나요: ${x.line}`);
+    }
+  }
+});
+
+test("'원래 ~ 사람이에요' 같은 비문이 없다", () => {
+  // pull 은 '일이 일어나는' 서술이라 타고난 층에 붙이면
+  // '원래 같은 자리를 두고 겹치는 사람이 생기는 사람이에요' 가 된다.
+  for (const { k, r } of ALL) {
+    const pulls = Object.values(CONCERN_GOD[k]).map((g) => g.pull);
+    const natal = r.selves[3].line;
+    assert.ok(!pulls.some((p) => natal.includes(p)), `타고난 줄에 pull 이 붙었어요: ${natal}`);
+  }
+});
+
+test('오늘 하나만 놓고 묻고 답한다', () => {
+  for (const { k, r } of ALL) {
+    assert.ok(r.todayAsk.q.startsWith('오늘'), r.todayAsk.q);
+    assert.ok(r.todayAsk.q.endsWith('?'), r.todayAsk.q);
+    // 답은 두 줄이다. 첫 줄이 예·아니요, 둘째 줄이 그래서 뭘 하라는 것.
+    const lines = r.todayAsk.a.split('\n');
+    assert.equal(lines.length, 2, `두 줄이 아니에요: ${r.todayAsk.a}`);
+    assert.ok(lines.every((l) => l.endsWith('.')), r.todayAsk.a);
+    assert.ok(!/기운/.test(r.todayAsk.a), `기운 이름이 들어갔어요: ${r.todayAsk.a}`);
+    // 오늘 점수 밴드에서 나와야 한다. 따로 고르면 위 표와 어긋난다.
+    assert.equal(r.todayAsk.band, r.score.parts.find((p) => p.k === '오늘')!.band, k);
+  }
+});
+
+test('오늘 답이 밴드마다 갈린다', () => {
+  // 셋이 같은 말이면 점수를 본 적이 없는 것과 같다.
+  const byBand = new Map<string, Set<string>>();
+  for (const { r } of ALL) {
+    if (!byBand.has(r.todayAsk.band)) byBand.set(r.todayAsk.band, new Set());
+    byBand.get(r.todayAsk.band)!.add(r.todayAsk.a);
+  }
+  const all = [...byBand.values()].flatMap((v) => [...v]);
+  assert.equal(new Set(all).size, all.length, '다른 밴드가 같은 답을 써요');
 });

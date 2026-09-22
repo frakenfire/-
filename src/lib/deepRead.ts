@@ -8,6 +8,7 @@ import { computeConcernScore, scoreVerdictLine, type ConcernScore } from './conc
 import { withJosa, withRo } from './josa.ts';
 import { NATAL_SHAPE, SHAPE_LABELS, type ShapeRow } from '../data/natalShape.ts';
 import { CONCERN_DAY } from '../data/concernDay.ts';
+import { TODAY_ASK, TODAY_ANSWER } from '../data/todayVerdict.ts';
 import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
 import { DECADE_AREAS, GOD_KEYWORD, type DecadeAreas } from '../data/decadeAreas.ts';
 import { DECISION, STANCE_WORD, WHEN_ACT, type Stance } from '../data/decision.ts';
@@ -103,16 +104,18 @@ export type DeepRead = {
   /** 올해와 내년 */
   yearLines: { k: string; label: string; band: string; bandKey: Band; v: string }[];
   /**
-   * 네 가지 나 — 타고난 나 · 오늘의 나 · 가까운 미래의 나 · 먼 미래의 나.
+   * 네 가지 나 — 오늘의 나 · 가까운 미래의 나 · 먼 미래의 나 · 타고난 나.
    *
-   * 다섯 칸은 점수 표가 이미 숫자로 보여준다. 그런데 그 표를 다 읽고 나서도
-   * '그래서 나는 어떤 사람인가' 는 화면 어디에도 한자리에 모여 있지 않았다.
-   * 층마다 풀이가 있지만 접힌 덩이 여기저기에 흩어져 있다.
+   * 오늘이 맨 앞이다. 이 앱은 매일 쪽지를 뽑는 앱인데, 화면은 올해와 십 년
+   * 얘기로 가득 차 있고 '오늘 어떻게 하라는 건데' 에 답하는 자리가 없었다.
    *
-   * 여기서는 타고난 나를 기준으로 나머지 셋이 위인지 아래인지만 말한다.
-   * 그건 다른 어디서도 안 하는 말이고, 계산에서 바로 나온다.
+   * 줄마다 기운 이름 대신 그 기운이 이 고민에서 무슨 일을 일으키는지를
+   * 적는다(CONCERN_GOD 의 pull). '겨루는 기운' 이 아니라 '같은 자리를 두고
+   * 겹치는 사람이 생기는' 이다. 그리고 타고난 나와 견줘 위인지 아래인지.
    */
-  selves: { k: string; label: string; score: number; godWord: string; vs: string | null }[];
+  selves: { k: string; label: string; score: number; line: string; vs: string | null }[];
+  /** 오늘 하나만 놓고 묻는 말과 그 답 */
+  todayAsk: { q: string; a: string; band: Band };
   /** 이 답이 언제 다시 계산되는지 */
   refresh: string;
 };
@@ -518,7 +521,7 @@ export function buildDeepRead(
 
   // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
   // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
-  const chartToday = `내가 타고난 글자에 대보면 ${TEN_GOD_KO[todayGod]}이에요. ${CONCERN_GOD[concernKey][todayGod].line}`;
+  const chartToday = `내가 타고난 글자에 대보면 ${TEN_GOD_KO[todayGod]}에 해당해요. ${CONCERN_GOD[concernKey][todayGod].line}`;
 
   // 조견표로 대조만 하는 것들. 해석을 고르지 않으니 누가 계산해도 같다.
   const stars = sinsalOf(pillars).map((x) => ({
@@ -638,6 +641,8 @@ export function buildDeepRead(
   const natal = partOf('타고난 구조');
   const thisYear = partOf('올해');
   const thisMonthPart = partOf('이번 달');
+  const todayPart = partOf('오늘');
+  const daeunPart = partOf('지금 지나는 십 년');
   const near = Math.round((thisYear.score + thisMonthPart.score) / 2);
   // 타고난 것과 견줘 어느 쪽인가. 5점 안쪽이면 비슷한 것으로 본다.
   const vsNatal = (n: number): string | null => {
@@ -645,32 +650,52 @@ export function buildDeepRead(
     if (Math.abs(gap) <= 5) return '타고난 것과 비슷해요';
     return gap > 0 ? '타고난 것보다 높아요' : '타고난 것보다 낮아요';
   };
+  // 기운 이름 대신 그 기운이 이 고민에서 일으키는 일을 적는다.
+  // pull 은 '-는' 으로 끝나는 말이라 시간 단위를 뒤에 붙이면 문장이 된다.
+  const pullOf = (god: TenGod | null) => (god ? CONCERN_GOD[concernKey][god].pull : null);
   const selves = [
     {
-      k: '타고난 나', label: natal.label, score: natal.score, godWord: natal.godWord, vs: null,
-    },
-    {
       k: '오늘의 나',
-      label: partOf('오늘').label,
-      score: partOf('오늘').score,
-      godWord: partOf('오늘').godWord,
-      vs: vsNatal(partOf('오늘').score),
+      label: todayPart.label,
+      score: todayPart.score,
+      line: `${pullOf(todayPart.god)} 날이에요.`,
+      vs: vsNatal(todayPart.score),
     },
     {
       k: '가까운 미래의 나',
       label: '올해와 이번 달',
       score: near,
-      godWord: thisMonthPart.godWord,
+      line: `${pullOf(thisMonthPart.god)} 때예요.`,
       vs: vsNatal(near),
     },
     {
       k: '먼 미래의 나',
-      label: partOf('지금 지나는 십 년').label,
-      score: partOf('지금 지나는 십 년').score,
-      godWord: partOf('지금 지나는 십 년').godWord,
-      vs: vsNatal(partOf('지금 지나는 십 년').score),
+      label: daeunPart.label,
+      score: daeunPart.score,
+      line: daeunPart.god
+        ? `${pullOf(daeunPart.god)} 십 년이에요.`
+        : '아직 첫 십 년이 시작되기 전이에요.',
+      vs: vsNatal(daeunPart.score),
+    },
+    {
+      k: '타고난 나',
+      label: natal.label,
+      score: natal.score,
+      // pull 은 '일이 일어나는' 서술이라 '원래 ~한 사람이에요' 에 붙으면
+      // '원래 같은 자리를 두고 겹치는 사람이 생기는 사람이에요' 가 된다.
+      // 타고난 층은 원국 모양(NATAL_SHAPE)이 맡는다 - 그게 평생 안 바뀌는
+      // 자리를 적은 표다. 첫 문장만 가져온다.
+      line: `${lab.inflow}: ${shapeRow.inflow.split('. ')[0].replace(/\.?$/, '.')}`,
+      vs: null,
     },
   ];
+
+  // 오늘 하나만 놓고 답하는 줄. 오늘 점수 밴드로 고른다.
+  const todayAsk = {
+    q: TODAY_ASK[concernKey],
+    a: TODAY_ANSWER[concernKey][todayPart.band],
+    band: todayPart.band,
+  };
 
   const todayMeet = {
     // '무술날' 이라고 적어 놓고 있었다. 간지 이름은 읽는 사람에게 아무것도
@@ -834,6 +859,7 @@ export function buildDeepRead(
     name: nameRead,
     todayMeet,
     selves,
+    todayAsk,
     daeunLine,
     decade,
     yearCompare,
