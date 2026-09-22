@@ -9,6 +9,7 @@ import { withJosa, withRo } from './josa.ts';
 import { NATAL_SHAPE, SHAPE_LABELS, type ShapeRow } from '../data/natalShape.ts';
 import { CONCERN_DAY } from '../data/concernDay.ts';
 import { todayAskOf } from '../data/todayVerdict.ts';
+import { verdictTwoOf } from '../data/verdictBySituation.ts';
 import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
 import { DECADE_AREAS, GOD_KEYWORD, type DecadeAreas } from '../data/decadeAreas.ts';
 import { DECISION, STANCE_WORD, WHEN_ACT, type Stance } from '../data/decision.ts';
@@ -120,48 +121,6 @@ export type DeepRead = {
   refresh: string;
 };
 
-// 결과 화면에서 제일 큰 글자. 여기가 제일 구체적이어야 하는데 '구간' 이라는
-// 말로 열 번 넘게 도망가고 있었다. '곧 돈이 도는 구간이 와요' 는 돈이 언제
-// 어떻게 도는지 아무것도 말하지 않는다.
-//
-// 이 줄은 '지금이 어떤 상태인가' 를 말한다. 무엇을 할지는 바로 밑 줄이 말한다.
-//
-// soon 줄의 {when} 은 실제로 잰 거리로 채운다. 전에는 '두어 달 뒤' 라고
-// 박아뒀는데, 이 갈래는 한 달 뒤부터 세 달 뒤까지 다 들어온다. 그래서
-// 화면 아래 표에 '2026년 10월, 1달 뒤' 가 떠 있는데 맨 위 큰 글자는
-// '두어 달 뒤' 라고 말하고 있었다. 두 줄이 서로 다른 달을 가리켰다.
-const HEADLINE: Record<ConcernKey, Record<Verdict, string>> = {
-  work: {
-    now: '지금 이직 문이 열려 있어요',
-    soon: '{when} 이직 문이 열려요',
-    wait: '올해는 옮기기보다 자리를 지키는 해예요',
-  },
-  money: {
-    now: '지금은 들어오는 돈이 나가는 돈보다 커요',
-    soon: '{when} 수입이 도는 때가 와요',
-    wait: '지금은 늘리기보다 새는 돈을 막을 때예요',
-  },
-  love: {
-    now: '지금 연락하면 닿는 때예요',
-    soon: '{when} 사람이 들어오는 자리가 열려요',
-    wait: '지금은 상대보다 나를 먼저 채울 때예요',
-  },
-  people: {
-    now: '지금은 내 편이 늘어나는 때예요',
-    soon: '{when} 틀어진 사이가 풀려요',
-    wait: '지금은 사람을 넓히기보다 정리할 때예요',
-  },
-  health: {
-    now: '지금은 쉬면 바로 회복되는 몸이에요',
-    soon: '{when} 몸이 올라와요',
-    wait: '지금은 무리하면 바로 표시 나는 몸이에요',
-  },
-  mind: {
-    now: '지금은 마음이 가벼워지는 때예요',
-    soon: '{when} 마음이 풀려요',
-    wait: '지금은 결정을 미뤄도 되는 때예요',
-  },
-};
 
 const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
   work: {
@@ -277,46 +236,6 @@ const CAUTION: Record<ConcernKey, string> = {
   mind: '버거운 달엔 혼자 결론 내지 말아요. 하루만 자고 다시 봐요.',
 };
 
-// 결정 카드 둘째 줄. '이 달은 미는 것보다 지키는 쪽이 남아요' 처럼 고민을
-// 안 보고 쓰면, 돈을 물어도 연애를 물어도 같은 말이 맨 위에 박힌다.
-// 무엇을 밀고 무엇을 지키는 건지 그 고민의 말로 적는다.
-const VERDICT_SUB: Record<ConcernKey, Record<Verdict, string>> = {
-  // '~쪽이 남아요' 를 여섯 고민이 다 쓰고 있었다. '남는다 = 이득이다' 는
-  // 가게 장부에서 쓰는 말이고, 읽는 사람은 무엇이 남는다는 건지 모른다.
-  // 게다가 여섯 결론이 전부 같은 틀이라 어느 고민을 물어도 같은 모양이었다.
-  // '지금은 ~할 때가 아니에요. ~하세요' 로 바꾼다. 무엇을 하지 말고 무엇을
-  // 하라는 건지가 두 문장에 나뉘어 들어간다.
-  work: {
-    now: '지금 지원해도 되는 때예요. 이력서는 오늘 넣어도 늦지 않아요.',
-    soon: '지금 옮기기보다, 가까운 달에 면접을 몰아 잡는 게 나아요.',
-    wait: '지금은 옮길 때가 아니에요. 여기서 연봉을 올리거나 맡는 일을 넓혀보세요.',
-  },
-  money: {
-    now: '지금 넣고 늘려도 괜찮아요. 미루던 계좌 정리부터 해보세요.',
-    soon: '큰 지출과 계약은 흐름이 열리는 달로 미루세요.',
-    wait: '지금은 더 벌 때가 아니에요. 매달 빠져나가는 고정비부터 줄여보세요.',
-  },
-  love: {
-    now: '먼저 연락해도 되는 때예요. 약속은 이번 주 안으로 잡아보세요.',
-    soon: '고백과 결정은 가까운 달로 미루는 게 나아요.',
-    wait: '지금은 고백이나 정리를 할 때가 아니에요. 오가는 연락만 가볍게 이어가세요.',
-  },
-  people: {
-    now: '먼저 연락해서 풀어도 괜찮아요. 짧게라도 얼굴 보는 쪽이 빨라요.',
-    soon: '껄끄러운 이야기는 가까운 달에 꺼내는 게 나아요.',
-    wait: '지금은 따질 때가 아니에요. 꼭 필요한 얘기만 하고 자리를 뜨세요.',
-  },
-  health: {
-    now: '지금 시작해도 되는 때예요. 예약부터 잡아두면 덜 미뤄져요.',
-    soon: '큰 결심은 가까운 달로 미루고 지금은 잠부터 챙기세요.',
-    wait: '지금은 새로 시작할 때가 아니에요. 자는 시간부터 지켜보세요.',
-  },
-  mind: {
-    now: '꺼내놓고 말해도 괜찮아요. 들어줄 사람 한 명만 정해보세요.',
-    soon: '큰 결정은 가까운 달로 미루는 게 나아요.',
-    wait: '지금은 기분을 바꾸려 애쓸 때가 아니에요. 오늘 할 일을 줄여보세요.',
-  },
-};
 
 export function buildDeepRead(
   pillars: FourPillars,
@@ -343,6 +262,9 @@ export function buildDeepRead(
   else verdict = 'wait';
 
   const option = concern.options.find((o) => o.key === optionKey) ?? null;
+  // 맨 위 쪽지 카드 두 줄. 고른 상황까지 보고 고른다. 전에는 고민만 봐서
+  // '지금은 쉬는 중이에요' 를 고른 사람에게 '자리를 지키는 해예요' 가 나갔다.
+  const verdictTwo = verdictTwoOf(concernKey, optionKey, verdict);
 
   const shapeRow = NATAL_SHAPE[concernKey][GOD_GROUP_OF[score.natalTopGod]];
   const lab = SHAPE_LABELS[concernKey];
@@ -830,7 +752,7 @@ export function buildDeepRead(
     decision,
     now,
     // {when} 은 verdict 가 soon 일 때만 들어 있고, 그때 away 는 1~3 이다.
-    headline: HEADLINE[concernKey][verdict].replace(
+    headline: verdictTwo.head.replace(
       '{when}', away === 1 ? '다음 달에' : `${away}달 뒤에`,
     ),
     // month 를 쓰면 아래 '앞으로 열두 달'의 이번 달 칸과 글자 하나까지 같은
@@ -842,7 +764,7 @@ export function buildDeepRead(
     //   큰 글씨  지금은 상대보다 나를 먼저 채울 때예요
     //   이 줄    상대를 먼저 챙겨줄 때예요
     // 가 붙어 있었다. 정반대다. decide 는 아래 행동 칸으로 옮겼다.
-    sub: VERDICT_SUB[concernKey][verdict],
+    sub: verdictTwo.sub,
     /** 이번 달 기운으로 읽은 한 줄. 행동 바로 위에 붙는다 */
     monthWhy: CONCERN_GOD[concernKey][timing.thisMonth.tenGod].decide,
     slots,

@@ -1,39 +1,57 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { verdictTwoOf } from '../data/verdictBySituation.ts';
+import { CONCERNS } from '../data/concerns.ts';
 
-// 결정 카드 둘째 줄이 여섯 고민 모두 '~쪽이 남아요' 한 틀이었다.
-// '남는다 = 이득이다' 는 가게 장부에서 쓰는 말이라, 읽는 사람은 무엇이
-// 남는다는 건지 모른다. 게다가 어느 고민을 물어도 같은 모양이 나왔다.
-const SRC = readFileSync(new URL('./deepRead.ts', import.meta.url), 'utf8');
-const BLOCK = SRC.slice(
-  SRC.indexOf('const VERDICT_SUB'),
-  SRC.indexOf('export function buildDeepRead'),
-);
-const LINES = [...BLOCK.matchAll(/(now|soon|wait): '([^']+)'/g)].map((m) => ({ k: m[1], t: m[2] }));
+// 결과 화면 맨 위 두 줄. 전에는 여섯 고민이 '~쪽이 남아요' 한 틀을 돌려썼고,
+// 그 다음에는 고민만 보고 고르느라 '쉬는 중' 인 사람에게 '자리를 지키는
+// 해예요' 가 나갔다. 두 가지를 다 막는다.
 
-test('결정 문장 열여덟 줄을 다 찾는다', () => {
-  assert.equal(LINES.length, 18, `${LINES.length}줄만 찾았어요`);
+const ALL = CONCERNS.flatMap((c) =>
+  c.options.flatMap((o) =>
+    (['now', 'soon', 'wait'] as const).map((v) => ({
+      c: c.key, o: o.key, v, ...verdictTwoOf(c.key, o.key, v),
+    }))));
+
+test('고민 여섯 x 상황 넷 x 판정 셋을 다 채웠다', () => {
+  assert.equal(ALL.length, 72, `${ALL.length}줄만 있어요`);
+});
+
+test('일흔두 줄이 전부 다른 말이다', () => {
+  const heads = ALL.map((x) => x.head);
+  const subs = ALL.map((x) => x.sub);
+  assert.equal(new Set(heads).size, 72, '큰 글자가 겹쳐요');
+  assert.equal(new Set(subs).size, 72, '설명 줄이 겹쳐요');
 });
 
 test("'남아요' 로 이득을 말하지 않는다", () => {
-  const bad = LINES.filter((l) => /남아요/.test(l.t));
-  assert.deepEqual(bad.map((b) => b.t), [], '가게 장부 말이 남아 있어요');
+  const bad = ALL.filter((x) => /남아요/.test(x.head) || /남아요/.test(x.sub));
+  assert.deepEqual(bad.map((b) => b.head), [], '가게 장부 말이 남아 있어요');
 });
 
-test('여섯 고민의 결론이 같은 틀로 찍히지 않는다', () => {
-  for (const k of ['now', 'soon', 'wait']) {
-    const ts = LINES.filter((l) => l.k === k).map((l) => l.t);
-    assert.equal(ts.length, 6, k);
-    // 끝 여섯 글자가 여섯 개 모두 같으면 틀을 돌려쓴 것이다
-    const tails = new Set(ts.map((t) => t.slice(-6)));
-    assert.ok(tails.size >= 2, `${k}: 여섯이 전부 '${[...tails][0]}' 로 끝나요`);
+test('한 고민 안에서 상황마다 다른 말이 나온다', () => {
+  // 같은 고민 같은 판정인데 상황 넷이 같은 말이면 상황을 물어본 적이 없는 것이다.
+  for (const c of CONCERNS) {
+    for (const v of ['now', 'soon', 'wait'] as const) {
+      const heads = c.options.map((o) => verdictTwoOf(c.key, o.key, v).head);
+      assert.equal(new Set(heads).size, heads.length, `${c.key}/${v}: ${heads.join(' / ')}`);
+    }
   }
 });
 
-test('무엇을 하지 말고 무엇을 하라는지가 들어 있다', () => {
-  for (const l of LINES.filter((x) => x.k === 'wait')) {
-    assert.ok(/아니에요/.test(l.t), `무엇을 하지 말라는지가 없어요: ${l.t}`);
-    assert.ok(/세요\.$/.test(l.t), `무엇을 하라는지가 없어요: ${l.t}`);
+test('soon 은 언제인지 자리를 비워둔다', () => {
+  for (const x of ALL) {
+    if (x.v === 'soon') assert.ok(x.head.includes('{when}'), `${x.c}/${x.o}: ${x.head}`);
+    else assert.ok(!x.head.includes('{when}'), `${x.c}/${x.o}/${x.v}: ${x.head}`);
+  }
+});
+
+test('상황을 안 골라도 고른 상황 중 하나로 나온다', () => {
+  for (const c of CONCERNS) {
+    const fallback = verdictTwoOf(c.key, null, 'wait');
+    const real = c.options.map((o) => verdictTwoOf(c.key, o.key, 'wait'));
+    assert.ok(real.some((r) => r.head === fallback.head), `${c.key}: 없는 말이 나와요`);
+    // 없는 키가 와도 터지지 않고 같은 것으로 떨어진다
+    assert.deepEqual(verdictTwoOf(c.key, 'nope', 'wait'), fallback);
   }
 });
