@@ -17,23 +17,23 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
   work: {
     bijian: {
       doIt: '같은 일을 하는 사람에게 요즘 시장이 어떤지 물어보기',
-      avoid: '동료와 성과를 견주다가 감정으로 넘어가는 것',
+      avoid: '남의 자리와 견주다가 감정으로 넘어가는 것',
       hold: '이력서 전체를 다시 쓰는 일',
     },
     geopjae: {
-      doIt: '내가 맡은 범위를 문서로 한 장 정리해두기',
-      avoid: '내 몫이 아닌 일을 말없이 떠안는 것',
-      hold: '팀 안에서 역할을 다시 나누자는 제안',
+      doIt: '지금 내가 할 수 있는 일의 범위를 한 장으로 적어두기',
+      avoid: '누가 어디까지 하는지 안 정하고 일을 시작하는 것',
+      hold: '역할을 다시 나누자고 먼저 꺼내는 일',
     },
     siksin: {
       doIt: '올해 만든 결과물 하나를 눈에 보이게 정리하기',
       avoid: '아직 안 끝난 일을 먼저 알리는 것',
-      hold: '새 프로젝트를 벌이는 일',
+      hold: '새 일을 하나 더 벌이는 일',
     },
     sanggwan: {
-      doIt: '지금 방식에서 바꾸고 싶은 것 한 가지를 적어두기',
-      avoid: '자리에서 불만을 그대로 꺼내는 것',
-      hold: '퇴사 얘기를 입 밖에 내는 일',
+      doIt: '일에서 바꾸고 싶은 것 한 가지를 적어두기',
+      avoid: '불만을 고른 말 없이 그대로 꺼내는 것',
+      hold: '그만두거나 접겠다는 얘기를 입 밖에 내는 일',
     },
     pyeonjae: {
       doIt: '가고 싶은 곳 두 군데의 채용 조건을 열어보기',
@@ -53,7 +53,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     jeonggwan: {
       doIt: '지원하려는 곳의 서류 요건을 한 번 맞춰보기',
       avoid: '정해진 절차를 건너뛰고 말로 먼저 붙는 것',
-      hold: '규칙을 바꾸자고 제안하는 일',
+      hold: '내 방식대로 하겠다고 밀어붙이는 일',
     },
     pyeonin: {
       doIt: '경력을 다르게 묶어볼 수 있는지 한 번 굴려보기',
@@ -121,11 +121,11 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
   love: {
     bijian: {
       doIt: '먼저 연락해 가벼운 안부 하나 건네기',
-      avoid: '상대도 나와 같게 느낄 것이라 넘겨짚는 것',
+      avoid: '나와 같게 느낄 것이라 넘겨짚는 것',
       hold: '관계를 정리하겠다는 결론',
     },
     geopjae: {
-      doIt: '내가 서운했던 지점 하나만 골라 말로 꺼내기',
+      doIt: '마음에 걸린 것 하나를 골라 말로 꺼내기',
       avoid: '다른 사람과 비교해 말하는 것',
       hold: '누가 더 잘못했는지 가리는 일',
     },
@@ -160,12 +160,12 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
       hold: '서로의 기준을 맞추는 대화',
     },
     pyeonin: {
-      doIt: '상대가 요즘 뭘 좋아하는지 물어보기',
+      doIt: '마음 가는 사람이 요즘 뭘 좋아하는지 물어보기',
       avoid: '혼자 상황을 해석하고 결론 내는 것',
       hold: '연락을 끊고 지켜보는 일',
     },
     jeongin: {
-      doIt: '상대 말을 끊지 않고 끝까지 들어보기',
+      doIt: '오늘 만난 사람 말을 끊지 않고 끝까지 들어보기',
       avoid: '서운함을 말 안 하고 담아두는 것',
       hold: '앞날을 확인받으려는 대화',
     },
