@@ -2,7 +2,8 @@ import { DAY_MASTER_BY_INDEX } from '../data/dayMaster.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { TEN_GOD_KO } from './tenGods.ts';
 import { bandLabel, monthsAway, type Band, type TimingRead, type TimingSlot } from './timing.ts';
-import { CONCERN_GOD, REFRESH_NOTE } from '../data/concernReadings.ts';
+import { REFRESH_NOTE } from '../data/concernReadings.ts';
+import { godLineOf } from '../data/concernGodOverride.ts';
 import { FAVOR_WORD } from '../data/concernFocus.ts';
 import { computeConcernScore, scoreVerdictLine, type ConcernScore } from './concernScore.ts';
 import { withJosa, withRo } from './josa.ts';
@@ -126,7 +127,7 @@ export type DeepRead = {
 const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
   work: {
     now: [
-      '이력서를 오늘 손봐요. 숫자로 쓸 수 있는 성과부터 채워요',
+      '나를 보여줄 자료를 오늘 손봐요. 숫자로 쓸 수 있는 성과부터 채워요',
       '가고 싶은 곳 세 군데를 적고 아는 사람이 있는지 먼저 확인해요',
       '나가는 날짜보다 들어가는 날짜를 먼저 확정해요',
     ],
@@ -247,6 +248,8 @@ export function buildDeepRead(
   userName?: string | null,
 ): DeepRead {
   const concern = findConcern(concernKey);
+  // 고민 x 십신 풀이. 고른 상황과 부딪히는 칸은 덮어서 가져온다.
+  const G = (god: TenGod) => godLineOf(concernKey, optionKey, god);
   const dm = DAY_MASTER_BY_INDEX[pillars.dayStem];
   const away = monthsAway(timing.bestMonth, timing.months);
 
@@ -406,8 +409,8 @@ export function buildDeepRead(
           // 같은 문장이 두 번 나온다. 층마다 말하는 자리는 하나씩만 둔다.
           //   십 년 → 십 년 카드 · 올해 → 올해내년 줄 · 이번 달 → 열두 달 차트
           //   오늘 → 오늘 글자 카드 · 왜 그렇게 읽었나 → 이 줄
-          ? `${TEN_GOD_KO[god]}이 겹쳐요. ${CONCERN_GOD[concernKey][god].pull} 쪽으로 읽었어요. 층이 겹치면 그 방향이 더 또렷해져요.`
-          : `${TEN_GOD_KO[god]}이 들어와요. ${CONCERN_GOD[concernKey][god].pull} 쪽으로 읽었어요.`,
+          ? `${TEN_GOD_KO[god]}이 겹쳐요. ${G(god).pull} 쪽으로 읽었어요. 층이 겹치면 그 방향이 더 또렷해져요.`
+          : `${TEN_GOD_KO[god]}이 들어와요. ${G(god).pull} 쪽으로 읽었어요.`,
     })),
     ...(timing.daeunSlot
       ? []
@@ -447,7 +450,7 @@ export function buildDeepRead(
 
   // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
   // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
-  const chartToday = `내가 타고난 글자에 대보면 ${TEN_GOD_KO[todayGod]}에 해당해요. ${CONCERN_GOD[concernKey][todayGod].line}`;
+  const chartToday = `내가 타고난 글자에 대보면 ${TEN_GOD_KO[todayGod]}에 해당해요. ${G(todayGod).line}`;
 
   // 조견표로 대조만 하는 것들. 해석을 고르지 않으니 누가 계산해도 같다.
   const stars = sinsalOf(pillars).map((x) => ({
@@ -557,7 +560,7 @@ export function buildDeepRead(
       ? '내일도 결이 비슷한 날이라, 오늘 잡아둔 것이 그대로 이어져요.'
       : tomorrowGod === todayGod
         ? `내일은 같은 기운이 오는데 내 글자와 닿는 자리가 달라져요. 오늘과 조금 다른 답이 나와요.`
-        : `내일은 ${CONCERN_GOD[concernKey][tomorrowGod].pull} 쪽으로 기울어요. 오늘과 다른 답이 나와요.`;
+        : `내일은 ${G(tomorrowGod).pull} 쪽으로 기울어요. 오늘과 다른 답이 나와요.`;
 
   const todayStep = unseongOf(pillars.dayStem, todayPillar.branch);
   // 네 가지 나. 다섯 칸을 사람이 자기를 생각하는 말로 다시 묶는다.
@@ -578,7 +581,7 @@ export function buildDeepRead(
   };
   // 기운 이름 대신 그 기운이 이 고민에서 일으키는 일을 적는다.
   // pull 은 '-는' 으로 끝나는 말이라 시간 단위를 뒤에 붙이면 문장이 된다.
-  const pullOf = (god: TenGod | null) => (god ? CONCERN_GOD[concernKey][god].pull : null);
+  const pullOf = (god: TenGod | null) => (god ? G(god).pull : null);
   const selves = [
     {
       k: '오늘의 나',
@@ -647,7 +650,7 @@ export function buildDeepRead(
         // 예전에는 고민을 안 보는 GOD_SCALE 문장에 고민별 line 을 덧붙여
         // 구체성을 벌충했다. daeun 이 고민을 보고 쓰였으니 line 은 뺀다.
         // 안 빼면 '빌려주는 돈은 못 돌아오기 쉬워요' 가 한 문단에 두 번 나온다.
-        ? ` ${CONCERN_GOD[concernKey][timing.daeunSlot.tenGod].daeun}`
+        ? ` ${G(timing.daeunSlot.tenGod).daeun}`
         : '') +
       (left !== null && left > 0 ? ` 다음 십 년으로 넘어가기까지 ${left}년 남았어요.` : '')
     : `${timing.daeun.startAge}세부터 첫 십 년이 시작돼요. 그전까지는 태어난 자리의 기운을 그대로 써요.`;
@@ -681,13 +684,13 @@ export function buildDeepRead(
     // 달이 아래 차트에 뜰 때 글자 하나까지 같은 문장이 두 번 나온다.
     {
       k: '유리하게 쓰는 법',
-      thisYear: CONCERN_GOD[concernKey][y0.tenGod].yearGood,
-      nextYear: CONCERN_GOD[concernKey][y1.tenGod].yearGood,
+      thisYear: G(y0.tenGod).yearGood,
+      nextYear: G(y1.tenGod).yearGood,
     },
     {
       k: '조심할 것',
-      thisYear: CONCERN_GOD[concernKey][y0.branchGod].yearCare,
-      nextYear: CONCERN_GOD[concernKey][y1.branchGod].yearCare,
+      thisYear: G(y0.branchGod).yearCare,
+      nextYear: G(y1.branchGod).yearCare,
     },
   ];
   const yearGap =
@@ -703,9 +706,9 @@ export function buildDeepRead(
     bandKey: slot.band,
     // GOD_SCALE 은 고민을 안 본다. 돈을 물었는데 '안으로 파고드는 달'
     // 같은 문장이 나오던 자리다. 고민별로 쓴 문장을 쓴다.
-    outer: CONCERN_GOD[concernKey][slot.tenGod].month,
-    good: CONCERN_GOD[concernKey][slot.tenGod].good,
-    care: CONCERN_GOD[concernKey][slot.branchGod].care,
+    outer: G(slot.tenGod).month,
+    good: G(slot.tenGod).good,
+    care: G(slot.branchGod).care,
   });
 
   const slots = [
@@ -719,9 +722,9 @@ export function buildDeepRead(
     month: m.month ?? 0,
     band: bandLabel(m),
     bandKey: m.band,
-    outer: CONCERN_GOD[concernKey][m.tenGod].month,
-    good: CONCERN_GOD[concernKey][m.tenGod].good,
-    care: CONCERN_GOD[concernKey][m.branchGod].care,
+    outer: G(m.tenGod).month,
+    good: G(m.tenGod).good,
+    care: G(m.branchGod).care,
   }));
 
   const yearLines = timing.years.slice(0, 2).map((y, i) => ({
@@ -731,14 +734,14 @@ export function buildDeepRead(
     bandKey: y.band,
     // year 가 고민을 보고 쓰였으니 line 은 뺀다. 안 빼면 한 줄 안에서
     // '연봉과 조건을 따지기' 가 두 번 나온다. 십 년 줄과 같은 이유다.
-    v: CONCERN_GOD[concernKey][y.tenGod].year,
+    v: G(y.tenGod).year,
   }));
 
   // 할 일 셋 중 하나는 이번 달 글자에서, 하나는 가장 좋은 달 글자에서 뽑는다.
   // 그래야 같은 고민이라도 달이 바뀌면 할 일이 바뀐다.
   const actions = [
-    CONCERN_GOD[concernKey][timing.thisMonth.tenGod].act,
-    CONCERN_GOD[concernKey][timing.bestMonth.branchGod].act,
+    G(timing.thisMonth.tenGod).act,
+    G(timing.bestMonth.branchGod).act,
     ACTIONS[concernKey][verdict][0],
   ].filter((a, i, arr) => arr.indexOf(a) === i);
   while (actions.length < 3) {
@@ -750,7 +753,7 @@ export function buildDeepRead(
   return {
     verdict,
     score,
-    scoreLine: scoreVerdictLine(score, concernKey),
+    scoreLine: scoreVerdictLine(score, concernKey, optionKey),
     shape,
     today,
     decision,
@@ -770,7 +773,7 @@ export function buildDeepRead(
     // 가 붙어 있었다. 정반대다. decide 는 아래 행동 칸으로 옮겼다.
     sub: verdictTwo.sub,
     /** 이번 달 기운으로 읽은 한 줄. 행동 바로 위에 붙는다 */
-    monthWhy: CONCERN_GOD[concernKey][timing.thisMonth.tenGod].decide,
+    monthWhy: G(timing.thisMonth.tenGod).decide,
     slots,
     monthSlots,
     yearLines,

@@ -66,7 +66,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     },
     pyeonin: {
       decade: '방향을 다시 굴려보는 십 년이에요. 한 길만 파던 방식이 잘 안 맞게 느껴져요.',
-      year: '올해는 경력을 다르게 묶어볼 수 있는 해예요. 다만 아직은 실행보다 정리 단계예요.',
+      year: '올해는 해온 일을 다르게 묶어볼 수 있는 해예요. 다만 아직은 실행보다 정리 단계예요.',
       month: '이번 달은 생각이 빠르게 튀어요. 떠오른 그대로 옮기면 되돌리는 데 더 걸려요.',
     },
     jeongin: {
@@ -130,8 +130,8 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
   love: {
     bijian: {
       decade: '내가 먼저 움직여야 시작되는 십 년이에요. 기다리는 쪽으로는 잘 안 와요.',
-      year: '올해는 내 속도를 지키려는 마음이 강해요. 상대 속도가 잘 안 보이는 시기예요.',
-      month: '이번 달은 혼자 결론을 내기 쉬워요. 상대는 아직 얘기도 못 들었을 수 있어요.',
+      year: '올해는 내 속도를 지키려는 마음이 강해요. 남의 속도가 잘 안 보이는 시기예요.',
+      month: '이번 달은 혼자 결론을 내기 쉬워요. 듣는 쪽은 아직 얘기도 못 들었을 수 있어요.',
     },
     geopjae: {
       decade: '비교가 끼어드는 십 년이에요. 남의 관계가 자꾸 기준이 돼요.',
@@ -141,7 +141,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     siksin: {
       decade: '표현이 관계를 만드는 십 년이에요. 마음보다 표시가 먼저 전해져요.',
       year: '올해는 말이 잘 나가는 해예요. 다만 말만 앞서고 약속이 안 잡히기 쉬워요.',
-      month: '이번 달은 만나면 다음 약속까지 잡아두는 게 좋아요. 흐르면 그대로 식어요.',
+      month: '이번 달은 자리가 생기면 다음 약속까지 잡아두는 게 좋아요. 흐르면 그대로 식어요.',
     },
     sanggwan: {
       decade: '잔잔한 사이를 못 견디는 십 년이에요. 관계가 지루해지면 마음이 먼저 식어요.',
@@ -156,7 +156,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     jeongjae: {
       decade: '현실을 같이 맞춰가는 십 년이에요. 감정보다 조건이 관계를 정하는 시기예요.',
       year: '올해는 앞날을 같이 그려보게 되는 해예요. 계획이 서면 마음도 같이 서요.',
-      month: '이번 달은 잘해주는 것으로 대화를 대신하기 쉬워요. 상대는 말을 듣고 싶어 해요.',
+      month: '이번 달은 잘해주는 것으로 대화를 대신하기 쉬워요. 말을 듣고 싶어 하는 쪽이에요.',
     },
     pyeongwan: {
       decade: '관계에서 밀고 당기는 힘이 세지는 십 년이에요. 감정의 진폭이 커요.',
@@ -165,7 +165,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     },
     jeonggwan: {
       decade: '약속과 신뢰가 관계를 만드는 십 년이에요. 말보다 지킨 횟수가 쌓여요.',
-      year: '올해는 관계를 정의하고 싶어지는 해예요. 상대도 같은 속도인지 봐야 해요.',
+      year: '올해는 관계를 정의하고 싶어지는 해예요. 서로 같은 속도인지 봐야 해요.',
       month: '이번 달은 옳고 그름을 먼저 가리기 쉬워요. 맞는 말이 제일 아프게 가요.',
     },
     pyeonin: {

@@ -4,7 +4,7 @@ import type { Gender } from './daeun.ts';
 import { tenGodOf, mainHiddenStem, GOD_GROUP_OF, TEN_GOD_KO, type TenGod } from './tenGods.ts';
 import { scoreOf, slotOf, type Band, type Favor, type TimingRead, BAND_WORD } from './timing.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
-import { CONCERN_GOD } from '../data/concernReadings.ts';
+import { godLineOf } from '../data/concernGodOverride.ts';
 import { withJosa } from './josa.ts';
 
 // 점수 엔진 — 문장 엔진과 분리한다.
@@ -207,7 +207,13 @@ function lowTail(care: string): string {
   return `${care}만 조심하면 돼요`;
 }
 
-export function scoreVerdictLine(score: ConcernScore, concern: ConcernKey): string {
+export function scoreVerdictLine(
+  score: ConcernScore,
+  concern: ConcernKey,
+  optionKey: string | null = null,
+): string {
+  // 고른 상황과 부딪히는 칸은 덮어서 가져온다.
+  const G = (god: TenGod) => godLineOf(concern, optionKey, god);
   const c = findConcern(concern);
   const named = score.parts.filter((p) => p.god !== null);
   const sorted = [...named].sort((a, b) => b.score - a.score);
@@ -239,9 +245,9 @@ export function scoreVerdictLine(score: ConcernScore, concern: ConcernKey): stri
     // 높은 칸에는 지금 통하는 것(good)을, 낮은 칸에는 조심할 것(care)을
     // 붙인다. 둘 다 고민을 보고 쓴 말이라 돈을 물으면 돈 얘기가 나온다.
     `${head} 위 다섯 줄 중 ${withJosa(top.k, '이가')} ${top.score}점으로 가장 높아요. ` +
-    `그래서 ${highTail(CONCERN_GOD[concern][top.god!].good)}. ` +
+    `그래서 ${highTail(G(top.god!).good)}. ` +
     `가장 낮은 건 ${low.k} ${low.score}점이에요. ` +
-    `${lowTail(CONCERN_GOD[concern][low.god!].care)}.`
+    `${lowTail(G(low.god!).care)}.`
   );
 }
 

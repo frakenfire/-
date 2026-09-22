@@ -64,7 +64,7 @@ const VERDICT_BY_SITUATION: Record<ConcernKey, Record<string, Record<Verdict, Tw
     alone: {
       now: { head: '지금 연락하면 닿는 때예요', sub: '먼저 연락해도 되는 때예요. 약속은 이번 주 안으로 잡아보세요.' },
       soon: { head: '{when} 만날 사람이 들어와요', sub: '고백과 결정은 가까운 달로 미루는 게 나아요.' },
-      wait: { head: '지금은 상대보다 나를 먼저 채울 때예요', sub: '지금은 고백이나 정리를 할 때가 아니에요. 오가는 연락만 가볍게 이어가세요.' },
+      wait: { head: '지금은 사람보다 나를 먼저 채울 때예요', sub: '지금은 고백이나 정리를 할 때가 아니에요. 오가는 연락만 가볍게 이어가세요.' },
     },
     some: {
       now: { head: '지금 물어보면 사이가 정해져요', sub: '애매한 사이를 끝낼 수 있는 때예요. 오늘 한 번 물어보세요.' },

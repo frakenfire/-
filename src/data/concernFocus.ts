@@ -30,7 +30,7 @@ export const FAVOR_WORD: Record<ConcernKey, Record<GodGroup, string>> = {
     support: '챙겨주고 기대는 자리',
   },
   people: {
-    self: '또래와 동료 자리',
+    self: '또래와 가까운 사람 자리',
     output: '내 말이 밖으로 나가는 자리',
     wealth: '내가 챙기는 사람 자리',
     authority: '윗사람과 규칙 자리',

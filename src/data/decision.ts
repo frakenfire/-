@@ -45,7 +45,7 @@ export const STANCE_WORD: Record<Stance, string> = {
 // 어미가 서로 다름' 이 본다).
 export const WHEN_ACT: Record<ConcernKey, { best: string; hard: string; year: string }> = {
   work: {
-    best: '지원과 면접을 이때 몰아서 잡으세요.',
+    best: '중요한 자리와 미팅을 이때 몰아서 잡으세요.',
     hard: '퇴사 통보와 최종 서명은 이때를 피해요.',
     year: '자리를 옮기거나 직책을 올릴 결정이 붙는 해예요.',
   },
