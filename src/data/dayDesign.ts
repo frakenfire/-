@@ -1470,7 +1470,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         headline: '오늘은 자신감이 과해지지 않게만 조심하면 돼요.',
         vibe: '컨디션이 좋을수록 방심이 스며들기 쉬운 날이에요.',
         steps: [
-          { when: '아침', text: '자신 있는 일일수록 한 번 더 검토해요.' },
+          { when: '아침', text: '자신 있는 일일수록 한 번 더 봐요.' },
           { when: '낮', text: '단정 짓기보다 확인을 습관처럼 해요.' },
           { when: '저녁', text: '오늘 한 말과 약속을 다시 떠올려봐요.' },
         ],
