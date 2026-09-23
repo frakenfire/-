@@ -73,7 +73,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
       hold: '큰 지출의 결제일을 정하는 일',
     },
     geopjae: {
-      doIt: '같이 쓰는 돈의 몫을 글로 남겨두기',
+      doIt: '같이 쓰는 돈을 누가 얼마 낼지 글로 남겨두기',
       avoid: '돈 얘기를 미루고 먼저 지출하는 것',
       hold: '돈을 빌려주거나 보증을 서는 일',
     },
@@ -89,11 +89,11 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     },
     pyeonjae: {
       doIt: '받을 돈이나 미뤄둔 정산을 확인하기',
-      avoid: '기회가 보인다고 조건 없이 들어가는 것',
+      avoid: '좋아 보인다고 조건도 안 보고 들어가는 것',
       hold: '한 번에 크게 넣는 결정',
     },
     jeongjae: {
-      doIt: '들어온 돈에서 남길 몫을 먼저 떼어 옮기기',
+      doIt: '들어온 돈에서 남길 금액을 먼저 떼어 옮기기',
       avoid: '자잘한 지출을 세지 않고 넘기는 것',
       hold: '수익률을 더 올릴 곳을 찾는 일',
     },
@@ -173,7 +173,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
   people: {
     bijian: {
       doIt: '오래 못 본 사람 한 명에게 먼저 연락하기',
-      avoid: '내 방식이 맞다고 밀어붙이는 것',
+      avoid: '내가 하던 대로가 맞다고 밀어붙이는 것',
       hold: '모임을 새로 만드는 일',
     },
     geopjae: {
@@ -198,7 +198,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     },
     jeongjae: {
       doIt: '주고받을 것이 있는 사이를 한 번 챙기기',
-      avoid: '돈이나 몫 얘기를 흐린 채 넘어가는 것',
+      avoid: '돈이나 누가 얼마 낼지를 안 정하고 넘어가는 것',
       hold: '새 사람을 소개받는 일',
     },
     pyeongwan: {
@@ -218,7 +218,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     },
     jeongin: {
       doIt: '힘들 때 곁에 있어준 사람에게 연락하기',
-      avoid: '다 받아주다 내 몫을 뒤로 미루는 것',
+      avoid: '다 받아주다 내 일을 뒤로 미루는 것',
       hold: '새로 사람을 넓히는 일',
     },
   },

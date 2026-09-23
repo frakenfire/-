@@ -133,7 +133,7 @@ export const CONCERNS: Concern[] = [
     question: '누구와의 사이가 걸려요?',
     questionLead: '상대가 누구냐에 따라 답이 달라져요.',
     options: [
-      { key: 'work', label: '회사 사람이에요', line: '고를 수 없는 사이라서 거리를 조절하는 게 유일한 방법이에요.' },
+      { key: 'work', label: '회사 사람이에요', line: '고를 수 없는 사이라서 얼마나 자주 볼지만 내가 정할 수 있어요.' },
       { key: 'friend', label: '친구예요', line: '오래된 사이일수록 말 한마디가 크게 남아요.' },
       { key: 'family', label: '가족이에요', line: '끊을 수 없는 사이라 이기는 것보다 덜 다치는 게 목표예요.' },
       { key: 'new', label: '새로 만난 사람이에요', line: '아직 정해지지 않은 사이예요. 지금 재는 게 나중을 정해요.' },

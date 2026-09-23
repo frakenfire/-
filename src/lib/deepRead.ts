@@ -151,7 +151,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
     soon: [
       '지금은 고정비부터 줄여요. 늘리는 건 그다음이에요',
       '나가는 돈을 한 달만 전부 적어봐요. 새는 곳이 바로 보여요',
-      '계약이나 서명은 흐름이 좋은 달로 미뤄요',
+      '계약이나 서명은 점수가 높은 달로 미뤄요',
     ],
     wait: [
       '새로 벌이는 건 미뤄요. 지금은 지키는 게 버는 거예요',
@@ -185,7 +185,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
     soon: [
       '오해가 있으면 지금 풀지 말고 사실만 정리해둬요',
       '자리에 나가되 말은 줄여요. 듣는 쪽이 유리해요',
-      '중요한 대화는 흐름이 좋은 달로 옮겨요',
+      '중요한 대화는 점수가 높은 달로 옮겨요',
     ],
     wait: [
       '새로 넓히지 말아요. 이 달은 걸러내는 쪽이에요',
@@ -202,7 +202,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
     soon: [
       '지금은 늘리지 말고 회복부터 해요',
       '카페인을 한 잔 줄이고 물을 한 잔 늘려요',
-      '무리한 일정은 흐름이 좋은 달로 미뤄요',
+      '무리한 일정은 점수가 높은 달로 미뤄요',
     ],
     wait: [
       '이 달엔 밤을 새우지 말아요. 바로 표시가 나요',
@@ -557,7 +557,7 @@ export function buildDeepRead(
   );
   const nextDay =
     tomorrowGod === todayGod && tomorrowRels.length === meetRows.length
-      ? '내일도 결이 비슷한 날이라, 오늘 잡아둔 것이 그대로 이어져요.'
+      ? '내일도 오늘과 비슷한 날이라, 오늘 잡아둔 것이 그대로 이어져요.'
       : tomorrowGod === todayGod
         ? `내일은 같은 기운이 오는데 내 글자와 닿는 자리가 달라져요. 오늘과 조금 다른 답이 나와요.`
         : `내일은 ${G(tomorrowGod).pull} 쪽으로 기울어요. 오늘과 다른 답이 나와요.`;
@@ -704,7 +704,7 @@ export function buildDeepRead(
   ];
   const yearGap =
     y0.tenGod === y1.tenGod
-      ? '올해와 내년이 같은 결이에요. 올해 잡아둔 것이 내년에 그대로 굴러가요.'
+      ? '올해와 내년이 비슷해요. 올해 잡아둔 것이 내년에 그대로 굴러가요.'
       : '올해와 내년은 할 일이 달라요. 위 표에서 올해 칸만 보고 움직이세요.';
 
   // 달 한 덩이 — 겉(천간)과 속(지지)을 따로 대야 열두 달이 전부 다른 얼굴이 된다

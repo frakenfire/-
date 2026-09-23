@@ -46,7 +46,7 @@ export const CATEGORY_INTERP: Record<string, Record<Band, string>> = {
 export const NUMBER_HINTS: string[] = [
   '망설여질 땐 {n}번째 선택을 골라보세요.',
   '{n}이 들어간 시간이나 자리에 작은 행운이 있어요.',
-  '오늘 {n}번째로 눈에 들어온 것에 기회가 숨어 있어요.',
+  '오늘 {n}번째로 눈에 들어온 것을 그냥 넘기지 마세요.',
   '메뉴가 고민되면 위에서 {n}번째로 골라봐요.',
   '{n}분만 더 고민하면 답이 또렷해지는 날이에요.',
   '오늘은 {n}시쯤에 좋은 일이 하나 있어요.',
@@ -100,7 +100,7 @@ export const MATCH_GOOD_REASONS: string[] = [
   '서로 웃는 포인트가 비슷해요.',
 ];
 export const MATCH_CAUTION_REASONS: string[] = [
-  '서로 표현 방식이 달라서 오해가 생기기 쉬워요.',
+  '서로 표현하는 법이 달라서 오해가 생기기 쉬워요.',
   '한쪽이 급하면 다른 쪽은 부담스러울 수 있어요.',
   '말투 하나에 예민해지기 쉬운 조합이에요.',
   '거리 조절을 살짝만 신경 쓰면 훨씬 편해져요.',

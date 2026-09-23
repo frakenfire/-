@@ -41,7 +41,7 @@ const VERDICT_BY_SITUATION: Record<ConcernKey, Record<string, Record<Verdict, Tw
   money: {
     save: {
       now: { head: '지금은 들어오는 돈이 나가는 돈보다 커요', sub: '지금 넣고 늘려도 괜찮아요. 미루던 계좌 정리부터 해보세요.' },
-      soon: { head: '{when} 수입이 도는 때가 와요', sub: '큰 지출과 계약은 흐름이 열리는 달로 미루세요.' },
+      soon: { head: '{when} 수입이 도는 때가 와요', sub: '큰 지출과 계약은 돈이 도는 달로 미루세요.' },
       wait: { head: '지금은 늘리기보다 새는 돈을 막을 때예요', sub: '지금은 더 벌 때가 아니에요. 매달 빠져나가는 고정비부터 줄여보세요.' },
     },
     leak: {

@@ -30,7 +30,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
       month: '이번 달은 비슷한 처지의 사람들이 눈에 많이 들어와요. 비교가 시작되면 판단이 흐려져요.',
     },
     geopjae: {
-      decade: '같이 움직일 사람이 늘어나는 십 년이에요. 그만큼 내 몫이 어디까지인지가 자주 흐려져요.',
+      decade: '같이 움직일 사람이 늘어나는 십 년이에요. 어디까지가 내 일인지 자주 헷갈려요.',
       year: '올해는 역할이 겹치면서 부담이 커져요. 누가 무엇을 맡는지가 올해의 핵심이에요.',
       month: '이번 달은 내 일이 아닌 것까지 넘어오기 쉬워요. 지금 선을 안 그으면 다음 달에 더 와요.',
     },
@@ -41,7 +41,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     },
     sanggwan: {
       decade: '지금 틀을 벗어나고 싶어지는 십 년이에요. 답답함이 성격 문제가 아니라 시기의 성질이에요.',
-      year: '올해는 방식을 바꾸고 싶은 마음이 계속 올라와요. 다만 지금 바꿀 것과 나중에 바꿀 것이 섞여 있어요.',
+      year: '올해는 하던 대로 하기 싫어지는 마음이 계속 올라와요. 지금 바꿀 것과 나중에 바꿀 것을 갈라야 해요.',
       month: '이번 달은 불만이 말로 튀어나오기 쉬워요. 꺼낸 말은 조건 협상보다 먼저 기록에 남아요.',
     },
     pyeonjae: {
@@ -65,7 +65,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
       month: '이번 달은 요건을 맞춰두면 다음 달이 편해져요. 건너뛴 절차는 결국 되돌아와요.',
     },
     pyeonin: {
-      decade: '방향을 다시 굴려보는 십 년이에요. 한 길만 파던 방식이 잘 안 맞게 느껴져요.',
+      decade: '가던 길을 다시 보게 되는 십 년이에요. 한 가지만 파던 게 잘 안 맞게 느껴져요.',
       year: '올해는 해온 일을 다르게 묶어볼 수 있는 해예요. 다만 아직은 실행보다 정리 단계예요.',
       month: '이번 달은 생각이 빠르게 튀어요. 떠오른 그대로 옮기면 되돌리는 데 더 걸려요.',
     },
@@ -82,7 +82,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
       month: '이번 달은 주변 씀씀이가 눈에 들어와요. 맞추다 보면 예산이 먼저 무너져요.',
     },
     geopjae: {
-      decade: '같이 벌기 시작하면서 셈이 복잡해졌어요. 몫을 먼저 안 정해서 생긴 일이에요.',
+      decade: '같이 벌기 시작하면서 셈이 복잡해졌어요. 누가 얼마 가져갈지 먼저 안 정해서예요.',
       year: '올해는 나눌 일이 생기는 해예요. 흐린 채로 두면 관계와 돈이 같이 상해요.',
       month: '이번 달은 돈 얘기를 미루기 쉬워요. 지출이 먼저 나가면 되찾기 어려워요.',
     },
@@ -98,7 +98,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     },
     pyeonjae: {
       decade: '큰돈이 오가는 십 년이에요. 들어오는 폭이 큰 만큼 나가는 폭도 커요.',
-      year: '올해는 기회가 여러 번 보여요. 다 잡으려 하면 남는 게 없어요.',
+      year: '올해는 해볼 만한 일이 여러 번 들어와요. 다 잡으려 하면 남는 게 없어요.',
       month: '이번 달은 받을 돈과 미뤄둔 정산이 정리될 수 있어요. 지금 안 챙기면 흐려져요.',
     },
     jeongjae: {
@@ -186,7 +186,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
       month: '이번 달은 혼자 다 지고 가기 쉬워요. 도움을 안 청한 건 나일 수 있어요.',
     },
     geopjae: {
-      decade: '몫을 나누는 일이 잦아지는 십 년이에요. 흐린 채로 두면 반드시 터져요.',
+      decade: '누가 얼마나 할지 정할 일이 잦아지는 십 년이에요. 안 정하고 두면 반드시 터져요.',
       year: '올해는 역할이 겹치는 해예요. 누가 무엇을 맡는지 글로 남기는 게 좋아요.',
       month: '이번 달은 서운함을 웃어넘기기 쉬워요. 쌓이면 다음에 폭이 커져요.',
     },
@@ -207,7 +207,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     },
     jeongjae: {
       decade: '감정만으로 이어지던 사이가 힘들어지는 때예요. 이해가 맞아야 이어지는 쪽으로 넘어왔어요.',
-      year: '올해는 같이 뭔가 만드는 관계가 생기는 해예요. 몫을 먼저 정해야 해요.',
+      year: '올해는 같이 뭔가 만드는 사람이 생기는 해예요. 시작하기 전에 역할을 갈라놔야 해요.',
       month: '이번 달은 말 안 해도 알겠지 하고 넘기기 쉬워요. 끝에 가서 전부 터져요.',
     },
     pyeongwan: {
@@ -227,7 +227,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     },
     jeongin: {
       decade: '어려울 때 있어준 사람이 누군지 선명해지는 때예요. 그게 지금 관계를 다시 보게 만들어요.',
-      year: '올해는 챙기다 지치기 쉬운 해예요. 내 몫을 뒤로 미루지 않는 게 중요해요.',
+      year: '올해는 챙기다 지치기 쉬운 해예요. 내 일을 뒤로 미루지 마세요.',
       month: '이번 달은 서운함을 혼자 정리하기 쉬워요. 한 명에게만 말해도 달라져요.',
     },
   },
@@ -244,7 +244,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     },
     siksin: {
       decade: '풀어내야 회복되는 십 년이에요. 말하거나 만들면 몸도 같이 풀려요.',
-      year: '올해는 새로운 방식이 잘 붙는 해예요. 늘 하던 것은 금방 질려요.',
+      year: '올해는 안 해보던 것이 잘 붙는 해예요. 늘 하던 것은 금방 질려요.',
       month: '이번 달은 밤 시간이 일정으로 채워지기 쉬워요. 거기서 제일 많이 빠져요.',
     },
     sanggwan: {
@@ -291,7 +291,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     },
     geopjae: {
       decade: '비교가 마음을 깎는 십 년이에요. 남의 속도가 자꾸 기준이 돼요.',
-      year: '올해는 견주는 일이 잦은 해예요. 비교 대상을 잠시 안 보는 것도 방법이에요.',
+      year: '올해는 남과 견주는 일이 잦은 해예요. 비교하게 되는 사람을 잠시 안 보면 나아져요.',
       month: '이번 달은 남과 견주며 내 자리를 깎기 쉬워요. 거리를 두면 가라앉아요.',
     },
     siksin: {
