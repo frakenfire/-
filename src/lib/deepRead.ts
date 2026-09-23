@@ -578,12 +578,22 @@ export function buildDeepRead(
   // '타고난 73점과 비슷해요' 로 끝내면 두 번 막힌다. 타고난 점수가 뭔지
   // 모르고, 비슷하면 뭘 하라는 건지도 모른다. '평소' 라고 부르고, 그래서
   // 오늘 어떻게 하라는지까지 붙인다.
-  const vsNatal = (n: number): string | null => {
+  // 네 줄 중 셋이 이 말을 쓴다. 뒷문장을 한 벌로 두면 '평소와 비슷해요.
+  // 하던 만큼만 하면 돼요.' 가 한 화면에 두 번 그대로 나온다. 실제로 열두
+  // 화면에서 그러고 있었다. 줄마다 가리키는 기간이 다르니 뒷문장도 그
+  // 기간으로 말한다. 그러면 안 겹치고, 무엇을 언제 하라는지도 분명해진다.
+  const SPAN = {
+    today: { same: '오늘은 하던 만큼만 하면 돼요.', up: '오늘 미뤄둔 것을 꺼내기 좋아요.', down: '오늘은 벌이는 것을 줄여 잡으세요.' },
+    near: { same: '이번 달도 하던 대로 가면 돼요.', up: '이번 달에 하나 꺼내볼 만해요.', down: '이번 달은 크게 벌이지 마세요.' },
+    far: { same: '이 십 년은 큰 굴곡이 없어요.', up: '이 십 년 동안 밀어볼 만해요.', down: '이 십 년은 무리하지 않는 쪽이 맞아요.' },
+  } as const;
+  const vsNatal = (n: number, span: keyof typeof SPAN): string | null => {
     const gap = n - natal.score;
-    if (Math.abs(gap) <= 5) return '평소와 비슷해요. 하던 만큼만 하면 돼요.';
+    const w = SPAN[span];
+    if (Math.abs(gap) <= 5) return `평소와 비슷해요. ${w.same}`;
     return gap > 0
-      ? `평소보다 ${gap}점 높아요. 미뤄둔 것을 지금 꺼내세요.`
-      : `평소보다 ${-gap}점 낮아요. 벌이는 것을 줄여 잡으세요.`;
+      ? `평소보다 ${gap}점 높아요. ${w.up}`
+      : `평소보다 ${-gap}점 낮아요. ${w.down}`;
   };
   // 기운 이름 대신 그 기운이 이 고민에서 일으키는 일을 적는다.
   // pull 은 '-는' 으로 끝나는 말이라 시간 단위를 뒤에 붙이면 문장이 된다.
@@ -594,14 +604,14 @@ export function buildDeepRead(
       label: todayPart.label,
       score: todayPart.score,
       line: `${pullOf(todayPart.god)} 날이에요.`,
-      vs: vsNatal(todayPart.score),
+      vs: vsNatal(todayPart.score, 'today'),
     },
     {
       k: '가까운 미래의 나',
       label: '올해와 이번 달',
       score: near,
       line: `${pullOf(thisMonthPart.god)} 때예요.`,
-      vs: vsNatal(near),
+      vs: vsNatal(near, 'near'),
     },
     {
       k: '먼 미래의 나',
@@ -610,7 +620,7 @@ export function buildDeepRead(
       line: daeunPart.god
         ? `${pullOf(daeunPart.god)} 십 년이에요.`
         : '아직 첫 십 년이 시작되기 전이에요.',
-      vs: vsNatal(daeunPart.score),
+      vs: vsNatal(daeunPart.score, 'far'),
     },
     {
       k: '타고난 나',

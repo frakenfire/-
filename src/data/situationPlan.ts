@@ -235,7 +235,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
     new: {
       focus: '새로 만난 사람은 좋아 보일 때가 제일 안 보일 때예요. 천천히 보세요.',
       dos: [
-        '그 사람을 두어 번 더 만나보고 판단하기',
+        '그 사람을 몇 번 더 겪어보고 정하기',
         '같이 아는 사람이 있으면 한 번 물어보기',
         '밥 한 번 먹자고 먼저 말해보기',
       ],
@@ -309,7 +309,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
         '오늘 하루에서 할 일을 하나 줄이기',
       ],
       donts: [
-        '아직 안 온 일을 미리 걱정으로 겪기',
+        '오지도 않은 일을 미리 걱정으로 겪기',
         '잠을 줄여 해결하려 하기',
         '괜찮은 척하며 아무에게도 말 안 하기',
       ],
@@ -318,7 +318,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       focus: '지친 건 마음이 약해서가 아니라 남은 게 없어서예요. 채우는 게 먼저예요.',
       dos: [
         '제일 무거운 일 하나만 끝내고 하루를 접기',
-        '쉬는 날을 달력에 먼저 박아두기',
+        '쉬는 날부터 달력에 표시해두기',
         '거절할 것 하나를 오늘 거절하기',
       ],
       donts: [

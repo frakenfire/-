@@ -764,7 +764,7 @@ async function run(browser) {
   }
 
   // 2-C. 쪽지 컨셉 유지 — 이 앱의 정체성.
-  // 사주를 붙이면서 표면이 사주로 덮이면 '오늘쪽지 뽑기'가 아니게 된다.
+  // 사주를 붙이면서 표면이 사주로 덮이면 쪽지를 뽑는 앱이 아니게 된다.
   // 뽑은 쪽지가 결과에 남는지, 고른 것이 실제로 반영되는지 본다.
   {
     const page = await newPage(browser);
@@ -787,12 +787,20 @@ async function run(browser) {
       });
       check(sizes.verdict > sizes.name + 3,
         '[쪽지] 결론이 쪽지 이름보다 크다', `${sizes.name} vs ${sizes.verdict}`);
-      // 배지와 할 일이 한 줄에 섞이면 줄바꿈이 사고처럼 보인다
-      const stance = await page.locator('.drawn__stance').boundingBox();
-      const doBox = await page.locator('.drawn__do').boundingBox();
+      // 배지와 할 일이 한 줄에 섞이면 줄바꿈이 사고처럼 보인다.
+      //
+      // 예전엔 이 둘이 쪽지 카드 안에 있었다. 그런데 아래 '지금 할 것과 하지
+      // 말 것' 카드가 같은 배지와 같은 첫 줄을 다시 그려서, 한 화면에 똑같은
+      // 문장이 두 번 나오고 있었다. 쪽지 카드에서 빼고 아래 한 곳에만 뒀다.
+      // 자리만 옮겼지 규칙은 그대로라, 옮긴 자리에서 다시 잰다.
+      const stance = await page.locator('.decide__stance').boundingBox();
+      const doBox = await page.locator('.decide__list--do .decide__v').first().boundingBox();
       check(!!stance && !!doBox && doBox.y >= stance.y + stance.height - 1,
         '[쪽지] 결정 배지가 제 줄을 갖는다',
         `배지 ${stance?.y}+${stance?.height} / 할 일 ${doBox?.y}`);
+      // 쪽지 카드에는 배지도 할 일도 없어야 한다 (아래 카드와 겹치지 않게)
+      check((await page.locator('.drawn__stance, .drawn__do').count()) === 0,
+        '[쪽지] 쪽지 카드가 아래 결정 카드와 안 겹친다');
       // 뽑기 화면에서 고른 그 색이 결과까지 이어져야 '같은 종이'로 느껴진다
       const cls = await page.locator('.drawn').getAttribute('class');
       check(/drawn--(softGreen|cream|softYellow|softPink)/.test(cls),

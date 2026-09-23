@@ -137,12 +137,14 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
               <Sentences className="drawn__lead" text={deep.read.sub} />
               {/* 배지와 문장을 한 줄에 흘리면 문장이 배지 뒤에서 접혀
                   줄바꿈이 사고처럼 보인다. 배지는 제 줄을 갖는다. */}
+              {/* 예전엔 여기에 판정 배지와 할 일 첫 줄도 같이 뒀다. 그런데 아래
+                  '지금 할 것과 하지 말 것' 카드가 같은 배지와 같은 첫 줄을
+                  다시 그린다. 한 화면을 통째로 뽑아 세어보니 '하던 대로
+                  이어가기' 가 열여섯 화면에서 두 번씩 나오고 있었다.
+                  같은 말을 두 번 읽히면 두 번째는 안 읽힌다. 여기는 이유만
+                  두고, 배지와 할 일은 아래 카드 한 곳에서만 그린다. */}
               <span className="drawn__now">
-                <b className="drawn__stance">{deep.read.decision.stanceWord}</b>
-                {/* 이번 달 기운은 행동의 이유다. 판정 줄 옆에 두면 두 층이
-                    섞여서 서로 반대로 갈 수 있다. 행동 바로 위에 붙인다. */}
                 <span className="drawn__why">{deep.read.monthWhy}</span>
-                <span className="drawn__do">{deep.read.decision.dos[0]}</span>
               </span>
             </>
           ) : (

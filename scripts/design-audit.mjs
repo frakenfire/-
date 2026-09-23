@@ -329,6 +329,32 @@ function collect() {
     out.twoFacedSeen = seen.size;
   }
 
+  // 한 화면에 똑같은 문장이 두 번 그려지는가.
+  //
+  // '같은 말이 두 얼굴' 은 같은 클래스 안에서만 본다. 그래서 위쪽 쪽지 카드와
+  // 아래쪽 결정 카드가 '하던 대로 이어가기' 를 각각 제 클래스로 그리는 건
+  // 한 번도 안 걸렸다. 화면을 통째로 뽑아 세어보니 열여섯 화면에서 그러고
+  // 있었고, '평소와 비슷해요. 하던 만큼만 하면 돼요.' 도 열두 화면에서
+  // 두 번씩 나왔다. 같은 말을 두 번 읽히면 두 번째는 안 읽힌다.
+  {
+    const count = new Map();
+    for (const el of document.querySelectorAll('.app *')) {
+      let own = '';
+      for (const n of el.childNodes) if (n.nodeType === 3) own += n.nodeValue;
+      own = own.replace(/\s+/g, ' ').trim();
+      if (own.length < 10 || !/[가-힣]/.test(own)) continue;
+      // 이름표는 여러 자리에 같은 글자로 서는 게 맞다. '지금 지나는 십 년' 은
+      // 점수 표의 행 이름이자 시기 카드 제목이자 '네 가지 나' 의 라벨이다.
+      // 문장이 아니라 같은 것을 가리키는 이름이라 세 번 나와도 안 헷갈린다.
+      if (own === '지금 지나는 십 년') continue;
+      const r = el.getBoundingClientRect();
+      if (r.width < 1 || r.height < 1) continue;
+      count.set(own, (count.get(own) ?? 0) + 1);
+    }
+    out.repeated = [...count.entries()].filter(([, c]) => c > 1).map(([t, c]) => `${t.slice(0, 40)} x${c}`);
+    out.repeatedSeen = count.size;
+  }
+
   // 점수 막대가 바로 옆 숫자와 같은 말을 하는가.
   // 이 앱에는 점수 막대가 세 종류 있다 — 왜 N점인가요, 네 가지 운, 궁합 세 칸.
   // 한때 '왜 N점인가요' 만 50~92 를 0~100 으로 펴서 그렸고, 그 바람에 73점
@@ -436,7 +462,11 @@ function auditScreen(name, data) {
     data.cardTitles.length <= 1 ? `제목 ${data.cardTitles.length}가지${data.cardTitles[0] ? ` (${data.cardTitles[0]})` : ''}`
       : data.cardTitles.join(' · '));
 
-  // 15) 같은 클래스에 같은 글자면 같은 색으로 그려지는가
+  // 15) 한 화면에 똑같은 문장이 두 번 그려지지 않는가
+  check(data.repeated.length === 0, `[${name}] 같은 문장이 두 번 안 나옴`,
+    data.repeated.length ? data.repeated.slice(0, 3).join(' / ') : `문장 ${data.repeatedSeen}가지 검사`);
+
+  // 16) 같은 클래스에 같은 글자면 같은 색으로 그려지는가
   check(data.twoFaced.length === 0, `[${name}] 같은 말이 두 얼굴로 안 나옴`,
     data.twoFaced.length ? data.twoFaced.slice(0, 3).join(' / ') : `말 ${data.twoFacedSeen}가지 검사`);
 
