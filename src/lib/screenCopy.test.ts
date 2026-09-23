@@ -141,11 +141,11 @@ test('네 가지 나가 오늘을 맨 앞에 놓고 네 층을 다 보여준다'
     // 매일 쪽지를 뽑는 앱이다. 오늘이 맨 위여야 한다.
     assert.deepEqual(r.selves.map((x) => x.k),
       ['오늘의 나', '가까운 미래의 나', '먼 미래의 나', '타고난 나']);
-    // 타고난 나는 기준이라 견줄 대상이 없다. 나머지 셋은 반드시 견준다.
-    assert.equal(r.selves[3].vs, null);
+    // 타고난 나는 기준이라 견줄 대상이 없고, 그렇다고 말해준다.
+    assert.ok(r.selves[3].vs?.includes('평소의 나'), r.selves[3].vs ?? '');
     for (const x of r.selves.slice(0, 3)) {
-      // 몇 점과 견줬는지와, 그래서 어떻게 하라는지가 둘 다 있어야 한다.
-      assert.ok(x.vs && /^타고난 \d+점(과 비슷해요|보다 \d+점 (높|낮)아요)\. .+\.$/.test(x.vs),
+      // 평소와 견준 결과와, 그래서 어떻게 하라는지가 둘 다 있어야 한다.
+      assert.ok(x.vs && /^평소(와 비슷해요|보다 \d+점 (높|낮)아요)\. .+\.$/.test(x.vs),
         `${x.k}: ${x.vs}`);
     }
     const part = (k: string) => r.score.parts.find((p) => p.k === k)!.score;
@@ -161,9 +161,9 @@ test('타고난 것과 견주는 말이 실제 점수와 맞다', () => {
     const base = r.selves[3].score;
     for (const x of r.selves.slice(0, 3)) {
       const gap = x.score - base;
-      const head = Math.abs(gap) <= 5 ? `타고난 ${base}점과 비슷해요`
-        : gap > 0 ? `타고난 ${base}점보다 ${gap}점 높아요`
-          : `타고난 ${base}점보다 ${-gap}점 낮아요`;
+      const head = Math.abs(gap) <= 5 ? '평소와 비슷해요'
+        : gap > 0 ? `평소보다 ${gap}점 높아요`
+          : `평소보다 ${-gap}점 낮아요`;
       assert.ok(x.vs?.startsWith(head), `${x.k} ${x.score} vs ${base}: ${x.vs}`);
     }
   }

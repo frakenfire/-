@@ -573,17 +573,17 @@ export function buildDeepRead(
   const todayPart = partOf('오늘');
   const daeunPart = partOf('지금 지나는 십 년');
   const near = Math.round((thisYear.score + thisMonthPart.score) / 2);
-  // 타고난 것과 견줘 어느 쪽인가. 5점 안쪽이면 비슷한 것으로 본다.
+  // 평소(타고난 점수)와 견줘 어느 쪽인가. 5점 안쪽이면 비슷한 것으로 본다.
   //
-  // '타고난 것과 비슷해요' 로 끝내면 읽고 나서 정해지는 게 없다. 몇 점과
-  // 견줬는지, 그래서 오늘 어떻게 하라는 건지까지 붙인다.
+  // '타고난 73점과 비슷해요' 로 끝내면 두 번 막힌다. 타고난 점수가 뭔지
+  // 모르고, 비슷하면 뭘 하라는 건지도 모른다. '평소' 라고 부르고, 그래서
+  // 오늘 어떻게 하라는지까지 붙인다.
   const vsNatal = (n: number): string | null => {
     const gap = n - natal.score;
-    const base = `타고난 ${natal.score}점`;
-    if (Math.abs(gap) <= 5) return `${base}과 비슷해요. 평소 하던 만큼이 맞아요.`;
+    if (Math.abs(gap) <= 5) return '평소와 비슷해요. 하던 만큼만 하면 돼요.';
     return gap > 0
-      ? `${base}보다 ${gap}점 높아요. 평소보다 밀어도 돼요.`
-      : `${base}보다 ${-gap}점 낮아요. 평소보다 줄여 잡으세요.`;
+      ? `평소보다 ${gap}점 높아요. 미뤄둔 것을 지금 꺼내세요.`
+      : `평소보다 ${-gap}점 낮아요. 벌이는 것을 줄여 잡으세요.`;
   };
   // 기운 이름 대신 그 기운이 이 고민에서 일으키는 일을 적는다.
   // pull 은 '-는' 으로 끝나는 말이라 시간 단위를 뒤에 붙이면 문장이 된다.
@@ -621,8 +621,9 @@ export function buildDeepRead(
       // 걷어내면서 둘 다 보이게 됐고, 거기서 드러났다.
       // 여기서는 원국에서 이 고민 자리가 몇 글자인지를 말한다. 그건 다른
       // 어디서도 숫자로는 안 나오고, '기준' 이라는 역할과도 맞는다.
-      line: `${withJosa(concern.shortName, '이가')} 걸린 글자가 여덟 중 ${score.natalCount}개예요.`,
-      vs: null,
+      line: `여덟 글자 중 ${score.natalCount}개가 ${withJosa(concern.shortName, '을를')} 맡고 있어요. `
+        + `${score.natalCount >= 3 ? '많은 편이라 때를 덜 타요.' : '적은 편이라 때를 더 타요.'}`,
+      vs: '이 점수가 평소의 나예요. 위 셋은 여기에 견준 거예요.',
     },
   ];
 
@@ -685,7 +686,7 @@ export function buildDeepRead(
   // 올해와 내년은 따로 설명만 하면 뭐가 다른지 안 보인다. 같은 줄에 맞대 놓는다.
   const [y0, y1] = timing.years;
   const yearCompare = [
-    { k: '한 해의 결', thisYear: GOD_KEYWORD[y0.tenGod], nextYear: GOD_KEYWORD[y1.tenGod] },
+    { k: '이 해에 할 일', thisYear: GOD_KEYWORD[y0.tenGod], nextYear: GOD_KEYWORD[y1.tenGod] },
     // good/care 는 달 단위 문장이다. 여기에 그대로 쓰면 그 해와 같은 기운을 가진
     // 달이 아래 차트에 뜰 때 글자 하나까지 같은 문장이 두 번 나온다.
     {
@@ -702,7 +703,10 @@ export function buildDeepRead(
   const yearGap =
     y0.tenGod === y1.tenGod
       ? `올해와 내년의 결이 비슷해요. 흐름이 이어져서 올해 잡아둔 것이 내년에 그대로 굴러가요.`
-      : `올해가 ${GOD_KEYWORD[y0.tenGod]}에 가까운 해라면, 내년은 ${GOD_KEYWORD[y1.tenGod]}에 가까운 해예요.`;
+      // '올해가 넓히기에 가까운 해라면 내년은 쌓기에 가까운 해예요' 는
+      // 바로 위 표를 그대로 다시 읽은 것이라 새로 아는 게 없다.
+      // 두 해가 다르다는 사실이 왜 중요한지를 적는다.
+      : `올해 쓰던 방식이 내년에는 덜 통해요. 표의 가운뎃줄을 해마다 다르게 잡으세요.`;
 
   // 달 한 덩이 — 겉(천간)과 속(지지)을 따로 대야 열두 달이 전부 다른 얼굴이 된다
   const slotBlock = (k: string, slot: TimingSlot) => ({

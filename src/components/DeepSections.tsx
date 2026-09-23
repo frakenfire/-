@@ -202,7 +202,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <p className="mflow__foot">십 년이 배경을 깔고, 올해가 방향을 정하고, 이번 달이 눈앞에 밀어놓은 거예요.</p>
+        <p className="mflow__foot">십 년은 배경, 올해는 방향, 이번 달은 눈앞의 일이에요. 셋이 겹쳐서 지금 이 생각이 커졌어요.</p>
       </div>
 
       </Chapter>
