@@ -1270,7 +1270,8 @@ async function run(browser) {
     await page.getByText('광고 보고 결과 열기', { exact: false }).first().click();
     await wait(page, 3200);
     const c = await bodyText(page);
-    check(/\d+점/.test(c) && c.includes('케미'), '[궁합] 광고 언락 후 결과');
+    // 칸 이름이 '케미' 였는데 실제로 쓰는 우리말로 바꿨다. '잘 맞는 정도' 다.
+    check(/\d+점/.test(c) && c.includes('잘 맞는 정도'), '[궁합] 광고 언락 후 결과');
     // 세 칸은 폭이 같은데 첫 칸만 padding-left 가 0 이라 막대 자리가
     // 102/89/89px 로 갈려 있었다. 각자 자기 자리의 %로 그리니 98점이 100px,
     // 97점이 86px 로 나왔다. 1점 차이가 14px 로 보이면 점수가 거짓말이 된다.

@@ -230,7 +230,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
           </span>
         ) : (
           <span className="field__hint" id="birth-name-hint">
-            이름 소리를 다섯 기운으로 갈라 사주와 같이 봐요.
+            이름 소리를 다섯 갈래로 갈라 사주와 같이 봐요.
           </span>
         )}
       </label>
@@ -261,7 +261,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
           </span>
         ) : (
           <span className="field__hint" id="birth-gender-hint">
-            십 년 흐름의 방향이 성별로 갈려요.
+            십 년 단위를 세는 방향이 성별로 갈려요.
           </span>
         )}
       </div>

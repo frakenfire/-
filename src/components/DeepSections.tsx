@@ -415,12 +415,12 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             <Sentences className="read6__v" text={read.chart.season} />
           </li>
           <li className="read6__row">
-            <span className="read6__k">채워주는 기운</span>
+            <span className="read6__k">채워주면 좋은 쪽</span>
             <Sentences className="read6__v" text={read.chart.useful} />
           </li>
         </ul>
 
-        <p className="cat4__head cat4__head--sub">다섯 기운의 비중</p>
+        <p className="cat4__head cat4__head--sub">다섯 갈래가 차지하는 비율</p>
         <ul className="elbar">
           {read.chart.elements.map((e) => (
             <li key={e.el} className={`elbar__row${e.mine ? ' elbar__row--me' : ''}`}>
@@ -430,7 +430,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <p className="mflow__foot">별표가 붙은 줄이 나를 뜻하는 기운이에요. 지지는 속에 든 글자까지 풀어서 셌어요.</p>
+        <p className="mflow__foot">별표가 붙은 줄이 나를 뜻하는 갈래예요. 지지는 속에 든 글자까지 풀어서 셌어요.</p>
 
         {read.chart.sinsal.length > 0 ? (
           <>
@@ -452,7 +452,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
         {read.name ? (
           <>
-            <p className="cat4__head cat4__head--sub">이름이 싣는 기운</p>
+            <p className="cat4__head cat4__head--sub">이름에 담긴 소리</p>
             <ul className="nameel">
               {read.name.letters.map((l, i) => (
                 <li key={`${l.ch}${i}`} className="nameel__box">
@@ -462,7 +462,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
               ))}
             </ul>
             <Sentences className="qa qa--sub" text={read.name.verdict} />
-            <p className="mflow__foot">한글 소리를 다섯 기운으로 갈라서 봐요. 한자는 안 받으니 획수는 세지 않아요.</p>
+            <p className="mflow__foot">한글 소리를 다섯 갈래로 갈라서 봐요. 한자는 안 받으니 획수는 세지 않아요.</p>
           </>
         ) : null}
 

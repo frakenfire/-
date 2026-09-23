@@ -25,12 +25,28 @@ const RULES = [
   [/크게 튀|튀진 않|튀지 않/, "'큰일은 없지만'·'특별한 일 없이'"],
   [/강하게 들어(와|오)/, "무엇이 얼마나 되는지로. 세기를 말하지 말고 일을 말한다"],
   [/잔잔한 (하루|날|달|한 달)|잔잔하게 (흘러|지나)/, "'조용한 하루'·'편안하게 지나가는'"],
+
+  // '오후의 한숨 돌리는 시간이에요' 는 '오후의' 가 '시간' 을 꾸미는데 그 사이에
+  // '한숨 돌리는' 이 끼어 있다. 읽다가 걸린다. 말을 옮겨 '지금 한숨 돌리는
+  // 오후 시간이에요' 로 쓰면 한 번에 읽힌다.
+  // 정규식만 쓰면 '내일의 내가 더 잘 정하는 날이에요' 도 걸린다. 그건 멀쩡한
+  // 문장이다 - '내일의' 가 '내가' 에 붙고 거기서 문장이 한 번 끊긴다.
+  // 가운데에 조사가 있으면 끊긴 것이므로 넘어간다.
+  [(t) => {
+    const m = t.match(/[가-힣]의\s+([가-힣 ]{1,12}?)(하는|되는|돌리는|쉬는|지나는)\s*(시간|때|날|하루|순간)/);
+    if (!m) return false;
+    return !/[이가은는을를에도]\s/.test(m[1]);
+  }, "'~의' 와 꾸밈 받는 말 사이에 다른 꾸밈말을 끼우지 마세요"],
+
+  // 한국말로 바로 말할 수 있는데 굳이 외래어를 쓴 자리. '컨디션'·'타이밍'·
+  // '스트레스'·'팁' 처럼 사람들이 실제로 그 말로 말하는 것은 안 넣는다.
+  [/케미|텐션|페이스대로|평소의 페이스|루틴|템포|하이라이트/, "사람들이 실제로 쓰는 우리말로"],
 ];
 
 // 사람이 평소에 쓰는 말이라 남겨둔 자리. 규칙을 푸는 게 아니라 예외를 적어둔다.
 //   '기운이 없어요' 는 고민 화면에서 사용자가 직접 고르는 보기다. 몸이 처졌다는
 //   뜻의 일상어지, 운세를 설명하는 말이 아니다.
-const ALLOW = ["'기운이 없어요'"];
+const ALLOW = ['기운이 없어요'];
 
 function walk(dir) {
   const out = [];
@@ -43,6 +59,24 @@ function walk(dir) {
 }
 
 const files = walk('src');
+// 화면에 나가는 글자를 한 줄에서 모두 꺼낸다.
+//
+// 처음에는 따옴표 안만 봤다. 그래서 JSX 로 그냥 적은 글이 통째로 빠졌다.
+// 검사는 0곳이라고 했는데 실제 화면 글자를 뽑아 세어보니 '기운' 이 147군데
+// 남아 있었다. 명식 카드의 이름표가 전부 JSX 였다. 안 보는 자리가 있으면
+// 그 자리로 다시 모인다.
+function textsOf(code) {
+  const out = [];
+  for (const m of code.matchAll(/'([^']*)'|"([^"]*)"|`([^`]*)`/g)) out.push(m[1] ?? m[2] ?? m[3]);
+  const rest = code
+    .replace(/'[^']*'|"[^"]*"|`[^`]*`/g, ' ')
+    // 코드 안의 정규식은 화면에 안 나간다. /쉬어|미루|루틴/ 같은 목록이 걸렸었다
+    .replace(/\/(?:\\.|\[[^\]]*\]|[^/\\\n])+\/[gimsuy]*/g, ' ')
+    .replace(/\{[^}]*\}/g, ' ');
+  if (/[가-힣]/.test(rest)) out.push(rest.trim());
+  return out;
+}
+
 const bad = [];
 for (const file of files) {
   const src = readFileSync(file, 'utf8');
@@ -50,11 +84,15 @@ for (const file of files) {
     .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
     .replace(/\/\/[^\n]*/g, (m) => ' '.repeat(m.length));
   stripped.split('\n').forEach((code, i) => {
-    for (const lit of code.match(/'[^']*'|"[^"]*"|`[^`]*`/g) || []) {
-      if (ALLOW.includes(lit)) continue;
+    for (const t of textsOf(code)) {
+      if (!/[가-힣]/.test(t)) continue;
+      if (ALLOW.includes(t)) continue;
       for (const [rule, why] of RULES) {
-        const hit = typeof rule === 'string' ? lit.includes(rule) : rule.test(lit);
-        if (hit) bad.push(`${file}:${i + 1}  ${lit.slice(0, 84)}   ← ${why}`);
+        const hit =
+          typeof rule === 'string' ? t.includes(rule)
+          : typeof rule === 'function' ? rule(t)
+          : rule.test(t);
+        if (hit) bad.push(`${file}:${i + 1}  ${t.slice(0, 84)}   ← ${why}`);
       }
     }
   });

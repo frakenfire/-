@@ -635,7 +635,7 @@ export function buildDeepRead(
   const todayMeet = {
     // '무술날' 이라고 적어 놓고 있었다. 간지 이름은 읽는 사람에게 아무것도
     // 아니고, 하필 무술은 운동으로 읽힌다. 오행과 띠로 풀어 적는다.
-    pillar: `${ELEMENT_KO[STEMS[todayPillar.stem].el]} 기운의 ${
+    pillar: `${ELEMENT_KO[STEMS[todayPillar.stem].el]}에 드는 ${
       findZodiac(BRANCHES[todayPillar.branch].animal)?.label ?? BRANCHES[todayPillar.branch].kor
     }`,
     step: UNSEONG_KO[todayStep].word,

@@ -70,7 +70,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     bijian: {
       doIt: '이번 달 고정비를 한 줄씩 훑어보기',
       avoid: '주변과 씀씀이를 맞추다 예산을 넘기는 것',
-      hold: '큰 지출의 결제일을 정하는 일',
+      hold: '큰돈 쓸 날짜를 정하는 일',
     },
     geopjae: {
       doIt: '같이 쓰는 돈을 누가 얼마 낼지 글로 남겨두기',
@@ -132,7 +132,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     siksin: {
       doIt: '좋아하는 마음을 표현으로 한 번 꺼내기',
       avoid: '말만 앞서고 약속은 안 잡는 것',
-      hold: '앞으로의 계획을 길게 정하는 일',
+      hold: '앞으로 계획을 길게 정하는 일',
     },
     sanggwan: {
       doIt: '평소와 다른 자리를 하나 만들어보기',

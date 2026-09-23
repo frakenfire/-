@@ -12,6 +12,7 @@ import type { BranchRelation } from '../lib/saju.ts';
 import { softBreak } from '../lib/softBreak.ts';
 import { buildRankingShareText } from '../lib/share.ts';
 import { findZodiac, type Zodiac } from '../data/zodiac.ts';
+import { withJosa } from '../lib/josa.ts';
 
 // 글자를 세 갈래로 묶는다. 같은 글자는 언제나 같은 색이 되도록, 점수가 아니라
 // 관계 자체로 가른다. 합(찰떡·짝꿍)은 파랑, 부딪히는 쪽은 진한 회색, 나머지는 회색.
@@ -102,13 +103,17 @@ export function HomeScreen({
             ) : (
               <>
                 {/* '지금은 안정 / 기운이 좋아요' 로 명사 가운데가 끊기면 안 읽힌다.
-                    기운 이름과 서술을 한 덩이로 묶어 그 안에서는 안 끊기게 한다. */}
+                    낱말과 조사를 한 덩이로 묶어 그 안에서는 안 끊기게 한다.
+                    '기운' 은 무슨 일이 생기는지를 안 말한다. 바로 아래 줄이
+                    그날 무슨 일이 있는지를 이미 적고 있어서, 여기는 그 하루에
+                    어울리는 낱말 하나만 든다. */}
                 <p className="today-hook__line">
-                  지금은{' '}
+                  오늘은{' '}
                   <span className="nowrap">
-                    <b>{vibe.word}</b> 기운
-                  </span>
-                  이 좋아요
+                    <b>{vibe.word}</b>
+                    {withJosa(vibe.word, '이가').slice(vibe.word.length)}
+                  </span>{' '}
+                  어울리는 날이에요
                 </p>
                 <p className="today-hook__hint">{vibe.line}</p>
               </>

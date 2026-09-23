@@ -19,7 +19,7 @@ export const GREETINGS: Record<'morning' | 'afternoon' | 'evening' | 'night', st
     '반은 지나왔어요, 잘하고 있어요',
     '남은 오후도 무리 말아요',
     '잠깐 쉬어가는 중이죠?',
-    '오후의 한숨 돌리는 시간이에요',
+    '지금 한숨 돌리는 오후 시간이에요',
   ],
   evening: [
     '오늘도 수고했어요',
