@@ -852,7 +852,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         steps: [
           { when: '아침', text: '오늘은 나를 위한 일정 하나를 넣어요.' },
           { when: '낮', text: '혼자여서 좋은 점을 세 개 떠올려봐요.' },
-          { when: '저녁', text: '좋아하는 콘텐츠로 마음을 데워요.' },
+          { when: '저녁', text: '좋아하는 영상이나 노래로 마음을 데워요.' },
         ],
         holdOff: '외로움에 아무에게나 기대는 것',
       },
@@ -1926,7 +1926,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
           { when: '낮', text: '따뜻한 음료 하나로 나를 데워요.' },
           { when: '저녁', text: '오늘 잘한 일 하나를 스스로 칭찬해요.' },
         ],
-        holdOff: '처지는 콘텐츠에 오래 머무는 것',
+        holdOff: '기분 처지는 영상에 오래 머무는 것',
       },
       {
         headline: '이런 날에도, 작은 행운은 여전히 곁에 있어요.',

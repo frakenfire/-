@@ -29,7 +29,7 @@ export function buildShareText(b: ShareBriefing): string {
   // 생년월일과 명식은 절대 넣지 않는다 - 단톡방에 던져지는 글이다.
   if (b.topic) {
     return [
-      `오늘쪽지 · ${b.topic} ${b.score}점`,
+      `오늘의 마음 한장 · ${b.topic} ${b.score}점`,
       ``,
       `"${b.headline}"`,
       ``,
@@ -40,20 +40,20 @@ export function buildShareText(b: ShareBriefing): string {
     ].join('\n');
   }
   const head = b.brag
-    ? `오늘쪽지 · ${b.title} · 오늘 점수 ${b.score}점 (${b.brag}) `
-    : `오늘쪽지 · ${b.title} (오늘 점수 ${b.score}점)`;
+    ? `오늘의 마음 한장 · ${b.title} · 오늘 점수 ${b.score}점 (${b.brag})`
+    : `오늘의 마음 한장 · ${b.title} (오늘 점수 ${b.score}점)`;
   // 콕집기(콜드리딩)를 첫 인용으로 — 받는 사람이 '어떻게 알았지'를 먼저 느끼게.
   const hook = b.pinpoint
-    ? [`"${b.pinpoint}"`, `이거 완전 내 얘기라 소름. 진짜 잘 맞아`, ``]
+    ? [`"${b.pinpoint}"`, `읽고 좀 놀랐어. 나랑 진짜 비슷해`, ``]
     : [`"${b.headline}"`, ``];
   return [
     head,
     ``,
     ...hook,
-    `이렇게 보내요: ${b.doItem}`,
-    `오늘은 접어둬요: ${b.dontItem}`,
+    `오늘 할 것: ${b.doItem}`,
+    `오늘 하지 말 것: ${b.dontItem}`,
     ``,
-    `너한테는 뭐라고 하는지 봐봐 `,
+    `너한테는 뭐라고 하는지 봐봐`,
   ].join('\n');
 }
 
@@ -177,7 +177,6 @@ export function buildRankingShareText(args: {
     `오늘의 띠 서열 · ${args.dateLabel}`,
     ``,
     ...args.top3.map((r, i) => `${i + 1}위 ${r.emoji}${r.label} · ${r.toneWord}`),
-    `⋯`,
     `12위 ${args.last.emoji}${args.last.label} · ${args.last.toneWord}`,
     ``,
   ];

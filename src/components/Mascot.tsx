@@ -75,7 +75,7 @@ export function Mascot({ size = 120, mood = 'happy', score, bare = false, accent
       viewBox={bare ? "40 56 120 114" : "0 0 200 200"}
       fill="none"
       role="img"
-      aria-label="오늘쪽지 마스코트"
+      aria-label="오늘의 마음 한장 마스코트"
     >
       {bare ? null : <circle cx="100" cy="100" r="92" fill="var(--brand-soft)" />}
       <ellipse cx="100" cy="168" rx="52" ry="9" fill={INK} opacity="0.08" />

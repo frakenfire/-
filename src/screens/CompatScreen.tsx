@@ -180,7 +180,7 @@ export function CompatScreen({
     if (busy || !myLabel || !friendLabel) return;
     setBusy(true);
     try {
-      const invite = `${myLabel.emoji}${myLabel.label} × ${friendLabel.emoji}${friendLabel.label}\n오늘 우리 ${modeLabel} 궁합 얼마나 맞을까? 나 방금 봤어 \n[오늘쪽지] 친구 궁합에서 너도 확인해봐 `;
+      const invite = `${myLabel.label} × ${friendLabel.label}\n오늘 우리 ${modeLabel} 궁합 얼마나 맞을까? 나 방금 봤어\n[오늘의 마음 한장] 친구 궁합에서 너도 확인해봐`;
       const ok = await onShare(invite);
       if (ok) {
         setUnlocked(true);
@@ -199,7 +199,7 @@ export function CompatScreen({
     const ohaeng = result.elements
       ? `\n${result.elements.aKo} × ${result.elements.bKo} = ${result.elements.flowKo} 조합`
       : '';
-    return `[오늘쪽지] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 · ${result.archetype}\n${myLabel.emoji}${myLabel.label} × ${friendLabel.emoji}${friendLabel.label}${ohaeng}\n"${result.headline}"\n너도 누구랑 몇 점인지 봐봐`;
+    return `[오늘의 마음 한장] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 · ${result.archetype}\n${myLabel.label} × ${friendLabel.label}${ohaeng}\n"${result.headline}"\n너도 누구랑 몇 점인지 봐봐`;
   }
 
   async function brag() {

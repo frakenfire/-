@@ -33,7 +33,7 @@ sheet = sheet.replace(/url\(([^)]+\.woff2)\)/g, (_m, p) => {
 const script = readFileSync(join(assets, js), 'utf8');
 
 // <head>/<body> 는 아티팩트가 감싸 주므로 내용만 남긴다
-const title = (html.match(/<title>([^<]*)<\/title>/) ?? [, '오늘쪽지 뽑기'])[1];
+const title = (html.match(/<title>([^<]*)<\/title>/) ?? [, '오늘의 마음 한장'])[1];
 const body = (html.match(/<body[^>]*>([\s\S]*?)<\/body>/) ?? [, '<div id="root"></div>'])[1]
   .replace(/<script[\s\S]*?<\/script>/g, '')
   .replace(/<link[^>]*>/g, '');
