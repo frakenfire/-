@@ -267,15 +267,37 @@ function toneOf(score: number): SajuTone {
 
 // 전통 용어에 붙이는 쉬운 말 — '비화·자형·원진' 같은 말은 일반 유저가 모른다.
 // 용어는 사주앱다움을 위해 유지하되, 항상 괄호로 뜻을 병기해 "이게 뭐지?"를 없앤다.
+// 전통 용어에 붙이는 쉬운 말은 두 벌이 필요하다. 한 벌로 쓰던 때는 이번 주
+// 표에 '짝꿍 사이' 가 뜨고(화요일은 사이가 아니라 날이다) 띠 순위에 '부딪히는
+// 날' 이 떴다(범띠는 날이 아니라 상대다). 읽는 자리가 다르면 말도 달라야 한다.
+//
+// 그리고 '고집 겹침'·'살짝 긴장'·'밀당 기류'·'엇박 주의' 는 동사가 없어서
+// 무슨 일이 생기는지가 안 적혀 있었다. 무엇이 어떻게 되는지로 고쳐 쓴다.
+// '찰떡 사이'·'짝꿍 사이' 는 그냥 둔다 - 누구나 쓰는 말이고 장면이 그려진다.
+
+/** 이번 주 표·오늘 한 줄 — 하루를 가리킨다 */
 export const REL_GLOSS: Record<BranchRelation, string> = {
   self: '비슷한 날',
-  selfPunish: '고집 겹침',
+  selfPunish: '고집 세는 날',
+  trine: '잘 맞는 날',
+  union: '손발 맞는 날',
+  clash: '부딪히는 날',
+  punish: '조심할 날',
+  harm: '떠보는 날',
+  break: '엇갈리는 날',
+  none: '무난한 날',
+};
+
+/** 띠 순위 — 오늘 그 띠와 나 사이를 가리킨다 */
+export const REL_PAIR_GLOSS: Record<BranchRelation, string> = {
+  self: '비슷한 사이',
+  selfPunish: '고집 센 사이',
   trine: '찰떡 사이',
   union: '짝꿍 사이',
-  clash: '부딪히는 날',
-  punish: '살짝 긴장',
-  harm: '밀당 기류',
-  break: '엇박 주의',
+  clash: '안 맞는 사이',
+  punish: '조심할 사이',
+  harm: '떠보는 사이',
+  break: '엇갈린 사이',
   none: '무난한 사이',
 };
 
@@ -461,7 +483,7 @@ export function dailyZodiacRanking(dateKey: string): ZodiacRank[] {
     rank: i + 1,
     relation: s.relation,
     relationKo: REL_KO[s.relation],
-    relationGloss: REL_GLOSS[s.relation],
+    relationGloss: REL_PAIR_GLOSS[s.relation],
     tone: s.tone,
     toneWord: TONE_WORD[s.tone],
   }));

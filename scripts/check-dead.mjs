@@ -34,6 +34,9 @@ const ALLOW = new Map([
   // (같은 파일 안에서만 쓰지만, 안에 두면 테스트가 못 본다. 화면 문장을 훑는
   //  방식으로는 고정 생년월일에 걸리는 밴드 하나만 검사돼 헛돌았다)
   ['lib/concernScore.ts:bandPhrase', '점수 푸는 줄의 밴드별 문장 - 여섯 가지를 직접 검사'],
+  // 같은 파일 안에서만 쓴다. 밖으로 연 것은 relGloss.test.ts 가 이번 주 표('날')와
+  // 띠 순위('사이') 가 다시 한 벌로 섞이지 않는지 아홉 칸을 직접 보기 때문이다.
+  ['lib/saju.ts:REL_PAIR_GLOSS', '띠 순위 쪽 말 - 이번 주 표와 안 섞이는지 직접 검사'],
   ['lib/goldenFixtures.ts:GOLDEN', 'golden 검증 자료'],
   ['lib/goldenFixtures.ts:DAY_ANCHOR', '일주 기준점 기록'],
   ['lib/goldenFixtures.ts:DAY_ANCHOR_CHECKED', '외부 대조한 기준점'],
