@@ -66,6 +66,10 @@ test('고른 상황과 부딪히는 말이 화면 어디에도 없다', () => {
           const t = computeTiming(input, p, gender, c.key, at);
           const r = buildDeepRead(p, t, c.key, o.key, dateKey, '김한별');
           for (const [path, s] of flat(r)) {
+            // 십 년 카드는 일·돈·사람·몸 네 영역을 한꺼번에 보여준다.
+            // 사람 관계를 물어도 그 안의 '일' 줄은 회사 얘기를 하는 게 맞다.
+            // 고른 상황과 부딪히는지는 그 고민을 말하는 자리에서만 본다.
+            if (c.key === 'people' && path.startsWith('decade.')) continue;
             const hit = s.split(label).join(' ').match(re);
             if (hit) bad.add(`${c.key}/${o.key} ${path} [${hit[0]}] ${s.slice(0, 60)}`);
           }
