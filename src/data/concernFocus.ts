@@ -38,7 +38,7 @@ export const FAVOR_WORD: Record<ConcernKey, Record<GodGroup, string>> = {
   },
   health: {
     self: '버티는 체력 자리',
-    output: '기운을 밖으로 쓰는 자리',
+    output: '힘을 밖으로 쓰는 자리',
     wealth: '무리하게 되는 자리',
     authority: '몸에 부담이 오는 자리',
     support: '쉬고 채우는 자리',

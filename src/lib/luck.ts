@@ -149,7 +149,7 @@ export function computeLuck(seed: number, band?: [number, number], boost?: Eleme
 
   const rFood = pick(LUCKY_FOODS, r);
   const food: LuckyFood = facts
-    ? { name: facts.foods[seed % facts.foods.length], why: `${facts.ko} 기운에 드는 ${facts.taste} 쪽이에요.` }
+    ? { name: facts.foods[seed % facts.foods.length], why: `${facts.ko}에 드는 ${facts.taste} 음식이에요.` }
     : rFood;
 
   return {

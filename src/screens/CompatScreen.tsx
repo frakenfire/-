@@ -411,7 +411,7 @@ export function CompatScreen({
                 '상극' 이 모순처럼 읽히지 않게 한다 */}
             {result.elements ? (
               <div className="compat-ohaeng">
-                <span className="compat-ohaeng__label">속 기운</span>
+                <span className="compat-ohaeng__label">속 성질</span>
                 <span className="compat-ohaeng__pair">
                   {/* 앞에 오행 이모지를 붙이던 자리다. 이모지를 다 걷어내면서
                       빈 문자열 다섯 개짜리 맵만 남았고, 화면에는 글자 앞에

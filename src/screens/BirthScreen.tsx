@@ -257,7 +257,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
         {genderWarn ? (
           <span className="field__warn" id="birth-gender-hint" role="alert">
             <span className="field__warn__mark" aria-hidden>!</span>
-            성별을 골라주세요. 십 년 흐름이 앞으로 가는지 뒤로 가는지가 여기서 갈려요.
+            성별을 골라주세요. 십 년 단위를 앞으로 세는지 뒤로 세는지가 여기서 갈려요.
           </span>
         ) : (
           <span className="field__hint" id="birth-gender-hint">

@@ -37,12 +37,33 @@ const files = [];
 })(root);
 
 const bad = [];
+// 화면에 나가는 글자를 한 줄에서 모두 꺼낸다.
+//
+// 처음에는 작은따옴표 안의 12자 이상만 봤다. 그래서 세 군데가 통째로 빠져 있었다.
+//   - `백틱` 과 "큰따옴표" 로 쓴 문장
+//   - 짧은 이름표. '제 몫 하는 자리' 는 아홉 자라 12자 문턱 아래였다
+//   - JSX 로 그냥 적은 글. '다섯 칸을 몫대로 더하면' 은 따옴표가 없다
+// 검사가 안 보는 자리가 있으면 그 자리로 다시 모인다. 셋 다 본다.
+function textsOf(code) {
+  const out = [];
+  for (const m of code.matchAll(/'([^']*)'|"([^"]*)"|`([^`]*)`/g)) out.push(m[1] ?? m[2] ?? m[3]);
+  // 따옴표를 걷어내고도 한글이 남으면 그건 JSX 로 적은 글이다
+  const rest = code.replace(/'[^']*'|"[^"]*"|`[^`]*`/g, ' ').replace(/\{[^}]*\}/g, ' ');
+  if (/[가-힣]/.test(rest)) out.push(rest.trim());
+  return out;
+}
+
+// 주석은 화면에 안 나간다. 줄 머리만 보고 걸러내면 여러 줄 주석의 가운데
+// 줄들이 그대로 통과한다. 줄·칸 번호를 지키려고 같은 길이의 공백으로 바꾼다.
+function stripComments(src) {
+  return src
+    .replace(/\/\*[\s\S]*?\*\//g, (m) => m.replace(/[^\n]/g, ' '))
+    .replace(/\/\/[^\n]*/g, (m) => ' '.repeat(m.length));
+}
+
 for (const p of files) {
-  readFileSync(p, 'utf8').split('\n').forEach((ln, i) => {
-    const t0 = ln.trim();
-    if (t0.startsWith('//') || t0.startsWith('*') || t0.startsWith('/*')) return;
-    for (const m of ln.matchAll(/'([^']{12,})'/g)) {
-      const t = m[1];
+  stripComments(readFileSync(p, 'utf8')).split('\n').forEach((ln, i) => {
+    for (const t of textsOf(ln)) {
       if (!/[가-힣]/.test(t)) continue;
       for (const r of RULES) {
         const hit = t.match(r.re);

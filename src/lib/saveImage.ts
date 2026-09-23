@@ -244,7 +244,7 @@ export async function saveResultCard(input: SaveInput): Promise<boolean> {
     // 오늘의 사주 한 줄 (띠 설정 시) — 일진·관계·기운을 작은 칩으로
     if (input.saju) {
       const sy = boxY + boxH + 62;
-      const label = `일진 ${input.saju.iljin}일 · ${input.saju.rel} · 기운 ${input.saju.tone}`;
+      const label = `일진 ${input.saju.iljin}일 · ${input.saju.rel} · 오늘 ${input.saju.tone}`;
       ctx.font = 'bold 22px ' + CARD_FONT;
       const tw = Math.min(boxW, ctx.measureText(label).width + 44);
       ctx.fillStyle = '#e8f3ff';

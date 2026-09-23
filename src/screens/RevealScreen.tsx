@@ -8,7 +8,7 @@ import type { FortuneType } from '../types/fortune.ts';
 
 const COMMON_STEPS = [
   '쪽지들을 살살 뒤섞고 있어요',
-  '오늘의 기운을 조심조심 읽는 중',
+  '오늘 어떤 날인지 조심조심 읽는 중',
 ];
 
 const TYPE_STEP: Record<FortuneType, string> = {

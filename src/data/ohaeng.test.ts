@@ -58,7 +58,7 @@ test('문장마다 줄을 나눈다', () => {
   }
 });
 
-test('풀어 쓴 문단이 다섯 기운 모두에서 말이 된다', () => {
+test('풀어 쓴 문단이 다섯 갈래 모두에서 말이 된다', () => {
   for (const e of ELEMENTS) {
     const t = ohaengWhy(e, '파란색');
     assert.ok(t.includes(OHAENG[e].ko), e);
@@ -66,8 +66,8 @@ test('풀어 쓴 문단이 다섯 기운 모두에서 말이 된다', () => {
     assert.ok(t.includes(String(OHAENG[e].numbers[0])), e);
     assert.ok(t.includes(OHAENG[e].time), e);
     assert.ok(t.includes(OHAENG[e].taste), e);
-    // 기운 이름은 첫 문장에서 한 번만
-    assert.equal(t.split(`${OHAENG[e].ko} 기운`).length - 1, 1, `${e}: ${t}`);
+    // 갈래 이름은 첫 문장에서 한 번만
+    assert.equal(t.split(`${OHAENG[e].ko} 쪽`).length - 1, 1, `${e}: ${t}`);
     // 숫자 뒤 조사가 소리를 따라간다 ('2과 7' 같은 게 안 나오게)
     const [a, b] = OHAENG[e].numbers;
     const josa = [2, 4, 5, 9].includes(a) ? '와' : '과';

@@ -169,7 +169,7 @@ const REASON: Record<Tag, string[]> = {
     '파에 해당해요. 서로 속도만 맞춰주면 충분히 잘 지내는 사이예요.',
   ],
   neutral: [
-    '뚜렷하게 정해진 상성은 아니에요. 오늘의 기운으로 승부를 보는 조합이에요.',
+    '뚜렷하게 정해진 상성은 아니에요. 그날그날 분위기로 승부를 보는 조합이에요.',
     '전통 궁합상 특별히 얽힌 관계는 아니라, 그날그날 케미가 갈리는 편이에요.',
     '정해진 상성이 없는 만큼, 오늘 만들어가기 나름인 조합이에요.',
     '특별한 상성표는 없지만 그래서 더 편하게 다가갈 수 있어요.',
@@ -316,7 +316,7 @@ export function computeCompat(dateKey: string, a: ZodiacId, b: ZodiacId): Compat
       b: elementOfZodiac(b),
       flow,
       flowKo: PAIR_FLOW_KO[flow],
-      flowGloss: { generate: '서로 살리는 기운', control: '자극 있는 기운', same: '같은 기운' }[flow],
+      flowGloss: { generate: '서로 살려주는 짝', control: '서로 긴장시키는 짝', same: '닮은 짝' }[flow],
       aKo: ELEMENT_KO[elementOfZodiac(a)],
       bKo: ELEMENT_KO[elementOfZodiac(b)],
     },

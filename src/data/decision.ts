@@ -52,7 +52,7 @@ export const WHEN_ACT: Record<ConcernKey, { best: string; hard: string; year: st
   money: {
     best: '계약과 정산을 이때 끝내세요.',
     hard: '큰 지출과 보증은 이때 미뤄요.',
-    year: '수입이 들어오는 구조 자체를 바꿔볼 만해요.',
+    year: '돈이 들어오는 길 자체를 바꿔볼 만해요.',
   },
   love: {
     best: '만나는 자리를 이때 잡고 다음 약속까지 정하세요.',

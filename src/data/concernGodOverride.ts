@@ -28,7 +28,7 @@ const OVERRIDE: Partial<Record<ConcernKey, Record<string, Override>>> = {
         month: '같이 알아보는 사람이 늘어나는 달이라 모은 정보를 한곳에 쌓아둬야 해요.',
       },
       jeonggwan: {
-        line: '자리가 정해지는 기운이에요. 합격 소식이 붙는 자리예요.',
+        line: '자리가 정해지는 때예요. 합격 소식이 붙는 자리예요.',
         month: '규칙대로 준비해둔 것이 결과로 돌아오는 달이라 서류 전형에 유리해요.',
         year: '자리가 정해지기 좋은 해라 합격 소식이 붙어요.',
       },
@@ -38,7 +38,7 @@ const OVERRIDE: Partial<Record<ConcernKey, Record<string, Override>>> = {
       sanggwan: { year: '틀을 깨고 싶어지는 해라 남들 안 가는 길로 눈이 가요.' },
       pyeonjae: { decide: '밖에서 오는 제안을 받아보는 쪽이에요.' },
       jeonggwan: {
-        line: '자리가 정해지는 기운이에요. 합격 소식이 붙는 자리예요.',
+        line: '자리가 정해지는 때예요. 합격 소식이 붙는 자리예요.',
         month: '규칙대로 준비해둔 것이 결과로 돌아오는 달이라 서류 전형에 유리해요.',
         year: '자리가 정해지기 좋은 해라 합격 소식이 붙어요.',
       },
@@ -66,7 +66,7 @@ const OVERRIDE: Partial<Record<ConcernKey, Record<string, Override>>> = {
         daeun: '한 자리에서 값이 쌓이는 십 년이에요. 오래 한 것이 단가로 돌아와요.',
       },
       jeonggwan: {
-        line: '자리가 정해지는 기운이에요. 계약과 등록이 붙는 자리예요.',
+        line: '자리가 정해지는 때예요. 계약과 등록이 붙는 자리예요.',
         act: '계약서를 이 달 안에 써요',
         good: '계약을 맺고 범위를 정하는 것',
         month: '규칙대로 해둔 일이 인정으로 돌아오는 달이라 계약과 등록에 유리해요.',

@@ -4,7 +4,7 @@ import type { Note, NoteColor } from '../types/fortune.ts';
 export const NOTES: Note[] = [
   { id: 'slowly', name: '천천히 풀림', keyword: '정리', icon: 'feather', color: 'softGreen' },
   { id: 'rise', name: '다시 올라옴', keyword: '회복', icon: 'trendUp', color: 'softGreen' },
-  { id: 'open', name: '살짝 열림', keyword: '기회', icon: 'door', color: 'cream' },
+  { id: 'open', name: '살짝 열림', keyword: '제안', icon: 'door', color: 'cream' },
   { id: 'saveMoney', name: '새는 돈 막기', keyword: '절약', icon: 'wallet', color: 'softYellow' },
   { id: 'cleanup', name: '밀린 일 정리', keyword: '완료', icon: 'checklist', color: 'softGreen' },
   { id: 'contact', name: '가벼운 연락', keyword: '관계', icon: 'chat', color: 'softPink' },
@@ -27,7 +27,7 @@ export const NOTES: Note[] = [
   { id: 'quietDay', name: '조용한 하루', keyword: '휴식', icon: 'moon', color: 'cream' },
   { id: 'bigSmile', name: '크게 웃기', keyword: '기분', icon: 'faceGood', color: 'softPink' },
   { id: 'sunnyMind', name: '맑은 마음', keyword: '정리', icon: 'sun', color: 'softYellow' },
-  { id: 'newRoad', name: '새 길 찾기', keyword: '기회', icon: 'mountain', color: 'softGreen' },
+  { id: 'newRoad', name: '새 길 찾기', keyword: '시작', icon: 'mountain', color: 'softGreen' },
   { id: 'warmHome', name: '포근한 집', keyword: '휴식', icon: 'home', color: 'cream' },
   { id: 'goodNews', name: '반가운 소식', keyword: '소식', icon: 'bell', color: 'softPink' },
   { id: 'sharpEye', name: '눈 크게 뜨기', keyword: '관찰', icon: 'gem', color: 'softGreen' },

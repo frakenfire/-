@@ -446,7 +446,7 @@ export function buildDeepRead(
   const focus =
     focusCount > 0
       ? `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 태어난 여덟 글자 중 ${focusCount}개가 거기 걸려 있어서 바탕은 ${focusCount >= 3 ? '두꺼운' : '얇은'} 편이에요.`
-      : `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 태어난 글자에는 그 자리가 없어서, 해와 달이 들어올 때 열리는 구조예요.`;
+      : `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 태어난 글자에는 그 자리가 없어서, 해와 달이 들어올 때 열려요.`;
 
   // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
   // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
@@ -467,16 +467,16 @@ export function buildDeepRead(
 
   const chart = {
     pillars: chartPillars,
-    dayMaster: `${pillars.dayMaster.kor}, 다섯 기운 중 ${ELEMENT_KO[myEl]}에 속해요. ${dm.tagline.replace(/\.?$/, '.')}`,
+    dayMaster: `${pillars.dayMaster.kor}, 다섯 갈래 중 ${ELEMENT_KO[myEl]}에 속해요. ${dm.tagline.replace(/\.?$/, '.')}`,
     elements,
     strength:
       prof.strength === 'strong'
         ? '내 힘이 많은 편이에요. 밀고 나가는 쪽이 맞고, 도움을 더 받으면 오히려 무거워져요.'
         : '내 힘을 받아 쓰는 편이에요. 혼자 밀기보다 배우고 기대는 쪽이 결과가 좋아요.',
     season: prof.hasSeasonalSupport
-      ? '태어난 달이 나를 돕는 자리예요. 계절이 내 편이라 기본 체력이 있는 구조예요.'
+      ? '태어난 달이 나를 돕는 자리예요. 계절이 내 편이라 기본 체력은 있는 편이에요.'
       : '태어난 달이 나를 돕지는 않아요. 그래서 때를 고르는 게 더 중요해져요.',
-    useful: `${ELEMENT_KO[prof.usefulElement]} 기운이 들어올 때 치우침이 풀려요.`,
+    useful: `${ELEMENT_KO[prof.usefulElement]} 쪽이 채워질 때 치우침이 풀려요.`,
     focus,
     today: chartToday,
     sinsal: stars,
@@ -496,15 +496,15 @@ export function buildDeepRead(
         const need = ELEMENT_KO[prof.usefulElement];
         let verdict: string;
         if (fills && smooth) {
-          verdict = `이름이 ${need} 기운을 싣고, 소리도 앞에서 뒤로 순하게 흘러요. 명식에서 치우친 자리를 이름이 제대로 되돌려주는 배열이에요.`;
+          verdict = `이름에 ${need} 쪽 소리가 들어 있고, 소리도 앞에서 뒤로 순하게 이어져요. 명식에서 치우친 자리를 이름이 제대로 되돌려주는 배열이에요.`;
         } else if (fills && blocked) {
-          verdict = `이름에 ${need} 기운은 들어 있어요. 다만 글자끼리 부딪히는 배열이라, 기운이 닿기는 해도 세게 밀어주지는 않아요.`;
+          verdict = `이름에 ${need} 쪽 소리는 들어 있어요. 다만 글자끼리 부딪히는 배열이라, 닿기는 해도 세게 밀어주지는 않아요.`;
         } else if (fills) {
-          verdict = `이름이 ${need} 기운을 싣고 있어요. 배열은 순한 자리와 부딪히는 자리가 섞여 있어 무난한 쪽이에요.`;
+          verdict = `이름에 ${need} 쪽 소리가 있긴 해요. 배열은 순한 자리와 부딪히는 자리가 반반이라 무난한 쪽이에요.`;
         } else if (smooth) {
-          verdict = `이름 소리는 순하게 이어져요. 다만 명식이 아쉬워하는 ${need} 기운은 담겨 있지 않아, 이름이 채워주는 역할은 아니에요.`;
+          verdict = `이름 소리는 순하게 이어져요. 다만 명식이 아쉬워하는 ${need} 쪽 소리는 없어서, 이름이 채워주는 자리는 아니에요.`;
         } else {
-          verdict = `이름은 ${ELEMENT_KO[sound.lead]} 기운을 가장 두껍게 실어요. 명식이 아쉬워하는 ${need} 쪽은 아니라, 이름으로 뭘 바꾸려 하기보다 때를 고르는 쪽이 빨라요.`;
+          verdict = `이름에는 ${ELEMENT_KO[sound.lead]} 쪽 소리가 가장 많아요. 명식이 아쉬워하는 ${need} 쪽은 아니라, 이름으로 뭘 바꾸려 하기보다 때를 고르는 쪽이 빨라요.`;
         }
         return {
           letters: sound.letters.map((l) => ({ ch: l.ch, el: ELEMENT_KO[l.el] })),
@@ -559,7 +559,7 @@ export function buildDeepRead(
     tomorrowGod === todayGod && tomorrowRels.length === meetRows.length
       ? '내일도 오늘과 비슷한 날이라, 오늘 잡아둔 것이 그대로 이어져요.'
       : tomorrowGod === todayGod
-        ? `내일은 같은 기운이 오는데 내 글자와 닿는 자리가 달라져요. 오늘과 조금 다른 답이 나와요.`
+        ? `내일도 같은 날 글자인데, 내 글자와 닿는 자리가 달라져요. 오늘과 조금 다른 답이 나와요.`
         : `내일은 ${G(tomorrowGod).pull} 쪽으로 기울어요. 오늘과 다른 답이 나와요.`;
 
   const todayStep = unseongOf(pillars.dayStem, todayPillar.branch);
@@ -567,7 +567,7 @@ export function buildDeepRead(
   // 가까운 미래는 올해와 이번 달을 반씩 섞는다 - 둘 다 몫이 20 으로 같아서
   // 한쪽만 고르면 나머지 하나를 버리게 된다. 섞은 값이라고 화면에 적는다.
   const partOf = (k: string) => score.parts.find((x) => x.k === k)!;
-  const natal = partOf('타고난 구조');
+  const natal = partOf('타고난 자리');
   const thisYear = partOf('올해');
   const thisMonthPart = partOf('이번 달');
   const todayPart = partOf('오늘');
@@ -660,7 +660,7 @@ export function buildDeepRead(
         ? ` ${G(timing.daeunSlot.tenGod).daeun}`
         : '') +
       (left !== null && left > 0 ? ` 다음 십 년으로 넘어가기까지 ${left}년 남았어요.` : '')
-    : `${timing.daeun.startAge}세부터 첫 십 년이 시작돼요. 그전까지는 태어난 자리의 기운을 그대로 써요.`;
+    : `${timing.daeun.startAge}세부터 첫 십 년이 시작돼요. 그전까지는 태어날 때 자리를 그대로 써요.`;
 
   // 십 년을 자리별로 쪼갠다. '틀을 깨는 십 년입니다' 로 끝내면 아무것도 안 남는다.
   const areas: DecadeAreas | null = timing.daeunSlot ? DECADE_AREAS[timing.daeunSlot.tenGod] : null;

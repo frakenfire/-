@@ -30,16 +30,16 @@ export type TenGod =
 // 물어본 사람에게는 남는 게 없다. 문장은 concernReadings 의 고민별 말을
 // 쓴다 - '들어올 돈의 폭이 넓어지는' 처럼 무슨 일이 일어나는지로 적힌다.
 export const TEN_GOD_KO: Record<TenGod, string> = {
-  bijian: '버티는 기운',
-  geopjae: '겨루는 기운',
-  siksin: '만드는 기운',
-  sanggwan: '드러내는 기운',
-  pyeonjae: '잡아채는 기운',
-  jeongjae: '쌓는 기운',
-  pyeongwan: '밀어붙이는 기운',
-  jeonggwan: '지키는 기운',
-  pyeonin: '달리 배우는 기운',
-  jeongin: '배우는 기운',
+  bijian: '버티는 힘',
+  geopjae: '겨루는 힘',
+  siksin: '만드는 힘',
+  sanggwan: '드러내는 힘',
+  pyeonjae: '잡아채는 힘',
+  jeongjae: '쌓는 힘',
+  pyeongwan: '밀어붙이는 힘',
+  jeonggwan: '지키는 힘',
+  pyeonin: '달리 배우는 힘',
+  jeongin: '배우는 힘',
 };
 
 /** 십신을 성격 축으로 묶은 다섯 무리 — 화면에서는 이 단위로 말하는 게 알아듣기 쉽다. */

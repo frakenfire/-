@@ -82,7 +82,7 @@ export const CONCERNS: Concern[] = [
       { key: 'own', label: '내 일을 해볼까 해요', line: '내 간판을 다는 일은 시작 시기가 절반이에요. 준비보다 타이밍을 봐야 해요.' },
     ],
     resultTitle: '일과 이직',
-    basis: '자리와 문서를 뜻하는 기운이 언제 들어오는지로 봐요.',
+    basis: '자리와 문서를 맡는 글자가 언제 들어오는지로 봐요.',
   },
   {
     key: 'money',
@@ -101,7 +101,7 @@ export const CONCERNS: Concern[] = [
       { key: 'invest', label: '투자를 생각 중이에요', line: '넣는 시기와 빼는 시기를 같이 정해두면 흔들릴 일이 줄어요.' },
     ],
     resultTitle: '돈',
-    basis: '재물을 뜻하는 기운이 언제 들어오고 언제 빠지는지로 봐요.',
+    basis: '돈을 맡는 글자가 언제 들어오고 언제 빠지는지로 봐요.',
   },
   {
     key: 'love',
@@ -117,10 +117,10 @@ export const CONCERNS: Concern[] = [
       { key: 'alone', label: '혼자예요', line: '만날 사람이 없는 게 아니라 만나는 자리가 안 열린 때가 있어요.' },
       { key: 'some', label: '썸을 타는 중이에요', line: '한쪽이 먼저 말해야 정해지는 사이예요. 말할 시기가 따로 있어요.' },
       { key: 'couple', label: '만나는 사람이 있어요', line: '오래 가는 사이는 좋은 날보다 버거운 달을 어떻게 넘기냐로 갈려요.' },
-      { key: 'past', label: '끝난 사이가 남아 있어요', line: '다시 닿는 흐름과 접는 게 나은 흐름은 글자가 달라요.' },
+      { key: 'past', label: '끝난 사이가 남아 있어요', line: '다시 닿는 때와 접는 게 나은 때는 글자가 달라요.' },
     ],
     resultTitle: '연애',
-    basis: '짝의 자리에 오는 기운을 보고, 남녀에 따라 보는 글자를 바꿔요.',
+    basis: '짝의 자리에 오는 글자를 보고, 남녀에 따라 보는 자리를 바꿔요.',
   },
   {
     key: 'people',
@@ -139,7 +139,7 @@ export const CONCERNS: Concern[] = [
       { key: 'new', label: '새로 만난 사람이에요', line: '아직 정해지지 않은 사이예요. 지금 재는 게 나중을 정해요.' },
     ],
     resultTitle: '사람 관계',
-    basis: '내 편이 되는 기운과 나를 누르는 기운의 세기로 봐요.',
+    basis: '내 편이 되는 글자와 나를 누르는 글자의 세기로 봐요.',
   },
   {
     key: 'health',
@@ -158,7 +158,7 @@ export const CONCERNS: Concern[] = [
       { key: 'keep', label: '그냥 관리하고 싶어요', line: '아프기 전에 챙기는 게 제일 싸게 먹혀요.' },
     ],
     resultTitle: '몸과 컨디션',
-    basis: '나를 채우는 기운과 빼가는 기운의 균형으로 봐요.',
+    basis: '나를 채우는 글자와 빼가는 글자가 얼마나 맞는지로 봐요.',
   },
   {
     key: 'mind',
@@ -177,7 +177,7 @@ export const CONCERNS: Concern[] = [
       { key: 'lonely', label: '외로워요', line: '사람이 없는 게 아니라 닿는 자리가 안 열린 때가 있어요.' },
     ],
     resultTitle: '마음',
-    basis: '나를 받쳐주는 기운과 풀어내는 기운이 언제 도는지로 봐요.',
+    basis: '나를 받쳐주는 글자와 풀어내는 글자가 언제 도는지로 봐요.',
   },
 ];
 

@@ -25,7 +25,7 @@ import { withJosa } from './josa.ts';
 export const WEIGHTS = { natal: 30, daeun: 20, year: 20, month: 20, day: 10 } as const;
 
 export type ScorePart = {
-  /** '타고난 구조' */
+  /** '타고난 자리' */
   k: string;
   /** '2026년' 처럼 무엇을 봤는지 */
   label: string;
@@ -113,7 +113,7 @@ export function computeConcernScore(
 
   const parts: ScorePart[] = [
     {
-      k: '타고난 구조',
+      k: '타고난 자리',
       label: `태어난 여덟 글자`,
       score: natal.score,
       band: bandOf(natal.score),

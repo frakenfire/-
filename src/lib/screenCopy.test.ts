@@ -152,7 +152,7 @@ test('네 가지 나가 오늘을 맨 앞에 놓고 네 층을 다 보여준다'
     assert.equal(r.selves[0].score, part('오늘'));
     assert.equal(r.selves[1].score, Math.round((part('올해') + part('이번 달')) / 2));
     assert.equal(r.selves[2].score, part('지금 지나는 십 년'));
-    assert.equal(r.selves[3].score, part('타고난 구조'));
+    assert.equal(r.selves[3].score, part('타고난 자리'));
   }
 });
 

@@ -168,7 +168,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           ))}
         </ul>
         <p className="mflow__foot">
-          다섯 칸을 몫대로 더하면 {read.score.total}점이에요. 모델이 아니라 계산이라, 같은 날 몇 번을 봐도 같은 숫자가 나와요.
+          다섯 칸을 정해진 비율대로 더하면 {read.score.total}점이에요. 모델이 아니라 계산이라, 같은 날 몇 번을 봐도 같은 숫자가 나와요.
         </p>
       </div>
 
