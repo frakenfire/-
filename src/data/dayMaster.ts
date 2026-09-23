@@ -126,7 +126,7 @@ const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
       '대충이 잘 안 돼요. 눈이 예민해서 남들이 넘기는 차이를 봐요. 그만큼 자기 것에 자부심이 있고, 다듬을수록 빛나요.',
     strengths: ['안목', '섬세함', '자존'],
     shadow: '기준이 높아 스스로를 제일 많이 깎아요.',
-    shines: '내가 고른 게 결국 옳았다고 판명될 때',
+    shines: '내가 고른 게 결국 맞았다고 드러날 때',
     hue: '#b0b8c1',
     hueText: '#4e5968',
   },
