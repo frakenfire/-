@@ -24,8 +24,12 @@ const VERDICT_WORD = { now: '지금', soon: '곧', wait: '아직' } as const;
 export function DeepSections({ concernKey, read, timing, userName, compact = false }: Props) {
   // '그럼 언제가 좋아요' 는 이미 재놓은 '가장 좋은 때' 줄을 그대로 쓴다.
   // 따로 고르면 아래 시기 덩이와 다른 달을 가리키게 된다.
+  // 아래 시기 덩이가 같은 달을 다시 말한다. 여기서 할 일까지 적으면 한
+  // 화면에서 같은 문장이 두 번 나온다. 여기서는 언제인지만 짚는다.
   const bestRow = read.when.find((x) => x.k === '가장 좋은 때');
-  const bestWhen = bestRow ? (bestRow.act ? `${bestRow.v}.\n${bestRow.act}` : `${bestRow.v}.`) : null;
+  // '2027년 1월, 4달 뒤' 를 그대로 옮기면 아래 시기 카드와 같은 줄이 된다.
+  // 달 이름만 짚고, 몇 달 뒤인지는 아래 카드가 말한다.
+  const bestWhen = bestRow ? `가장 좋은 달은 ${bestRow.v.split(',')[0]}이에요.` : null;
   // '네, 오늘 꺼내도 돼요' 바로 밑에 '가장 좋은 때는 4달 뒤' 가 붙으면 두 줄이
   // 서로 싸우는 것처럼 읽힌다. 층이 달라서 그런 건데 읽는 사람이 알 리 없다.
   const whenAsk = read.todayAsk.band === 'good'
@@ -77,7 +81,6 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           맨 먼저 오늘 하나만 놓고 묻고 답한다. 고른 상황까지 보고 묻는다. */}
       <Chapter title="지금 어떻게 하면 될까요" hint="오늘 해도 되는지와, 오늘 할 일">
       <div className="sec-card">
-        <p className="today-ask__q">{read.todayAsk.q}</p>
         <Sentences className="today-ask__a" text={read.todayAsk.a} />
         {bestWhen ? (
           <p className="today-ask__when">

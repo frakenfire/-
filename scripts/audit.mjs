@@ -979,13 +979,21 @@ async function run(browser) {
           .split(/\n|(?<=[.!?])\s+/)
           .map((x) => x.trim())
           .filter((x) => x.length >= 12);
-        const norm = (x) => x.replace(FRAME, '').replace(/[^가-힣]/g, '');
+        // 숫자는 남긴다. '타고난 72점보다 14점 높아요' 와 '6점 높아요' 는
+        // 숫자가 내용이라 다른 문장이다. 지우고 비교하면 같은 말로 잡힌다.
+        const norm = (x) => x.replace(FRAME, '').replace(/[^가-힣0-9]/g, '');
         const out = [];
         for (let i = 0; i < sents.length; i += 1) {
           for (let j = i + 1; j < sents.length; j += 1) {
             const a = norm(sents[i]);
             const b = norm(sents[j]);
             if (a.length < 8 || b.length < 8) continue;
+            // 숫자가 다르면 다른 사실이다. '타고난 72점보다 14점 높아요' 와
+            // '6점 높아요' 는 틀만 같고 말하는 값이 다르다. 틀이 같다고
+            // 같은 말로 잡으면, 같은 표의 다른 줄이 전부 걸린다.
+            const numsA = (sents[i].match(/\d+/g) ?? []).join(',');
+            const numsB = (sents[j].match(/\d+/g) ?? []).join(',');
+            if (numsA !== numsB) continue;
             let n = 0;
             for (let k = 0; k + 6 <= a.length; k += 1) if (b.includes(a.slice(k, k + 6))) n += 1;
             if (a === b || n >= 3) out.push(`${sents[i]} / ${sents[j]}`);
@@ -995,9 +1003,13 @@ async function run(browser) {
       });
       // 맨 위 카드의 할 일과 결정 카드의 첫 할 일은 같아야 한다.
       // '맨 위 하나가 오늘 바로 할 수 있는 것' 이라고 화면에 적어둔 약속이다.
+      // 맨 위 요약이 아래 카드의 한 줄을 다시 짚는 건 일부러 하는 것이다.
+      // 마침표만 다른 것까지만 같은 줄로 본다. 한쪽이 다른 쪽으로 시작한다는
+      // 이유로 빼주면 '앞부분만 같고 뒤가 다른' 진짜 중복이 빠져나간다.
+      const bare = (x) => x.replace(/[.\s]+$/, '');
       const onPurpose = dup.filter((x) => {
         const [a, b] = x.split(' / ');
-        return a === b;
+        return bare(a) === bare(b);
       });
       const real = dup.filter((x) => !onPurpose.includes(x));
       check(real.length <= 1, '[문구] 한 화면에 거의 같은 문장이 없다',
@@ -1523,10 +1535,12 @@ async function run(browser) {
     const miss = HAVE.filter((x) => !t.includes(x));
     check(miss.length === 0, '[결과] 네 덩이가 순서대로 있다', miss.join(', ') || '다 있음');
     // 오늘 하나만 놓고 묻고 답하는가
-    check(/오늘 [^\n?]{2,30}\?/.test(t), '[결과] 오늘만 놓고 묻는 줄이 있다');
+    // 덩이 제목이 이미 묻고 있으니 그 밑에서는 바로 답한다.
+    check(/오늘[은 ][^\n]{2,40}(세요|돼요|괜찮아요)\./.test(t), '[결과] 오늘만 놓고 바로 답한다');
+    check(!/오늘[^\n]{2,30}될까요\?/.test(t), '[결과] 한 화면에서 두 번 묻지 않는다');
     check(t.includes('여기가 기준이에요'), '[결과] 타고난 나가 기준이라고 말한다');
-    check(/타고난 것(보다 (높|낮)아요|과 비슷해요)/.test(t),
-      '[결과] 나머지 셋을 타고난 나와 견준다');
+    check(/타고난 \d+점(과 비슷해요|보다 \d+점 (높|낮)아요)\./.test(t),
+      '[결과] 나머지 셋을 타고난 나와 점수로 견준다');
     // 오늘 줄이 네 줄 중 맨 위인가 - 매일 뽑는 앱이라 여기가 먼저여야 한다
     const order = ['오늘의 나', '가까운 미래의 나', '먼 미래의 나', '타고난 나'].map((k) => t.indexOf(k));
     check(order.every((v, i) => v > 0 && (i === 0 || v > order[i - 1])),

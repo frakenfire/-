@@ -3568,10 +3568,6 @@ strong {
   color: #bc1b2a;
 }
 
-/* 덩이 안의 카드는 한 간격이다. 첫 장만 10px 로 따로 두던 때가 있었는데,
-   2px 은 아무도 못 보고 숫자만 두 개가 된다. */
-.chap__body .sec-card { margin-top: 12px; }
-
 /* 명식 네 기둥 - 근거를 그대로 펼쳐 보이는 자리 */
 .chart8 {
   display: grid;
@@ -4082,14 +4078,6 @@ strong {
 }
 
 /* ── 오늘 어떻게 할까 ── */
-.today-ask__q {
-  margin: 14px 0 0;
-  font-size: 17px;
-  line-height: 25.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
 .today-ask__a {
   margin: 8px 0 0;
   font-size: 15px;
@@ -4177,11 +4165,18 @@ strong {
   color: var(--gray-600);
 }
 
-/* ── 큰 덩이 제목 ──
-   접었다 펴는 덩이(Fold)를 걷어내고 제목으로만 나눈다. 카드 여덟 장이
-   줄줄이 서 있어도 제목 넷이 순서를 잡아주면 어디까지가 답이고 어디부터가
-   근거인지 읽힌다. */
-.chap { margin-top: 32px; }
+/* ── 큰 덩이 ──
+   제목만 카드 밖에 떠 있고 안쪽만 흰 상자였다. 제목은 공중에, 내용은
+   상자에 있으니 어디까지가 한 덩이인지 안 읽혔다. 덩이 자체를 한 상자로
+   만들고, 안쪽 카드는 상자를 벗고 가는 선으로만 나눈다.
+   그러면 화면에 뜬 면이 다섯 장(덩이 다섯)으로 줄어든다. */
+.chap {
+  margin-top: 28px;
+  padding: 22px 20px 20px;
+  border-radius: 20px;
+  background: var(--white);
+  box-shadow: 0 6px 20px rgba(0, 23, 51, 0.06);
+}
 .chap:first-child { margin-top: 0; }
 .chap__title {
   margin: 0;
@@ -4199,4 +4194,14 @@ strong {
   color: var(--gray-600);
   word-break: keep-all;
 }
-.chap__body { margin-top: 12px; }
+.chap__body { margin-top: 4px; }
+/* 덩이 안의 카드는 상자를 벗는다. 상자 안의 상자는 두 겹이 된다. */
+.chap__body .sec-card {
+  margin-top: 0;
+  padding: 20px 0 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  border-top: 1px solid var(--gray-100);
+}
+.chap__body .sec-card:first-child { border-top: 0; }

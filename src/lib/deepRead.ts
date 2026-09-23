@@ -117,8 +117,8 @@ export type DeepRead = {
    * 겹치는 사람이 생기는' 이다. 그리고 타고난 나와 견줘 위인지 아래인지.
    */
   selves: { k: string; label: string; score: number; line: string; vs: string | null }[];
-  /** 오늘 하나만 놓고 묻는 말과 그 답 */
-  todayAsk: { q: string; a: string; band: Band };
+  /** 오늘 하나만 놓고 바로 하는 답. 덩이 제목이 이미 묻고 있어서 또 묻지 않는다 */
+  todayAsk: { a: string; band: Band };
   /** 이 답이 언제 다시 계산되는지 */
   refresh: string;
 };
@@ -574,10 +574,16 @@ export function buildDeepRead(
   const daeunPart = partOf('지금 지나는 십 년');
   const near = Math.round((thisYear.score + thisMonthPart.score) / 2);
   // 타고난 것과 견줘 어느 쪽인가. 5점 안쪽이면 비슷한 것으로 본다.
+  //
+  // '타고난 것과 비슷해요' 로 끝내면 읽고 나서 정해지는 게 없다. 몇 점과
+  // 견줬는지, 그래서 오늘 어떻게 하라는 건지까지 붙인다.
   const vsNatal = (n: number): string | null => {
     const gap = n - natal.score;
-    if (Math.abs(gap) <= 5) return '타고난 것과 비슷해요';
-    return gap > 0 ? '타고난 것보다 높아요' : '타고난 것보다 낮아요';
+    const base = `타고난 ${natal.score}점`;
+    if (Math.abs(gap) <= 5) return `${base}과 비슷해요. 평소 하던 만큼이 맞아요.`;
+    return gap > 0
+      ? `${base}보다 ${gap}점 높아요. 평소보다 밀어도 돼요.`
+      : `${base}보다 ${-gap}점 낮아요. 평소보다 줄여 잡으세요.`;
   };
   // 기운 이름 대신 그 기운이 이 고민에서 일으키는 일을 적는다.
   // pull 은 '-는' 으로 끝나는 말이라 시간 단위를 뒤에 붙이면 문장이 된다.
@@ -615,7 +621,7 @@ export function buildDeepRead(
       // 걷어내면서 둘 다 보이게 됐고, 거기서 드러났다.
       // 여기서는 원국에서 이 고민 자리가 몇 글자인지를 말한다. 그건 다른
       // 어디서도 숫자로는 안 나오고, '기준' 이라는 역할과도 맞는다.
-      line: `여덟 글자 중 ${score.natalCount}개가 이 자리라 바탕은 ${score.natalCount >= 3 ? '두꺼운' : '얇은'} 편이에요.`,
+      line: `${withJosa(concern.shortName, '이가')} 걸린 글자가 여덟 중 ${score.natalCount}개예요.`,
       vs: null,
     },
   ];
