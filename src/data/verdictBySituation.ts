@@ -122,7 +122,7 @@ const VERDICT_BY_SITUATION: Record<ConcernKey, Record<string, Record<Verdict, Tw
     },
     keep: {
       now: { head: '지금 운동을 시작하면 붙어요', sub: '오늘 시작한 것이 습관이 되는 때예요. 작은 것부터 정하세요.' },
-      soon: { head: '{when} 몸이 받아줘요', sub: '지금 크게 벌이면 사흘을 못 가요. 지금은 하던 것만 지키세요.' },
+      soon: { head: '{when} 몸이 따라줘요', sub: '지금 크게 벌이면 사흘을 못 가요. 지금은 하던 것만 지키세요.' },
       wait: { head: '올해는 운동을 늘리기보다 지키는 해예요', sub: '새로 벌일 때가 아니에요. 지금 하는 것 하나를 안 빠뜨리는 게 먼저예요.' },
     },
   },

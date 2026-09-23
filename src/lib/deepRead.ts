@@ -450,7 +450,7 @@ export function buildDeepRead(
 
   // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
   // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
-  const chartToday = `내가 타고난 글자에 대보면 ${TEN_GOD_KO[todayGod]}에 해당해요. ${G(todayGod).line}`;
+  const chartToday = `내 글자에 맞춰보면 오늘은 ${TEN_GOD_KO[todayGod]}이 오는 날이에요. ${G(todayGod).line}`;
 
   // 조견표로 대조만 하는 것들. 해석을 고르지 않으니 누가 계산해도 같다.
   const stars = sinsalOf(pillars).map((x) => ({

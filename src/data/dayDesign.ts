@@ -1268,7 +1268,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
           { when: '낮', text: '미뤄둔 회신 먼저 정리해요.' },
           { when: '저녁', text: '내일 할 일 세 개만 적어두고 마무리해요.' },
         ],
-        holdOff: '완벽하게 하려다 시작을 미루는 것',
+        holdOff: '더 잘하려다 시작을 미루는 것',
       },
       {
         headline: '티 안 나게 해온 것, 오늘 슬쩍 드러내도 돼요.',

@@ -46,7 +46,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     },
     pyeonjae: {
       decade: '선택지가 늘어난 게 오히려 지금 피곤한 이유예요. 고를 기준이 없으면 많을수록 힘들어요.',
-      year: '제안이 들어올 때마다 흔들리고 있을 거예요. 개수가 아니라 비교할 기준이 없어서예요.',
+      year: '제안이 들어올 때마다 흔들리고 있을 거예요. 제안이 많아서가 아니라 무엇을 먼저 볼지 안 정해서예요.',
       month: '이번 달은 여기저기 문이 열려 보여요. 조건을 안 보고 먼저 답하면 나중에 못 바꿔요.',
     },
     jeongjae: {
@@ -235,7 +235,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     bijian: {
       decade: '움직여야 채워지는 십 년이에요. 가만히 있으면 오히려 더 처져요.',
       year: '올해는 몸을 쓰는 습관이 바로 결과로 오는 해예요. 정직하게 반응해요.',
-      month: '이번 달은 괜찮다는 느낌만 믿고 밀어붙이기 쉬워요. 신호를 늦게 봐요.',
+      month: '이번 달은 괜찮다는 느낌만 믿고 밀어붙이기 쉬워요. 몸이 보내는 신호를 늦게 알아채요.',
     },
     geopjae: {
       decade: '남과 속도를 맞추다 무리하는 십 년이에요. 내 기준이 자꾸 밀려요.',
@@ -286,7 +286,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
   mind: {
     bijian: {
       decade: '스스로 정해야 채워지는 십 년이에요. 남이 정해주면 편하지만 남지 않아요.',
-      year: '올해는 뜻대로 안 될 때 낙차가 큰 해예요. 기대치를 낮게 잡는 편이 나아요.',
+      year: '올해는 뜻대로 안 될 때 확 꺼지기 쉬운 해예요. 기대를 낮게 잡는 편이 나아요.',
       month: '이번 달은 혼자 버티기 쉬워요. 말했으면 반은 풀렸을 일이에요.',
     },
     geopjae: {

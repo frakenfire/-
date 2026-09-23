@@ -254,7 +254,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         <p className="mflow__foot">
           {timing.months[0].label}부터 {timing.months[timing.months.length - 1].label}까지예요.
           맨 왼쪽이 이번 달이고, 세로선 오른쪽이 {timing.months[timing.months.length - 1].year}년이에요.
-          차트를 문지르면 그 달 풀이가 펴져요.
+          표를 옆으로 밀면 그 달 풀이가 나와요.
         </p>
         <div className="mpick">
           <p className="mpick__head">
@@ -407,7 +407,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             <Sentences className="read6__v" text={read.chart.dayMaster} />
           </li>
           <li className="read6__row">
-            <span className="read6__k">힘의 균형</span>
+            <span className="read6__k">내 힘이 얼마나 있나</span>
             <Sentences className="read6__v" text={read.chart.strength} />
           </li>
           <li className="read6__row">

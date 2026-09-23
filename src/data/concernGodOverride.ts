@@ -58,7 +58,7 @@ const OVERRIDE: Partial<Record<ConcernKey, Record<string, Override>>> = {
       jeongjae: {
         act: '받을 값의 하한선을 숫자로 정해둬요',
         good: '받을 값과 조건을 숫자로 따지는 것',
-        yearGood: '값을 올리는 곡선을 한 해 단위로 설계하기',
+        yearGood: '받는 값을 언제 얼마나 올릴지 한 해 단위로 정하기',
         month: '값과 조건 이야기가 실제로 오가는 달이라 희망 금액을 숫자로 정해둬야 해요.',
         decide: '받을 값을 못 박는 순서예요.',
         pull: '받을 값과 조건이 숫자로 정해지는',
