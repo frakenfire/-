@@ -21,7 +21,7 @@ export type DecadeAreas = {
 
 export const DECADE_AREAS: Record<TenGod, DecadeAreas> = {
   bijian: {
-    head: '내 이름으로 서는 십 년이에요.',
+    head: '소속보다 내 이름으로 일하게 되는 십 년이에요.',
     work: '소속보다 내가 한 일이 남아요. 간판을 빌리는 방식은 힘이 빠져요.',
     money: '내가 움직인 만큼만 들어와요. 남이 만들어준 수입은 오래 안 가요.',
     people: '나와 닮은 사람이 늘어요. 편이 되기도 하고 경쟁자가 되기도 해요.',
@@ -29,7 +29,7 @@ export const DECADE_AREAS: Record<TenGod, DecadeAreas> = {
     task: '내 몫이 어디까지인지를 스스로 정하는 연습이에요.',
   },
   geopjae: {
-    head: '누가 어디까지 할지를 정하는 법을 배우는 십 년이에요.',
+    head: '내 몫과 남의 몫이 자주 섞이는 십 년이에요.',
     work: '같이 하는 일이 늘어요. 역할이 겹치는 만큼 정리가 실력이 돼요.',
     money: '돈에 사람이 끼어요. 금액보다 누가 얼마인지가 문제가 돼요.',
     people: '가까운 사이일수록 조건을 말해야 오래 가요.',
@@ -45,7 +45,7 @@ export const DECADE_AREAS: Record<TenGod, DecadeAreas> = {
     task: '벌여둔 것을 끝까지 끝내는 습관이에요.',
   },
   sanggwan: {
-    head: '지금 틀을 벗어나려는 십 년이에요.',
+    head: '다니던 곳이나 하던 방식을 벗어나고 싶어지는 십 년이에요.',
     work: '하던 방식이 답답해져요. 답답함이 성격 문제가 아니라 시기의 성질이에요.',
     money: '판을 키우고 싶어져요. 규모가 커질 때 지출도 같이 커져요.',
     people: '규칙을 바꾸자는 말이 자주 나와요. 세게 나가면 사람이 먼저 빠져요.',
@@ -53,7 +53,7 @@ export const DECADE_AREAS: Record<TenGod, DecadeAreas> = {
     task: '무엇을 바꾸고 무엇을 그대로 둘지 목록으로 갈라두는 일이에요.',
   },
   pyeonjae: {
-    head: '기회가 넓게 벌어지는 십 년이에요.',
+    head: '밖에서 부르는 자리가 늘어나는 십 년이에요.',
     work: '바깥에서 제안이 와요. 문제는 제안의 수가 아니라 고르는 기준이에요.',
     money: '큰돈이 오가요. 들어오는 폭이 큰 만큼 나가는 폭도 커요.',
     people: '오가는 사람이 많아져요. 다 붙잡으면 남는 사이가 없어요.',
@@ -61,7 +61,7 @@ export const DECADE_AREAS: Record<TenGod, DecadeAreas> = {
     task: '고르는 기준을 숫자로 만들어두는 일이에요.',
   },
   jeongjae: {
-    head: '차곡차곡 쌓는 십 년이에요.',
+    head: '한자리에서 받는 값이 올라가는 십 년이에요.',
     work: '조건과 범위가 분명할 때 결과가 나와요. 흐린 합의는 나중에 손해로 와요.',
     money: '크게 버는 것보다 남기는 구조가 결과를 갈라요.',
     people: '주고받을 것이 있는 사이가 오래 가요.',
@@ -69,7 +69,7 @@ export const DECADE_AREAS: Record<TenGod, DecadeAreas> = {
     task: '받을 값을 깎지 않고 그대로 부르는 연습이에요.',
   },
   pyeongwan: {
-    head: '책임이 먼저 오는 십 년이에요.',
+    head: '감당하기 버거운 일이 먼저 오는 십 년이에요.',
     work: '맡을 일이 늘어요. 권한은 조금 늦게 따라와요.',
     money: '나가는 돈이 먼저 정해져요. 책임과 비용이 같이 붙어요.',
     people: '부딪히는 자리가 잦아져요. 정면으로 가면 소모가 커요.',
@@ -85,7 +85,7 @@ export const DECADE_AREAS: Record<TenGod, DecadeAreas> = {
     task: '책임만 받지 말고 정할 권한도 같이 받아내는 협상이에요.',
   },
   pyeonin: {
-    head: '가던 길을 한 번 되짚어보게 되는 십 년이에요.',
+    head: '해오던 것을 접고 다시 배우게 되는 십 년이에요.',
     work: '한 길만 파던 방식이 잘 안 맞아요. 해온 일을 다르게 묶어볼 수 있어요.',
     money: '예전 방법이 잘 안 먹혀요. 새로 넣기 전에 빼는 게 먼저예요.',
     people: '넓히기보다 걸러내는 쪽으로 힘이 가요.',
@@ -93,7 +93,7 @@ export const DECADE_AREAS: Record<TenGod, DecadeAreas> = {
     task: '떠오른 생각을 바로 실행하지 않고 재워두는 힘이에요.',
   },
   jeongin: {
-    head: '배우고 도움받아 채우는 십 년이에요.',
+    head: '남이 끌어주고 문서가 받쳐주는 십 년이에요.',
     work: '자격과 추천이 길을 열어요. 혼자 힘으로만 가면 속도가 안 나요.',
     money: '아는 것을 값으로 바꿀 때 금액이 달라져요.',
     people: '오래 봐온 사이가 힘을 보태요. 새로 넓히는 것보다 지켜온 쪽이 커요.',
@@ -102,16 +102,7 @@ export const DECADE_AREAS: Record<TenGod, DecadeAreas> = {
   },
 };
 
-// 올해와 내년을 맞대 놓을 때 쓰는 한 단어. 표의 왼쪽 칸이 된다.
-export const GOD_KEYWORD: Record<TenGod, string> = {
-  bijian: '내 힘으로 밀기',
-  geopjae: '몫 나누기',
-  siksin: '만들어 내기',
-  sanggwan: '틀 바꾸기',
-  pyeonjae: '사람과 기회 늘리기',
-  jeongjae: '조건 굳히기',
-  pyeongwan: '무거운 일 받기',
-  jeonggwan: '자리 잡기',
-  pyeonin: '다시 배우기',
-  jeongin: '도움 받아 채우기',
-};
+// GOD_KEYWORD 는 지웠다.
+// 올해·내년 표의 '이 해에 할 일' 칸에 넣던 한 단어인데, 한 칸에 들어갈
+// 만큼 짧게 쓰면 '사람과 기회 늘리기' 처럼 무슨 기회인지 못 적는 말이 된다.
+// 바로 밑 '유리하게 쓰는 법' 줄이 같은 말을 구체적으로 한다.

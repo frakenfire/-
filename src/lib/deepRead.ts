@@ -12,7 +12,7 @@ import { dayActOf } from '../data/concernDayOverride.ts';
 import { todayAskOf } from '../data/todayVerdict.ts';
 import { verdictTwoOf } from '../data/verdictBySituation.ts';
 import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
-import { DECADE_AREAS, GOD_KEYWORD, type DecadeAreas } from '../data/decadeAreas.ts';
+import { DECADE_AREAS, type DecadeAreas } from '../data/decadeAreas.ts';
 import { STANCE_WORD, WHEN_ACT, type Stance } from '../data/decision.ts';
 import { planOf, STANCE_LEAD } from '../data/situationPlan.ts';
 import { GOD_GROUP_OF, analyzeSaju, tenGodOf, mainHiddenStem, type TenGod } from './tenGods.ts';
@@ -685,8 +685,10 @@ export function buildDeepRead(
 
   // 올해와 내년은 따로 설명만 하면 뭐가 다른지 안 보인다. 같은 줄에 맞대 놓는다.
   const [y0, y1] = timing.years;
+  // '이 해에 할 일' 줄에 '사람과 기회 늘리기' 같은 한 단어를 넣고 있었다.
+  // 한 칸에 들어갈 만큼 짧게 쓰면 결국 무슨 기회인지 못 적는다. 바로 밑
+  // '유리하게 쓰는 법' 줄이 같은 말을 구체적으로 하고 있어서 그 줄을 없앴다.
   const yearCompare = [
-    { k: '이 해에 할 일', thisYear: GOD_KEYWORD[y0.tenGod], nextYear: GOD_KEYWORD[y1.tenGod] },
     // good/care 는 달 단위 문장이다. 여기에 그대로 쓰면 그 해와 같은 기운을 가진
     // 달이 아래 차트에 뜰 때 글자 하나까지 같은 문장이 두 번 나온다.
     {
@@ -702,11 +704,8 @@ export function buildDeepRead(
   ];
   const yearGap =
     y0.tenGod === y1.tenGod
-      ? `올해와 내년의 결이 비슷해요. 흐름이 이어져서 올해 잡아둔 것이 내년에 그대로 굴러가요.`
-      // '올해가 넓히기에 가까운 해라면 내년은 쌓기에 가까운 해예요' 는
-      // 바로 위 표를 그대로 다시 읽은 것이라 새로 아는 게 없다.
-      // 두 해가 다르다는 사실이 왜 중요한지를 적는다.
-      : `올해 쓰던 방식이 내년에는 덜 통해요. 표의 가운뎃줄을 해마다 다르게 잡으세요.`;
+      ? '올해와 내년이 같은 결이에요. 올해 잡아둔 것이 내년에 그대로 굴러가요.'
+      : '올해와 내년은 할 일이 달라요. 위 표에서 올해 칸만 보고 움직이세요.';
 
   // 달 한 덩이 — 겉(천간)과 속(지지)을 따로 대야 열두 달이 전부 다른 얼굴이 된다
   const slotBlock = (k: string, slot: TimingSlot) => ({
