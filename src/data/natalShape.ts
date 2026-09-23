@@ -253,8 +253,8 @@ export const NATAL_SHAPE: Record<ConcernKey, Record<GodGroup, ShapeRow>> = {
     },
     authority: {
       inflow: '정해둔 대로 할 때 차요. 시간을 고정하면 몸이 따라와요.',
-      grow: '검진과 기록으로 좋아져요. 숫자로 보면 관리가 돼요.',
-      rise: '숫자로 기록할 때 유지돼요. 눈에 보이면 관리가 돼요.',
+      grow: '검진과 기록으로 좋아져요. 숫자로 보면 손에 잡혀요.',
+      rise: '숫자로 적어둘 때 유지돼요. 눈에 보이면 챙기게 돼요.',
       leak: '긴장이 길어질 때 빠져요. 어깨와 소화부터 와요.',
       trap: '참는 것. 아픈 걸 일정 뒤로 미뤄요.',
     },
@@ -285,8 +285,8 @@ export const NATAL_SHAPE: Record<ConcernKey, Record<GodGroup, ShapeRow>> = {
       inflow: '눈에 보이는 게 정리될 때 채워져요. 숫자가 맞으면 마음도 맞아요.',
       grow: '계획이 설 때 단단해져요. 앞이 보이면 불안이 줄어들어요.',
       rise: '눈앞이 정리되면 회복돼요. 앞이 보이면 불안이 줄어요.',
-      leak: '불확실할 때 빠져요. 모르는 상태를 오래 못 견뎌요.',
-      trap: '통제하려 드는 것. 못 정하는 것까지 쥐려 해요.',
+      leak: '앞이 안 보일 때 빠져요. 모르는 채로 오래 못 견뎌요.',
+      trap: '다 내 맘대로 하려 드는 것. 못 정하는 것까지 쥐려 해요.',
     },
     authority: {
       inflow: '해야 할 게 분명할 때 채워져요. 기준이 있으면 편해요.',

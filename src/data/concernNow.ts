@@ -56,7 +56,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     },
     pyeongwan: {
       decade: '버거운 느낌이 실력 부족이 아닐 수 있어요. 권한보다 책임이 먼저 오는 시기예요.',
-      year: '올해는 밀어붙일 일이 늘어요. 다 받으면 성과가 아니라 소모로 끝나요.',
+      year: '올해는 밀어붙일 일이 늘어요. 다 받으면 성과는 없고 지치기만 해요.',
       month: '이번 달은 결정을 재촉받기 쉬워요. 급하게 통보하듯 움직이면 되돌릴 수 없어요.',
     },
     jeonggwan: {
@@ -211,7 +211,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
       month: '이번 달은 말 안 해도 알겠지 하고 넘기기 쉬워요. 끝에 가서 전부 터져요.',
     },
     pyeongwan: {
-      decade: '부딪히는 일이 잦아지는 십 년이에요. 정면으로 가면 소모가 커요.',
+      decade: '부딪히는 일이 잦아지는 십 년이에요. 정면으로 가면 나만 지쳐요.',
       year: '올해는 할 말이 쌓이는 해예요. 한 번에 다 쏟으면 되돌리기 어려워요.',
       month: '이번 달은 대화를 짧게 끊는 게 유리해요. 길어질수록 세져요.',
     },
@@ -312,7 +312,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     jeongjae: {
       decade: '눈에 보이는 것이 정리돼야 편해지는 십 년이에요. 앞이 보이면 불안이 줄어들어요.',
       year: '올해는 계획이 마음을 잡아주는 해예요. 다만 못 정하는 것까지 쥐려 하면 더 힘들어요.',
-      month: '이번 달은 통제하려 드는 마음이 커져요. 정리할 수 있는 것부터 하나만 하세요.',
+      month: '이번 달은 다 내 맘대로 하려는 마음이 커져요. 정리할 수 있는 것부터 하나만 하세요.',
     },
     pyeongwan: {
       decade: '스스로를 몰아붙이는 힘이 센 십 년이에요. 남보다 나를 더 몰아붙여요.',
