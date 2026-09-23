@@ -184,6 +184,6 @@ export const GOLDEN: GoldenCase[] = [
     expected: {},
     source: 'history',
     ruleset: RS,
-    note: '기대값은 같은 벽시계 시각을 +9 로 계산한 것과 달라야 한다는 식으로 검증한다.',
+    note: '기대값은 같은 벽시계 시각을 +9 로 계산한 것과 달라야 한다는 식으로 확인한다.',
   },
 ];

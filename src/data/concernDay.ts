@@ -84,7 +84,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     },
     sanggwan: {
       doIt: '새 수입원 후보를 하나만 적어두기',
-      avoid: '검증 안 된 곳에 목돈을 넣는 것',
+      avoid: '확인 안 된 곳에 목돈을 넣는 것',
       hold: '있던 계약을 갈아엎는 일',
     },
     pyeonjae: {
@@ -114,7 +114,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     },
     jeongin: {
       doIt: '내가 쓰는 돈이 어디로 가는지 한 달 치만 보기',
-      avoid: '배우는 데 쓰는 돈을 회수 계획 없이 늘리는 것',
+      avoid: '배우는 데 쓰는 돈을 언제 벌충할지 안 정하고 늘리는 것',
       hold: '새 유료 강의를 결제하는 일',
     },
   },
@@ -137,7 +137,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     sanggwan: {
       doIt: '평소와 다른 자리를 하나 만들어보기',
       avoid: '순간의 기분으로 메시지를 보내는 것',
-      hold: '관계를 정의하자고 요구하는 일',
+      hold: '사이를 정하자고 요구하는 일',
     },
     pyeonjae: {
       doIt: '아는 사람을 통해 닿는 자리를 알아보기',
