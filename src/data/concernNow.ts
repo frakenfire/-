@@ -134,7 +134,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
       month: '이번 달은 혼자 결론을 내기 쉬워요. 듣는 쪽은 아직 얘기도 못 들었을 수 있어요.',
     },
     geopjae: {
-      decade: '비교가 끼어드는 십 년이에요. 남의 관계가 자꾸 기준이 돼요.',
+      decade: '비교가 끼어드는 십 년이에요. 남들 연애가 자꾸 기준이 돼요.',
       year: '올해는 서운함이 쌓이기 쉬운 해예요. 말 안 하고 담아두면 한 번에 터져요.',
       month: '이번 달은 누가 더 잘못했는지를 가리고 싶어져요. 이겨도 사이는 남지 않아요.',
     },

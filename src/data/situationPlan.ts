@@ -166,7 +166,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     couple: {
-      focus: '오래 가는 사이는 앞일을 맞춘 사이예요. 오늘 한 가지만 맞춰보세요.',
+      focus: '오래 가는 사이는 앞으로 어떻게 할지를 맞춰둔 사이예요. 오늘 한 가지만 맞춰보세요.',
       dos: [
         '서운했던 것 하나를 짧게 말해보기',
         '상대와 같이 할 일정을 이번 달에 하나 넣기',

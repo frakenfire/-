@@ -1,6 +1,7 @@
 import type { Element } from '../lib/saju.ts';
+import { withRo } from '../lib/josa.ts';
 
-// 다섯 기운마다 정해진 것들 — 방위, 숫자, 시각, 맛, 빛깔.
+// 다섯 갈래마다 정해진 것들 — 방위, 숫자, 시각, 맛, 빛깔.
 //
 // 왜 이 표가 필요한가: 행운 여섯 칸(색·숫자·방향·시간·음식·물건) 중 다섯이
 // 날짜 해시로 목록에서 뽑는 제비였다. 방향은 후보 일곱 중 하나, 시간은 여섯 중
@@ -49,10 +50,10 @@ export const OHAENG: Record<Element, OhaengFacts> = {
   wood: {
     ko: '나무',
     direction: '동쪽',
-    directionWhy: '해가 뜨는 쪽에서 제일 잘 자라니까',
+    directionWhy: '나무는 해가 뜨는 쪽에서 제일 잘 자라요.',
     numbers: [3, 8],
     time: '이른 아침',
-    timeWhy: '새벽에서 아침으로 넘어갈 때 제일 세니까',
+    timeWhy: '나무는 새벽에서 아침으로 넘어갈 때 제일 힘을 써요.',
     taste: '신맛',
     foods: ['푸른 잎채소', '오이', '레몬을 띄운 물', '사과'],
     items: ['작은 화분', '나무 연필', '천가방'],
@@ -61,10 +62,10 @@ export const OHAENG: Record<Element, OhaengFacts> = {
   fire: {
     ko: '불',
     direction: '남쪽',
-    directionWhy: '해가 가장 높이 뜨는 쪽에 모이니까',
+    directionWhy: '불은 해가 가장 높이 뜨는 쪽에 모여요.',
     numbers: [2, 7],
     time: '점심 무렵',
-    timeWhy: '해가 제일 높을 때 같이 세지니까',
+    timeWhy: '불은 해가 제일 높을 때 같이 세져요.',
     taste: '쓴맛',
     foods: ['쌉쌀한 나물', '따뜻한 커피', '구운 채소', '토마토'],
     items: ['빨간 펜', '따뜻한 컵', '작은 조명'],
@@ -73,10 +74,10 @@ export const OHAENG: Record<Element, OhaengFacts> = {
   earth: {
     ko: '흙',
     direction: '가운데',
-    directionWhy: '한쪽에 치우치지 않고 가운데에 있으니까',
+    directionWhy: '흙은 어느 쪽에도 기울지 않고 가운데에 있어요.',
     numbers: [5, 10],
     time: '이른 오후',
-    timeWhy: '해가 기울기 시작할 때 땅이 제일 따뜻하니까',
+    timeWhy: '흙은 해가 기울기 시작할 때 제일 따뜻해요.',
     taste: '단맛',
     foods: ['호박죽', '고구마', '누룽지', '단호박 샐러드'],
     items: ['도자기 컵', '작은 수첩', '손수건'],
@@ -85,10 +86,10 @@ export const OHAENG: Record<Element, OhaengFacts> = {
   metal: {
     ko: '쇠',
     direction: '서쪽',
-    directionWhy: '해가 지면서 하루를 거두는 쪽이니까',
+    directionWhy: '쇠는 해가 지면서 하루를 거두는 쪽이에요.',
     numbers: [4, 9],
     time: '늦은 오후',
-    timeWhy: '해가 넘어가기 직전에 제일 세니까',
+    timeWhy: '쇠는 해가 넘어가기 직전에 제일 힘을 써요.',
     taste: '매운맛',
     foods: ['무국', '마늘을 넣은 요리', '배', '생강차'],
     items: ['열쇠고리', '금속 텀블러', '작은 가위'],
@@ -97,10 +98,10 @@ export const OHAENG: Record<Element, OhaengFacts> = {
   water: {
     ko: '물',
     direction: '북쪽',
-    directionWhy: '해가 닿지 않는 쪽에 고이니까',
+    directionWhy: '물은 해가 닿지 않는 쪽에 고여요.',
     numbers: [1, 6],
     time: '밤',
-    timeWhy: '해가 다 진 뒤에 제일 세니까',
+    timeWhy: '물은 해가 다 진 뒤에 제일 힘을 써요.',
     taste: '짠맛',
     foods: ['미역국', '검은콩', '김', '따뜻한 두부'],
     items: ['보온병', '검은 노트', '작은 우산'],
@@ -134,11 +135,11 @@ export function ohaengWhy(
   // 계산이 맞아도 읽는 사람은 대충 만든 글로 본다.
   const numJosa = [2, 4, 5, 9].includes(f.numbers[0]) ? '와' : '과';
   const dirLine = concern
-    ? `${f.directionWhy} ${f.direction}이 ${concern.luckyWhere}이에요.`
-    : `${f.directionWhy} ${f.direction}${hasBatchim(f.direction) ? '이' : '가'} 오늘 내 자리예요.`;
+    ? `${f.directionWhy} 그래서 ${f.direction}이 ${concern.luckyWhere}이에요.`
+    : `${f.directionWhy} 그래서 ${f.direction}${hasBatchim(f.direction) ? '이' : '가'} 오늘 내 자리예요.`;
   const timeLine = concern
-    ? `${f.timeWhy} ${concern.luckyWhen} ${f.time}에 놓으면 수월해요.`
-    : `${f.timeWhy} 중요한 건 ${f.time}에 놓으면 수월해요.`;
+    ? `${f.timeWhy} 그래서 ${concern.luckyWhen} ${withRo(f.time)} 잡으면 수월해요.`
+    : `${f.timeWhy} 그래서 중요한 건 ${withRo(f.time)} 잡으면 수월해요.`;
   // 기운 이름은 첫 문장에서 한 번만 부른다. 문장마다 '쇠 기운' 을 되풀이하면
   // 다섯 줄이 같은 말을 네 번 하는 것처럼 읽힌다.
   return [

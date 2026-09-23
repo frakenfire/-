@@ -88,7 +88,7 @@ export const CONCERNS: Concern[] = [
     key: 'money',
     shortName: '돈',
     luckyWhere: '돈 얘기를 꺼내기 좋은 쪽',
-    luckyWhen: '큰 돈이 오가는 일은',
+    luckyWhen: '큰돈이 오가는 일은',
     label: '돈',
     hook: '모을 때인지 지킬 때인지',
     icon: 'coin',

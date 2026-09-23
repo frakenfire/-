@@ -476,7 +476,7 @@ export function buildDeepRead(
     season: prof.hasSeasonalSupport
       ? '태어난 달이 나를 돕는 자리예요. 계절이 내 편이라 기본 체력은 있는 편이에요.'
       : '태어난 달이 나를 돕지는 않아요. 그래서 때를 고르는 게 더 중요해져요.',
-    useful: `${ELEMENT_KO[prof.usefulElement]} 쪽이 채워질 때 치우침이 풀려요.`,
+    useful: `${ELEMENT_KO[prof.usefulElement]} 쪽이 채워질 때 한쪽으로 쏠린 게 풀려요.`,
     focus,
     today: chartToday,
     sinsal: stars,
