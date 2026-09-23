@@ -122,7 +122,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
     ],
     flat: [
       {
-        headline: '오늘은 작은 변화 하나가 하루의 스위치가 돼요.',
+        headline: '오늘은 작은 변화 하나가 하루를 통째로 바꿔요.',
         vibe: '특별할 것 없어 보여도 손대는 만큼 달라지는 날이에요.',
         steps: [
           { when: '아침', text: '늘 가던 길 말고 다른 길로 나가봐요.' },
@@ -163,7 +163,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
       },
       {
         headline: '밋밋한 날엔 몸을 먼저 움직이면 마음이 따라와요.',
-        vibe: '10분 산책이 하루의 온도를 바꿔요.',
+        vibe: '10분 산책이 하루 기분을 바꿔요.',
         steps: [
           { when: '아침', text: '창문 열고 공기 한 번 바꾸고 시작해요.' },
           { when: '낮', text: '점심 먹고 10분만 걸어봐요.' },
@@ -219,7 +219,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         steps: [
           { when: '아침', text: '목표를 반으로 접어도 괜찮아요. 회복이 먼저예요.' },
           { when: '낮', text: '제일 급한 하나만 하고 나머진 내일의 나에게 맡겨요.' },
-          { when: '저녁', text: '30분 일찍 누워요. 잘 자는 게 가장 큰 재테크예요.' },
+          { when: '저녁', text: '30분 일찍 누워요. 잘 자는 게 가장 남는 장사예요.' },
         ],
         holdOff: '마음이 무거운 채로 중요한 결정을 밀어붙이는 것',
       },
@@ -234,11 +234,11 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '내 일도 벅찬 날에 남의 일까지 떠안는 것',
       },
       {
-        headline: '오늘 하루, 나를 몰아붙이지 않는 게 제일 나은 전략이에요.',
-        vibe: '속도를 늦추는 것도 훌륭한 하루 설계예요.',
+        headline: '오늘 하루는 나를 몰아붙이지 마세요. 그게 제일 나아요.',
+        vibe: '속도를 늦추면 하루가 오히려 잘 돌아가요.',
         steps: [
           { when: '아침', text: '억지로 괜찮은 척할 필요 없어요. 그대로 시작해요.' },
-          { when: '낮', text: '못다 한 일은 리스트에서 잠깐 지워둬요.' },
+          { when: '낮', text: '못다 한 일은 목록에서 잠깐 지워둬요.' },
           { when: '저녁', text: '따뜻하게 씻고 일찍 눈을 감아요.' },
         ],
         holdOff: '괜찮지 않은데 괜찮은 척 웃으며 버티는 것',
@@ -345,7 +345,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         vibe: '애쓰지 않아도 그동안의 노력이 드러나는 달이에요.',
         steps: [
           { when: '1주차', text: '평소처럼 꾸준히 하던 걸 이어가요.' },
-          { when: '2주차', text: '누군가 알아봐줘도 겸손을 과하게 부리지 마요.' },
+          { when: '2주차', text: '누가 알아봐줘도 너무 손사래 치지 마요.' },
           { when: '3주차', text: '받은 인정을 다음 힘으로 바꿔봐요.' },
           { when: '4주차', text: '스스로에게도 고생했다고 말해줘요.' },
         ],
@@ -558,7 +558,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         vibe: '속도를 늦추면 놓치던 것들이 보여요.',
         steps: [
           { when: '1주차', text: '일정에서 하나를 덜어내요.' },
-          { when: '2주차', text: '나만의 조용한 시간을 주 1회 확보해요.' },
+          { when: '2주차', text: '나만의 조용한 시간을 일주일에 한 번은 만들어요.' },
           { when: '3주차', text: '마음이 편해지는 사람만 곁에 둬요.' },
           { when: '4주차', text: '이번 달 잘 쉰 나를 칭찬해요.' },
         ],
@@ -640,11 +640,11 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
           { when: '낮', text: '망설이지 말고 자연스럽게 꺼내봐요.' },
           { when: '저녁', text: '오늘의 대화를 좋게 마무리해요.' },
         ],
-        holdOff: '설렘에 취해 성급하게 관계를 정의하는 것',
+        holdOff: '설렘에 취해 성급하게 사이를 정해버리는 것',
       },
       {
         headline: '잘 풀리는 날일수록, 같이 할 계획도 세워봐요.',
-        vibe: '관계에 활력이 붙는 타이밍이에요.',
+        vibe: '사이가 살아나기 좋은 때예요.',
         steps: [
           { when: '아침', text: '함께 하고 싶은 것 하나를 떠올려봐요.' },
           { when: '낮', text: '가볍게 제안해보면 반응이 좋을 거예요.' },
@@ -725,7 +725,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '지난 대화를 자꾸 되감기하는 것',
       },
       {
-        headline: '오늘은 그저 그런 하루가, 관계엔 딱 좋은 온도예요.',
+        headline: '오늘은 그저 그런 하루가, 사이에는 딱 좋아요.',
         vibe: '무난함이 편안함으로 느껴지는 날이에요.',
         steps: [
           { when: '아침', text: '평소처럼 자연스럽게 연락해봐요.' },
@@ -765,8 +765,8 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '답장 없는 화면을 몇 번씩 다시 여는 것',
       },
       {
-        headline: '오늘은 관계의 온도를 1도만 올려봐요.',
-        vibe: '거창한 이벤트보다 사소한 챙김이 통해요.',
+        headline: '오늘은 사이를 한 뼘만 가깝게 해봐요.',
+        vibe: '거창하게 해주는 것보다 사소하게 챙겨주는 게 통해요.',
         steps: [
           { when: '아침', text: '상대가 좋아하는 걸 하나 떠올려봐요.' },
           { when: '낮', text: '지나가듯 안부를 물어봐요.' },
@@ -1076,7 +1076,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
     down: [
       {
         headline: '마음이 흔들릴 땐 돈 걱정을 크게 키우지 말고, 방향만 봐요.',
-        vibe: '숫자에 눌리기보다 작은 감각을 되찾는 하루예요.',
+        vibe: '숫자에 눌리기보다 작은 것부터 다시 챙기는 하루예요.',
         steps: [
           { when: '아침', text: '이번 주 지출을 세 줄로만 적어봐요.' },
           { when: '낮', text: '남과 비교하며 기분으로 결제하지 않게 해요.' },
@@ -1224,7 +1224,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         steps: [
           { when: '아침', text: '오늘 공유할 성과 하나를 골라둬요.' },
           { when: '낮', text: '진행 상황을 짧게 공유해요.' },
-          { when: '저녁', text: '받은 피드백 하나를 다음 계획에 반영해요.' },
+          { when: '저녁', text: '들은 의견 하나를 다음 계획에 넣어요.' },
         ],
         holdOff: '다 되면 말하지, 하며 혼자 끌어안는 것',
       },
@@ -1315,7 +1315,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         vibe: '급한 일이 없을 때 기초가 자라요.',
         steps: [
           { when: '아침', text: '자주 쓰는 도구의 단축키 하나를 익혀요.' },
-          { when: '낮', text: '반복 작업 하나를 자동화해봐요.' },
+          { when: '낮', text: '늘 똑같이 하는 일 하나를 자동으로 돌게 해봐요.' },
           { when: '저녁', text: '오늘 배운 걸 메모로 남겨요.' },
         ],
         holdOff: '바쁘지 않다고 아무것도 안 심는 것',
@@ -1354,7 +1354,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
     down: [
       {
         headline: '이런 날엔, 완벽함보다 완료가 나를 살려요.',
-        vibe: '무리한 확장보다 하나에 집중하는 하루예요.',
+        vibe: '판을 키우기보다 하나에 집중하는 하루예요.',
         steps: [
           { when: '아침', text: '제일 급한 하나만 골라요. 나머진 미뤄도 돼요.' },
           { when: '낮', text: '점심시간만큼은 온전히 쉬어요.' },
@@ -1363,7 +1363,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '내 일도 벅찬데 남의 일까지 떠안는 것',
       },
       {
-        headline: '마음이 무거운 날은, 리듬 관리가 먼저예요.',
+        headline: '마음이 무거운 날은, 하루 틀을 잡는 게 먼저예요.',
         vibe: '잘 쉬는 사람이 결국 오래 잘하는 날이에요.',
         steps: [
           { when: '아침', text: '쉬운 일부터 하나 끝내 시동을 걸어요.' },
@@ -1490,7 +1490,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         headline: '좋은 날일수록 문서와 숫자를 두 번 봐요.',
         vibe: '방심은 기분 좋은 날에 찾아와요.',
         steps: [
-          { when: '아침', text: '보내기 전에 한 번 더 읽는 습관을 켜요.' },
+          { when: '아침', text: '보내기 전에 한 번 더 읽는 습관을 들여요.' },
           { when: '낮', text: '금액·날짜·이름은 짚어가며 확인해요.' },
           { when: '저녁', text: '내일 일정을 미리 확인하고 마무리해요.' },
         ],
@@ -1559,7 +1559,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '급하게 서두르다 놓치는 것',
       },
       {
-        headline: '오늘은 사소한 깜빡함만 조심하면 무난해요.',
+        headline: '오늘은 깜빡하는 것만 조심하면 무난해요.',
         vibe: '큰 위험보다 작은 실수가 더 잦은 날이에요.',
         steps: [
           { when: '아침', text: '오늘의 할 일을 눈에 보이게 적어둬요.' },
@@ -1579,8 +1579,8 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '뜻대로 안 됐다고 감정적으로 반응하는 것',
       },
       {
-        headline: '오늘은 물건 챙김만 잘해도 무탈해요.',
-        vibe: '깜빡함이 유일한 복병인 날이에요.',
+        headline: '오늘은 물건만 잘 챙겨도 무탈해요.',
+        vibe: '오늘 조심할 건 깜빡하는 것 하나예요.',
         steps: [
           { when: '아침', text: '나가기 전 지갑·열쇠·폰을 확인해요.' },
           { when: '낮', text: '자리를 옮길 땐 뒤 한 번 돌아봐요.' },
@@ -1590,7 +1590,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
       },
       {
         headline: '오늘은 길과 시간에 여유를 두면 무난해요.',
-        vibe: '서두름이 유일한 복병이에요.',
+        vibe: '오늘 조심할 건 서두르는 것 하나예요.',
         steps: [
           { when: '아침', text: '평소보다 10분 일찍 나서요.' },
           { when: '낮', text: '이동 중엔 폰 대신 앞을 봐요.' },
@@ -1652,7 +1652,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
       },
       {
         headline: '이런 날엔 평소보다 더 조심스럽게 움직여요.',
-        vibe: '마음의 무게가 판단을 살짝 흐리는 날이에요.',
+        vibe: '마음이 무거워서 판단이 살짝 흐려지는 날이에요.',
         steps: [
           { when: '아침', text: '중요한 결정은 마음이 가벼울 때로 미뤄요.' },
           { when: '낮', text: '운전이나 이동은 평소보다 여유 있게 해요.' },
@@ -1664,7 +1664,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         headline: '마음이 가라앉는 날엔, 감정 기복을 조심해요.',
         vibe: '평소라면 넘길 일도 크게 느껴지는 날이에요.',
         steps: [
-          { when: '아침', text: '예민해질 수 있다는 걸 스스로 인지해요.' },
+          { when: '아침', text: '예민해질 수 있다는 걸 미리 알고 있어요.' },
           { when: '낮', text: '화나는 순간엔 자리를 잠깐 비켜요.' },
           { when: '저녁', text: '오늘 예민했던 것 스스로 이해해줘요.' },
         ],
@@ -1696,7 +1696,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         steps: [
           { when: '아침', text: '오늘 약속 중 부담스러운 걸 조정해요.' },
           { when: '낮', text: '편한 사람과의 짧은 대화로 충전해요.' },
-          { when: '저녁', text: '집에 오면 조용한 시간을 30분 확보해요.' },
+          { when: '저녁', text: '집에 오면 조용한 시간을 30분 만들어요.' },
         ],
         holdOff: '거절을 못 해 무리한 자리에 가는 것',
       },
@@ -1782,7 +1782,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
           { when: '낮', text: '메뉴 고민될 땐 처음 끌린 걸로 해요.' },
           { when: '저녁', text: '직감이 맞았던 순간을 기록해봐요.' },
         ],
-        holdOff: '남의 말에 내 촉을 계속 덮는 것',
+        holdOff: '남의 말에 내 느낌을 계속 덮는 것',
       },
       {
         headline: '오늘은 행운이 사람 얼굴을 하고 와요.',
@@ -1864,10 +1864,10 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
           { when: '낮', text: '안 가던 길로 한 번 돌아가봐요.' },
           { when: '저녁', text: '오늘 발견한 새로운 것 하나를 떠올려요.' },
         ],
-        holdOff: '같은 동선만 반복하며 우연을 차단하는 것',
+        holdOff: '늘 가던 길로만 다녀서 새로 만날 일이 없게 하는 것',
       },
       {
-        headline: '작은 친절이 오늘의 행운 스위치예요.',
+        headline: '작은 친절 하나가 오늘 운을 켜요.',
         vibe: '베푼 만큼 우연이 따뜻해져요.',
         steps: [
           { when: '아침', text: '문을 잡아주는 것부터 시작해요.' },
@@ -1969,7 +1969,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '새로운 도전으로 스스로를 몰아붙이는 것',
       },
       {
-        headline: '가라앉는 날의 유일한 미션은 기분 지키기예요.',
+        headline: '가라앉는 날엔 기분만 지켜도 잘한 거예요.',
         vibe: '기분을 지키면 운은 알아서 돌아와요.',
         steps: [
           { when: '아침', text: '웃긴 영상 하나로 시동을 걸어요.' },
