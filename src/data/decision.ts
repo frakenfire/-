@@ -47,7 +47,7 @@ export const WHEN_ACT: Record<ConcernKey, { best: string; hard: string; year: st
   work: {
     best: '중요한 자리와 미팅을 이때 몰아서 잡으세요.',
     hard: '퇴사 통보와 최종 서명은 이때를 피해요.',
-    year: '자리를 옮기거나 직책을 올릴 결정이 붙는 해예요.',
+    year: '옮길지 말지는 이 해 안에 정하면 돼요.',
   },
   money: {
     best: '계약과 정산을 이때 끝내세요.',
@@ -57,12 +57,12 @@ export const WHEN_ACT: Record<ConcernKey, { best: string; hard: string; year: st
   love: {
     best: '만나는 자리를 이때 잡고 다음 약속까지 정하세요.',
     hard: '중요한 대화와 정리는 이때를 피해요.',
-    year: '관계를 한 단계 옮기는 말이 통하는 때예요.',
+    year: '한 단계 올리는 말은 이 해에 꺼내면 돼요.',
   },
   people: {
     best: '먼저 연락하고 필요한 부탁을 이때 하세요.',
     hard: '정면으로 붙는 대화는 이때 미뤄요.',
-    year: '같이 오래 갈 사람이 이 해에 가려져요.',
+    year: '누구를 오래 볼지는 이 해에 골라도 돼요.',
   },
   health: {
     best: '검진을 받고 운동을 이때 시작하세요.',
