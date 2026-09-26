@@ -141,6 +141,23 @@ test('맨 위 결론이 도망가는 말을 쓰지 않는다', () => {
   }
 });
 
+// 매일 쪽지를 뽑는 앱이다. 제일 큰 글자가 오늘 이야기가 아니면, 오늘 보러
+// 들어온 사람은 제 답을 찾으려고 화면을 한참 내려야 한다.
+// 한때 여기가 '올해는 옮기기보다 자리를 지키는 해예요' 였다.
+test('제일 큰 글자가 오늘 이야기다', () => {
+  for (const c of CONCERNS) {
+    for (const opt of c.options) {
+      for (const d of ['2026-09-21', '2026-12-21', '2027-03-21']) {
+        const t = computeTiming(INPUT, P, 'female', c.key, new Date(`${d}T09:00:00+09:00`));
+        const r = buildDeepRead(P, t, c.key, opt.key, d, '김한별');
+        assert.ok(/오늘/.test(r.headline), `${c.key}/${opt.key}: ${r.headline}`);
+        // 올해 판정은 '언제' 칸으로 내려갔다. 거기 있어야 한다.
+        assert.ok(r.whenVerdict.head.length > 0, `${c.key}: 언제 칸이 비었어요`);
+      }
+    }
+  }
+});
+
 test('왜 N점인가요 줄이 그 고민의 말로 설명한다', () => {
   for (const c of CONCERNS) {
     const t = computeTiming(INPUT, P, 'female', c.key, new Date('2026-09-21T09:00:00+09:00'));
@@ -190,11 +207,19 @@ test('맨 위 카드의 두 줄이 같은 층에서 나온다', () => {
     for (const opt of c.options) {
       const t = computeTiming(INPUT, P, 'female', c.key, new Date('2026-09-21T09:00:00+09:00'));
       const r = buildDeepRead(P, t, c.key, opt.key, '2026-09-21', '김한별');
-      // sub 은 판정 하나에서만 나온다 - 같은 고민·같은 판정이면 달이 바뀌어도 같다
+      // 두 줄은 이제 오늘 답 하나에서만 나온다. 예전에는 큰 글씨가 올해 판정
+      // 이었는데, 매일 뽑는 앱에서 제일 큰 글자가 올해 얘기인 게 이상해서
+      // 오늘 답을 올리고 올해 판정을 '언제' 칸으로 내렸다(whenVerdict).
+      // 그래서 같은 층인지 보는 기준도 판정에서 오늘 밴드로 바뀐다.
       const t2 = computeTiming(INPUT, P, 'female', c.key, new Date('2026-12-21T09:00:00+09:00'));
       const r2 = buildDeepRead(P, t2, c.key, opt.key, '2026-12-21', '김한별');
+      if (r.todayAsk.band === r2.todayAsk.band) {
+        assert.equal(r.sub, r2.sub, `${c.key}: 오늘 밴드가 같은데 밑 줄이 달라요`);
+        assert.equal(r.headline, r2.headline, `${c.key}: 오늘 밴드가 같은데 큰 글씨가 달라요`);
+      }
+      // 내려간 올해 판정은 전처럼 판정 하나에서만 나온다
       if (r.verdict === r2.verdict) {
-        assert.equal(r.sub, r2.sub, `${c.key}: 같은 판정인데 밑 줄이 달라요`);
+        assert.equal(r.whenVerdict.sub, r2.whenVerdict.sub, `${c.key}: 같은 판정인데 언제 칸 줄이 달라요`);
       }
       // 큰 글씨와 밑 줄이 같은 말을 되풀이하지 않는다. 바로 붙어 있는 두 줄이라
       // 같은 동사가 두 번 나오면 한 문장을 두 번 쓴 것처럼 읽힌다.

@@ -122,6 +122,8 @@ export type DeepRead = {
   selves: { k: string; label: string; score: number; line: string; vs: string | null }[];
   /** 오늘 하나만 놓고 바로 하는 답. 덩이 제목이 이미 묻고 있어서 또 묻지 않는다 */
   todayAsk: { a: string; band: Band };
+  /** 올해·이번 달 판정. 큰 글씨가 오늘을 맡게 되면서 '언제' 칸으로 내려왔다 */
+  whenVerdict: { head: string; sub: string };
   /** 이 답이 언제 다시 계산되는지 */
   refresh: string;
 };
@@ -796,10 +798,17 @@ export function buildDeepRead(
     today,
     decision,
     now,
-    // {when} 은 verdict 가 soon 일 때만 들어 있고, 그때 away 는 1~3 이다.
-    headline: verdictTwo.head.replace(
-      '{when}', away === 1 ? '다음 달에' : `${away}달 뒤에`,
-    ),
+    // 제일 큰 글자는 오늘 이야기여야 한다.
+    //
+    // 여기는 오랫동안 '올해는 옮기기보다 자리를 지키는 해예요' 같은 올해
+    // 판정이었다. 매일 쪽지를 뽑으러 들어온 사람이 제일 먼저 보는 가장 큰
+    // 글자가 올해 얘기였던 것이다. 결과 화면 스물네 장을 뽑아 세어보니 오늘
+    // 이야기가 9%, 이번 달 이상이 17% 였다.
+    //
+    // 그래서 오늘 답을 위로 올리고, 올해·이번 달 판정은 아래 '언제' 칸으로
+    // 내렸다(whenVerdict). 오늘 답은 두 줄이라 첫 줄이 큰 글씨, 둘째 줄이
+    // 그 아래 줄이 된다.
+    headline: todayAsk.a.split('\n')[0],
     // month 를 쓰면 아래 '앞으로 열두 달'의 이번 달 칸과 글자 하나까지 같은
     // 문장이 된다. 결정 카드는 같은 기운을 '무엇을 정할 때인가'로 읽는다.
     // 큰 글씨와 이 줄은 둘 다 판정에서 나와야 한 목소리가 된다.
@@ -809,7 +818,12 @@ export function buildDeepRead(
     //   큰 글씨  지금은 상대보다 나를 먼저 채울 때예요
     //   이 줄    상대를 먼저 챙겨줄 때예요
     // 가 붙어 있었다. 정반대다. decide 는 아래 행동 칸으로 옮겼다.
-    sub: verdictTwo.sub,
+    sub: todayAsk.a.split('\n').slice(1).join(' ') || todayAsk.a,
+    // 올해·이번 달 판정. 큰 글씨 자리에서 내려온 말이라 '언제' 칸이 맡는다.
+    whenVerdict: {
+      head: verdictTwo.head.replace('{when}', away === 1 ? '다음 달에' : `${away}달 뒤에`),
+      sub: verdictTwo.sub,
+    },
     /** 이번 달 기운으로 읽은 한 줄. 행동 바로 위에 붙는다 */
     monthWhy: G(timing.thisMonth.tenGod).decide,
     slots,

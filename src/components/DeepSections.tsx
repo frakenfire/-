@@ -78,18 +78,11 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
       )}
 
       {/* (1) 지금 어떻게 하면 될까요 — 오늘 얘기다. 매일 쪽지를 뽑는 앱이라
-          맨 먼저 오늘 하나만 놓고 묻고 답한다. 고른 상황까지 보고 묻는다. */}
-      <Chapter title="지금 어떻게 하면 될까요" hint="오늘 해도 되는지와, 오늘 할 일">
-      <div className="sec-card">
-        <Sentences className="today-ask__a" text={read.todayAsk.a} />
-        {bestWhen ? (
-          <p className="today-ask__when">
-            <span className="today-ask__when-k">{whenAsk}</span>
-            <Sentences className="today-ask__when-v" text={bestWhen} />
-          </p>
-        ) : null}
-      </div>
-
+          맨 먼저 오늘 하나만 놓고 묻고 답한다.
+          오늘 답 두 줄은 위 쪽지 카드의 큰 글씨가 맡는다. 여기서 또 그리면
+          한 화면에 같은 문장이 두 번 나온다. 여기는 오늘 할 일과, 언제가
+          좋은지만 맡는다. */}
+      <Chapter title="지금 어떻게 하면 될까요" hint="오늘 할 일과, 언제가 좋은지">
       {/* 오늘 하면 좋은 것 / 피할 것 — 오늘 답 바로 밑이 제자리다. */}
       <div className="sec-card">
         <p className="cat4__head">오늘은 이렇게</p>
@@ -109,6 +102,20 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ) : null}
         </ul>
+      </div>
+
+      {/* 언제가 좋은지 — 올해·이번 달 판정이 큰 글씨 자리에서 내려온 곳이다.
+          오늘 할 일을 다 읽은 다음에 '그럼 크게 움직이는 건 언제' 가 온다. */}
+      <div className="sec-card">
+        <p className="cat4__head">{whenAsk}</p>
+        <Sentences className="today-ask__a" text={read.whenVerdict.head} />
+        <Sentences className="today-ask__a" text={read.whenVerdict.sub} />
+        {bestWhen ? (
+          <p className="today-ask__when">
+            <span className="today-ask__when-k">크게 움직인다면</span>
+            <Sentences className="today-ask__when-v" text={bestWhen} />
+          </p>
+        ) : null}
       </div>
 
       {/* 결정 카드 — 이 리포트가 실패하지 않으려면 여기서 끝이 나야 한다.
