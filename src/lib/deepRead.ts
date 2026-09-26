@@ -15,6 +15,9 @@ import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
 import { DECADE_AREAS, type DecadeAreas } from '../data/decadeAreas.ts';
 import { STANCE_WORD, WHEN_ACT, type Stance } from '../data/decision.ts';
 import { planOf, STANCE_LEAD } from '../data/situationPlan.ts';
+import { NATAL_REASON } from '../data/natalReason.ts';
+import { NEEDED_MONTH } from '../data/tenGodDay.ts';
+import { needFit } from './dailySaju.ts';
 import { GOD_GROUP_OF, analyzeSaju, tenGodOf, mainHiddenStem, type TenGod } from './tenGods.ts';
 import { ELEMENT_KO, STEMS, BRANCHES, type Element } from './saju.ts';
 import {
@@ -287,7 +290,10 @@ export function buildDeepRead(
   const decision = {
     stance,
     stanceWord: STANCE_WORD[stance],
-    verdict: `${STANCE_LEAD[stance]} ${plan.focus}`,
+    // 판정(이번 달) + 할 일(고른 상황) 뒤에 '왜 나한테 그런가' 를 붙인다.
+    // 앞의 두 줄은 내가 입력한 것에서만 나와서, 생년월일이 다른 사람도
+    // 글자 하나까지 같은 답을 받고 있었다. 이 줄이 여덟 글자를 본다.
+    verdict: `${STANCE_LEAD[stance]} ${plan.focus} ${NATAL_REASON[concernKey][GOD_GROUP_OF[score.natalTopGod]]}`,
     dos: [...plan.dos],
     donts: [...plan.donts],
   };
@@ -445,12 +451,12 @@ export function buildDeepRead(
   const focusCount = prof.gods.filter((g) => timing.favor.good.includes(GOD_GROUP_OF[g.god])).length;
   const focus =
     focusCount > 0
-      ? `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 태어난 여덟 글자 중 ${focusCount}개가 거기 걸려 있어서 바탕은 ${focusCount >= 3 ? '두꺼운' : '얇은'} 편이에요.`
+      ? `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 그 자리가 원국에 ${focusCount >= 3 ? '두껍게' : '얇게'} 깔려 있어요.`
       : `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 태어난 글자에는 그 자리가 없어서, 해와 달이 들어올 때 열려요.`;
 
   // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
   // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
-  const chartToday = `내 글자에 맞춰보면 오늘은 ${TEN_GOD_KO[todayGod]}이 오는 날이에요. ${G(todayGod).line}`;
+  const chartToday = `내 글자에 맞춰보면 오늘은 ${TEN_GOD_KO[todayGod]}이 와요. ${G(todayGod).line}`;
 
   // 조견표로 대조만 하는 것들. 해석을 고르지 않으니 누가 계산해도 같다.
   const stars = sinsalOf(pillars).map((x) => ({
@@ -610,16 +616,23 @@ export function buildDeepRead(
       k: '가까운 미래의 나',
       label: '올해와 이번 달',
       score: near,
-      line: `${pullOf(thisMonthPart.god)} 때예요.`,
+      line: thisMonthPart.god === todayPart.god
+        ? '오늘 온 글자가 이번 달에도 그대로 이어져요.'
+        : `${pullOf(thisMonthPart.god)} 때예요.`,
       vs: vsNatal(near, 'near'),
     },
     {
       k: '먼 미래의 나',
       label: daeunPart.label,
       score: daeunPart.score,
-      line: daeunPart.god
-        ? `${pullOf(daeunPart.god)} 십 년이에요.`
-        : '아직 첫 십 년이 시작되기 전이에요.',
+      // 오늘 온 글자와 이 십 년의 글자가 같은 날이 있다. 그때 '{같은 말} 날이에요'
+      // 와 '{같은 말} 십 년이에요' 가 한 화면에 나란히 서서, 두 줄이 같은 말을
+      // 두 번 한다. 겹친다는 사실 자체가 알려줄 만한 것이라 그렇게 적는다.
+      line: !daeunPart.god
+        ? '아직 첫 십 년이 시작되기 전이에요.'
+        : daeunPart.god === todayPart.god
+          ? '오늘 온 글자가 이 십 년 내내 배경으로 깔려 있어요.'
+          : `${pullOf(daeunPart.god)} 십 년이에요.`,
       vs: vsNatal(daeunPart.score, 'far'),
     },
     {
@@ -718,6 +731,12 @@ export function buildDeepRead(
       : '올해와 내년은 할 일이 달라요. 위 표에서 올해 칸만 보고 움직이세요.';
 
   // 달 한 덩이 — 겉(천간)과 속(지지)을 따로 대야 열두 달이 전부 다른 얼굴이 된다
+  // 같은 달이 누구에게나 같은 문장이면 표만 열둘이고 말은 하나다. 십신이 열,
+  // 달이 열둘이라 사람마다 열 문장을 다 받고 있었다. 그 달의 글자가 내 여덟
+  // 글자에 모자란 쪽인지 이미 많은 쪽인지를 붙인다. 신강·신약이 갈리면 같은
+  // 달도 다르게 읽힌다 - 실제로 사주를 볼 때 그렇게 읽는다.
+  const monthFit = (god: TenGod) => NEEDED_MONTH[needFit(prof, GOD_GROUP_OF[god])];
+
   const slotBlock = (k: string, slot: TimingSlot) => ({
     k,
     label: slot.label,
@@ -725,7 +744,7 @@ export function buildDeepRead(
     bandKey: slot.band,
     // GOD_SCALE 은 고민을 안 본다. 돈을 물었는데 '안으로 파고드는 달'
     // 같은 문장이 나오던 자리다. 고민별로 쓴 문장을 쓴다.
-    outer: G(slot.tenGod).month,
+    outer: `${G(slot.tenGod).month} ${monthFit(slot.tenGod)}`,
     good: G(slot.tenGod).good,
     care: G(slot.branchGod).care,
   });
@@ -741,7 +760,7 @@ export function buildDeepRead(
     month: m.month ?? 0,
     band: bandLabel(m),
     bandKey: m.band,
-    outer: G(m.tenGod).month,
+    outer: `${G(m.tenGod).month} ${monthFit(m.tenGod)}`,
     good: G(m.tenGod).good,
     care: G(m.branchGod).care,
   }));

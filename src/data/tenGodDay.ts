@@ -113,6 +113,14 @@ export const TEN_GOD_DAY: Record<TenGod, DayGodReading> = {
   },
 };
 
+/** 달 단위로 같은 말을 한다. 같은 달도 신강한 사람에게는 부담이고 신약한
+ *  사람에게는 약이다. 이 꼬리가 없으면 열두 달 표가 누구에게나 같은 열 문장이 된다. */
+export const NEEDED_MONTH: Record<'needed' | 'excess' | 'neutral', string> = {
+  needed: '나한테 모자란 쪽이라 이 달은 약이 돼요.',
+  excess: '나한테 이미 많은 쪽이라 이 달은 크게 벌이지 마세요.',
+  neutral: '나한테 많지도 모자라지도 않은 쪽이에요.',
+};
+
 /** 오늘 기운이 내게 필요한 쪽인지. 같은 기운도 나에게 모자라면 약이 되고, 넘치면 부담이 된다 */
 export const NEEDED_LINE: Record<'needed' | 'excess' | 'neutral', string> = {
   needed: '나한테 모자란 쪽이라, 오늘은 이게 약이 돼요.',
