@@ -264,7 +264,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           text={
             `${timing.months[0].label}부터 ${timing.months[timing.months.length - 1].label}까지예요. ` +
             `맨 왼쪽이 이번 달이고, 세로선 오른쪽이 ${timing.months[timing.months.length - 1].year}년이에요. ` +
-            '표를 옆으로 밀면 그 달 풀이가 나와요.'
+            '표를 옆으로 넘기면 그 달 풀이가 나와요.'
           }
         />
         <div className="mpick">
@@ -300,7 +300,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
               <Sentences className="slot__pt-v" text={picked.good} />
             </li>
             <li className="slot__pt slot__pt--care">
-              <span className="slot__pt-k">탈 나는 것</span>
+              <span className="slot__pt-k">조심할 것</span>
               <Sentences className="slot__pt-v" text={picked.care} />
             </li>
           </ul>
