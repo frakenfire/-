@@ -33,7 +33,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
   // '네, 오늘 꺼내도 돼요' 바로 밑에 '가장 좋은 때는 4달 뒤' 가 붙으면 두 줄이
   // 서로 싸우는 것처럼 읽힌다. 층이 달라서 그런 건데 읽는 사람이 알 리 없다.
   const whenAsk = read.todayAsk.band === 'good'
-    ? '오늘도 되고, 크게 움직인다면'
+    ? '오늘도 괜찮고, 크게 움직일 때는?'
     : read.todayAsk.band === 'hard'
       ? '오늘 말고 언제가 좋아요?'
       : '그럼 언제가 좋아요?';
@@ -142,14 +142,14 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <p className="mflow__foot">맨 위 하나가 오늘 바로 할 수 있는 것이에요.</p>
+        <p className="mflow__foot">맨 위 항목은 오늘 바로 할 수 있는 일이에요.</p>
       </div>
 
       </Chapter>
 
       {/* '이 고민' 은 앱이 아는 것을 일부러 안 말하는 것이다. 돈을 물었으면
           돈이라고 적는다. */}
-      <Chapter title="왜 그렇게 해야 할까요" hint={`점수가 나온 자리와, 지금 ${concern.shortName} 생각이 커진 이유`}>
+      <Chapter title="왜 그렇게 해야 할까요" hint={`점수가 이렇게 나온 이유와, 지금 ${concern.shortName} 생각이 커진 이유`}>
       {/* 점수가 어디서 나왔는지 — '87점입니다' 하고 끝내면 아무도 안 믿는다.
           바탕 30, 십 년 20, 올해 20, 이번 달 20, 오늘 10 을 그대로 펼쳐 보여준다. */}
       <div className="sec-card">
@@ -191,7 +191,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <Sentences className="mflow__foot" text="이 다섯 줄은 태어난 여덟 글자에서만 나와요. 해가 바뀌어도 안 바뀌는 자리예요." />
+        <Sentences className="mflow__foot" text="이 다섯 줄은 태어난 여덟 글자에서만 나와요. 해가 바뀌어도 내용은 그대로예요." />
       </div>
 
       {/* 왜 지금 이 고민이 커졌나 — 타고난 구조가 '원래 어떤 사람이냐' 라면
@@ -210,7 +210,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <Sentences className="mflow__foot" text="십 년은 배경, 올해는 방향, 이번 달은 눈앞의 일이에요. 셋이 겹쳐서 지금 이 생각이 커졌어요." />
+        <Sentences className="mflow__foot" text="십 년 단위의 변화와 올해, 이번 달을 함께 봐요. 세 시기를 같이 보면 지금 이 생각이 커진 이유를 알 수 있어요." />
       </div>
 
       </Chapter>
@@ -377,11 +377,11 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           <Sentences className="dayp__line" text={read.chart.dayPillar.line} />
           <ul className="dayp">
             <li className="dayp__row">
-              <span className="dayp__k">잘 되는 자리</span>
+              <span className="dayp__k">잘 풀리는 부분</span>
               <Sentences className="dayp__v" text={read.chart.dayPillar.strong} />
             </li>
             <li className="dayp__row">
-              <span className="dayp__k">발목 잡히는 데</span>
+              <span className="dayp__k">어려움을 겪기 쉬운 부분</span>
               <Sentences className="dayp__v" text={read.chart.dayPillar.watch} />
             </li>
           </ul>
@@ -411,7 +411,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </ul>
         <Sentences
           className="mflow__foot"
-          text={'오늘이 맨 위예요. 쪽지는 날마다 새로 뽑으니까요.\n가까운 미래는 올해와 이번 달을 반씩 섞은 값이에요.\n타고난 나는 평생 그대로고, 나머지 셋은 때가 지나면 바뀌어요.'}
+          text={'오늘이 맨 위예요. 쪽지는 날마다 새로 뽑으니까요.\n가까운 미래는 올해와 이번 달 점수를 반씩 합산한 값이에요.\n타고난 나는 평생 그대로고, 나머지 셋은 때가 지나면 바뀌어요.'}
         />
       </div>
 
@@ -451,12 +451,12 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             <Sentences className="read6__v" text={read.chart.season} />
           </li>
           <li className="read6__row">
-            <span className="read6__k">채워주면 좋은 쪽</span>
+            <span className="read6__k">보완하면 좋은 부분</span>
             <Sentences className="read6__v" text={read.chart.useful} />
           </li>
         </ul>
 
-        <p className="cat4__head cat4__head--sub">다섯 갈래가 차지하는 비율</p>
+        <p className="cat4__head cat4__head--sub">다섯 요소가 차지하는 비율</p>
         <ul className="elbar">
           {read.chart.elements.map((e) => (
             <li key={e.el} className={`elbar__row${e.mine ? ' elbar__row--me' : ''}`}>
@@ -466,7 +466,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <Sentences className="mflow__foot" text="별표가 붙은 줄이 나를 뜻하는 갈래예요. 지지는 속에 든 글자까지 풀어서 셌어요." />
+        <Sentences className="mflow__foot" text="별표가 붙은 줄이 나를 나타내는 요소예요. 아래쪽 글자는 안에 든 글자까지 모두 세었어요." />
 
         {read.chart.sinsal.length > 0 ? (
           <>
@@ -498,11 +498,11 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
               ))}
             </ul>
             <Sentences className="qa qa--sub" text={read.name.verdict} />
-            <Sentences className="mflow__foot" text="한글 소리를 다섯 갈래로 갈라서 봐요. 한자는 안 받으니 획수는 세지 않아요." />
+            <Sentences className="mflow__foot" text="한글 이름의 소리를 다섯 가지로 나눠 봐요. 한자는 받지 않으니 획수는 세지 않아요." />
           </>
         ) : null}
 
-        <p className="cat4__head cat4__head--sub">이 주제에서 본 자리</p>
+        <p className="cat4__head cat4__head--sub">이 주제에서 살펴본 부분</p>
         <Sentences className="qa qa--sub" text={read.chart.focus} />
       </div>
 
