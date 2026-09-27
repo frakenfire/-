@@ -3,6 +3,8 @@ import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { Icon } from '../components/Icon.tsx';
 import { Mascot } from '../components/Mascot.tsx';
 import { Chapter } from '../components/Chapter.tsx';
+import { type DayPart } from '../lib/dayPart.ts';
+import { useDayPart } from '../lib/useDayPart.ts';
 import { GREETINGS } from '../data/copy.ts';
 import { HOW_ROWS, HOW_HEAD, HOW_LEAD, HOW_FOOT } from '../data/howItWorks.ts';
 import { todayVibe } from '../lib/dayVibe.ts';
@@ -31,10 +33,9 @@ function todayLabel(): string {
 }
 
 // 시간대를 고르고, 그 안에서 날짜 seed 로 문구를 골라 매일 다른 인사를 건넨다.
-function greeting(dateKey: string, spin: number): string {
-  const h = new Date().getHours();
-  const slot =
-    h >= 5 && h < 11 ? 'morning' : h >= 11 && h < 17 ? 'afternoon' : h >= 17 && h < 22 ? 'evening' : 'night';
+// 토막을 가르는 자는 dayPart.ts 하나뿐이다. 전에는 여기서 따로 재고 결과
+// 화면은 아예 안 재서, 두 화면이 지금이 언제인지를 다르게 말할 수 있었다.
+function greeting(dateKey: string, spin: number, slot: DayPart): string {
   const pool = GREETINGS[slot];
   return pool[hashSeed(`greet|${dateKey}|${slot}` + '|' + spin) % pool.length];
 }
@@ -61,6 +62,9 @@ export function HomeScreen({
   // 오늘 이미 뽑았으면 그 결과를 히어로 카드에도 반영한다(잠긴 ?  실제 값).
   // 주간 캘린더는 띠가 있어야 계산된다. 잠금 상태에서도 미리 계산해두면
   // 해금 순간 바로 그려져 '열었는데 빈 화면' 이 없다.
+  // 인사말은 하루 토막을 따라간다. 한 번만 재고 끝내면 두 시에 열어둔 앱이
+  // 일곱 시에도 '오후' 라고 인사한다.
+  const clock = useDayPart();
   const vibe = todayVibe(todayKey());
   const iljin = iljinOf(todayKey());
   const saju = zodiac ? sajuToday(todayKey(), zodiac.id) : null;
@@ -72,7 +76,7 @@ export function HomeScreen({
       {/* 첫 블록 — 상단 네비에 앱 이름이 이미 있어서, 큰 제목 자리는 앱 이름을
           반복하지 않고 '나에게 건네는 인사'가 차지한다. (예전엔 같은 글자가 두 번) */}
       <div className="home-hero">
-        <h1 className="h1">{softBreak(greeting(todayKey(), spin))}</h1>
+        <h1 className="h1">{softBreak(greeting(todayKey(), spin, clock.part))}</h1>
         {/* 날짜와 연속 기록은 제목 위 알약 두 개가 아니라 제목 밑 보조 한 줄이다.
             제목 위에 뭔가 있으면 헤더가 둘로 읽힌다. */}
         <p className="home-hero__sub">

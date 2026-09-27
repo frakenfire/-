@@ -2536,6 +2536,20 @@ strong {
 }
 .read6__k { font-size: 14px; line-height: 21px; font-weight: 700; color: var(--brand-strong); }
 .read6__v { margin: 0; font-size: 15px; line-height: 22.5px; font-weight: 500; color: var(--gray-800); word-break: keep-all; }
+/* 지금인 토막에 다는 표. 세 토막 중 어느 줄이 지금 얘기인지 한눈에 보이게 */
+.read6__now {
+  display: inline-block;
+  margin-left: 5px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--brand-soft);
+  font-size: 11px;
+  line-height: 16.5px;
+  font-weight: 700;
+  font-style: normal;
+  color: var(--brand-strong);
+  vertical-align: 1px;
+}
 
 /* ── 결과 화면: 점신·포스텔러·토스 운세가 공통으로 쓰는 순서를 따른다 ──
    총운 게이지 → 네 가지 운 → 행운 요소 → 개운(오늘 이렇게) → 나에게 → 풀이 → 띠 → 공유 */

@@ -40,6 +40,11 @@ const ALLOW = new Map([
   // 앱은 dayPillarOf 로만 꺼내 쓴다. 표를 밖으로 연 것은 dayPillar.test 가
   // 예순 칸이 다 있는지, 예순 명이 서로 다른 말을 받는지를 직접 세기 때문이다.
   ['data/dayPillar.ts:DAY_PILLAR', '일주 예순 칸 - 빠짐과 겹침을 직접 검사'],
+  // 밖으로 연 것은 luckyWhen.test 가 화면에 뜰 수 있는 시각이 하나도 빠짐없이
+  // 끝 시각을 갖는지 두 표를 맞대보기 때문이다. 전에 '이른 오후' 가 빠져 있어
+  // 흙이 용신인 사람은 밤에도 오후라는 말을 들었다.
+  ['lib/luck.ts:TIMES', '용신 없을 때 쓰는 여섯 구간 - 끝 시각이 다 있는지 검사'],
+  ['lib/luckyWhen.ts:SLOT_END', '구간별 끝 시각 - 빠진 말이 없는지 검사'],
   ['lib/goldenFixtures.ts:GOLDEN', 'golden 검증 자료'],
   ['lib/goldenFixtures.ts:DAY_ANCHOR', '일주 기준점 기록'],
   ['lib/goldenFixtures.ts:DAY_ANCHOR_CHECKED', '외부 대조한 기준점'],

@@ -32,8 +32,18 @@ export type OhaengFacts = {
   directionWhy: string;
   /** 이 기운에 붙는 두 숫자 */
   numbers: [number, number];
-  /** 이 기운이 하루 중 가장 센 때 (luckyWhen 이 아는 여섯 구간 중 하나) */
+  /** 이 기운이 하루 중 가장 센 때 */
   time: string;
+  /**
+   * 그 때가 끝나는 시각(24시간). luckyWhen 이 '이미 지나갔나' 를 이걸로 잰다.
+   *
+   * 전에는 luckyWhen 이 제 안에 여섯 구간의 끝 시각을 따로 들고 있었다. 그런데
+   * 화면에 실제로 뜨는 시각은 여기 time 이라, 두 표가 어긋나 있었다. '이른 오후'
+   * 는 luckyWhen 쪽 표에 아예 없어서 밤 열한 시에도 '이른 오후' 라고 떴다.
+   * 흙이 용신인 사람은 몇 시에 열든 늘 오후라고 들었다. 끝 시각을 시각을 적는
+   * 자리 바로 옆에 둬서 다시는 갈라지지 않게 한다.
+   */
+  timeEnd: number;
   /** 왜 그 시각인지. 뒷말에 이어붙는 '~니까' 꼴로 적는다 */
   timeWhy: string;
   /** 이 기운의 맛 */
@@ -53,6 +63,7 @@ export const OHAENG: Record<Element, OhaengFacts> = {
     directionWhy: '나무는 해가 뜨는 쪽에서 제일 잘 자라요.',
     numbers: [3, 8],
     time: '이른 아침',
+    timeEnd: 7,
     timeWhy: '나무는 새벽에서 아침으로 넘어갈 때 제일 힘을 써요.',
     taste: '신맛',
     foods: ['푸른 잎채소', '오이', '레몬을 띄운 물', '사과'],
@@ -65,6 +76,7 @@ export const OHAENG: Record<Element, OhaengFacts> = {
     directionWhy: '불은 해가 가장 높이 뜨는 쪽에 모여요.',
     numbers: [2, 7],
     time: '점심 무렵',
+    timeEnd: 13,
     timeWhy: '불은 해가 제일 높을 때 같이 세져요.',
     taste: '쓴맛',
     foods: ['쌉쌀한 나물', '따뜻한 커피', '구운 채소', '토마토'],
@@ -77,6 +89,7 @@ export const OHAENG: Record<Element, OhaengFacts> = {
     directionWhy: '흙은 어느 쪽에도 기울지 않고 가운데에 있어요.',
     numbers: [5, 10],
     time: '이른 오후',
+    timeEnd: 15,
     timeWhy: '흙은 해가 기울기 시작할 때 제일 따뜻해요.',
     taste: '단맛',
     foods: ['호박죽', '고구마', '누룽지', '단호박 샐러드'],
@@ -89,6 +102,7 @@ export const OHAENG: Record<Element, OhaengFacts> = {
     directionWhy: '쇠는 해가 지면서 하루를 거두는 쪽이에요.',
     numbers: [4, 9],
     time: '늦은 오후',
+    timeEnd: 19,
     timeWhy: '쇠는 해가 넘어가기 직전에 제일 힘을 써요.',
     taste: '매운맛',
     foods: ['무국', '마늘을 넣은 요리', '배', '생강차'],
@@ -101,6 +115,7 @@ export const OHAENG: Record<Element, OhaengFacts> = {
     directionWhy: '물은 해가 닿지 않는 쪽에 고여요.',
     numbers: [1, 6],
     time: '밤',
+    timeEnd: 24,
     timeWhy: '물은 해가 다 진 뒤에 제일 힘을 써요.',
     taste: '짠맛',
     foods: ['미역국', '검은콩', '김', '따뜻한 두부'],

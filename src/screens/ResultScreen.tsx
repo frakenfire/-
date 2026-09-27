@@ -16,6 +16,8 @@ import { DeepSections } from '../components/DeepSections.tsx';
 import { WeekCard } from '../components/WeekCard.tsx';
 import { Chapter } from '../components/Chapter.tsx';
 import type { Zodiac } from '../data/zodiac.ts';
+import { partPassed } from '../lib/dayPart.ts';
+import { useDayPart } from '../lib/useDayPart.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { ohaengWhy } from '../data/ohaeng.ts';
 import type { Band } from '../lib/timing.ts';
@@ -54,6 +56,12 @@ type Props = {
 export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onShareWeek, onBack }: Props) {
   const { luck } = result;
   const isMonth = result.reading.scale === 'month';
+  // 지금이 하루의 어느 토막인지. 지나간 토막은 오늘의 풀이에서 접는다.
+  // 켜둔 채 시간이 흘러도 따라가도록 시계를 구독한다.
+  const clock = useDayPart();
+  const nowPart = clock.part;
+  const allPartsPassed = (['morning', 'afternoon', 'evening'] as const).every((p) =>
+    partPassed(p, clock.at));
   // 고민을 골라 들어왔으면 맨 위 점수는 그 고민의 점수다. 명식에서 계산된 값이라
   // 오늘 점수(날짜 seed 기반)보다 이 화면이 하는 말과 더 붙는다.
   const concernLabel = deep ? findConcern(deep.concernKey).label : null;
@@ -83,8 +91,9 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
   }, [headScore]);
 
   const RING = 2 * Math.PI * 54;
-  // 이미 지나간 때를 오늘의 행운이라고 띄우지 않는다
-  const when = luckyWhen(luck.time);
+  // 이미 지나간 때를 오늘의 행운이라고 띄우지 않는다.
+  // 시계를 구독해서, 켜둔 채 그 시각을 넘겨도 따라간다.
+  const when = luckyWhen(luck.time, clock.at);
 
   return (
     <AppLayout
@@ -180,24 +189,40 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           </div>
         ) : null}
 
-        {/* 4.7 오늘의 풀이 — 전체·오전·오후·저녁·사람·마음 */}
+        {/* 4.7 오늘의 풀이 — 전체·오전·오후·저녁·사람·마음
+            시각을 안 보고 세 토막을 늘 함께 띄우고 있었다. 그래서 아침 아홉
+            시에 열어도 '오후엔 미뤄둔 답장 하나를 보내봐요' 가 떴고, 밤 아홉
+            시에 열어도 '오후 세 시쯤 좋은 소식이 올 수 있어요' 가 떴다.
+            지나간 토막은 접고, 지금인 토막에는 표를 단다. 이번 달 풀이는
+            초반·중순·월말이라 시각과 상관이 없으니 그대로 다 띄운다. */}
         <div className="cat4 sec-card">
           <p className="cat4__head">{isMonth ? '이번 달 풀이' : '오늘의 풀이'}</p>
           <ul className="read6">
             {[
-              ['전체', result.reading.overall],
-              [isMonth ? '초반' : '오전', result.reading.morning],
-              [isMonth ? '중순' : '오후', result.reading.afternoon],
-              [isMonth ? '월말' : '저녁', result.reading.evening],
-              ['사람', result.reading.people],
-              ['마음', result.reading.mind],
-            ].map(([k, v]) => (
-              <li key={k} className="read6__row">
-                <span className="read6__k">{k}</span>
-                <Sentences className="read6__v" text={String(v)} />
-              </li>
-            ))}
+              { k: '전체', v: result.reading.overall, part: null },
+              { k: isMonth ? '초반' : '오전', v: result.reading.morning, part: 'morning' as const },
+              { k: isMonth ? '중순' : '오후', v: result.reading.afternoon, part: 'afternoon' as const },
+              { k: isMonth ? '월말' : '저녁', v: result.reading.evening, part: 'evening' as const },
+              { k: '사람', v: result.reading.people, part: null },
+              { k: '마음', v: result.reading.mind, part: null },
+            ]
+              .filter((r) => isMonth || !r.part || !partPassed(r.part, clock.at))
+              .map(({ k, v, part }) => (
+                <li key={k} className="read6__row">
+                  <span className="read6__k">
+                    {k}
+                    {!isMonth && part && part === nowPart ? <i className="read6__now">지금</i> : null}
+                  </span>
+                  <Sentences className="read6__v" text={String(v)} />
+                </li>
+              ))}
           </ul>
+          {!isMonth && allPartsPassed ? (
+            <Sentences
+              className="mflow__foot"
+              text="오늘 시간대 풀이는 다 지나갔어요. 내일 아침에 새 쪽지를 뽑아보세요."
+            />
+          ) : null}
         </div>
 
         </>

@@ -404,6 +404,31 @@ function collect() {
     }
   }
 
+  // 지나간 시간대를 오늘 할 일이라고 말하는가.
+  //
+  // '오늘의 풀이' 가 시각을 안 보고 오전·오후·저녁 세 줄을 늘 함께 띄웠다.
+  // 아침 아홉 시에 열어도 '오후엔 미뤄둔 답장 하나를 보내봐요' 가 떴고,
+  // 밤 아홉 시에 열어도 '오후 세 시쯤 좋은 소식이 올 수 있어요' 가 떴다.
+  // 지금 시계를 보고, 보여야 할 줄만 보이는지 센다.
+  {
+    const ENDS = { 오전: 11, 오후: 17, 저녁: 22 };
+    const h = new Date().getHours();
+    // 새벽 다섯 시 전은 아직 어제의 밤이라 오늘 것이 하나도 안 지났다.
+    const passed = (k) => (h < 5 ? false : h >= ENDS[k]);
+    const shown = [];
+    for (const row of document.querySelectorAll('.read6__row')) {
+      const k = row.querySelector('.read6__k');
+      if (!k) continue;
+      let own = '';
+      for (const n of k.childNodes) if (n.nodeType === 3) own += n.nodeValue;
+      shown.push(own.trim());
+    }
+    out.stalePart = shown.filter((k) => k in ENDS && passed(k));
+    out.partsShown = shown.filter((k) => k in ENDS);
+    out.nowBadges = document.querySelectorAll('.read6__now').length;
+    out.clockHour = h;
+  }
+
   // 점수 막대가 바로 옆 숫자와 같은 말을 하는가.
   // 이 앱에는 점수 막대가 세 종류 있다 — 왜 N점인가요, 네 가지 운, 궁합 세 칸.
   // 한때 '왜 N점인가요' 만 50~92 를 0~100 으로 펴서 그렸고, 그 바람에 73점
@@ -522,6 +547,15 @@ function auditScreen(name, data) {
   // 15-3) 맨 아래 카드 밑에 여백이 남는가
   check(data.tailGap >= 28, `[${name}] 맨 아래에 여백이 있음`,
     `아래 여백 ${data.tailGap}px (기기에선 홈 인디케이터만큼 더 붙음)`);
+
+  // 15-4) 이미 지나간 시간대를 오늘 할 일로 말하지 않는가
+  check(data.stalePart.length === 0, `[${name}] 지나간 시간대를 안 띄움`,
+    data.stalePart.length
+      ? `${data.clockHour}시인데 ${data.stalePart.join('·')} 줄이 떠 있어요`
+      : `${data.clockHour}시 · 띄운 토막 ${data.partsShown.join('·') || '없음'}`);
+
+  // 15-5) 지금인 토막에 표가 하나만 붙는가
+  check(data.nowBadges <= 1, `[${name}] '지금' 표가 한 줄에만 붙음`, `표 ${data.nowBadges}개`);
 
   // 16) 같은 클래스에 같은 글자면 같은 색으로 그려지는가
   check(data.twoFaced.length === 0, `[${name}] 같은 말이 두 얼굴로 안 나옴`,
