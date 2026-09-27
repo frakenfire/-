@@ -220,7 +220,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           {!isMonth && allPartsPassed ? (
             <Sentences
               className="mflow__foot"
-              text="오늘 시간대 풀이는 다 지나갔어요. 내일 아침에 새 쪽지를 뽑아보세요."
+              text="오늘 시간대별 풀이는 모두 지나갔어요. 내일 아침에 새 쪽지를 뽑아보세요."
             />
           ) : null}
         </div>
