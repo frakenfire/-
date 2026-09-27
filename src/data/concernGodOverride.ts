@@ -60,7 +60,7 @@ const OVERRIDE: Partial<Record<ConcernKey, Record<string, Override>>> = {
         good: '받을 값과 조건을 숫자로 따지는 것',
         yearGood: '받는 값을 언제 얼마나 올릴지 한 해 단위로 정하기',
         month: '값과 조건 이야기가 실제로 오가는 달이라 희망 금액을 숫자로 정해둬야 해요.',
-        decide: '받을 값을 못 박는 순서예요.',
+        decide: '받을 금액을 먼저 정해두세요.',
         pull: '받을 값과 조건이 숫자로 정해지는',
         year: '값과 조건을 따지기 좋은 해라 협상이 숫자로 통해요.',
         daeun: '같은 일을 오래 해온 경험이 보상으로 이어지기 쉬운 십 년이에요. 쌓인 경력이 단가 협상의 근거가 돼요.',
@@ -106,7 +106,7 @@ const OVERRIDE: Partial<Record<ConcernKey, Record<string, Override>>> = {
       jeonggwan: { yearCare: '결정을 미루며 기다리게 하는 것' },
       pyeonin: { year: '올해는 남이 아니라 내가 뭘 원하는지를 먼저 정해야 해요.' },
       jeongin: {
-        decide: '사람을 먼저 챙기는 쪽에 서는 순서예요.',
+        decide: '이번에는 내가 먼저 상대를 챙겨보세요.',
         year: '도움을 받았다면 먼저 고마움을 표현하고 상대도 챙겨야 관계가 오래가요.',
         daeun: '나를 챙겨주는 사람이 생길 수 있는 십 년이에요. 받기만 하면 상대가 먼저 지칠 수 있어요.',
       },
