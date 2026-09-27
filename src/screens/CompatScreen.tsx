@@ -364,7 +364,7 @@ export function CompatScreen({
           <div className="compat-lock__score">?</div>
           <p className="compat-lock__title">오늘 우리 궁합, 몇 점일까요?</p>
           <p className="compat-lock__teaser">
-            잘 맞는 정도와 대화, 안 싸우기 점수부터 오늘의 두 사람 유형, 잘 맞는 점과 조언까지 한 번에 보여드려요
+            잘 맞는 정도, 대화 점수, 다툼을 피하는 점수부터 오늘의 두 사람 유형과 조언까지 한 번에 보여드려요
           </p>
           <div className="btn-stack">
             <button type="button" className="btn btn--primary" disabled={busy} onClick={unlockByShare}>
@@ -472,7 +472,7 @@ export function CompatScreen({
 
           <div className="save-person">
             <p className="save-person__title">이 사람, 내 사람으로 저장할까요?</p>
-            <p className="save-person__desc">관계만 골라두면 다음에 들어올 때 이 사람과의 오늘 궁합이 바로 보여요. 로그인 없이 이 기기에만 저장돼요</p>
+            <p className="save-person__desc">관계만 골라두면 다음에 들어올 때 오늘 이 사람과의 궁합이 바로 보여요. 로그인 없이 이 기기에만 저장돼요</p>
             <div className="save-person__chips">
               {RELATIONS.map((r) => (
                 <button
