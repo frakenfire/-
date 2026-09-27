@@ -587,7 +587,7 @@ export function buildDeepRead(
   // 가까운 미래는 올해와 이번 달을 반씩 섞는다 - 둘 다 몫이 20 으로 같아서
   // 한쪽만 고르면 나머지 하나를 버리게 된다. 섞은 값이라고 화면에 적는다.
   const partOf = (k: string) => score.parts.find((x) => x.k === k)!;
-  const natal = partOf('타고난 자리');
+  const natal = partOf('타고난 성향');
   const thisYear = partOf('올해');
   const thisMonthPart = partOf('이번 달');
   const todayPart = partOf('오늘');
