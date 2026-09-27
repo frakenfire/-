@@ -17,7 +17,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
   work: {
     bijian: {
       doIt: '같은 일을 하는 사람에게 요즘 시장이 어떤지 물어보기',
-      avoid: '남의 자리와 견주다가 감정으로 넘어가는 것',
+      avoid: '남의 상황과 비교하다 감정적으로 판단하는 것',
       hold: '이력서 전체를 다시 쓰는 일',
     },
     geopjae: {
@@ -48,15 +48,15 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     pyeongwan: {
       doIt: '미뤄둔 결정을 하나 골라 오늘 안에 끝내기',
       avoid: '급하게 통보하듯 말을 꺼내는 것',
-      hold: '큰 책임이 붙는 일을 새로 맡는 것',
+      hold: '책임이 큰 일을 새로 맡는 것',
     },
     jeonggwan: {
       doIt: '지원하려는 곳의 서류 요건을 한 번 맞춰보기',
-      avoid: '정해진 절차를 건너뛰고 말로 먼저 붙는 것',
+      avoid: '정해진 절차를 건너뛰고 말로만 먼저 합의하는 것',
       hold: '내 방식대로 하겠다고 밀어붙이는 일',
     },
     pyeonin: {
-      doIt: '경력을 다르게 묶어볼 수 있는지 한 번 굴려보기',
+      doIt: '해온 경력을 다른 직무에도 쓸 수 있는지 정리해보기',
       avoid: '떠오른 생각을 바로 실행으로 옮기는 것',
       hold: '방향을 아예 틀겠다고 결론 내리는 일',
     },
@@ -135,17 +135,17 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
       hold: '앞으로 계획을 길게 정하는 일',
     },
     sanggwan: {
-      doIt: '평소와 다른 자리를 하나 만들어보기',
+      doIt: '평소와 다른 모임이나 약속 하나 잡아보기',
       avoid: '순간의 기분으로 메시지를 보내는 것',
       hold: '사이를 정하자고 요구하는 일',
     },
     pyeonjae: {
-      doIt: '아는 사람을 통해 닿는 자리를 알아보기',
+      doIt: '아는 사람에게 소개받을 수 있는 사람이 있는지 물어보기',
       avoid: '여러 사람에게 동시에 마음을 흘리는 것',
       hold: '만나자마자 다음 단계를 정하는 일',
     },
     jeongjae: {
-      doIt: '만나면 다음 약속을 그 자리에서 잡기',
+      doIt: '만났을 때 다음 약속을 바로 잡기',
       avoid: '서운한 티만 내고 무슨 일인지 말 안 하는 것',
       hold: '현실 조건을 저울질하는 일',
     },
@@ -183,12 +183,12 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     },
     siksin: {
       doIt: '고마운 사람에게 표시 한 번 남기기',
-      avoid: '가볍게 던진 말이 남을 자리를 만드는 것',
-      hold: '새 자리에 얼굴을 넓히는 일',
+      avoid: '여럿이 있는 곳에서 가볍게 사람 얘기를 꺼내는 것',
+      hold: '새 모임에 나가 아는 사람을 늘리는 일',
     },
     sanggwan: {
       doIt: '내가 바꾸고 싶은 규칙 하나를 정리해두기',
-      avoid: '자리에서 사람 얘기를 하는 것',
+      avoid: '여럿이 있는 곳에서 다른 사람 얘기를 하는 것',
       hold: '관계를 끊는 결정',
     },
     pyeonjae: {
@@ -204,7 +204,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     pyeongwan: {
       doIt: '해야 할 말을 짧게 정리해 전하기',
       avoid: '한 번에 다 쏟아내는 것',
-      hold: '정면으로 붙는 대화',
+      hold: '정면으로 따지는 대화',
     },
     jeonggwan: {
       doIt: '맡은 것을 눈에 보이게 끝내두기',
@@ -213,13 +213,13 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     },
     pyeonin: {
       doIt: '거절해도 되는 부탁 하나를 오늘 거절하기',
-      avoid: '오해가 생긴 자리에서 혼자 해석하는 것',
+      avoid: '오해가 생겼을 때 혼자 의미를 단정하는 것',
       hold: '단톡방이나 모임을 정리하는 일',
     },
     jeongin: {
       doIt: '힘들 때 곁에 있어준 사람에게 연락하기',
       avoid: '다 받아주다 내 일을 뒤로 미루는 것',
-      hold: '새로 사람을 넓히는 일',
+      hold: '새로 아는 사람을 늘리는 일',
     },
   },
   health: {
@@ -282,7 +282,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     },
     geopjae: {
       doIt: '비교하게 되는 대상을 잠시 안 보기',
-      avoid: '남과 견주며 내 자리를 깎는 것',
+      avoid: '남과 비교하며 스스로를 낮게 보는 것',
       hold: '앞날을 길게 그려보는 일',
     },
     siksin: {
