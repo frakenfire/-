@@ -177,7 +177,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
     ],
     soon: [
       '지금은 답을 재촉하지 말아요. 정해질 때가 따로 있어요',
-      '내 하루를 채우는 게 제일 좋은 준비예요',
+      '사람을 찾기 전에 내 생활부터 챙기는 게 좋아요',
       '연락은 짧고 가볍게 이어두기만 해요',
     ],
     wait: [
@@ -215,20 +215,20 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
       '무리한 일정은 점수가 높은 달로 미뤄요',
     ],
     wait: [
-      '이 달엔 밤을 새우지 말아요. 바로 표시가 나요',
+      '이 달에는 밤을 새우지 마세요. 다음 날 컨디션이 바로 떨어질 수 있어요',
       '아픈 데가 있으면 참지 말고 병원에 가요. 사주는 병을 못 봐요',
       '약속을 하나 줄이고 그 시간에 누워요',
     ],
   },
   mind: {
     now: [
-      '하고 싶었던 말을 한 번 꺼내봐요. 지금은 잘 나가요',
+      '하고 싶었던 말을 한 번 꺼내보세요. 지금은 말하기 괜찮은 때예요',
       '기록을 남겨요. 지나고 나면 이 달이 기준이 돼요',
       '미뤄둔 결정을 이번에 하나만 끝내요',
     ],
     soon: [
       '지금은 답을 정하지 말고 적어만 둬요',
-      '몸을 먼저 움직여요. 마음은 뒤따라와요',
+      '몸을 먼저 움직여보세요. 생각이 덜 복잡해질 수 있어요',
       '믿는 사람 한 명한테만 말해요',
     ],
     wait: [
@@ -244,7 +244,7 @@ const CAUTION: Record<ConcernKey, string> = {
   money: '버거운 달엔 큰 계약과 보증을 피해요. 한 달만 미뤄도 달라져요.',
   love: '버거운 달엔 말이 세게 나가요. 중요한 얘기는 그 달을 넘겨요.',
   people: '버거운 달엔 오해가 잘 생겨요. 말보다 글로 남기면 덜 꼬여요.',
-  health: '버거운 달엔 무리가 바로 와요. 일정을 미리 비워둬요.',
+  health: '버거운 달에는 무리하면 컨디션이 바로 떨어질 수 있어요. 일정을 미리 줄여두세요.',
   mind: '버거운 달엔 혼자 결론 내지 말아요. 하루만 자고 다시 봐요.',
 };
 
@@ -465,7 +465,7 @@ export function buildDeepRead(
 
   // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
   // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
-  const chartToday = `내 글자에 맞춰보면 오늘은 ${TEN_GOD_KO[todayGod]}이 와요. ${G(todayGod).line}`;
+  const chartToday = `오늘 글자를 내 사주와 맞춰보면 ${TEN_GOD_KO[todayGod]}으로 봐요. ${G(todayGod).line}`;
 
   // 조견표로 대조만 하는 것들. 해석을 고르지 않으니 누가 계산해도 같다.
   const stars = sinsalOf(pillars).map((x) => ({
@@ -478,7 +478,7 @@ export function buildDeepRead(
   // 읽는 사람은 그게 언제 오는 해인지 알 길이 없다. 지지 차례와 띠 차례가
   // 같으니 띠 이름으로 적는다. 달은 뺐다 - 띠로는 달을 가리킬 수 없다.
   const gongmangZodiac = (b: number) => findZodiac(BRANCHES[b].animal)?.label ?? BRANCHES[b].kor;
-  const gongmang = `${withJosa(gongmangZodiac(g1), '과와')} ${gongmangZodiac(g2)} 해가 비어 있어요. 이 두 해에는 크게 벌여도 손에 남는 게 덜해요.`;
+  const gongmang = `${withJosa(gongmangZodiac(g1), '과와')} ${gongmangZodiac(g2)} 해가 비어 있어요. 이 두 해에는 일을 크게 벌여도 기대한 만큼 결과를 얻기 어려울 수 있어요.`;
 
   const chart = {
     pillars: chartPillars,
@@ -577,7 +577,7 @@ export function buildDeepRead(
   );
   const nextDay =
     tomorrowGod === todayGod && tomorrowRels.length === meetRows.length
-      ? '내일도 오늘과 비슷한 날이라, 오늘 잡아둔 것이 그대로 이어져요.'
+      ? '내일도 오늘과 비슷한 날이라, 오늘 정한 계획을 그대로 이어가도 괜찮아요.'
       : tomorrowGod === todayGod
         ? `내일도 오늘과 같은 종류의 날이지만, 내 사주와 만나는 부분이 달라져요. 그래서 오늘과 조금 다른 답이 나와요.`
         : `내일은 ${G(tomorrowGod).pull} 날이에요. 오늘과 다른 답이 나와요.`;
@@ -603,8 +603,8 @@ export function buildDeepRead(
   // 화면에서 그러고 있었다. 줄마다 가리키는 기간이 다르니 뒷문장도 그
   // 기간으로 말한다. 그러면 안 겹치고, 무엇을 언제 하라는지도 분명해진다.
   const SPAN = {
-    today: { same: '오늘은 하던 만큼만 하면 돼요.', up: '오늘 미뤄둔 것을 꺼내기 좋아요.', down: '오늘은 벌이는 것을 줄여 잡으세요.' },
-    near: { same: '이번 달도 하던 대로 가면 돼요.', up: '이번 달에 하나 꺼내볼 만해요.', down: '이번 달은 크게 벌이지 마세요.' },
+    today: { same: '오늘은 하던 만큼만 하면 돼요.', up: '오늘 미뤄둔 일을 시작하기 좋아요.', down: '오늘은 벌이는 것을 줄여 잡으세요.' },
+    near: { same: '이번 달도 하던 대로 가면 돼요.', up: '이번 달에는 미뤄둔 일을 하나 시작해볼 만해요.', down: '이번 달은 크게 벌이지 마세요.' },
     far: { same: '이 십 년은 큰 굴곡이 없어요.', up: '이 십 년 동안 밀어볼 만해요.', down: '이 십 년은 무리하지 않는 편이 나아요.' },
   } as const;
   const vsNatal = (n: number, span: keyof typeof SPAN): string | null => {
