@@ -113,7 +113,7 @@ export function computeConcernScore(
 
   const parts: ScorePart[] = [
     {
-      k: '타고난 자리',
+      k: '타고난 성향',
       label: `태어난 여덟 글자`,
       score: natal.score,
       band: bandOf(natal.score),
@@ -127,7 +127,7 @@ export function computeConcernScore(
       score: daeun ? daeun.score : 70,
       band: daeun ? daeun.band : 'ok',
       weight: WEIGHTS.daeun,
-      godWord: daeun ? TEN_GOD_KO[daeun.tenGod] : '태어난 자리 그대로',
+      godWord: daeun ? TEN_GOD_KO[daeun.tenGod] : '태어날 때의 성향 그대로',
       god: daeun ? daeun.tenGod : null,
     },
     {
@@ -222,7 +222,7 @@ export function scoreVerdictLine(
   const head = `${withJosa(c.label, '은는')} ${score.total}점이에요.`;
 
   if (!top || !low || top === low || top.score - low.score < 8) {
-    return `${head} 다섯 칸이 비슷한 높이라 어느 한쪽이 끌고 가지 않아요. 크게 벌이기보다 하던 것을 이어가는 쪽이 남아요.`;
+    return `${head} 위 다섯 점수가 비슷해서 어느 시기가 특별히 높거나 낮지 않아요. 새로운 일을 크게 벌이기보다 하던 일을 이어가는 편이 나아요.`;
   }
   // 합계는 아래 설명 줄이 말한다. 여기서는 어느 칸이 올리고 어느 칸이 눌렀는지만 짚는다.
   //
