@@ -1,5 +1,4 @@
 import type { Element } from '../lib/saju.ts';
-import { withRo } from '../lib/josa.ts';
 
 // 다섯 갈래마다 정해진 것들 — 방위, 숫자, 시각, 맛, 빛깔.
 //
@@ -60,7 +59,7 @@ export const OHAENG: Record<Element, OhaengFacts> = {
   wood: {
     ko: '나무',
     direction: '동쪽',
-    directionWhy: '나무는 해가 뜨는 쪽에서 제일 잘 자라요.',
+    directionWhy: '나무는 해가 뜨는 동쪽과 연결해서 봐요.',
     numbers: [3, 8],
     time: '이른 아침',
     timeEnd: 7,
@@ -73,7 +72,7 @@ export const OHAENG: Record<Element, OhaengFacts> = {
   fire: {
     ko: '불',
     direction: '남쪽',
-    directionWhy: '불은 해가 가장 높이 뜨는 쪽에 모여요.',
+    directionWhy: '불은 해가 높이 뜨는 남쪽과 연결해서 봐요.',
     numbers: [2, 7],
     time: '점심 무렵',
     timeEnd: 13,
@@ -86,7 +85,7 @@ export const OHAENG: Record<Element, OhaengFacts> = {
   earth: {
     ko: '흙',
     direction: '가운데',
-    directionWhy: '흙은 어느 쪽에도 기울지 않고 가운데에 있어요.',
+    directionWhy: '흙은 한쪽으로 치우치지 않는 가운데와 연결해서 봐요.',
     numbers: [5, 10],
     time: '이른 오후',
     timeEnd: 15,
@@ -99,7 +98,7 @@ export const OHAENG: Record<Element, OhaengFacts> = {
   metal: {
     ko: '쇠',
     direction: '서쪽',
-    directionWhy: '쇠는 해가 지면서 하루를 거두는 쪽이에요.',
+    directionWhy: '쇠는 해가 지는 서쪽과 연결해서 봐요.',
     numbers: [4, 9],
     time: '늦은 오후',
     timeEnd: 19,
@@ -112,7 +111,7 @@ export const OHAENG: Record<Element, OhaengFacts> = {
   water: {
     ko: '물',
     direction: '북쪽',
-    directionWhy: '물은 해가 닿지 않는 쪽에 고여요.',
+    directionWhy: '물은 해가 적게 드는 북쪽과 연결해서 봐요.',
     numbers: [1, 6],
     time: '밤',
     timeEnd: 24,
@@ -151,18 +150,18 @@ export function ohaengWhy(
   const numJosa = [2, 4, 5, 9].includes(f.numbers[0]) ? '와' : '과';
   const dirLine = concern
     ? `${f.directionWhy} 그래서 ${f.direction}이 ${concern.luckyWhere}이에요.`
-    : `${f.directionWhy} 그래서 ${f.direction}${hasBatchim(f.direction) ? '이' : '가'} 오늘 내 자리예요.`;
+    : `${f.directionWhy} 그래서 ${f.direction}${hasBatchim(f.direction) ? '이' : '가'} 오늘 눈여겨볼 방향이에요.`;
   const timeLine = concern
-    ? `${f.timeWhy} 그래서 ${concern.luckyWhen} ${withRo(f.time)} 잡으면 수월해요.`
-    : `${f.timeWhy} 그래서 중요한 건 ${withRo(f.time)} 잡으면 수월해요.`;
+    ? `${f.timeWhy} 그래서 ${concern.luckyWhen} ${f.time}에 잡으면 수월해요.`
+    : `${f.timeWhy} 그래서 중요한 일은 ${f.time}에 잡으면 수월해요.`;
   // 기운 이름은 첫 문장에서 한 번만 부른다. 문장마다 '쇠 기운' 을 되풀이하면
   // 다섯 줄이 같은 말을 네 번 하는 것처럼 읽힌다.
   return [
-    `오늘 나한테 힘이 되는 건 ${f.ko} 쪽이에요.`,
+    `오늘 나한테 힘이 되는 건 ${f.ko} 요소예요.`,
     dirLine,
     timeLine,
-    `붙는 숫자는 ${f.numbers[0]}${numJosa} ${f.numbers[1]}, 빛깔은 ${colorName}이에요. 먹는 건 ${f.taste}이 드는 쪽이 좋아요.`,
+    `오늘 눈여겨볼 숫자는 ${f.numbers[0]}${numJosa} ${f.numbers[1]}, 빛깔은 ${colorName}이에요. 음식은 ${f.taste}이 나는 걸 골라보세요.`,
     // 여섯 칸이 어제와 같은 이유를 먼저 말해준다. 안 말하면 '왜 안 바뀌지' 가 남는다.
-    '이건 내 여덟 글자에서 제일 모자란 쪽이라 날마다 바뀌지 않아요. 오늘 바뀐 건 빛깔이에요.',
+    '이 요소는 내 여덟 글자에서 가장 부족한 부분이라 날마다 바뀌지 않아요. 오늘 달라지는 건 빛깔이에요.',
   ].join('\n');
 }
