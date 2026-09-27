@@ -194,7 +194,7 @@ export const DAY_PILLAR: Record<string, DayPillarRead> = {
   },
   무자: {
     nick: '숫자로 따지는 사람',
-    line: '느낌보다 숫자를 믿는 편이에요. 셈이 빨라요.',
+    line: '느낌보다 숫자를 믿는 편이에요. 계산이 빨라요.',
     strong: '돈과 조건을 정하는 일에서 강점을 보여요.',
     watch: '재기만 하다가 사람 마음을 놓치기 쉬워요.',
   },
@@ -339,7 +339,7 @@ export const DAY_PILLAR: Record<string, DayPillarRead> = {
     watch: '넓게 벌이다 어느 것도 안 깊어지기 쉬워요.',
   },
   임오: {
-    nick: '셈이 밝은 사람',
+    nick: '계산이 빠른 사람',
     line: '겉은 느긋한데 셈은 정확한 편이에요. 손해 보는 걸 싫어해요.',
     strong: '조건을 맞춰 정하는 일에서 강점을 보여요.',
     watch: '재는 티가 나서 사람이 거리를 두기 쉬워요.',
