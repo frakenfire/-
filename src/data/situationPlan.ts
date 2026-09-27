@@ -18,7 +18,7 @@ import type { Stance } from './decision.ts';
 export const STANCE_LEAD: Record<Stance, string> = {
   run: '이번 달은 움직여볼 만해요. 미루지 말고 이번 달 안에 행동하세요.',
   prep: '이번 달은 아직이에요. 곧 열리니까 지금은 준비만 해두세요.',
-  hold: '이번 달은 막혀 있어요. 큰 결정은 다음 달로 넘기세요.',
+  hold: '이번 달은 큰 결정을 내리기보다 조금 더 지켜보는 게 나아요. 가능하면 다음 달에 다시 판단하세요.',
   keep: '이번 달은 열리지도 막히지도 않았어요. 새로 시작하지 말고 지금 하는 것만 이어가세요.',
 };
 
@@ -45,7 +45,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     rest: {
-      focus: '쉬는 기간이 길어질수록 회사를 고르는 기준이 흐려져요. 기준부터 세우세요.',
+      focus: '쉬는 기간이 길어질수록 아무 회사나 고르기 쉬워져요. 먼저 원하는 조건부터 정하세요.',
       dos: [
         '가고 싶은 회사 세 곳을 적고 요건을 맞춰보기',
         '쉬는 동안 한 일을 이력서에 한 줄로 만들기',
@@ -142,7 +142,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
     alone: {
       focus: '사람을 만나려면 실제로 모임이나 약속에 나가는 게 먼저예요.',
       dos: [
-        '이번 주에 사람 있는 자리 하나를 잡아두기',
+        '이번 주에 모임이나 약속 하나 잡기',
         '아는 사람에게 소개를 한 번 부탁해보기',
         '혼자 하는 취미 일정을 하나 넣어두기',
       ],
@@ -153,7 +153,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     some: {
-      focus: '애매한 사이는 오래 끌수록 한쪽만 지쳐요. 물어보면 끝나요.',
+      focus: '애매한 관계는 오래 끌수록 한쪽만 지칠 수 있어요. 상대에게 직접 물어보는 게 나아요.',
       dos: [
         '만났을 때 다음 약속을 바로 정하기',
         '애매하면 사귀는 사이인지 한 번 물어보기',
@@ -182,7 +182,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       focus: '끝난 사이는 정리한 만큼만 지나가요. 남은 것을 하나씩 치우세요.',
       dos: [
         '그 사람 물건과 사진을 한 번에 정리하기',
-        '그 사람 자리에 다른 일정을 넣어두기',
+        '그 사람을 생각하는 시간에 다른 일정 잡기',
         '연락하고 싶을 때 쓸 곳을 하나 정해두기',
       ],
       donts: [
@@ -223,7 +223,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       focus: '가족은 결론을 내려 할수록 길어져요. 한 번에 하나만 꺼내세요.',
       dos: [
         '하고 싶은 말 하나만 정해서 짧게 말하기',
-        '전화보다 얼굴 보고 말할 자리 잡기',
+        '전화보다 직접 만나 이야기할 약속 잡기',
         '고마웠던 것을 한 번 말로 하기',
       ],
       donts: [
@@ -264,7 +264,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       focus: '잠은 억지로 자려 할수록 안 와요. 눕기 전 한 시간이 전부예요.',
       dos: [
         '눕는 시각을 정하고 알람을 거기에 맞추기',
-        '잠들기 한 시간 전에 화면 내려놓기',
+        '잠들기 한 시간 전에는 휴대폰을 보지 않기',
         '잠이 안 오면 일어나서 다른 방에 있기',
       ],
       donts: [
@@ -287,7 +287,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     keep: {
-      focus: '몸 관리는 크기가 아니라 안 빠뜨리는 것으로 쌓여요.',
+      focus: '몸 관리는 한 번에 많이 하는 것보다 꾸준히 이어가는 게 중요해요.',
       dos: [
         '한 번에 끝낼 수 있는 분량으로 정하기',
         '운동을 빠뜨린 날을 세지 말고 다음 날 그냥 하기',
@@ -315,7 +315,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     burnt: {
-      focus: '지친 건 마음이 약해서가 아니라 남은 게 없어서예요. 채우는 게 먼저예요.',
+      focus: '지쳤다면 의지가 약해서라고 단정하지 마세요. 먼저 쉬고 체력을 회복하는 게 중요해요.',
       dos: [
         '제일 무거운 일 하나만 끝내고 하루를 접기',
         '쉬는 날부터 달력에 표시해두기',
@@ -323,7 +323,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
       donts: [
         '더 버티면 기분이 괜찮아진다고 밀어붙이기',
-        '쉬는 날에 밀린 일을 채우기',
+        '쉬는 날에 밀린 일을 몰아서 하기',
         '못 한 것만 세면서 하루 끝내기',
       ],
     },
@@ -344,7 +344,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       focus: '외로움은 사람 수가 아니라 한 사람과의 시간으로 줄어요.',
       dos: [
         '오래 안 본 사람 한 명에게 연락하기',
-        '사람 있는 자리 하나를 이번 주에 혼자라도 넣기',
+        '이번 주에 혼자라도 모임이나 외출 일정 하나 잡기',
         '좋아하는 것에 시간을 한 시간 쓰기',
       ],
       donts: [
