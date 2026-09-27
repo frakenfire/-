@@ -1023,7 +1023,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '남의 소비를 보고 괜히 위축되는 것',
       },
       {
-        headline: '오늘은 소비보다 점검이 어울리는 날이에요.',
+        headline: '오늘은 쓰기 전에 어디로 나가는지부터 보세요.',
         vibe: '숫자를 마주 보면 불안이 줄어요.',
         steps: [
           { when: '아침', text: '이번 주 지출을 3분만 훑어봐요.' },

@@ -14,7 +14,6 @@ import type { BranchRelation } from '../lib/saju.ts';
 import { softBreak } from '../lib/softBreak.ts';
 import { buildRankingShareText } from '../lib/share.ts';
 import { findZodiac, type Zodiac } from '../data/zodiac.ts';
-import { withJosa } from '../lib/josa.ts';
 import { Sentences } from '../components/Sentences.tsx';
 
 // 글자를 세 갈래로 묶는다. 같은 글자는 언제나 같은 색이 되도록, 점수가 아니라
@@ -125,19 +124,10 @@ export function HomeScreen({
               </>
             ) : (
               <>
-                {/* '지금은 안정 / 기운이 좋아요' 로 명사 가운데가 끊기면 안 읽힌다.
-                    낱말과 조사를 한 덩이로 묶어 그 안에서는 안 끊기게 한다.
-                    '기운' 은 무슨 일이 생기는지를 안 말한다. 바로 아래 줄이
-                    그날 무슨 일이 있는지를 이미 적고 있어서, 여기는 그 하루에
-                    어울리는 낱말 하나만 든다. */}
-                <p className="today-hook__line">
-                  오늘은{' '}
-                  <span className="nowrap">
-                    <b>{vibe.word}</b>
-                    {withJosa(vibe.word, '이가').slice(vibe.word.length)}
-                  </span>{' '}
-                  어울리는 날이에요
-                </p>
+                {/* '오늘은 [낱말]이 어울리는 날이에요' 틀을 걷었다. 낱말을 끼우는
+                    틀은 낱말마다 문법이 달라 '다정이 어울리는 날' 처럼 문장이
+                    안 되는 게 나왔다. 이제 한 문장씩 손으로 쓴 것을 그대로 쓴다. */}
+                <p className="today-hook__line">{softBreak(vibe.head, 14)}</p>
                 <p className="today-hook__hint">{vibe.line}</p>
               </>
             )}
