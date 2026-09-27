@@ -405,7 +405,7 @@ export default function App() {
     });
     logEvent('share', { outcome: r });
     if (r === 'shared') flash('친구에게 공유했어요');
-    else if (r === 'copied') flash('공유 문구 복사 완료!');
+    else if (r === 'copied') flash('공유 문구를 복사했어요!');
     else if (r === 'cancelled') return; // 취소 — 아무 안내 없이 조용히
     else flash('앗, 공유를 못 했어요');
   }
@@ -414,7 +414,7 @@ export default function App() {
     const r = await shareMessage(text);
     logEvent('share_week', { outcome: r });
     if (r === 'shared') flash('이번 주 운세를 공유했어요');
-    else if (r === 'copied') flash('공유 문구 복사 완료!');
+    else if (r === 'copied') flash('공유 문구를 복사했어요!');
     else if (r === 'failed') flash('앗, 공유를 못 했어요');
   }
 
