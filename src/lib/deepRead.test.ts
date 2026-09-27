@@ -32,8 +32,8 @@ test('달이 바뀌면 답이 바뀐다', () => {
     const { r } = read(new Date(Date.UTC(2026, m, 15, 3)));
     heads.add(r.slots[0].outer);
     // sub 은 이제 판정 하나에서만 나온다 (큰 글씨와 한 목소리여야 해서).
-    // 달마다 바뀌는 몫은 monthWhy 가 맡는다 - 행동 바로 위에 붙는 줄이다.
-    subs.add(r.monthWhy);
+    // 달마다 바뀌는 자리는 시기 덩이의 '이번 달' 줄이 맡는다.
+    subs.add(r.when.find((w) => w.k === '이번 달')?.act ?? '');
     acts.add(r.actions.join('|'));
   }
   assert.ok(subs.size >= 5, `이번 달 문장이 ${subs.size}가지뿐`);

@@ -144,7 +144,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
                   같은 말을 두 번 읽히면 두 번째는 안 읽힌다. 여기는 이유만
                   두고, 배지와 할 일은 아래 카드 한 곳에서만 그린다. */}
               <span className="drawn__now">
-                <span className="drawn__why">{deep.read.monthWhy}</span>
+                <span className="drawn__why">{deep.read.todayWhy}</span>
               </span>
             </>
           ) : (

@@ -17,6 +17,7 @@ import { STANCE_WORD, WHEN_ACT, type Stance } from '../data/decision.ts';
 import { planOf, STANCE_LEAD } from '../data/situationPlan.ts';
 import { NATAL_REASON } from '../data/natalReason.ts';
 import { dayPillarOf, dayPillarKey } from '../data/dayPillar.ts';
+import { todayWhyOf } from '../data/todayWhy.ts';
 import { NEEDED_MONTH } from '../data/tenGodDay.ts';
 import { needFit } from './dailySaju.ts';
 import { GOD_GROUP_OF, analyzeSaju, tenGodOf, mainHiddenStem, type TenGod } from './tenGods.ts';
@@ -51,7 +52,8 @@ export type DeepRead = {
   headline: string;
   sub: string;
   /** 이번 달 기운으로 읽은 한 줄. 행동 바로 위에 붙는다 */
-  monthWhy: string;
+  /** 맨 위 카드 세 번째 줄 - 오늘 들어온 글자가 이 고민에 어떻게 닿는가 */
+  todayWhy: string;
   situationLine: string;
   /** 시기 표 */
   when: { k: string; v: string; band?: string; bandKey?: Band; act?: string }[];
@@ -358,6 +360,8 @@ export function buildDeepRead(
       v: timing.thisMonth.label,
       band: bandLabel(timing.thisMonth),
       bandKey: timing.thisMonth.band,
+      // 맨 위 카드에서 내려온 줄. 이번 달 글자를 보는 말이라 여기가 제자리다.
+      act: G(timing.thisMonth.tenGod).decide,
     },
     {
       k: '가장 좋은 때',
@@ -833,7 +837,10 @@ export function buildDeepRead(
       sub: verdictTwo.sub,
     },
     /** 이번 달 기운으로 읽은 한 줄. 행동 바로 위에 붙는다 */
-    monthWhy: G(timing.thisMonth.tenGod).decide,
+    // 맨 위 카드 세 번째 줄. 전에는 이번 달 글자를 봤는데, 매일 뽑는 앱의
+    // 제일 큰 카드에서 오늘이 아닌 것을 말하고 있었다. 이번 달 근거는
+    // 시기 덩이의 '이번 달' 줄로 내려보냈다.
+    todayWhy: todayWhyOf(concernKey, optionKey, todayGod),
     slots,
     monthSlots,
     yearLines,

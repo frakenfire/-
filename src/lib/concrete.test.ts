@@ -54,7 +54,10 @@ function onePersonLines(p: (typeof PEOPLE)[number], key: ConcernKey, option: str
     r.headline, r.sub, r.decision.verdict,
     // 맨 위 카드의 한 줄. 화면에 늘 떠 있는데 이 목록에 빠져 있어서, 예순 줄을
     // 다시 쓰는 동안 화면 검사는 한 번도 그 줄을 안 봤다.
-    r.monthWhy,
+    r.todayWhy,
+    // 시기 덩이의 '이번 달' 줄. 맨 위 카드에서 내려온 뒤로 이 목록에서
+    // 빠져 있어 열 칸이 한 번도 안 보이고 있었다.
+    ...r.when.map((w) => w.act ?? ''),
     ...r.slots.map((s) => s.outer),
     ...r.monthSlots.map((s) => s.outer),
     ...r.yearLines.map((y) => y.v),
@@ -244,13 +247,17 @@ test('맨 위 카드의 두 줄이 같은 층에서 나온다', () => {
   }
 });
 
-test('이번 달 이유가 행동 칸으로 내려가 있다', () => {
+// 맨 위 카드 세 번째 줄은 오늘 글자에서 나오고, 이번 달 근거는 시기 덩이의
+// '이번 달' 줄로 내려가 있다. 둘이 자리를 바꾼 뒤로도 각자 제 말을 하는지 본다.
+test('맨 위는 오늘 근거, 이번 달 근거는 시기 줄에 있다', () => {
   for (const c of CONCERNS) {
     const t = computeTiming(INPUT, P, 'female', c.key, new Date('2026-09-21T09:00:00+09:00'));
     const r = buildDeepRead(P, t, c.key, c.options[0].key, '2026-09-21', '김한별');
-    assert.ok(r.monthWhy.length > 6, `${c.key}: 이번 달 이유가 비었어요`);
-    assert.ok(!r.sub.includes(r.monthWhy), `${c.key}: 밑 줄에 아직 섞여 있어요`);
-    assert.ok(WORD[c.key].test(r.monthWhy), `${c.key}: 이번 달 이유에 고민 말이 없어요 — ${r.monthWhy}`);
+    assert.ok(r.todayWhy.startsWith('오늘'), `${c.key}: 맨 위 근거가 오늘 얘기가 아니에요 — ${r.todayWhy}`);
+    assert.ok(!r.sub.includes(r.todayWhy), `${c.key}: 밑 줄에 아직 섞여 있어요`);
+    const thisMonth = r.when.find((w) => w.k === '이번 달');
+    assert.ok(thisMonth?.act && thisMonth.act.length > 6, `${c.key}: 이번 달 줄에 근거가 없어요`);
+    assert.ok(WORD[c.key].test(thisMonth!.act!), `${c.key}: 이번 달 근거에 고민 말이 없어요 — ${thisMonth!.act}`);
   }
 });
 
