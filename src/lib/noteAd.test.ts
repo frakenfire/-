@@ -3,18 +3,28 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { shouldShowNoteAd } from './adPolicy.ts';
 
-// 오늘 첫 쪽지는 광고 없이 연다. 이건 취향이 아니라 이 앱이 검수 서류에
-// 적어둔 약속이라(release/LAUNCH.md '무료 결과 광고 없이 제공'), 조용히
-// 뒤집히면 심사에서 말이 달라진다.
-test('오늘 첫 장은 광고 없이 연다', () => {
-  assert.equal(shouldShowNoteAd(1), false);
-});
-
-test('두 번째부터가 광고 자리다', () => {
+// 첫 장부터 광고를 붙인다. 하루 한 장 뽑고 나가는 사람이 대부분이라
+// 첫 장을 빼면 광고가 거의 안 뜬다.
+test('오늘 첫 장부터 광고 자리다', () => {
+  assert.equal(shouldShowNoteAd(1), true);
   assert.equal(shouldShowNoteAd(2), true);
-  assert.equal(shouldShowNoteAd(3), true);
   assert.equal(shouldShowNoteAd(9), true);
 });
+
+// 세지도 않고 부르면 규칙이 도는지 알 수 없다.
+test('안 세고 부르면 안 켠다', () => {
+  assert.equal(shouldShowNoteAd(0), false);
+});
+
+// 광고를 봐야만 열리는 앱이 되면 심사에서 걸린다. 광고 결과로 화면을
+// 막는 코드가 들어오지 않았는지 호출부를 읽어서 본다.
+test('광고를 닫아도 쪽지는 열린다', () => {
+  const src = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8');
+  const at = src.indexOf("showRewardAd('note')");
+  const after = src.slice(at, at + 700);
+  assert.ok(!/return;/.test(after.split('replaceScreen')[0]),
+    '광고 결과를 보고 결과 화면으로 안 가는 길이 생겼어요');
+})
 
 // 세는 걸 잊고 부르면 첫 장에도 광고가 뜬다. 호출부가 실제로 횟수를 보고
 // 있는지까지 못 박는다 - 전에 뽑을 때마다 부르던 코드가 바로 이 모양이었다.

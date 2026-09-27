@@ -3042,6 +3042,51 @@ strong {
 .sent { display: block; }
 .sent + .sent { margin-top: 3px; }
 
+/* 내 일주 — 예순 가지 중 하나. 별명이 제일 크고, 그 밑에 두 줄 설명,
+   그 밑에 잘 되는 자리와 발목 잡히는 데를 한 줄씩 */
+.dayp__nick {
+  margin: 2px 0 0;
+  font-size: 19px;
+  line-height: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--brand-strong);
+  word-break: keep-all;
+}
+.dayp__line {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-800);
+  word-break: keep-all;
+}
+.dayp { list-style: none; margin: 14px 0 0; padding: 0; }
+.dayp__row {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 10px;
+  padding: 11px 0;
+  border-top: 1px solid var(--gray-100);
+}
+.dayp__k {
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 700;
+  padding-top: 2px;
+  color: var(--gray-600);
+}
+.dayp__row:first-child .dayp__k { color: var(--brand-strong); }
+.dayp__v {
+  min-width: 0;
+  margin: 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 600;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+
 /* 오늘은 이렇게 — 할 것과 피할 것을 한 줄씩 못 박는다 */
 .today2 { list-style: none; margin: 0; padding: 0; }
 .today2__row {

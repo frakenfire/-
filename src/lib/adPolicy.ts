@@ -2,16 +2,15 @@
 // ads.ts 는 import.meta.env 를 읽어서 노드 테스트에서 못 불러온다.
 // 규칙이 테스트 밖에 있으면, 규칙이 뒤집혀도 아무도 모른다.
 /**
- * 오늘 몇 번째 쪽지인가로 note 광고를 켤지 정한다.
+ * 쪽지를 뽑을 때 note 광고를 켤지 정한다.
  *
- * 이 앱이 글로 적어둔 약속은 세 군데에 있다 —
- *   App.tsx        "무료 첫 결과에는 광고를 넣지 않는다"
- *   AD_GROUPS.note "쪽지를 누른 뒤 결과 전에 한 번"
- *   release/LAUNCH.md 검수 항목  "무료 결과 광고 없이 제공 ✓"
- * 그런데 코드는 뽑을 때마다 광고를 물리고 있었다. 브라우저에서는 광고가
- * 'unsupported' 로 그냥 지나가므로 점검 셋 중 무엇도 이걸 못 봤다.
+ * 한동안 오늘 첫 장은 광고 없이 열었다. 이 앱의 수익이 광고뿐이라, 하루에
+ * 한 번 들어와 한 장 뽑고 나가는 사람이 대부분인 앱에서 그 규칙은 광고를
+ * 거의 0 으로 만들었다. 그래서 첫 장부터 붙인다.
  *
- * 오늘의 첫 장은 그냥 연다. 두 번째부터가 '한 번 더' 이고, 거기가 광고 자리다.
+ * 광고를 강제하는 것은 아니다. 광고가 없거나(unsupported) 사용자가 닫아도
+ * (dismissed) 쪽지는 그대로 열린다 — App.tsx 는 광고 결과를 보고 화면을
+ * 막지 않는다. 막는 순간 '광고를 봐야만 쓰는 앱' 이 되고 심사에서 걸린다.
  */
 export function shouldShowNoteAd(drawsToday: number, paidAtEntry = false): boolean {
   // paidAtEntry: '다른 고민도 궁금하면' 에서 광고를 한 번 보고 들어온 길이다.
@@ -21,5 +20,7 @@ export function shouldShowNoteAd(drawsToday: number, paidAtEntry = false): boole
   // '사용자 의도와 무관한 광고 소비' 로 읽힌다. 입구에서 받았으면 여기서는
   // 안 받는다.
   if (paidAtEntry) return false;
-  return drawsToday > 1;
+  // 뽑은 횟수가 안 세진 자리(0)에서 부르면 규칙이 도는지 알 수 없다.
+  // 호출부가 반드시 먼저 세도록 못 박는다 - noteAd.test 가 순서를 본다.
+  return drawsToday >= 1;
 }

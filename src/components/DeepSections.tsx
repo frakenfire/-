@@ -366,7 +366,32 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       </Chapter>
 
-      <Chapter title="다양한 관점에서 본 나의 사주" hint="네 가지 나, 내 명식 여덟 글자, 오늘 글자">
+      <Chapter title="다양한 관점에서 본 나의 사주" hint="내 일주, 네 가지 나, 명식 여덟 글자, 오늘 글자">
+      {/* 내 일주 — 사주에서 사람을 가리키는 제일 작은 단위. 진짜 사주를 보러
+          온 사람이 제일 먼저 찾는 자리라 이 덩이 맨 위에 둔다. 일간 열 가지만
+          읽던 때는 열 명 중 한 명이 같은 말을 받았는데, 이제 예순 명 중 하나다. */}
+      {read.chart.dayPillar ? (
+        <div className="sec-card">
+          <p className="cat4__head">{read.chart.dayPillar.name}</p>
+          <p className="dayp__nick">{read.chart.dayPillar.nick}</p>
+          <Sentences className="dayp__line" text={read.chart.dayPillar.line} />
+          <ul className="dayp">
+            <li className="dayp__row">
+              <span className="dayp__k">잘 되는 자리</span>
+              <Sentences className="dayp__v" text={read.chart.dayPillar.strong} />
+            </li>
+            <li className="dayp__row">
+              <span className="dayp__k">발목 잡히는 데</span>
+              <Sentences className="dayp__v" text={read.chart.dayPillar.watch} />
+            </li>
+          </ul>
+          <Sentences
+            className="mflow__foot"
+            text="일주는 태어난 날의 두 글자예요. 예순 가지 중 하나라, 해가 바뀌어도 안 바뀌어요."
+          />
+        </div>
+      ) : null}
+
       {/* 네 가지 나 — 여러 각도에서 본 요약이라 이 덩이 머리에 둔다.
           오늘이 맨 위다. 매일 새로 뽑는 건 그 줄뿐이다. */}
       <div className="sec-card">

@@ -344,11 +344,10 @@ export default function App() {
       await wait(550);
       setScreen('reveal');
       await wait(1400);
-      // 오늘 몇 번째인지 먼저 센다. 첫 장은 광고 없이 연다 - 이 앱이 세 군데에
-      // 적어둔 약속인데(여기 주석, AD_GROUPS.note, release/LAUNCH.md 검수 항목)
-      // 코드는 뽑을 때마다 광고를 물리고 있었다. 브라우저에서는 광고가
-      // 'unsupported' 로 지나가므로 점검 셋 중 무엇도 이걸 못 봤다.
-      // 두 번째부터가 '한 번 더' 이고, 거기가 광고 자리다.
+      // 오늘 몇 번째인지 먼저 센다. 규칙은 adPolicy.shouldShowNoteAd 에 있고
+      // noteAd.test 가 못 박는다. 첫 장부터 광고를 붙이되, 광고가 없거나
+      // 사용자가 닫아도 아래로 그냥 내려가 결과를 연다 - 광고를 봐야만
+      // 열리는 앱이 되면 심사에서 걸린다.
       const drawsToday = incrementDailyDrawCount(dateKey);
       if (shouldShowNoteAd(drawsToday, paidAtEntry.current)) {
         try {

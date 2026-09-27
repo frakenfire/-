@@ -37,6 +37,9 @@ const ALLOW = new Map([
   // 같은 파일 안에서만 쓴다. 밖으로 연 것은 relGloss.test.ts 가 이번 주 표('날')와
   // 띠 순위('사이') 가 다시 한 벌로 섞이지 않는지 아홉 칸을 직접 보기 때문이다.
   ['lib/saju.ts:REL_PAIR_GLOSS', '띠 순위 쪽 말 - 이번 주 표와 안 섞이는지 직접 검사'],
+  // 앱은 dayPillarOf 로만 꺼내 쓴다. 표를 밖으로 연 것은 dayPillar.test 가
+  // 예순 칸이 다 있는지, 예순 명이 서로 다른 말을 받는지를 직접 세기 때문이다.
+  ['data/dayPillar.ts:DAY_PILLAR', '일주 예순 칸 - 빠짐과 겹침을 직접 검사'],
   ['lib/goldenFixtures.ts:GOLDEN', 'golden 검증 자료'],
   ['lib/goldenFixtures.ts:DAY_ANCHOR', '일주 기준점 기록'],
   ['lib/goldenFixtures.ts:DAY_ANCHOR_CHECKED', '외부 대조한 기준점'],

@@ -16,6 +16,7 @@ import { DECADE_AREAS, type DecadeAreas } from '../data/decadeAreas.ts';
 import { STANCE_WORD, WHEN_ACT, type Stance } from '../data/decision.ts';
 import { planOf, STANCE_LEAD } from '../data/situationPlan.ts';
 import { NATAL_REASON } from '../data/natalReason.ts';
+import { dayPillarOf, dayPillarKey } from '../data/dayPillar.ts';
 import { NEEDED_MONTH } from '../data/tenGodDay.ts';
 import { needFit } from './dailySaju.ts';
 import { GOD_GROUP_OF, analyzeSaju, tenGodOf, mainHiddenStem, type TenGod } from './tenGods.ts';
@@ -72,6 +73,8 @@ export type DeepRead = {
     sinsal: { k: string; at: string; v: string }[];
     /** 비어 있는 두 글자 */
     gongmang: string;
+    /** 일주 예순 가지 중 내 것. 사주에서 '나' 를 가리키는 최소 단위다 */
+    dayPillar: { name: string; nick: string; line: string; strong: string; watch: string } | null;
   };
   /** 이름이 실어 나르는 기운. 이름을 안 넣었으면 null */
   name: {
@@ -489,6 +492,11 @@ export function buildDeepRead(
     today: chartToday,
     sinsal: stars,
     gongmang,
+    dayPillar: (() => {
+      const read = dayPillarOf(pillars.day.stem, pillars.day.branch);
+      if (!read) return null;
+      return { name: dayPillarKey(pillars.day.stem, pillars.day.branch) + '일주', ...read };
+    })(),
   };
 
   // 이름도 계산에 들어간다. 한글 소리를 다섯 기운으로 갈라, 그 기운이 명식에서
