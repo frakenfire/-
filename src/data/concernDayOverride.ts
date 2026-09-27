@@ -17,21 +17,21 @@ const DAY_OVERRIDE: Partial<Record<ConcernKey, Record<string, Override>>> = {
   work: {
     // 첫 자리를 구하는 사람에게는 쌓인 경력이 없다.
     start: {
-      pyeonin: { doIt: '해본 일과 배운 것을 다르게 묶어볼 수 있는지 한 번 굴려보기' },
+      pyeonin: { doIt: '해본 일과 배운 것을 다른 직무에도 쓸 수 있는지 정리해보기' },
     },
     // 내 일을 하려는 사람에게 지원·채용·연봉은 남의 얘기다.
     own: {
       bijian: { hold: '사업 계획을 처음부터 다시 쓰는 일' },
-      pyeonjae: { doIt: '내 일과 겹치는 곳 두 군데가 얼마에 파는지 열어보기' },
-      jeongjae: { doIt: '받을 값과 들어갈 원가를 숫자로 적어 기준선 만들기' },
-      jeonggwan: { doIt: '사업자 등록이나 신고에 필요한 서류 요건을 한 번 맞춰보기' },
+      pyeonjae: { doIt: '비슷한 일을 하는 곳 두 군데의 판매 가격 확인하기' },
+      jeongjae: { doIt: '받을 금액과 원가를 숫자로 적어 최소 금액 정하기' },
+      jeonggwan: { doIt: '사업자 등록이나 신고에 필요한 서류를 확인해 준비하기' },
       jeongin: { avoid: '준비가 덜 됐다며 시작 자체를 미루는 것' },
     },
   },
   love: {
     // 혼자인 사람에게는 '만나면' 이 전제할 자리가 없다.
     alone: {
-      jeongjae: { doIt: '만날 자리가 생기면 다음 약속까지 그 자리에서 잡기' },
+      jeongjae: { doIt: '사람을 만나면 다음 약속까지 바로 잡기' },
     },
     // 끝난 사이는 다음 약속을 잡는 자리가 아니다.
     past: {
