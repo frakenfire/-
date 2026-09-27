@@ -445,6 +445,43 @@ strong {
   font-weight: 500;
   color: var(--gray-600);
 }
+/* 넣어둔 이름·생년월일·성별 한 줄과 고치는 길.
+   뽑을 때마다 생년월일 화면을 거치던 걸 없앴으니, 여기가 유일한 입구다. */
+.home-hero__who {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  /* 고치기 단추가 44px 을 채우느라 위아래로 커진 만큼 되돌린다 */
+  margin: -8px 0 -12px;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  /* gray-500 은 크림 바닥에서 3.04 밖에 안 나온다. AA 는 4.5 다 */
+  color: var(--gray-600);
+}
+.home-hero__who-v {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.home-hero__who-edit {
+  flex: none;
+  margin: 0;
+  /* 글자는 작게 두고 누르는 자리만 44px 로 넓힌다 */
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 700;
+  color: var(--brand-strong);
+  text-decoration: underline;
+  cursor: pointer;
+}
 .home-hero .h1 {
   margin-bottom: 0;
   font-size: 24px;

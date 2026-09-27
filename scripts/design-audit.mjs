@@ -654,8 +654,10 @@ async function run() {
   for (const [concern, option] of REST) {
     await page.goto(BASE, { waitUntil: 'networkidle' }); await w(600);
     await page.locator('.today-hook__cta').first().click(); await w(700);
-    // 이름·성별은 저장돼 있어 이 화면은 그냥 넘긴다
-    await page.getByRole('button', { name: '다음' }).first().click(); await w(800);
+    // 이름·성별이 저장돼 있으면 이 화면을 아예 건너뛰고 바로 고민 고르기다.
+    if (await page.getByRole('button', { name: '다음' }).count()) {
+      await page.getByRole('button', { name: '다음' }).first().click(); await w(800);
+    }
     await page.getByText(concern, { exact: true }).first().click(); await w(600);
     await page.getByText(option, { exact: true }).first().click(); await w(800);
     await page.locator('button.note').first().dispatchEvent('click');
@@ -693,8 +695,10 @@ async function run() {
   // 삭제 확인 — 이 앱에서 빨강을 쓰는 유일한 자리이자, 버튼 둘이 나란히 서는
   // 유일한 자리다. 그런데 열다섯 화면을 도는 동안 한 번도 안 들렀다. 안 들른
   // 화면은 규칙을 지키는지 아닌지를 아무도 모른다.
+  // 지우는 줄은 생년월일 화면에 있다. 뽑기 버튼은 그 화면을 건너뛰므로
+  // 홈의 '고치기' 로 들어간다.
   await page.goto(BASE, { waitUntil: 'networkidle' }); await w(600);
-  await page.locator('.today-hook__cta').first().click(); await w(800);
+  await page.getByRole('button', { name: '고치기' }).first().click(); await w(800);
   await page.locator('.data-link').first().click(); await w(500);
   await grab('삭제 확인');
 

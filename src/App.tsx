@@ -445,6 +445,20 @@ export default function App() {
     return computeFourScores(birthInput, pillars, birth?.gender ?? null, dateKey);
   }, [birthInput, pillars, birth?.gender, dateKey]);
 
+  // 이름·생년월일·성별이 다 있으면 다시 안 묻는다. 셋은 생년월일 화면이
+  // 비워두면 못 넘어가게 막는 칸이라, 한 번 통과했으면 셋 다 있다.
+  // (성별이 없던 시절에 저장된 값은 여기서 걸러져 한 번 더 묻는다 -
+  //  대운이 앞으로 가는지 뒤로 가는지가 성별로 갈리기 때문이다)
+  const birthReady = Boolean(birth?.date && birth?.name && birth?.gender);
+  const birthSummary = useMemo(() => {
+    if (!birth?.date) return null;
+    const [y, m, d] = birth.date.split('-');
+    const 성별 = birth.gender === 'male' ? '남자' : birth.gender === 'female' ? '여자' : null;
+    return [birth.name, `${Number(y)}년 ${Number(m)}월 ${Number(d)}일`, 성별]
+      .filter(Boolean)
+      .join(' · ');
+  }, [birth?.date, birth?.name, birth?.gender]);
+
   const deep = useMemo(() => {
     if (!concernKey || !birthInput || !pillars) return null;
     const timing = computeTiming(birthInput, pillars, birth?.gender ?? null, concernKey);
@@ -563,8 +577,26 @@ export default function App() {
           streak={streak}
           zodiac={zodiac}
           spin={spin}
+          // 한 번 넣었으면 다시 안 묻는다.
+          //
+          // 여태는 뽑을 때마다 이름·생년월일 화면을 거쳤다. 값은 채워져
+          // 있었지만 남자·여자 칸이 매번 눈앞에 다시 떴고, 쓰는 사람에게는
+          // '계속 골랐는데 또 고르라고 한다' 로 읽혔다. 매일 여는 앱에서
+          // 이미 답한 것을 매일 다시 보여주면 안 된다.
+          //
+          // 고칠 길은 홈에 따로 낸다(아래 onEditBirth). 화면을 건너뛰면서
+          // 고칠 데까지 없애면 생년월일을 영영 못 고친다.
           onStart={() => {
+            if (birthReady) {
+              startDraw();
+              return;
+            }
             setBirthNext('concern');
+            setScreen('birth');
+          }}
+          savedBirth={birthReady ? birthSummary : null}
+          onEditBirth={() => {
+            setBirthNext('saju');
             setScreen('birth');
           }}
         />

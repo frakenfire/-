@@ -45,6 +45,10 @@ type Props = {
   zodiac: Zodiac | null;
   /** 쪽지 뽑기 시작 — 주제 고르기(1단계)로 간다 */
   onStart: () => void;
+  /** 저장된 이름·생년월일·성별 한 줄. 없으면 아직 안 넣은 것 */
+  savedBirth?: string | null;
+  /** 저장된 값을 고치러 가는 길 */
+  onEditBirth?: () => void;
   /** 회전 값 — 겉 문구가 열 때마다 돌아간다 */
   spin?: number;
   /** 띠 서열을 단톡방에 던진다. 주간 카드와 같은 자리, 같은 모양 */
@@ -56,6 +60,8 @@ export function HomeScreen({
   streak,
   zodiac,
   onStart,
+  savedBirth = null,
+  onEditBirth,
   onShareRanking,
   spin = 0,
 }: Props) {
@@ -88,6 +94,18 @@ export function HomeScreen({
               ? `${streak}일째 쪽지`
               : '오늘의 첫 쪽지'}
         </p>
+        {/* 넣어둔 값을 보여주고 고칠 길을 낸다.
+            뽑을 때마다 생년월일 화면을 거치던 걸 없앴으므로, 여기가 아니면
+            고칠 데가 없다. 보여주는 일도 한다 - 뭐로 계산하고 있는지 모르면
+            '내 걸로 보고 있는 게 맞나' 가 남는다. */}
+        {savedBirth && onEditBirth ? (
+          <p className="home-hero__who">
+            <span className="home-hero__who-v">{savedBirth}</span>
+            <button type="button" className="home-hero__who-edit" onClick={onEditBirth}>
+              고치기
+            </button>
+          </p>
+        ) : null}
       </div>
 
       {/*  메인 focal — '오늘의 나'훅 카드

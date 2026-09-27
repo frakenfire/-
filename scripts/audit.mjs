@@ -670,11 +670,23 @@ async function run(browser) {
       await wait(page, 500);
       await page.locator('.today-hook__cta').first().click();
       await wait(page, 600);
-      // 사주가 있어도 이름·생년월일 화면을 한 번 거친다 (값은 채워져 있다)
-      check((await page.getByText('언제 태어났어요?', { exact: false }).count()) > 0,
-        '[흐름] 뽑기 전에 이름·생년월일을 먼저 받는다');
-      await fillName(page);
-      await page.getByRole('button', { name: '다음' }).first().click();
+      // 한 번 넣었으면 다시 안 묻는다. 여태는 뽑을 때마다 이름·생년월일
+      // 화면을 거쳤고, 남자·여자 칸이 매번 다시 떠서 '계속 골랐는데 또
+      // 고르라고 한다' 는 말을 들었다. 이제 바로 고민 고르기로 간다.
+      check((await page.getByText('언제 태어났어요?', { exact: false }).count()) === 0,
+        '[흐름] 이미 넣었으면 생년월일을 다시 안 묻는다');
+      check((await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).count()) > 0,
+        '[흐름] 바로 고민 고르기로 간다');
+      // 건너뛰는 대신 홈에 고칠 길을 냈다. 없으면 생년월일을 영영 못 고친다.
+      await page.goto(URL_BASE, { waitUntil: 'networkidle' });
+      await wait(page, 500);
+      check((await page.getByRole('button', { name: '고치기' }).count()) > 0,
+        '[흐름] 홈에서 생년월일을 고칠 수 있다');
+      check((await page.locator('.home-hero__who-v').count()) > 0,
+        '[흐름] 홈이 무엇으로 계산하는지 보여준다',
+        (await page.locator('.home-hero__who-v').first().innerText().catch(() => '')).trim());
+      // 다시 흐름으로 들어간다. 생년월일이 있으니 바로 고민 고르기다.
+      await page.locator('.today-hook__cta').first().click();
       await wait(page, 700);
       await page.getByText('일과 이직', { exact: true }).first().click();
       await wait(page, 500);
@@ -722,9 +734,13 @@ async function run(browser) {
       await wait(page, 500);
       await page.locator('.today-hook__cta').first().click();
       await wait(page, 700);
-      await fillName(page);
-      await page.getByRole('button', { name: '다음' }).first().click();
-      await wait(page, 700);
+      // 이 자리까지 오면 이름·생년월일은 이미 넣어둔 상태라 화면을 건너뛴다.
+      // 아직 안 넣은 길로 들어왔을 때만 한 번 채운다.
+      if (await page.getByRole('button', { name: '다음' }).count()) {
+        await fillName(page);
+        await page.getByRole('button', { name: '다음' }).first().click();
+        await wait(page, 700);
+      }
       // 사주가 있어도 고민은 묻는다. 고민이 결과의 절반이기 때문이다.
       check((await page.getByText('요즘 뭐가 고민이에요?', { exact: false }).count()) > 0,
         '[사주] 사주가 있어도 고민을 묻는다');
@@ -744,9 +760,10 @@ async function run(browser) {
       await diagnose(page, '사주결과');
 
       // 개인정보를 받았으면 지우는 길이 앱 안에 있어야 한다. 넣는 자리에 둔다.
+      // 뽑기 버튼은 그 화면을 건너뛰므로 홈의 '고치기' 로 들어간다.
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 500);
-      await page.locator('.today-hook__cta').first().click();
+      await page.getByRole('button', { name: '고치기' }).first().click();
       await wait(page, 800);
       check((await page.locator('.data-link').count()) === 1, '[사주] 생년월일 화면에 지우기 한 줄');
       await page.locator('.data-link').first().click();
@@ -1506,10 +1523,11 @@ async function run(browser) {
   {
     const page = await newPage(browser);
     await drawTo(page);
-    // 지우는 길은 정보를 넣는 화면에 있다. 결과에서 홈을 거쳐 들어간다.
+    // 지우는 길은 정보를 넣는 화면에 있다. 뽑기 버튼은 이제 그 화면을
+    // 건너뛰므로 홈의 '고치기' 로 들어간다.
     await page.goto(URL_BASE, { waitUntil: 'networkidle' });
     await wait(page, 500);
-    await page.getByText('오늘 쪽지 열어보기').first().click();
+    await page.getByRole('button', { name: '고치기' }).first().click();
     await wait(page, 800);
     check((await page.locator('.data-link').count()) === 1, '[삭제] 생년월일 화면에 지우기 한 줄');
     await page.locator('.data-link').first().click();
