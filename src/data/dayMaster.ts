@@ -71,7 +71,7 @@ const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
       '감정을 숨기는 게 서툰 편이에요. 좋으면 좋다고, 아니면 아니라고 얼굴에 드러나요. 그 솔직함 덕분에 함께 있는 사람도 편하게 느낄 수 있어요.',
     strengths: ['밝음', '솔직함', '분위기 메이커'],
     shadow: '기분이 그대로 새어나가서 주변이 같이 출렁일 때가 있어요.',
-    shines: '분위기가 가라앉은 곳에서 먼저 말을 걸어 분위기를 바꿀 때',
+    shines: '조용하거나 어색한 자리에서 먼저 말을 걸어 분위기를 풀 때',
     hue: '#f57800',
     hueText: '#e45600',
   },
@@ -102,7 +102,7 @@ const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     tagline: '곁에 있는 사람이 잘돼요',
     nature:
       '앞에 나서기보다 필요한 일을 챙겨주는 역할이 편해요. 사람이나 일을 세심하게 돌보고, 실제 도움이 되는 판단을 하는 편이에요.',
-    strengths: ['살뜰함', '현실감각', '뒷심'],
+    strengths: ['살뜰함', '현실 감각', '뒷심'],
     shadow: '남 걱정을 먼저 하다 정작 내 것을 미뤄둬요.',
     shines: '누군가 나 때문에 잘됐다는 말을 들을 때',
     hue: '#ffb331',
