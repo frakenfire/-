@@ -246,8 +246,16 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
               className={`seg__btn${gender === k ? ' seg__btn--on' : ''}`}
               aria-pressed={gender === k}
               aria-describedby="birth-gender-hint"
+              // 고른 것을 또 누르면 꺼지던 자리다.
+              //
+              // 성별은 둘 중 하나를 고르는 칸이지 켰다 껐다 하는 칸이 아니다.
+              // 그런데 여기만 토글이라, 이미 고른 쪽을 한 번 더 누르면 조용히
+              // 풀렸다. 폰에서 두 번 두드리는 건 흔한 일이고, 눌린 표시가
+              // 사라진 걸 못 본 채로 다음을 누르면 '성별을 골라주세요' 가 뜬다.
+              // 분명히 골랐는데 또 고르라는 말을 듣게 된다. 바로 옆 양력·음력
+              // 칸은 처음부터 그냥 고르기(switchCal)였다. 여기만 달랐다.
               onClick={() => {
-                setGender(gender === k ? null : k);
+                setGender(k);
                 if (genderWarn) setGenderWarn(false);
               }}
             >

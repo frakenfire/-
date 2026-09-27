@@ -538,6 +538,31 @@ async function run(browser) {
       check((await page.locator('.field__warn').count()) === 0,
         '[미입력] 성별을 고르면 경고가 사라진다');
 
+      // 고른 것을 또 눌러도 안 꺼진다.
+      //
+      // 여기만 토글이었다. 이미 고른 쪽을 한 번 더 누르면 조용히 풀려서,
+      // 폰에서 두 번 두드린 사람은 분명히 골랐는데 '성별을 골라주세요' 를
+      // 봤다. 짝수 번 두드리면 매번 그렇다.
+      const pressed = async () =>
+        (await page.locator('.field .seg__btn[aria-pressed="true"]').allTextContents())
+          .map((t) => t.trim());
+      await page.getByRole('button', { name: '여자' }).first().click();
+      await wait(page, 250);
+      check((await pressed()).includes('여자'), '[성별] 두 번 눌러도 안 꺼진다',
+        (await pressed()).join(',') || '아무것도 안 눌림');
+      await page.getByRole('button', { name: '여자' }).first().click();
+      await wait(page, 250);
+      check((await pressed()).includes('여자'), '[성별] 세 번 눌러도 안 꺼진다',
+        (await pressed()).join(',') || '아무것도 안 눌림');
+      // 다른 쪽으로는 바꿀 수 있어야 한다
+      await page.getByRole('button', { name: '남자' }).first().click();
+      await wait(page, 250);
+      const both = await pressed();
+      check(both.includes('남자') && !both.includes('여자'),
+        '[성별] 다른 쪽을 누르면 그쪽으로 바뀐다', both.join(',') || '없음');
+      await page.getByRole('button', { name: '여자' }).first().click();
+      await wait(page, 250);
+
       // 입춘 경계(2024-02-04 10:00) — 달력 띠와 사주 띠가 갈리는 날
       // 휠은 굴려도 되고 눌러도 된다 — 자동화는 누르는 쪽으로 확인한다
       await pickBirth(page, { year: 2024, month: 2, day: 4, ampm: '오전', hour: 10, minute: '00' });
