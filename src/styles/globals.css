@@ -97,7 +97,11 @@ a:focus-visible {
   flex-direction: column;
   /* TDS 스크린 마진 — 좌우 24px. 위는 네비 밑으로 한 칸 띄운다.
      8px 이면 제목이 네비에 얹혀 있어 화면이 시작하는 느낌이 안 난다. */
-  padding: var(--space-4) var(--space-6) var(--space-8);
+  /* 아래는 홈 인디케이터가 덮는 만큼을 더 준다. --sab 는 토스 브릿지가
+     갱신하고, 없으면 env(safe-area-inset-bottom) 폴백. 안 더하면 맨 아래
+     카드가 인디케이터 바에 딱 붙어 답답해 보인다. */
+  padding: var(--space-4) var(--space-6)
+    calc(var(--space-8) + var(--sab, env(safe-area-inset-bottom, 0px)));
   overflow-y: auto;
 }
 /* 헤더는 상단에 고정하고, 선택 콘텐츠(그리드·카드)만 남은 공간을
@@ -143,7 +147,7 @@ a:focus-visible {
   position: sticky;
   bottom: 0;
   padding: var(--space-4) var(--space-5)
-    calc(var(--space-5) + env(safe-area-inset-bottom, 0px));
+    calc(var(--space-5) + var(--sab, env(safe-area-inset-bottom, 0px)));
   /* 불투명 단색. 페이드(투명 구간)를 쓰면 흰 카드 위에선 예쁘지만
      어두운 카드(부적·내일 예고)가 지나갈 때 버튼 둘레로 어두운 띠가 비친다.
      TDS BottomCTA 도 불투명 배경이다. 경계는 위쪽 얇은 선으로 정리. */
@@ -386,7 +390,7 @@ strong {
 .toast {
   position: fixed;
   left: 50%;
-  bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  bottom: calc(88px + var(--sab, env(safe-area-inset-bottom, 0px)));
   transform: translateX(-50%);
   background: rgba(51, 51, 51, 0.94);
   color: var(--color-white);

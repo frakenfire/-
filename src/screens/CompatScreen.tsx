@@ -20,6 +20,7 @@ import {
   type RelationKey,
   type SavedPerson,
 } from '../lib/storage.ts';
+import { Sentences } from '../components/Sentences.tsx';
 
 type Mode = 'zodiac' | 'star';
 
@@ -253,9 +254,7 @@ export function CompatScreen({
         <h2 className="h2">
           {picking === 'my' ? `내 ${modeLabel}는 뭐예요?` : `상대는 무슨 ${modeLabel}예요?`}
         </h2>
-        <p className="lead">
-          {modeLabel}만 고르면 돼요. 생년월일은 필요 없어요.
-        </p>
+        <Sentences className="lead" text={`${modeLabel}만 고르면 돼요. 생년월일은 필요 없어요.`} />
         {/* 이름만 열둘 늘어놓으면 '나 92년생인데 무슨 띠지' 에서 막힌다.
             생년과 생일은 다들 알지만 자기 띠·별자리 이름은 모르는 사람이 많다.
             띠에는 최근 생년 셋, 별자리에는 날짜 범위를 같이 둔다.
@@ -405,7 +404,7 @@ export function CompatScreen({
               ))}
             </div>
 
-            <p className="compat-result__reason"> {result.reason}</p>
+            <Sentences className="compat-result__reason" text={result.reason} />
 
             {/* 오행은 '속 기운' 보조 정보 — 라벨과 쉬운 말을 붙여, 높은 점수 옆의
                 '상극' 이 모순처럼 읽히지 않게 한다 */}

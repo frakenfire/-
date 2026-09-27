@@ -6,6 +6,7 @@ import { parseBirth } from '../lib/birth.ts';
 import { solarToLunar, lunarToSolar, leapMonthOf, lunarMonthLength } from '../lib/lunar.ts';
 import { BIRTH_PLACES, DEFAULT_PLACE_ID, findPlace } from '../data/birthPlace.ts';
 import type { StoredBirth } from '../lib/storage.ts';
+import { Sentences } from '../components/Sentences.tsx';
 
 type Props = {
   initial: StoredBirth | null;
@@ -203,7 +204,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
       )}
     >
       <h2 className="h2">언제 태어났어요?</h2>
-      <p className="lead">이 기기에만 저장돼요. 어디에도 보내지 않아요.</p>
+      <Sentences className="lead" text="이 기기에만 저장돼요. 어디에도 보내지 않아요." />
 
       <div className="birth-form">
         <label className={nameWarn ? 'field field--warn' : 'field'}>
@@ -404,9 +405,10 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
               ))}
             </div>
           ) : null}
-          <span className="field__hint">
-            해가 뜨는 시각이 지역마다 달라요. 목록에 없으면 가까운 곳으로 골라주세요.
-          </span>
+          <Sentences
+            className="field__hint"
+            text="해가 뜨는 시각이 지역마다 달라요. 목록에 없으면 가까운 곳으로 골라주세요."
+          />
         </div>
 
       </div>

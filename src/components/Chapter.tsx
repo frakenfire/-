@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { Sentences } from './Sentences.tsx';
 
 type Props = {
   title: string;
@@ -20,7 +21,7 @@ export function Chapter({ title, hint, children }: Props) {
   return (
     <section className="chap">
       <p className="chap__title">{title}</p>
-      <p className="chap__hint">{hint}</p>
+      <Sentences className="chap__hint" text={hint} />
       <div className="chap__body">{children}</div>
     </section>
   );

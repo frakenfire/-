@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { AdBadge } from './AdNotice.tsx';
 import { Icon } from './Icon.tsx';
 import { CONCERNS, type ConcernKey } from '../data/concerns.ts';
+import { Sentences } from './Sentences.tsx';
 
 type Props = {
   /** 지금 보고 있는 고민. 목록에서 뺀다 */
@@ -53,9 +54,10 @@ export function MoreConcerns({ current, unlocked, onUnlock, onOpen }: Props) {
   return (
     <div className="sec-card">
       <p className="cat4__head">다른 고민도 궁금하면</p>
-      <p className="more__lead">
-        같은 명식으로 답만 다시 계산해요. 지금 보신 내용은 그대로 있어요.
-      </p>
+      <Sentences
+        className="more__lead"
+        text="같은 명식으로 답만 다시 계산해요. 지금 보신 내용은 그대로 있어요."
+      />
       <ul className="more">
         {rest.map((c) => {
           const open = unlocked.includes(c.key);

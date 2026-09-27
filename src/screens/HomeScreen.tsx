@@ -13,6 +13,7 @@ import { softBreak } from '../lib/softBreak.ts';
 import { buildRankingShareText } from '../lib/share.ts';
 import { findZodiac, type Zodiac } from '../data/zodiac.ts';
 import { withJosa } from '../lib/josa.ts';
+import { Sentences } from '../components/Sentences.tsx';
 
 // 글자를 세 갈래로 묶는다. 같은 글자는 언제나 같은 색이 되도록, 점수가 아니라
 // 관계 자체로 가른다. 합(찰떡·짝꿍)은 파랑, 부딪히는 쪽은 진한 회색, 나머지는 회색.
@@ -214,13 +215,13 @@ export function HomeScreen({
                 <span className="how__icon" aria-hidden><Icon name={r.icon} size={18} /></span>
                 <span className="how__body">
                   <strong className="how__title">{r.title}</strong>
-                  <span className="how__text">{r.body}</span>
+                  <Sentences className="how__text" text={r.body} />
                 </span>
               </li>
             ))}
           </ol>
         </Chapter>
-        <p className="how__foot">{HOW_FOOT}</p>
+        <Sentences className="how__foot" text={HOW_FOOT} />
       </section>
 
     </AppLayout>

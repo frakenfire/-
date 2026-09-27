@@ -355,6 +355,55 @@ function collect() {
     out.repeatedSeen = count.size;
   }
 
+  // 마침표가 찍혔는데 줄이 안 바뀌는가.
+  //
+  // Sentences 컴포넌트가 있는데도 안 거치고 통짜로 그리는 자리가 남아 있었다.
+  // 그러면 '붙는 숫자는 1과 6, 빛깔은 남색이에요. 먹는 건' 에서 줄이 끊기고
+  // 다음 줄이 '짠맛이 드는 쪽이 좋아요.' 로 시작한다. 어디서 끊어 읽어야
+  // 할지 모르니 결국 다 흘려 읽는다. 한 문장은 한 줄을 가져야 한다.
+  {
+    const bad = [];
+    let seen = 0;
+    for (const el of document.querySelectorAll('.app *')) {
+      // 자식으로 문장을 이미 쪼개 놓았으면 통과
+      if (el.querySelector(':scope > .sent')) continue;
+      let own = '';
+      for (const n of el.childNodes) if (n.nodeType === 3) own += n.nodeValue;
+      own = own.replace(/\s+/g, ' ').trim();
+      if (!/[가-힣]/.test(own)) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width < 1 || r.height < 1) continue;
+      // 마침표 뒤에 글자가 더 붙어 있으면 두 문장이 한 덩이로 흐른 것이다.
+      // 물음표·느낌표는 제목에도 쓰여서 마침표만 본다.
+      if (!/[.]\s+\S/.test(own)) { seen += 1; continue; }
+      seen += 1;
+      bad.push(own.slice(0, 46));
+    }
+    out.unsplit = [...new Set(bad)];
+    out.unsplitSeen = seen;
+  }
+
+  // 맨 아래 카드가 화면 끝에 딱 붙어 있는가.
+  //
+  // 아래 여백이 없으면 스크롤이 끝났다는 느낌이 안 오고 답답해 보인다.
+  // 여기 브라우저에서는 홈 인디케이터가 없어 safe-area 인셋이 0 이라
+  // 기본 여백만 재는 것이다. 기기에서 더해지는 인셋은 여기서 못 본다.
+  {
+    const body = document.querySelector('.app__body');
+    out.tailGap = -1;
+    if (body) {
+      const pad = Number.parseFloat(getComputedStyle(body).paddingBottom) || 0;
+      const kids = [...body.children].filter((el) => {
+        const r = el.getBoundingClientRect();
+        return r.width > 0 && r.height > 0;
+      });
+      const last = kids[kids.length - 1];
+      out.tailGap = last
+        ? Math.round(body.scrollHeight - (last.offsetTop - body.offsetTop + last.offsetHeight))
+        : Math.round(pad);
+    }
+  }
+
   // 점수 막대가 바로 옆 숫자와 같은 말을 하는가.
   // 이 앱에는 점수 막대가 세 종류 있다 — 왜 N점인가요, 네 가지 운, 궁합 세 칸.
   // 한때 '왜 N점인가요' 만 50~92 를 0~100 으로 펴서 그렸고, 그 바람에 73점
@@ -465,6 +514,14 @@ function auditScreen(name, data) {
   // 15) 한 화면에 똑같은 문장이 두 번 그려지지 않는가
   check(data.repeated.length === 0, `[${name}] 같은 문장이 두 번 안 나옴`,
     data.repeated.length ? data.repeated.slice(0, 3).join(' / ') : `문장 ${data.repeatedSeen}가지 검사`);
+
+  // 15-2) 마침표가 찍혔는데 한 덩이로 흐르지 않는가
+  check(data.unsplit.length === 0, `[${name}] 문장이 끝나면 줄이 바뀜`,
+    data.unsplit.length ? data.unsplit.slice(0, 3).join(' / ') : `덩이 ${data.unsplitSeen}개 검사`);
+
+  // 15-3) 맨 아래 카드 밑에 여백이 남는가
+  check(data.tailGap >= 28, `[${name}] 맨 아래에 여백이 있음`,
+    `아래 여백 ${data.tailGap}px (기기에선 홈 인디케이터만큼 더 붙음)`);
 
   // 16) 같은 클래스에 같은 글자면 같은 색으로 그려지는가
   check(data.twoFaced.length === 0, `[${name}] 같은 말이 두 얼굴로 안 나옴`,

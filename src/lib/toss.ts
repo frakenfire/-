@@ -115,16 +115,25 @@ export function subscribeBackEvent(_handler: () => void): () => void {
   return () => {};
 }
 
-/** Safe Area 를 CSS 변수(--sat)로 상단 인셋 반영. 초기값 + 변화 구독. 미지원이면 no-op. */
+/**
+ * Safe Area 를 CSS 변수(--sat, --sab)로 반영. 초기값 + 변화 구독. 미지원이면 no-op.
+ *
+ * 하단을 안 받아오던 때에는 화면 맨 아래 카드가 홈 인디케이터 바에 딱 붙어
+ * 보였다. 아래 여백을 32px 줘도 그 32px 을 인디케이터가 그대로 덮는다.
+ */
 export function subscribeSafeArea(): () => void {
-  const apply = (insets: { top?: number } | undefined) => {
-    if (insets && typeof insets.top === 'number') {
+  const apply = (insets: { top?: number; bottom?: number } | undefined) => {
+    if (!insets) return;
+    if (typeof insets.top === 'number') {
       document.documentElement.style.setProperty('--sat', `${insets.top}px`);
+    }
+    if (typeof insets.bottom === 'number') {
+      document.documentElement.style.setProperty('--sab', `${insets.bottom}px`);
     }
   };
   try {
     if (SafeAreaInsets && typeof SafeAreaInsets.get === 'function') {
-      apply(SafeAreaInsets.get() as { top?: number });
+      apply(SafeAreaInsets.get() as { top?: number; bottom?: number });
     }
     if (SafeAreaInsets && typeof SafeAreaInsets.subscribe === 'function') {
       const unsub = SafeAreaInsets.subscribe({ onEvent: (insets) => apply(insets) });

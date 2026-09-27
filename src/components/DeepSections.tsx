@@ -174,9 +174,10 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <p className="mflow__foot">
-          다섯 칸을 정해진 비율대로 더하면 {read.score.total}점이에요. 모델이 아니라 계산이라, 같은 날 몇 번을 봐도 같은 숫자가 나와요.
-        </p>
+        <Sentences
+          className="mflow__foot"
+          text={`다섯 칸을 정해진 비율대로 더하면 ${read.score.total}점이에요. 모델이 아니라 계산이라, 같은 날 몇 번을 봐도 같은 숫자가 나와요.`}
+        />
       </div>
 
       {/* 평생 안 바뀌는 자리 — 오늘 어떠냐가 아니라 나는 원래 어떤 사람이냐 */}
@@ -190,7 +191,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <p className="mflow__foot">이 다섯 줄은 태어난 여덟 글자에서만 나와요. 해가 바뀌어도 안 바뀌는 자리예요.</p>
+        <Sentences className="mflow__foot" text="이 다섯 줄은 태어난 여덟 글자에서만 나와요. 해가 바뀌어도 안 바뀌는 자리예요." />
       </div>
 
       {/* 왜 지금 이 고민이 커졌나 — 타고난 구조가 '원래 어떤 사람이냐' 라면
@@ -209,7 +210,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <p className="mflow__foot">십 년은 배경, 올해는 방향, 이번 달은 눈앞의 일이에요. 셋이 겹쳐서 지금 이 생각이 커졌어요.</p>
+        <Sentences className="mflow__foot" text="십 년은 배경, 올해는 방향, 이번 달은 눈앞의 일이에요. 셋이 겹쳐서 지금 이 생각이 커졌어요." />
       </div>
 
       </Chapter>
@@ -258,11 +259,14 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </ul>
         {/* 가로축에 1 2 3 만 적혀 있으면 그게 내년인지 올해인지 알 수가 없다.
             해가 바뀌는 자리에 세로선을 긋고, 아래 한 줄이 범위를 말한다. */}
-        <p className="mflow__foot">
-          {timing.months[0].label}부터 {timing.months[timing.months.length - 1].label}까지예요.
-          맨 왼쪽이 이번 달이고, 세로선 오른쪽이 {timing.months[timing.months.length - 1].year}년이에요.
-          표를 옆으로 밀면 그 달 풀이가 나와요.
-        </p>
+        <Sentences
+          className="mflow__foot"
+          text={
+            `${timing.months[0].label}부터 ${timing.months[timing.months.length - 1].label}까지예요. ` +
+            `맨 왼쪽이 이번 달이고, 세로선 오른쪽이 ${timing.months[timing.months.length - 1].year}년이에요. ` +
+            '표를 옆으로 밀면 그 달 풀이가 나와요.'
+          }
+        />
         <div className="mpick">
           <p className="mpick__head">
             <button
@@ -335,7 +339,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             ))}
           </tbody>
         </table>
-        <p className="ycmp__gap">{read.yearGap}</p>
+        <Sentences className="ycmp__gap" text={read.yearGap} />
       </div>
 
       {read.decade ? (
@@ -351,7 +355,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
               </li>
             ))}
           </ul>
-          {read.decade.next ? <p className="mflow__foot">{read.decade.next}</p> : null}
+          {read.decade.next ? <Sentences className="mflow__foot" text={read.decade.next} /> : null}
         </div>
       ) : (
         <div className="sec-card">
@@ -376,7 +380,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
               </span>
               <span className="selves__v num">{x.score}</span>
               <Sentences className="selves__line" text={x.line} />
-              <span className="selves__vs">{x.vs ?? '여기가 기준이에요'}</span>
+              <Sentences className="selves__vs" text={x.vs ?? '여기가 기준이에요'} />
             </li>
           ))}
         </ul>
@@ -437,7 +441,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <p className="mflow__foot">별표가 붙은 줄이 나를 뜻하는 갈래예요. 지지는 속에 든 글자까지 풀어서 셌어요.</p>
+        <Sentences className="mflow__foot" text="별표가 붙은 줄이 나를 뜻하는 갈래예요. 지지는 속에 든 글자까지 풀어서 셌어요." />
 
         {read.chart.sinsal.length > 0 ? (
           <>
@@ -469,7 +473,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
               ))}
             </ul>
             <Sentences className="qa qa--sub" text={read.name.verdict} />
-            <p className="mflow__foot">한글 소리를 다섯 갈래로 갈라서 봐요. 한자는 안 받으니 획수는 세지 않아요.</p>
+            <Sentences className="mflow__foot" text="한글 소리를 다섯 갈래로 갈라서 봐요. 한자는 안 받으니 획수는 세지 않아요." />
           </>
         ) : null}
 

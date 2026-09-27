@@ -2,6 +2,7 @@ import { AppLayout } from '../components/AppLayout.tsx';
 import { Icon } from '../components/Icon.tsx';
 import { Mascot } from '../components/Mascot.tsx';
 import { CONCERNS, type ConcernKey } from '../data/concerns.ts';
+import { Sentences } from '../components/Sentences.tsx';
 
 type Props = {
   userName: string | null;
@@ -43,7 +44,7 @@ export function ConcernScreen({ userName, onSelect, onBack, inFlow = false }: Pr
         ))}
       </div>
 
-      <p className="ask-foot">고른 고민에 맞는 시기를 사주로 계산해요. 답은 이 기기에서만 만들어져요.</p>
+      <Sentences className="ask-foot" text="고른 고민에 맞는 시기를 사주로 계산해요. 답은 이 기기에서만 만들어져요." />
     </AppLayout>
   );
 }

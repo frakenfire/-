@@ -4,6 +4,7 @@ import { NoteCard } from '../components/NoteCard.tsx';
 import { NOTE_TEASERS, NOTE_PICK_TITLES, NOTE_PICK_LEADS, NOTE_PICK_HINTS, FAQ_POOL } from '../data/copy.ts';
 import { todayKey, hashSeed } from '../lib/dateSeed.ts';
 import type { Note } from '../types/fortune.ts';
+import { Sentences } from '../components/Sentences.tsx';
 
 // 여섯 장에 서로 다른 문구를 준다. 날짜가 바뀌면 조합도 바뀌고, 같은 날엔 고정.
 function pickTeasers(seedKey: string): string[] {
@@ -99,7 +100,7 @@ export function NotePickScreen({
         <button type="button" className="faq__card" onClick={() => setFaqIdx((i) => (i + 1) % FAQ_POOL.length)}>
           <span key={faqIdx} className="faq__inner">
             <span className="faq__q">{FAQ_POOL[faqIdx].q}</span>
-            <span className="faq__a">{FAQ_POOL[faqIdx].a}</span>
+            <Sentences className="faq__a" text={FAQ_POOL[faqIdx].a} />
           </span>
           <span className="faq__dots" aria-hidden>
             {FAQ_POOL.map((f, i) => (

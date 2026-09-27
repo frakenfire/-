@@ -2,6 +2,7 @@ import { AppLayout } from '../components/AppLayout.tsx';
 import { Icon } from '../components/Icon.tsx';
 import { Mascot } from '../components/Mascot.tsx';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
+import { Sentences } from '../components/Sentences.tsx';
 
 type Props = {
   concernKey: ConcernKey;
@@ -25,7 +26,7 @@ export function ConcernAskScreen({ concernKey, onSelect, onBack, inFlow = false 
             <Icon name={concern.icon} size={14} /> {concern.label}
           </span>
           <h2 className="h2">{concern.question}</h2>
-          <p className="lead">{concern.questionLead}</p>
+          <Sentences className="lead" text={concern.questionLead} />
         </div>
       </div>
 
@@ -45,7 +46,7 @@ export function ConcernAskScreen({ concernKey, onSelect, onBack, inFlow = false 
         </div>
       </div>
 
-      <p className="ask-foot ask-foot--pin">{concern.basis}</p>
+      <Sentences className="ask-foot ask-foot--pin" text={concern.basis} />
     </AppLayout>
   );
 }

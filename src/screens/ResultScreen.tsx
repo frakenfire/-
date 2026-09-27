@@ -288,7 +288,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
             칸마다 한 줄씩 붙이면 여섯 줄이 각자 떠들어서 답이 안 읽힌다.
             생년월일이 없어 근거가 없을 때는 이 문단을 아예 안 그린다 -
             없는 근거를 있는 척 적는 게 제일 나쁘다. */}
-        {luckyWhy ? <p className="lucky4__why">{luckyWhy}</p> : null}
+        {luckyWhy ? <Sentences className="lucky4__why" text={luckyWhy} /> : null}
       </div>
 
       {/* 5. 오늘 잘 맞는 띠 */}
