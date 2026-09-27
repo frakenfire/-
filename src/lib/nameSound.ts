@@ -106,5 +106,5 @@ export function readNameSound(name: string): NameSound | null {
 export const FLOW_KO: Record<NameSound['flow'], string> = {
   smooth: '소리가 앞에서 뒤로 순하게 이어져요. 부를수록 편하게 읽히는 배열이에요.',
   mixed: '순하게 이어지는 자리도 있고 부딪히는 자리도 있어요. 흔한 배열이라 크게 볼 것은 아니에요.',
-  blocked: '앞 글자와 뒤 글자가 서로 부딪히는 배열이에요. 이름이 뭘 더 보태주지는 않는 쪽이에요.',
+  blocked: '앞 글자와 뒤 글자의 소리가 잘 이어지지 않아요. 이름 소리가 부족한 부분을 따로 보완해주지는 않아요.',
 };
