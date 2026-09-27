@@ -24,7 +24,7 @@ export function isUnsupportedFreePass(result: AdResult): boolean {
 export function adResultMessage(result: AdResult): string {
   switch (result.status) {
     case 'dismissed':
-      return '광고를 끝까지 봐야 열려요';
+      return '광고를 끝까지 보면 다음 내용을 볼 수 있어요';
     case 'failed':
       return '앗, 광고를 불러오지 못했어요. 잠시 후 다시 시도해요';
     default:
