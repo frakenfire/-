@@ -376,7 +376,7 @@ export default function App() {
       }
     } catch (e) {
       reportError('handlePick', e);
-      flash('앗, 쪽지를 여는 중 문제가 생겼어요. 다시 시도해 주세요');
+      flash('앗, 쪽지를 여는 중에 문제가 생겼어요. 다시 시도해 주세요');
       setScreen('pick');
     } finally {
       setBusy(false);
