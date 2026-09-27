@@ -320,7 +320,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
       },
       {
         headline: '이번 달은 좋은 일을 나눌수록 더 커져요.',
-        vibe: '같이 나눌 때 운이 두 배가 되는 달이에요.',
+        vibe: '혼자 안고 있기보다 함께 나눌 때 일이 더 수월한 달이에요.',
         steps: [
           { when: '1주차', text: '고마운 사람에게 먼저 연락해봐요.' },
           { when: '2주차', text: '작은 성과가 생기면 주변과 나눠요.' },
@@ -576,7 +576,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '안 좋은 일만 곱씹으며 한 달을 보내는 것',
       },
       {
-        headline: '이번 달은 기대를 반으로 줄이면 두 배로 편해져요.',
+        headline: '이번 달은 기대를 조금 내려놓으면 마음이 한결 편해져요.',
         vibe: '다 잘하기보다 하나씩 끝내는 달이에요.',
         steps: [
           { when: '1주차', text: '목표를 절반으로 줄여 다시 적어요.' },
@@ -1614,7 +1614,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         steps: [
           { when: '아침', text: '걸을 때 휴대폰을 넣어둬요.' },
           { when: '낮', text: '횡단보도에서 한 번 더 봐요.' },
-          { when: '저녁', text: '밤길은 밝은 쪽으로 가요.' },
+          { when: '저녁', text: '밤에는 어두운 길보다 밝은 길로 가요.' },
         ],
         holdOff: '급하다고 뛰어서 건너는 것',
       },
