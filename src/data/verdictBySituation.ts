@@ -135,7 +135,7 @@ const VERDICT_BY_SITUATION: Record<ConcernKey, Record<string, Record<Verdict, Tw
     burnt: {
       now: { head: '지금은 기분이 다시 올라오는 때예요', sub: '제일 무거운 것 하나만 끝내보세요. 나머지는 미뤄도 돼요.' },
       soon: { head: '{when} 마음이 조금씩 편해질 수 있어요', sub: '지금 더 밀면 회복이 늦어져요. 절반만 하고 접으세요.' },
-      wait: { head: '올해는 마음을 채우는 것이 먼저인 해예요', sub: '더 버틸 때가 아니에요. 쉬는 날을 달력에 먼저 박아두세요.' },
+      wait: { head: '올해는 더 버티기보다 쉬는 시간을 먼저 챙겨야 해요', sub: '더 버티기보다 쉬는 시간을 챙길 때예요. 달력에 쉬는 날부터 먼저 정해두세요.' },
     },
     stuck: {
       now: { head: '지금 정하면 생각이 끝나요', sub: '머리가 맑아진 때예요. 미뤄둔 결정을 오늘 끝내세요.' },
