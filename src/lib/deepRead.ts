@@ -137,7 +137,7 @@ export type DeepRead = {
 const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
   work: {
     now: [
-      '나를 보여줄 자료를 오늘 손봐요. 숫자로 쓸 수 있는 성과부터 채워요',
+      '나를 보여줄 자료를 오늘 손봐요. 숫자로 설명할 수 있는 성과부터 적어요',
       '가고 싶은 곳 세 군데를 적고 아는 사람이 있는지 먼저 확인해요',
       '나가는 날짜보다 들어가는 날짜를 먼저 확정해요',
     ],
@@ -148,8 +148,8 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
     ],
     wait: [
       '올해는 기록을 남기는 해로 써요. 한 일을 문서로 모아둬요',
-      '자격이나 배움처럼 남는 걸 하나 걸어둬요',
-      '지금 자리에서 결정권이 붙는 일을 한 개 맡아요',
+      '자격증이나 공부처럼 이력서에 남길 것을 하나 준비해요',
+      '지금 회사에서 직접 결정할 수 있는 일을 하나 맡아요',
     ],
   },
   money: {
@@ -160,7 +160,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
     ],
     soon: [
       '지금은 고정비부터 줄여요. 늘리는 건 그다음이에요',
-      '나가는 돈을 한 달만 전부 적어봐요. 새는 곳이 바로 보여요',
+      '한 달 동안 쓴 돈을 전부 적어봐요. 불필요한 지출이 바로 보여요',
       '계약이나 서명은 점수가 높은 달로 미뤄요',
     ],
     wait: [
@@ -171,9 +171,9 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
   },
   love: {
     now: [
-      '아는 사람을 통해 닿는 자리를 만들어요. 낯선 자리보다 잘 붙어요',
-      '먼저 연락하는 쪽이 되어봐요. 지금은 그게 통해요',
-      '만나면 다음 약속을 그 자리에서 잡아요',
+      '아는 사람에게 소개를 부탁해요. 낯선 모임에 나가는 것보다 자연스럽게 이어지기 쉬워요',
+      '먼저 연락해보세요. 지금은 먼저 말을 거는 편이 나아요',
+      '만났을 때 다음 약속을 바로 잡아요',
     ],
     soon: [
       '지금은 답을 재촉하지 말아요. 정해질 때가 따로 있어요',
@@ -188,17 +188,17 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
   },
   people: {
     now: [
-      '먼저 연락해요. 지금은 내가 여는 쪽이 이득이에요',
+      '먼저 연락해요. 지금은 내가 먼저 관계를 시작하는 편이 나아요',
       '도움을 청해도 되는 달이에요. 혼자 안고 가지 말아요',
       '고마운 사람한테 표시를 해둬요. 오래 가요',
     ],
     soon: [
       '오해가 있으면 지금 풀지 말고 사실만 정리해둬요',
-      '자리에 나가되 말은 줄여요. 듣는 쪽이 유리해요',
+      '모임에는 나가되 말을 줄여요. 내가 말하기보다 상대 얘기를 듣는 편이 나아요',
       '중요한 대화는 점수가 높은 달로 옮겨요',
     ],
     wait: [
-      '새로 넓히지 말아요. 이 달은 걸러내는 쪽이에요',
+      '새로운 사람을 더 만나기보다 지금 아는 사람 중 오래 볼 사람을 고르세요',
       '부탁을 거절해도 되는 때예요. 다 받으면 내가 무너져요',
       '단톡방이나 모임을 한 개만 줄여도 숨이 트여요',
     ],
@@ -206,7 +206,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
   health: {
     now: [
       '미뤄둔 검진을 이번 달에 잡아요',
-      '운동을 시작하기 좋은 때예요. 작게 시작해서 붙여요',
+      '운동을 시작하기 좋은 때예요. 적은 양부터 시작해 꾸준히 이어가세요',
       '자는 시간을 먼저 고정해요. 나머지는 따라와요',
     ],
     soon: [
@@ -240,7 +240,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
 };
 
 const CAUTION: Record<ConcernKey, string> = {
-  work: '버거운 달에 사표를 던지면 다음 자리가 급해져요. 그 달은 넘기고 움직여요.',
+  work: '힘든 달에 급하게 퇴사하면 다음 직장을 서둘러 정하기 쉬워요. 그 달은 넘기고 움직이세요.',
   money: '버거운 달엔 큰 계약과 보증을 피해요. 한 달만 미뤄도 달라져요.',
   love: '버거운 달엔 말이 세게 나가요. 중요한 얘기는 그 달을 넘겨요.',
   people: '버거운 달엔 오해가 잘 생겨요. 말보다 글로 남기면 덜 꼬여요.',
@@ -424,12 +424,12 @@ export function buildDeepRead(
           // 같은 문장이 두 번 나온다. 층마다 말하는 자리는 하나씩만 둔다.
           //   십 년 → 십 년 카드 · 올해 → 올해내년 줄 · 이번 달 → 열두 달 차트
           //   오늘 → 오늘 글자 카드 · 왜 그렇게 읽었나 → 이 줄
-          ? `${TEN_GOD_KO[god]}이 겹쳐요. ${G(god).pull} 쪽으로 읽었어요. 층이 겹치면 그 방향이 더 또렷해져요.`
-          : `${TEN_GOD_KO[god]}이 들어와요. ${G(god).pull} 쪽으로 읽었어요.`,
+          ? `${G(god).pull} 때예요. 같은 뜻의 시기가 겹쳐 있어서 이 특징이 더 뚜렷해요.`
+          : `${G(god).pull} 때예요.`,
     })),
     ...(timing.daeunSlot
       ? []
-      : [{ k: '십 년', v: '아직 첫 십 년이 시작되기 전이라 태어난 자리를 그대로 봐요.' }]),
+      : [{ k: '십 년', v: '아직 첫 십 년 운이 시작되기 전이라 태어날 때의 성향을 기준으로 봐요.' }]),
   ];
 
   // 명식을 그대로 펼친다. 용어가 나오면 바로 옆에 뜻을 붙인다.
@@ -460,8 +460,8 @@ export function buildDeepRead(
   const focusCount = prof.gods.filter((g) => timing.favor.good.includes(GOD_GROUP_OF[g.god])).length;
   const focus =
     focusCount > 0
-      ? `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 그 자리가 원국에 ${focusCount >= 3 ? '두껍게' : '얇게'} 깔려 있어요.`
-      : `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 태어난 글자에는 그 자리가 없어서, 해와 달이 들어올 때 열려요.`;
+      ? `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 태어난 여덟 글자에도 이 특징이 ${focusCount >= 3 ? '여러 번' : '조금'} 보여요.`
+      : `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 태어난 여덟 글자에는 이 특징이 없어서, 올해나 이번 달에 관련 글자가 나타날 때 더 두드러져요.`;
 
   // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
   // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
@@ -486,12 +486,12 @@ export function buildDeepRead(
     elements,
     strength:
       prof.strength === 'strong'
-        ? '내 힘이 많은 편이에요. 밀고 나가는 쪽이 맞고, 도움을 더 받으면 오히려 무거워져요.'
-        : '내 힘을 받아 쓰는 편이에요. 혼자 밀기보다 배우고 기대는 쪽이 결과가 좋아요.',
+        ? '내가 주도하려는 성향이 강해요. 직접 결정하고 움직일 때 편하고, 다른 사람 의견이 너무 많으면 오히려 답답할 수 있어요.'
+        : '주변의 도움을 받을 때 강점을 더 잘 써요. 혼자 밀어붙이기보다 배우고 도움받을 때 결과가 좋아요.',
     season: prof.hasSeasonalSupport
-      ? '태어난 달이 나를 돕는 자리예요. 계절이 내 편이라 기본 체력은 있는 편이에요.'
+      ? '태어난 계절이 내 성향과 잘 맞아서 기본적으로 버티는 힘이 있는 편이에요.'
       : '태어난 달이 나를 돕지는 않아요. 그래서 때를 고르는 게 더 중요해져요.',
-    useful: `${ELEMENT_KO[prof.usefulElement]} 쪽이 채워질 때 한쪽으로 쏠린 게 풀려요.`,
+    useful: `${ELEMENT_KO[prof.usefulElement]} 요소가 보완되면 한쪽에 치우친 구성이 한결 고르게 돼요.`,
     focus,
     today: chartToday,
     sinsal: stars,
@@ -516,15 +516,15 @@ export function buildDeepRead(
         const need = ELEMENT_KO[prof.usefulElement];
         let verdict: string;
         if (fills && smooth) {
-          verdict = `이름에 ${need} 쪽 소리가 들어 있고, 소리도 앞에서 뒤로 순하게 이어져요. 명식에서 치우친 자리를 이름이 제대로 되돌려주는 배열이에요.`;
+          verdict = `이름 소리에 ${need} 요소가 있고, 소리도 자연스럽게 이어져요. 사주에서 부족한 부분을 이름 소리가 잘 보완해줘요.`;
         } else if (fills && blocked) {
-          verdict = `이름에 ${need} 쪽 소리는 들어 있어요. 다만 글자끼리 부딪히는 배열이라, 닿기는 해도 세게 밀어주지는 않아요.`;
+          verdict = `이름 소리에 ${need} 요소가 있어요. 다만 소리끼리 부딪히는 편이라 부족한 부분을 크게 보완하지는 못해요.`;
         } else if (fills) {
-          verdict = `이름에 ${need} 쪽 소리가 있긴 해요. 배열은 순한 자리와 부딪히는 자리가 반반이라 무난한 쪽이에요.`;
+          verdict = `이름 소리에 ${need} 요소가 있어요. 잘 이어지는 부분과 부딪히는 부분이 모두 있어 전체적으로는 무난해요.`;
         } else if (smooth) {
-          verdict = `이름 소리는 순하게 이어져요. 다만 명식이 아쉬워하는 ${need} 쪽 소리는 없어서, 이름이 채워주는 자리는 아니에요.`;
+          verdict = `이름 소리는 자연스럽게 이어져요. 다만 사주에서 부족한 ${need} 요소가 이름에는 없어서 부족한 부분을 보완해주지는 못해요.`;
         } else {
-          verdict = `이름에는 ${ELEMENT_KO[sound.lead]} 쪽 소리가 가장 많아요. 명식이 아쉬워하는 ${need} 쪽은 아니라, 이름으로 뭘 바꾸려 하기보다 때를 고르는 쪽이 빨라요.`;
+          verdict = `이름에는 ${ELEMENT_KO[sound.lead]} 요소의 소리가 가장 많아요. 사주에서 부족한 ${need} 요소는 아니므로, 이름보다 시기를 잘 고르는 게 더 중요해요.`;
         }
         return {
           letters: sound.letters.map((l) => ({ ch: l.ch, el: ELEMENT_KO[l.el] })),
@@ -579,8 +579,8 @@ export function buildDeepRead(
     tomorrowGod === todayGod && tomorrowRels.length === meetRows.length
       ? '내일도 오늘과 비슷한 날이라, 오늘 잡아둔 것이 그대로 이어져요.'
       : tomorrowGod === todayGod
-        ? `내일도 같은 날 글자인데, 내 글자와 닿는 자리가 달라져요. 오늘과 조금 다른 답이 나와요.`
-        : `내일은 ${G(tomorrowGod).pull} 쪽으로 기울어요. 오늘과 다른 답이 나와요.`;
+        ? `내일도 오늘과 같은 종류의 날이지만, 내 사주와 만나는 부분이 달라져요. 그래서 오늘과 조금 다른 답이 나와요.`
+        : `내일은 ${G(tomorrowGod).pull} 날이에요. 오늘과 다른 답이 나와요.`;
 
   const todayStep = unseongOf(pillars.dayStem, todayPillar.branch);
   // 네 가지 나. 다섯 칸을 사람이 자기를 생각하는 말로 다시 묶는다.
@@ -605,7 +605,7 @@ export function buildDeepRead(
   const SPAN = {
     today: { same: '오늘은 하던 만큼만 하면 돼요.', up: '오늘 미뤄둔 것을 꺼내기 좋아요.', down: '오늘은 벌이는 것을 줄여 잡으세요.' },
     near: { same: '이번 달도 하던 대로 가면 돼요.', up: '이번 달에 하나 꺼내볼 만해요.', down: '이번 달은 크게 벌이지 마세요.' },
-    far: { same: '이 십 년은 큰 굴곡이 없어요.', up: '이 십 년 동안 밀어볼 만해요.', down: '이 십 년은 무리하지 않는 쪽이 맞아요.' },
+    far: { same: '이 십 년은 큰 굴곡이 없어요.', up: '이 십 년 동안 밀어볼 만해요.', down: '이 십 년은 무리하지 않는 편이 나아요.' },
   } as const;
   const vsNatal = (n: number, span: keyof typeof SPAN): string | null => {
     const gap = n - natal.score;
@@ -697,7 +697,7 @@ export function buildDeepRead(
         ? ` ${G(timing.daeunSlot.tenGod).daeun}`
         : '') +
       (left !== null && left > 0 ? ` 다음 십 년으로 넘어가기까지 ${left}년 남았어요.` : '')
-    : `${timing.daeun.startAge}세부터 첫 십 년이 시작돼요. 그전까지는 태어날 때 자리를 그대로 써요.`;
+    : `${timing.daeun.startAge}세부터 첫 십 년 운이 시작돼요. 그전까지는 태어날 때의 성향을 기준으로 봐요.`;
 
   // 십 년을 자리별로 쪼갠다. '틀을 깨는 십 년입니다' 로 끝내면 아무것도 안 남는다.
   const areas: DecadeAreas | null = timing.daeunSlot ? DECADE_AREAS[timing.daeunSlot.tenGod] : null;
