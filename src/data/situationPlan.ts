@@ -248,7 +248,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
   },
   health: {
     tired: {
-      focus: '체력을 회복하려면 더 움직이기보다 불필요한 소모를 줄이는 게 먼저예요.',
+      focus: '체력을 회복하려면 더 움직이기보다 불필요하게 힘쓰는 일을 줄이는 게 먼저예요.',
       dos: [
         '자는 시각과 일어나는 시각을 하나로 맞춰 잠을 고정하기',
         '가볍게 이십 분 걷는 운동을 하루에 넣기',
