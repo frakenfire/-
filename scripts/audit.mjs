@@ -1433,11 +1433,8 @@ async function run(browser) {
     await fillName(page);
     await page.getByRole('button', { name: '다음' }).first().click();
     await wait(page, 800);
-    // 저장이 안 됐다는 걸 말해야 한다. 말없이 삼키면 앱이 잊어버리는 것처럼 보인다.
-    const toast = (await page.locator('.toast').count())
-      ? await page.locator('.toast').first().innerText().catch(() => '') : '';
-    check(/저장이 안 돼요/.test(toast), '[악조건] 저장이 막히면 그 사실을 알린다', toast || '(안내 없음)');
-    // 그래도 이번 뽑기는 끝까지 돼야 한다. 저장은 부가고 답이 본체다.
+    // 저장이 막혀도 따로 안 알린다. 쓰는 사람이 할 수 있는 게 없는 안내다.
+    // 대신 뽑기는 끝까지 돼야 한다 - 저장은 부가고 답이 본체다.
     await page.getByText('일과 이직', { exact: true }).first().click();
     await wait(page, 500);
     await page.getByText('다니는데 옮기고 싶어요', { exact: true }).first().click();
