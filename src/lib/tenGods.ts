@@ -34,11 +34,11 @@ export const TEN_GOD_KO: Record<TenGod, string> = {
   geopjae: '겨루는 힘',
   siksin: '만드는 힘',
   sanggwan: '드러내는 힘',
-  pyeonjae: '잡아채는 힘',
+  pyeonjae: '움직여 버는 힘',
   jeongjae: '쌓는 힘',
-  pyeongwan: '밀어붙이는 힘',
+  pyeongwan: '부담을 견디는 힘',
   jeonggwan: '지키는 힘',
-  pyeonin: '달리 배우는 힘',
+  pyeonin: '다르게 배우는 힘',
   jeongin: '배우는 힘',
 };
 
