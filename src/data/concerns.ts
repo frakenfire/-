@@ -68,7 +68,7 @@ export const CONCERNS: Concern[] = [
   {
     key: 'work',
     shortName: '일',
-    luckyWhere: '일 얘기를 꺼내기 좋은 쪽',
+    luckyWhere: '일 얘기를 꺼내기 좋은 방향',
     luckyWhen: '중요한 일은',
     label: '일과 이직',
     hook: '옮길까 말까, 언제가 좋을까',
@@ -87,7 +87,7 @@ export const CONCERNS: Concern[] = [
   {
     key: 'money',
     shortName: '돈',
-    luckyWhere: '돈 얘기를 꺼내기 좋은 쪽',
+    luckyWhere: '돈 얘기를 꺼내기 좋은 방향',
     luckyWhen: '큰돈이 오가는 일은',
     label: '돈',
     hook: '모을 때인지 지킬 때인지',
@@ -106,7 +106,7 @@ export const CONCERNS: Concern[] = [
   {
     key: 'love',
     shortName: '연애',
-    luckyWhere: '만날 약속을 잡기 좋은 쪽',
+    luckyWhere: '만날 약속을 잡기 좋은 방향',
     luckyWhen: '만나는 약속은',
     label: '연애',
     hook: '만날 때인지 기다릴 때인지',
@@ -114,7 +114,7 @@ export const CONCERNS: Concern[] = [
     question: '지금 어떤 사이예요?',
     questionLead: '지금 관계에 따라 보는 내용이 달라져요.',
     options: [
-      { key: 'alone', label: '혼자예요', line: '새 사람을 만날 기회가 적은 시기도 있어요. 지금 만남이 없는 걸 너무 크게 해석하지 않아도 돼요.' },
+      { key: 'alone', label: '혼자예요', line: '새 사람을 만날 일이 적은 시기도 있어요. 지금 만남이 없는 걸 너무 크게 해석하지 않아도 돼요.' },
       { key: 'some', label: '썸을 타는 중이에요', line: '서로의 마음을 확인하려면 누군가는 먼저 말을 꺼내야 해요. 언제 말할지도 함께 볼게요.' },
       { key: 'couple', label: '만나는 사람이 있어요', line: '관계가 오래가려면 힘든 시기에 어떻게 대화하고 풀어가는지가 중요해요.' },
       { key: 'past', label: '끝난 사이가 남아 있어요', line: '다시 닿는 때와 접는 게 나은 때는 글자가 달라요.' },
@@ -125,7 +125,7 @@ export const CONCERNS: Concern[] = [
   {
     key: 'people',
     shortName: '사람 사이',
-    luckyWhere: '사람을 만나기 좋은 쪽',
+    luckyWhere: '사람을 만나기 좋은 방향',
     luckyWhen: '어려운 말을 꺼낼 일은',
     label: '사람 관계',
     hook: '누구를 믿고 누구를 거를까',
@@ -144,7 +144,7 @@ export const CONCERNS: Concern[] = [
   {
     key: 'health',
     shortName: '몸',
-    luckyWhere: '몸을 움직이기 좋은 쪽',
+    luckyWhere: '몸을 움직이기 좋은 방향',
     luckyWhen: '몸을 챙기는 일은',
     label: '몸과 컨디션',
     hook: '어디를 먼저 챙길까',
@@ -163,7 +163,7 @@ export const CONCERNS: Concern[] = [
   {
     key: 'mind',
     shortName: '마음',
-    luckyWhere: '마음이 놓이는 쪽',
+    luckyWhere: '마음이 놓이기 쉬운 방향',
     luckyWhen: '마음이 무거워지는 일은',
     label: '마음',
     hook: '이 마음이 언제 가라앉을까',
