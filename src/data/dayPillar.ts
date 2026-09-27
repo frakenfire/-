@@ -119,7 +119,7 @@ export const DAY_PILLAR: Record<string, DayPillarRead> = {
   병술: {
     nick: '쌓아두고 꺼내 쓰는 사람',
     line: '한 번 배운 걸 오래 담아두는 편이에요. 급히 내보이지 않아요.',
-    strong: '겪은 게 쌓일수록 값이 오르는 일에서 제일 잘해요.',
+    strong: '경험이 쌓일수록 더 인정받는 일에서 제일 잘해요.',
     watch: '속으로만 담아둬서 남이 몰라주기 쉬워요.',
   },
   병신: {
@@ -271,7 +271,7 @@ export const DAY_PILLAR: Record<string, DayPillarRead> = {
   경인: {
     nick: '밖에서 값을 만드는 사람',
     line: '자리에 앉아 있으면 답답한 편이에요. 나가면 일이 생겨요.',
-    strong: '새 거래처와 새 사람을 트는 일에서 강점을 보여요.',
+    strong: '새 거래처나 새로운 사람과 관계를 시작하는 일에서 강점을 보여요.',
     watch: '벌인 걸 정리 못 해 돈이 새어 나가기 쉬워요.',
   },
   경자: {
@@ -315,7 +315,7 @@ export const DAY_PILLAR: Record<string, DayPillarRead> = {
   신축: {
     nick: '오래 갈고닦는 사람',
     line: '한 가지를 오래 붙드는 편이에요. 티는 늦게 나요.',
-    strong: '깊이가 값이 되는 일에서 제일 잘해요.',
+    strong: '깊이 있는 경험과 지식이 인정받는 일에서 제일 잘해요.',
     watch: '알아주지 않으면 혼자 서운해하기 쉬워요.',
   },
   신해: {
