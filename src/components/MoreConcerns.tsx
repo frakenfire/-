@@ -45,7 +45,7 @@ export function MoreConcerns({ current, unlocked, onUnlock, onOpen }: Props) {
     setFailed(null);
     try {
       const ok = await onUnlock(key);
-      if (!ok) setFailed('광고를 끝까지 봐야 열려요');
+      if (!ok) setFailed('광고를 끝까지 보면 다음 내용을 볼 수 있어요');
     } finally {
       setBusy(null);
     }
