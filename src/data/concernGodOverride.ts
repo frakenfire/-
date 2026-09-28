@@ -106,8 +106,8 @@ const OVERRIDE: Partial<Record<ConcernKey, Record<string, Override>>> = {
       jeonggwan: { yearCare: '결정을 미루며 기다리게 하는 것' },
       pyeonin: { year: '올해는 남이 아니라 내가 뭘 원하는지를 먼저 정해야 해요.' },
       jeongin: {
-        decide: '이번에는 내가 먼저 상대를 챙겨보세요.',
-        year: '도움을 받았다면 먼저 고마움을 표현하고 상대도 챙겨야 관계가 오래가요.',
+        decide: '도움을 준 사람이 있다면 먼저 고맙다고 표현해보세요.',
+        year: '도움을 받았다면 먼저 고마움을 표현해야 관계가 오래가요.',
         daeun: '나를 챙겨주는 사람이 생길 수 있는 십 년이에요. 받기만 하면 상대가 먼저 지칠 수 있어요.',
       },
     },
