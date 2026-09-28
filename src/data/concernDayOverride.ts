@@ -31,7 +31,11 @@ const DAY_OVERRIDE: Partial<Record<ConcernKey, Record<string, Override>>> = {
   love: {
     // 혼자인 사람에게는 '만나면' 이 전제할 자리가 없다.
     alone: {
-      jeongjae: { doIt: '사람을 만나면 다음 약속까지 바로 잡기' },
+      jeongjae: { doIt: '새로 알게 된 사람과 연락이 이어지면 다음 약속 잡기' },
+    },
+    // 이미 연애 중인 사람에게 새 사람을 소개받으라는 말은 맞지 않는다.
+    couple: {
+      pyeonjae: { doIt: '둘이 함께 해보고 싶던 약속 하나 정하기' },
     },
     // 끝난 사이는 다음 약속을 잡는 자리가 아니다.
     past: {
