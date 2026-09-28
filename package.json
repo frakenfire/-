@@ -10,6 +10,8 @@
   },
   "scripts": {
     "dev": "vite",
+    "dev:toss": "node scripts/dev-toss.mjs",
+    "doctor": "node scripts/doctor.mjs",
     "build": "ait build",
     "build:web": "tsc -b && vite build",
     "deploy": "ait deploy",

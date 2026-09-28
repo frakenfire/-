@@ -1,4 +1,4 @@
-# 오늘쪽지 뽑기 (tomorrow-note)
+# 오늘의 마음 한장 (todaymyheart)
 
 토스 **앱인토스(Apps in Toss)** 웹뷰용 **무비용·광고형 가벼운 운세 쪽지 미니앱** MVP.
 보고 싶은 운세(오늘의 나 · 이번 달의 나 · 연애운 · 금전운 · 직장운 · 조심할 것 · 행운 포인트)를 고르고
@@ -34,7 +34,9 @@ Home → Mood(기분 선택) → NotePick(쪽지 3장 중 1장) → Reveal(로�
 
 ```bash
 npm install
+npm run doctor           # 이 컴퓨터가 작업 가능한 상태인지 점검
 npm run dev              # http://localhost:5173 (광고는 mock)
+npm run dev:toss         # 폰 토스 샌드박스 앱용 (같은 와이파이)
 npm run verify           # 타입체크 + 테스트 + 빌드 + mock광고 가드 — 커밋 전 이거 하나면 됨
 npm run audit            # 실제 브라우저로 전 화면 클릭 점검 (playwright 필요)
 npm run check:release    # 콘솔 발급값 3종이 채워졌는지
@@ -48,7 +50,7 @@ npx ait build            # .ait 번들
 npx ait deploy           # 심사 제출
 ```
 
-**출시까지 남은 절차와 붙여넣을 프롬프트는 [`release/로컬-작업-프롬프트.md`](release/로컬-작업-프롬프트.md)** 에 있습니다.
+**로컬 세팅·폰 테스트·출시 절차는 [`release/로컬에서-할일.md`](release/로컬에서-할일.md), 붙여넣을 프롬프트는 [`release/로컬-작업-프롬프트.md`](release/로컬-작업-프롬프트.md)** 에 있습니다.
 
 ## 폴더 구조
 

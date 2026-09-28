@@ -11,7 +11,9 @@ export default defineConfig({
   // 콘솔에 등록한 appName 과 글자 하나까지 같아야 한다.
   appName: 'todaymyheart',
   web: {
-    host: 'localhost',
+    // 샌드박스 앱이 웹 화면을 받아 가는 주소. 폰에서 볼 땐 PC 의 와이파이 IP 여야 한다.
+    // (npm run dev:toss -- <IP> 가 넣어준다. 빌드에는 영향 없음)
+    host: process.env.AIT_DEV_HOST || 'localhost',
     port: 5173,
     // 기존 Vite 빌드를 그대로 사용한다. (rsbuild 강제 아님 — web.commands 로 지정)
     commands: {
