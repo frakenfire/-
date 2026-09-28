@@ -45,8 +45,8 @@ test('고민을 주면 그 고민의 말로 쓴다', () => {
 
 test('고민이 없으면 일반 문장으로 쓴다', () => {
   const t = ohaengWhy('metal', '흰색');
-  assert.ok(t.includes('오늘 내 자리'), t);
-  assert.ok(t.includes('중요한 건'), t);
+  assert.ok(t.includes('오늘 눈여겨볼 방향'), t);
+  assert.ok(t.includes('중요한 일은'), t);
 });
 
 test('문장마다 줄을 나눈다', () => {
@@ -67,7 +67,7 @@ test('풀어 쓴 문단이 다섯 갈래 모두에서 말이 된다', () => {
     assert.ok(t.includes(OHAENG[e].time), e);
     assert.ok(t.includes(OHAENG[e].taste), e);
     // 갈래 이름은 첫 문장에서 한 번만
-    assert.equal(t.split(`${OHAENG[e].ko} 쪽`).length - 1, 1, `${e}: ${t}`);
+    assert.equal(t.split(`${OHAENG[e].ko} 요소`).length - 1, 1, `${e}: ${t}`);
     // 숫자 뒤 조사가 소리를 따라간다 ('2과 7' 같은 게 안 나오게)
     const [a, b] = OHAENG[e].numbers;
     const josa = [2, 4, 5, 9].includes(a) ? '와' : '과';
@@ -76,6 +76,6 @@ test('풀어 쓴 문단이 다섯 갈래 모두에서 말이 된다', () => {
 });
 
 test('방향 뒤 조사가 받침을 따라간다', () => {
-  assert.ok(ohaengWhy('wood', '초록색').includes('동쪽이 오늘 내 자리'));
-  assert.ok(ohaengWhy('earth', '노란색').includes('가운데가 오늘 내 자리'));
+  assert.ok(ohaengWhy('wood', '초록색').includes('동쪽이 오늘 눈여겨볼 방향'));
+  assert.ok(ohaengWhy('earth', '노란색').includes('가운데가 오늘 눈여겨볼 방향'));
 });
