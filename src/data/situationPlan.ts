@@ -344,7 +344,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       focus: '외로움은 사람 수가 아니라 한 사람과의 시간으로 줄어요.',
       dos: [
         '오래 안 본 사람 한 명에게 연락하기',
-        '이번 주에 혼자라도 모임이나 외출 일정 하나 잡기',
+        '외로울 때 혼자라도 나갈 수 있는 일정 하나 이번 주에 잡기',
         '좋아하는 것에 시간을 한 시간 쓰기',
       ],
       donts: [
