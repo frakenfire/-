@@ -32,11 +32,9 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
   const bestWhen = bestRow ? `가장 좋은 달은 ${bestRow.v.split(',')[0]}이에요.` : null;
   // '네, 오늘 꺼내도 돼요' 바로 밑에 '가장 좋은 때는 4달 뒤' 가 붙으면 두 줄이
   // 서로 싸우는 것처럼 읽힌다. 층이 달라서 그런 건데 읽는 사람이 알 리 없다.
-  const whenAsk = read.todayAsk.band === 'good'
-    ? '오늘도 괜찮고, 크게 움직일 때는?'
-    : read.todayAsk.band === 'hard'
-      ? '오늘 말고 언제가 좋아요?'
-      : '그럼 언제가 좋아요?';
+  // 밴드마다 다르게 묻던 때는 '오늘도 괜찮고, 크게 움직일 때는?' 처럼 말이
+  // 반쯤 끊겼다. 이 칸이 묻는 건 늘 같다 - 오늘 말고 크게 움직일 때가 언제냐.
+  const whenAsk = '크게 움직이려면 언제가 좋을까요?';
   const concern = findConcern(concernKey);
   const max = Math.max(...timing.months.map((m) => m.score));
   // 막대만 보여주면 '그래서 그 달에 뭐가 있는데' 가 남는다. 눌러서 펴 볼 수 있게 한다.
@@ -477,7 +475,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <Sentences className="mflow__foot" text="별표가 붙은 줄이 나를 나타내는 요소예요. 아래쪽 글자는 안에 든 글자까지 모두 세었어요." />
+        <Sentences className="mflow__foot" text="별표가 붙은 줄이 나를 나타내는 요소예요. 태어난 글자 안에 숨어 있는 글자까지 함께 셌어요." />
 
         {read.chart.sinsal.length > 0 ? (
           <>

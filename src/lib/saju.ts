@@ -277,13 +277,13 @@ function toneOf(score: number): SajuTone {
 
 /** 이번 주 표·오늘 한 줄 — 하루를 가리킨다 */
 export const REL_GLOSS: Record<BranchRelation, string> = {
-  self: '비슷한 날',
-  selfPunish: '고집 세는 날',
+  self: '고집 겹치는 날',
+  selfPunish: '고집 세지는 날',
   trine: '잘 맞는 날',
   union: '손발 맞는 날',
   clash: '부딪히는 날',
   punish: '조심할 날',
-  harm: '떠보는 날',
+  harm: '오해 사기 쉬운 날',
   break: '엇갈리는 날',
   none: '무난한 날',
 };
@@ -296,7 +296,7 @@ export const REL_PAIR_GLOSS: Record<BranchRelation, string> = {
   union: '짝꿍 사이',
   clash: '안 맞는 사이',
   punish: '조심할 사이',
-  harm: '떠보는 사이',
+  harm: '오해하기 쉬운 사이',
   break: '엇갈린 사이',
   none: '무난한 사이',
 };

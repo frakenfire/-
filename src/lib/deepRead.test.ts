@@ -161,7 +161,7 @@ test('근거에 내 명식이 그대로 펼쳐진다', () => {
   for (const c of r.chart.pillars) {
     assert.ok(c.stem.length > 0 && c.branch.length > 0, `${c.k} 글자가 비었음`);
     // 기둥마다 성향 한 줄이 붙는다. 기운 이름만 적으면 읽고 남는 게 없다.
-    assert.ok(/성향$/.test(c.trait), `${c.k} 성향 줄: ${c.trait}`);
+    assert.ok(/요\.$/.test(c.trait), `${c.k} 성향 줄: ${c.trait}`);
   }
   assert.equal(r.chart.elements.length, 5);
   const sum = r.chart.elements.reduce((a, e) => a + e.pct, 0);

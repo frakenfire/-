@@ -4,7 +4,7 @@ import { computeFourPillars } from './fourPillars.ts';
 import { computeTiming } from './timing.ts';
 import { buildDeepRead } from './deepRead.ts';
 import { FAVOR_WORD } from '../data/concernFocus.ts';
-import { withRo, withJosa } from './josa.ts';
+import { withJosa } from './josa.ts';
 import { CONCERN_GOD } from '../data/concernReadings.ts';
 import { TEN_GOD_KO } from './tenGods.ts';
 import { CONCERNS, findConcern, type ConcernKey } from '../data/concerns.ts';
@@ -42,13 +42,6 @@ function* everyRead() {
 
 const ALL = [...everyRead()];
 
-test("'으로' 와 '로' 를 받침 보고 가른다", () => {
-  assert.equal(withRo('자리와 규칙'), '자리와 규칙으로');
-  assert.equal(withRo('거두는 자리'), '거두는 자리로');
-  assert.equal(withRo('서울'), '서울로');
-  assert.equal(withRo('돈'), '돈으로');
-});
-
 test('무엇을 보고 읽었는지가 고민마다 다른 말로 나온다', () => {
   // 한 벌을 여섯 고민에 돌려쓰면 '연애는 자리와 규칙으로 봐요' 가 나온다.
   //
@@ -73,9 +66,8 @@ test("'규칙로' 처럼 조사가 어긋난 자리가 없다", () => {
   // 받침 있는 글자 뒤에 바로 '로' 가 붙었으면 틀린 것이다 (ㄹ 받침은 뺀다).
   //
   // 솔직히 적어둔다: 지금 표의 값이 전부 '자리' 로 끝나서 이 줄이 잡을 게
-  // 오늘은 없다. withRo 를 통째로 걷어내도 이 검사는 안 울린다. 받침으로
-  // 끝나는 말을 표에 새로 넣는 날을 위한 덫이다. 조사 규칙 자체는 바로 위
-  // withRo 검사가 지킨다 - 거기는 '규칙으로' 를 글자 그대로 맞대본다.
+  // 오늘은 없다. 지금 줄은 '~을 중심으로 봐요' 라 '로' 앞이 늘 '중심' 이다.
+  // 받침으로 끝나는 말을 '로 봐요' 앞에 다시 넣는 날을 위한 덫이다.
   const wrong = ALL.filter(({ r }) => {
     const m = r.chart.focus.match(/(.)로 봐요/);
     if (!m) return false;

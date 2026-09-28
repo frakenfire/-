@@ -6,7 +6,7 @@ import { REFRESH_NOTE } from '../data/concernReadings.ts';
 import { godLineOf } from '../data/concernGodOverride.ts';
 import { FAVOR_WORD } from '../data/concernFocus.ts';
 import { computeConcernScore, scoreVerdictLine, type ConcernScore } from './concernScore.ts';
-import { withJosa, withRo } from './josa.ts';
+import { withJosa } from './josa.ts';
 import { NATAL_SHAPE, SHAPE_LABELS, type ShapeRow } from '../data/natalShape.ts';
 import { composeTodayDecision } from './todayDecision.ts';
 import { todayAskOf } from '../data/todayVerdict.ts';
@@ -451,8 +451,8 @@ export function buildDeepRead(
   const focusCount = prof.gods.filter((g) => timing.favor.good.includes(GOD_GROUP_OF[g.god])).length;
   const focus =
     focusCount > 0
-      ? `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 내 사주에도 이 특징이 ${focusCount >= 3 ? '여러 번' : '조금'} 보여요.`
-      : `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 태어난 여덟 글자에는 이 특징이 없어서, 올해나 이번 달에 관련 글자가 나타날 때 더 두드러져요.`;
+      ? `${withJosa(concern.label, '은는')} ${withJosa(favorNames, '을를')} 중심으로 봐요. 내 사주에도 이런 특징이 ${focusCount >= 3 ? '여러 곳에서' : '조금'} 보여요.`
+        : `${withJosa(concern.label, '은는')} ${withJosa(favorNames, '을를')} 중심으로 봐요. 태어난 여덟 글자에는 이런 특징이 없어서, 올해나 이번 달에 관련 글자가 들어올 때 더 크게 느껴져요.`;
 
   // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
   // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
@@ -471,11 +471,11 @@ export function buildDeepRead(
   // 읽는 사람은 그게 언제 오는 해인지 알 길이 없다. 지지 차례와 띠 차례가
   // 같으니 띠 이름으로 적는다. 달은 뺐다 - 띠로는 달을 가리킬 수 없다.
   const gongmangZodiac = (b: number) => findZodiac(BRANCHES[b].animal)?.label ?? BRANCHES[b].kor;
-  const gongmang = `${withJosa(gongmangZodiac(g1), '과와')} ${gongmangZodiac(g2)} 해가 비어 있어요. 이 두 해에는 일을 크게 벌여도 기대만큼 결과가 나오지 않기 쉬워요.`;
+  const gongmang = `${withJosa(gongmangZodiac(g1), '과와')} ${gongmangZodiac(g2)} 해가 비어 있어요. 이 두 띠 해에는 일을 크게 벌이기보다 결과가 따라오는지 중간중간 확인하면서 움직이세요.`;
 
   const chart = {
     pillars: chartPillars,
-    dayMaster: `${pillars.dayMaster.kor}, 다섯 요소 중 ${ELEMENT_KO[myEl]}에 속해요. ${dm.tagline.replace(/\.?$/, '.')}`,
+    dayMaster: `${pillars.dayMaster.kor}, 다섯 요소 가운데 ${ELEMENT_KO[myEl]}에 속해요. ${dm.nature.split(/(?<=[.])\s+/)[0]}`,
     elements,
     strength:
       prof.strength === 'strong'
@@ -483,8 +483,8 @@ export function buildDeepRead(
         : '주변의 도움을 받을 때 강점을 더 잘 써요. 혼자 밀어붙이기보다 배우고 도움받을 때 결과가 좋아요.',
     season: prof.hasSeasonalSupport
       ? '태어난 계절이 내 성향과 잘 맞아서 기본적으로 버티는 힘이 있는 편이에요.'
-      : '태어난 달이 나를 돕지는 않아요. 그래서 때를 고르는 게 더 중요해져요.',
-    useful: `${ELEMENT_KO[prof.usefulElement]} 요소가 보완되면 한쪽에 치우친 구성이 한결 고르게 돼요.`,
+      : '태어난 달이 나를 직접 돕는 구성은 아니에요. 그래서 무엇을 하느냐만큼 언제 움직이느냐도 중요하게 봐요.',
+    useful: `내 사주에서는 다섯 요소 중 ${withJosa(ELEMENT_KO[prof.usefulElement], '을를')} 채워주면 좋은 요소로 봐요. 이 요소가 보완되면 한쪽으로 치우친 구성이 한결 고르게 돼요.`,
     focus,
     today: chartToday,
     sinsal: stars,
@@ -715,7 +715,7 @@ export function buildDeepRead(
             { k: '돈', v: areas.money },
             { k: '사람', v: areas.people },
             { k: '몸', v: areas.body },
-            { k: '이 십 년의 숙제', v: areas.task },
+            { k: '이 십 년 동안 기억할 것', v: areas.task },
           ],
           next:
             left !== null && left > 0

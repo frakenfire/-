@@ -71,7 +71,7 @@ export const CONCERNS: Concern[] = [
     luckyWhere: '일 얘기를 꺼내기 좋은 방향',
     luckyWhen: '중요한 일은',
     label: '일과 이직',
-    hook: '옮길까 말까, 언제가 좋을까',
+    hook: '옮기는 게 좋을지, 조금 더 기다릴지',
     icon: 'briefcase',
     question: '지금 일은 어떤 상태예요?',
     questionLead: '고른 상황에 맞춰 시기를 잡아요.',

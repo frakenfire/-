@@ -3,7 +3,7 @@ import type { TodayDecision } from '../types/fortune.ts';
 import type { Band } from './timing.ts';
 import type { TenGod } from './tenGods.ts';
 import { todayAskOf } from '../data/todayVerdict.ts';
-import { dayActOf } from '../data/concernDayOverride.ts';
+import { dayActOf } from '../data/optionDay/index.ts';
 
 // 결과 맨 위 결론을 조립한다. 고민을 골라 뽑은 결과는 전부 여기서 나온다.
 //
