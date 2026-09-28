@@ -1766,7 +1766,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
       },
       {
         headline: '오늘은 미뤄둔 응모나 신청을 해보기 좋은 날이에요.',
-        vibe: '시도해본 사람에게 기회가 생길 수 있어요.',
+        vibe: '먼저 시도해야 다음에 무엇을 할지 알 수 있어요.',
         steps: [
           { when: '아침', text: '미뤄둔 신청서나 응모 하나를 넣어요.' },
           { when: '낮', text: '모집이나 공고를 한 번 훑어봐요.' },
