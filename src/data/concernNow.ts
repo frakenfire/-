@@ -202,7 +202,7 @@ export const CONCERN_NOW: Record<ConcernKey, Record<TenGod, NowRow>> = {
     },
     pyeonjae: {
       decade: '주고받는 사이가 늘어나는 십 년이에요. 실제 도움이 오가야 오래 가요.',
-      year: '올해는 먼저 챙겨주는 사람이 관계를 오래 이어가기 쉬워요. 손익을 너무 따지면 서로 멀어질 수 있어요.',
+      year: '올해는 먼저 챙겨주는 사람이 관계를 오래 이어가기 쉬워요. 누가 더 많이 했는지만 따지면 서로 멀어질 수 있어요.',
       month: '이번 달은 부탁하고 싶은 일이 생겨요. 먼저 해준 것이 있어야 편해요.',
     },
     jeongjae: {
