@@ -97,6 +97,8 @@ const OVERRIDE: Partial<Record<ConcernKey, Record<string, Override>>> = {
       jeongjae: {
         decide: '앞일을 같이 볼 사람인지 보는 게 먼저예요.',
         pull: '설렘보다 같이 살 수 있는지를 재게 되는',
+        // 기본 칸은 '결혼과 동거 이야기가 통해요' 다. 만나는 사람이 없는 사람에게는 꺼낼 상대가 없다.
+        month: '내가 바라는 만남의 조건이 또렷해지는 달이라 어떤 사람을 만나고 싶은지 적어보기 좋아요.',
       },
       pyeongwan: {
         decide: '부담스러운 관계를 어떻게 할지 정하는 게 먼저예요.',
@@ -113,6 +115,10 @@ const OVERRIDE: Partial<Record<ConcernKey, Record<string, Override>>> = {
     },
     some: {
       bijian: { yearCare: '친구와 그 이상 사이를 흐리는 것' },
+    },
+    // 끝난 사이에 '결혼과 동거 이야기가 통해요' 는 거꾸로 된 말이다.
+    past: {
+      jeongjae: { month: '지난 관계에서 오간 돈과 물건을 정리하기 좋은 달이라 남은 것을 하나씩 돌려주거나 치워두세요.' },
     },
     // 만나는 사람이 있는데 새 사람을 만나보라고 하면 안 된다.
     couple: {

@@ -378,13 +378,32 @@ function collect() {
       const r = el.getBoundingClientRect();
       if (r.width < 1 || r.height < 1) continue;
       // 마침표 뒤에 글자가 더 붙어 있으면 두 문장이 한 덩이로 흐른 것이다.
-      // 물음표·느낌표는 제목에도 쓰여서 마침표만 본다.
-      if (!/[.]\s+\S/.test(own)) { seen += 1; continue; }
+      // 물음표·느낌표는 제목 끝에 혼자 오면 괜찮고, 뒤에 한글 문장이 이어지면 같은 사고다.
+      if (!/[.]\s+\S/.test(own) && !/[?!]\s+[가-힣]/.test(own)) { seen += 1; continue; }
       seen += 1;
       bad.push(own.slice(0, 46));
     }
     out.unsplit = [...new Set(bad)];
     out.unsplitSeen = seen;
+  }
+
+  // 여러 줄로 접히는 한글 글자가 낱말 가운데서 잘리는가.
+  // word-break 가 keep-all 이 아니면 '가능합니\n다' 처럼 낱말 한가운데서 줄이 바뀐다.
+  {
+    const bad = [];
+    for (const el of document.querySelectorAll('.app *')) {
+      let own = '';
+      for (const n of el.childNodes) if (n.nodeType === 3) own += n.nodeValue;
+      own = own.trim();
+      if (!/[가-힣]{2,}.*\s.*[가-힣]/.test(own)) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width < 1 || r.height < 1) continue;
+      const cs = getComputedStyle(el);
+      const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.5;
+      if (r.height < lh * 1.6) continue;
+      if (cs.wordBreak !== 'keep-all') bad.push(`${el.className || el.tagName}: ${own.slice(0, 30)}`);
+    }
+    out.midword = [...new Set(bad)];
   }
 
   // 맨 아래 카드가 화면 끝에 딱 붙어 있는가.
@@ -546,6 +565,8 @@ function auditScreen(name, data) {
     data.repeated.length ? data.repeated.slice(0, 3).join(' / ') : `문장 ${data.repeatedSeen}가지 검사`);
 
   // 15-2) 마침표가 찍혔는데 한 덩이로 흐르지 않는가
+  check(data.midword.length === 0, `[${name}] 여러 줄 한글이 낱말 가운데서 안 잘림`,
+    data.midword.length ? data.midword.slice(0, 3).join(' / ') : '');
   check(data.unsplit.length === 0, `[${name}] 문장이 끝나면 줄이 바뀜`,
     data.unsplit.length ? data.unsplit.slice(0, 3).join(' / ') : `덩이 ${data.unsplitSeen}개 검사`);
 
