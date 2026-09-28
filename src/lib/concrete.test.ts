@@ -298,7 +298,7 @@ test('점수 푸는 줄이 앞뒤 거꾸로가 아니다', () => {
       const body = cell.good.endsWith('것')
         ? `${cell.good.slice(0, -1)}게`
         : withJosa(cell.good, '이가');
-      const high = `${cell.pull} 때예요. 지금은 ${body} 통해요.`;
+      const high = `${cell.pull} 때예요. 지금은 ${body} 도움이 돼요.`;
       const low = `${cell.pull} 때예요. ${cell.care}만 조심하면 돼요.`;
       for (const line of [high, low]) {
         // 점수 말('보탬이 돼요' / '발목을 잡아요')은 이 줄에 다시 오면 안 된다
@@ -308,7 +308,7 @@ test('점수 푸는 줄이 앞뒤 거꾸로가 아니다', () => {
         if (/이 고민/.test(line)) bad.push(`${c.key}.${g}  ${line}`);
       }
       // 조사 없이 낱말이 그냥 붙는 자리가 없어야 한다
-      assert.ok(/(게|이|가) 통해요\.$/.test(high), `${c.key}.${g}: ${high}`);
+      assert.ok(/(게|이|가) 도움이 돼요\.$/.test(high), `${c.key}.${g}: ${high}`);
       assert.ok(/만 조심하면 돼요\.$/.test(low), `${c.key}.${g}: ${low}`);
     }
   }

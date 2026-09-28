@@ -1,6 +1,6 @@
 import { DAY_MASTER_BY_INDEX } from '../data/dayMaster.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
-import { TEN_GOD_KO } from './tenGods.ts';
+import { TEN_GOD_TRAIT } from './tenGods.ts';
 import { bandLabel, monthsAway, type Band, type TimingRead, type TimingSlot } from './timing.ts';
 import { REFRESH_NOTE } from '../data/concernReadings.ts';
 import { godLineOf } from '../data/concernGodOverride.ts';
@@ -47,7 +47,7 @@ export type DeepRead = {
   /** 결과 맨 위 결론 - 오늘 전체 종합, 오늘 할 것과 까닭, 하지 말 것과 까닭 */
   todayDecision: TodayDecision;
   /** 결정 카드 — 지금 어느 상태이고, 뭘 하고 뭘 하지 말 것인가 */
-  decision: { stance: Stance; stanceWord: string; verdict: string; dos: string[]; donts: string[] };
+  decision: { stance: Stance; stanceWord: string; verdict: string; dos: string[]; doWhys: string[]; donts: string[] };
   /** 왜 지금 이 고민이 커졌는지 — 십 년, 올해, 이번 달을 겹쳐 본다 */
   now: { head: string; situation: string; rows: { k: string; label: string; v: string }[] };
   headline: string;
@@ -59,7 +59,7 @@ export type DeepRead = {
   why: { k: string; v: string }[];
   /** 내 명식 여덟 글자 — 근거를 그대로 펼쳐 보인다 */
   chart: {
-    pillars: { k: string; stem: string; branch: string; god: string; step: string; me: boolean }[];
+    pillars: { k: string; stem: string; branch: string; trait: string; me: boolean }[];
     dayMaster: string;
     elements: { el: string; pct: number; mine: boolean }[];
     strength: string;
@@ -300,6 +300,7 @@ export function buildDeepRead(
     // 글자 하나까지 같은 답을 받고 있었다. 이 줄이 여덟 글자를 본다.
     verdict: `${STANCE_LEAD[stance]} ${plan.focus} ${NATAL_REASON[concernKey][GOD_GROUP_OF[score.natalTopGod]]}`,
     dos: [...plan.dos],
+    doWhys: [...plan.doWhys],
     donts: [...plan.donts],
   };
 
@@ -434,8 +435,7 @@ export function buildDeepRead(
     k,
     stem: STEMS[p.stem].kor,
     branch: BRANCHES[p.branch].kor,
-    god: TEN_GOD_KO[tenGodOf(pillars.dayStem, mainHiddenStem(p.branch)) as TenGod],
-    step: UNSEONG_KO[unseongOf(pillars.dayStem, p.branch)].word,
+    trait: TEN_GOD_TRAIT[tenGodOf(pillars.dayStem, mainHiddenStem(p.branch)) as TenGod],
     me,
   }));
 
@@ -456,7 +456,9 @@ export function buildDeepRead(
 
   // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
   // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
-  const chartToday = `오늘 글자를 내 사주와 맞춰보면 ${TEN_GOD_KO[todayGod]}으로 봐요. ${G(todayGod).line}`;
+  // '오늘 글자를 내 사주와 맞춰보면 드러내는 힘으로 봐요' 는 기운 이름을 한 번
+  // 더 말할 뿐이라 뺐다. 그래서 오늘 무슨 일이 있는지만 남긴다.
+  const chartToday = G(todayGod).line;
 
   // 조견표로 대조만 하는 것들. 해석을 고르지 않으니 누가 계산해도 같다.
   const stars = sinsalOf(pillars).map((x) => ({
@@ -473,7 +475,7 @@ export function buildDeepRead(
 
   const chart = {
     pillars: chartPillars,
-    dayMaster: `${pillars.dayMaster.kor}, 다섯 갈래 중 ${ELEMENT_KO[myEl]}에 속해요. ${dm.tagline.replace(/\.?$/, '.')}`,
+    dayMaster: `${pillars.dayMaster.kor}, 다섯 요소 중 ${ELEMENT_KO[myEl]}에 속해요. ${dm.tagline.replace(/\.?$/, '.')}`,
     elements,
     strength:
       prof.strength === 'strong'
@@ -649,9 +651,17 @@ export function buildDeepRead(
       // 걷어내면서 둘 다 보이게 됐고, 거기서 드러났다.
       // 여기서는 원국에서 이 고민 자리가 몇 글자인지를 말한다. 그건 다른
       // 어디서도 숫자로는 안 나오고, '기준' 이라는 역할과도 맞는다.
-      line: `여덟 글자 중 ${score.natalCount}개가 ${withJosa(concern.shortName, '을를')} 맡고 있어요. `
-        + `${score.natalCount >= 3 ? '많은 편이라 때를 덜 타요.' : '적은 편이라 때를 더 타요.'}`,
-      vs: '이 점수가 평소의 나예요. 위 셋은 여기에 견준 거예요.',
+      // '2개가 일을 맡고 있어요. 적은 편이라 때를 더 타요' 는 사주 말을 옮긴
+      // 것이라 무슨 뜻인지 안 남았다. 그래서 어떻다는 건지까지 풀어 적는다.
+      line: (score.natalCount === 0
+        ? `여덟 글자에는 ${withJosa(concern.shortName, '과와')} 관련된 특징이 따로 보이지 않아요. `
+        : `${withJosa(concern.shortName, '과와')} 관련된 특징이 여덟 글자 중 ${score.natalCount}개에서 보여요. `)
+        + `${score.natalCount >= 3
+          ? '타고난 성향이 받쳐줘서 시기를 덜 타는 편이에요.'
+          : '타고난 성향보다 언제 움직이느냐에 더 영향을 받는 편이에요.'}`,
+      // 견줄 대상이 없는 줄이다. '이 점수가 기준' 이라는 설명은 누구에게나
+      // 같은 화면 글이라 DeepSections 가 붙인다.
+      vs: null,
     },
   ];
 
@@ -736,7 +746,7 @@ export function buildDeepRead(
   const yearGap =
     y0.tenGod === y1.tenGod
       ? '올해와 내년이 비슷해요. 올해 잡아둔 것이 내년에 그대로 굴러가요.'
-      : '올해와 내년은 할 일이 달라요. 위 표에서 올해 칸만 보고 움직이세요.';
+      : '올해와 내년은 할 일이 달라요. 지금은 올해 할 것부터 챙기세요.';
 
   // 달 한 덩이 — 겉(천간)과 속(지지)을 따로 대야 열두 달이 전부 다른 얼굴이 된다
   // 같은 달이 누구에게나 같은 문장이면 표만 열둘이고 말은 하나다. 십신이 열,

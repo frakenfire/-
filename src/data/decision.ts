@@ -65,7 +65,8 @@ export const WHEN_ACT: Record<ConcernKey, { best: string; hard: string; year: st
     year: '누구를 오래 볼지는 이 해에 골라도 돼요.',
   },
   health: {
-    best: '검진을 받고 운동을 이때 시작하세요.',
+    // 검진 날짜를 운세로 정하게 하면 안 된다. 몸이 불편하면 달과 상관없이 가야 한다.
+    best: '운동이나 식단 관리를 이때 시작하세요.',
     hard: '일정은 이때 늘리지 말고 비워둬요.',
     year: '생활 습관을 바꾸면 이 해에는 이어가기 쉬워요.',
   },

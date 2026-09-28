@@ -44,6 +44,13 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
   const picked = read.monthSlots[openMonth] ?? read.monthSlots[0];
   const flowRef = useRef<HTMLUListElement>(null);
   const last = read.monthSlots.length - 1;
+  // 두 기둥이 같은 성향이면 같은 줄이 두 번 나온다. 한 줄로 묶고 기둥 이름을 같이 적는다.
+  const traitRows: { trait: string; ks: string[] }[] = [];
+  for (const c of read.chart.pillars) {
+    const hit = traitRows.find((t) => t.trait === c.trait);
+    if (hit) hit.ks.push(c.k);
+    else traitRows.push({ trait: c.trait, ks: [c.k] });
+  }
 
   // 막대 하나하나를 버튼으로 두면 폭이 22px 이라 손가락이 옆 달을 누른다.
   // 그래서 막대는 그림으로만 두고, 차트 위를 문질러 고르게 한다.
@@ -104,13 +111,18 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             오늘 할 일인지 헷갈린다. */}
         <p className="cat4__head">이번 달에 할 것과 하지 말 것</p>
         <span className={`decide__stance decide__stance--${read.decision.stance}`}>{read.decision.stanceWord}</span>
+        <p className="decide__sub">이번 달 결론</p>
         <Sentences className="decide__verdict" text={read.decision.verdict} />
         <p className="decide__sub">이번 달에 할 것</p>
         <ol className="decide__list decide__list--do">
           {read.decision.dos.map((d, i) => (
             <li key={d} className="decide__row">
               <span className="decide__no num">{i + 1}</span>
-              <span className="decide__v">{d}</span>
+              <span className="decide__body">
+                <span className="decide__v">{d}</span>
+                {/* 할 일만 세 줄 적으면 '그걸 왜' 가 남는다. 한 줄씩 까닭을 붙인다. */}
+                <Sentences className="decide__why" text={read.decision.doWhys[i] ?? ''} />
+              </span>
             </li>
           ))}
         </ol>
@@ -136,6 +148,13 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         <p className="cat4__head">왜 {read.score.total}점인가요</p>
         <Sentences className="why-score__lead" text={read.scoreLine} />
         <ul className="why-score">
+          {/* 숫자 두 개가 나란히 있으면 어느 게 점수고 어느 게 몫인지 모른다. */}
+          <li className="why-score__head" aria-hidden>
+            <span>항목</span>
+            <span />
+            <span>점수</span>
+            <span>비율</span>
+          </li>
           {read.score.parts.map((p) => (
             <li key={p.k} className={`why-score__row why-score__row--${p.band}`}>
               <span className="why-score__k">
@@ -289,36 +308,38 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       <div className="sec-card">
         <p className="cat4__head">올해와 내년, 무엇이 다른가요</p>
+        {/* 두 해를 표로 맞대 놓았더니 좁은 화면에서 칸마다 글자가 서너 줄씩
+            접혀 읽히지 않았다. 해마다 할 것과 조심할 것을 바로 밑에 붙인다. */}
         <ul className="yline">
-          {read.yearLines.map((y) => (
-            <li key={y.k} className="yline__row">
-              <span className="yline__k">
-                {y.k} <b>{y.label}</b>
-              </span>
-              <span className={`yline__b yline__b--${y.bandKey}`}>{y.band}</span>
-              <span className="yline__v"><Sentences text={y.v} /></span>
-            </li>
-          ))}
+          {read.yearLines.map((y, i) => {
+            const word = i === 0 ? '올해' : '내년';
+            const good = read.yearCompare[0]?.[i === 0 ? 'thisYear' : 'nextYear'];
+            const care = read.yearCompare[1]?.[i === 0 ? 'thisYear' : 'nextYear'];
+            return (
+              <li key={y.k} className="yline__row">
+                <span className="yline__k">
+                  {y.k} <b>{y.label}</b>
+                </span>
+                <span className={`yline__b yline__b--${y.bandKey}`}>{y.band}</span>
+                <span className="yline__v"><Sentences text={y.v} /></span>
+                <ul className="slot__pts yline__pts">
+                  {good ? (
+                    <li className="slot__pt slot__pt--good">
+                      <span className="slot__pt-k">{word} 이렇게 하세요</span>
+                      <Sentences className="slot__pt-v" text={good} />
+                    </li>
+                  ) : null}
+                  {care ? (
+                    <li className="slot__pt slot__pt--care">
+                      <span className="slot__pt-k">{word} 조심할 것</span>
+                      <Sentences className="slot__pt-v" text={care} />
+                    </li>
+                  ) : null}
+                </ul>
+              </li>
+            );
+          })}
         </ul>
-        {/* 따로 설명만 하면 뭐가 다른지 안 보인다. 같은 줄에 맞대 놓는다. */}
-        <table className="ycmp">
-          <thead>
-            <tr>
-              <th />
-              <th>{read.yearLines[0]?.label}</th>
-              <th>{read.yearLines[1]?.label}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {read.yearCompare.map((row) => (
-              <tr key={row.k}>
-                <th scope="row">{row.k}</th>
-                <td>{row.thisYear}</td>
-                <td>{row.nextYear}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
         <Sentences className="ycmp__gap" text={read.yearGap} />
       </div>
 
@@ -346,7 +367,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       </Chapter>
 
-      <Chapter title="다양한 관점에서 본 나의 사주" hint="내 일주, 네 가지 나, 명식 여덟 글자, 오늘 글자">
+      <Chapter title="다양한 관점에서 본 나의 사주" hint="내 일주, 네 가지 나, 사주 여덟 글자, 오늘 글자">
       {/* 내 일주 — 사주에서 사람을 가리키는 제일 작은 단위. 진짜 사주를 보러
           온 사람이 제일 먼저 찾는 자리라 이 덩이 맨 위에 둔다. 일간 열 가지만
           읽던 때는 열 명 중 한 명이 같은 말을 받았는데, 이제 예순 명 중 하나다. */}
@@ -385,7 +406,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
               </span>
               <span className="selves__v num">{x.score}</span>
               <Sentences className="selves__line" text={x.line} />
-              <Sentences className="selves__vs" text={x.vs ?? '여기가 기준이에요'} />
+              <Sentences className="selves__vs" text={x.vs ?? '이 점수가 기준이에요. 위 세 점수는 이 점수와 비교한 거예요.'} />
             </li>
           ))}
         </ul>
@@ -405,15 +426,25 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           무엇을 보고 읽었는지 한 줄(basis)은 아래 '이 주제에서 본 자리' 가 맡는다. */}
       {/* 명식을 그대로 펼친다. 근거를 안 보여주면 '아무 말이나 하는 앱' 이 된다. */}
       <div className="sec-card">
-        <p className="cat4__head">내 명식 여덟 글자</p>
+        <p className="cat4__head">내 사주 여덟 글자</p>
         <ul className="chart8">
           {read.chart.pillars.map((c) => (
             <li key={c.k} className={`chart8__col${c.me ? ' chart8__col--me' : ''}`}>
               <span className="chart8__k">{c.k}</span>
               <span className="chart8__stem">{c.stem}</span>
               <span className="chart8__branch">{c.branch}</span>
-              <span className="chart8__god">{c.god}</span>
-              <span className="chart8__step">{c.step}</span>
+            </li>
+          ))}
+        </ul>
+        {/* 칸 안에 '부담을 견디는 힘' 같은 이름만 두면 그래서 어떤 사람인지가
+            안 남는다. 기둥마다 성향 한 줄을 풀어서 아래에 적는다. */}
+        <ul className="read6 read6--tight">
+          {traitRows.map((t) => (
+            <li key={t.trait} className="read6__row">
+              <span className="read6__k">
+                {t.ks.map((k) => <span key={k} className="read6__kk">{k}</span>)}
+              </span>
+              <span className="read6__v">{t.trait}</span>
             </li>
           ))}
         </ul>
@@ -450,7 +481,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
         {read.chart.sinsal.length > 0 ? (
           <>
-            <p className="cat4__head cat4__head--sub">타고난 별</p>
+            <p className="cat4__head cat4__head--sub">타고난 특징</p>
             <ul className="read6 read6--tight">
               {read.chart.sinsal.map((x) => (
                 <li key={x.k} className="read6__row">
@@ -482,20 +513,20 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           </>
         ) : null}
 
-        <p className="cat4__head cat4__head--sub">이 주제에서 살펴본 부분</p>
+        <p className="cat4__head cat4__head--sub">이 주제에서 본 부분</p>
         <Sentences className="qa qa--sub" text={read.chart.focus} />
       </div>
 
       {/* 오늘 글자와 내 글자가 만나는 자리. 매일 바뀌므로 다시 볼 이유가 된다. */}
       <div className="sec-card">
-        <p className="cat4__head">오늘 글자와 내 글자</p>
+        <p className="cat4__head">오늘 글자와 내 사주</p>
         <p className="meet__pillar">
           오늘은 <b>{read.todayMeet.pillar}</b> 날이에요
         </p>
         <Sentences className="qa qa--sub" text={read.chart.today} />
         <ul className="read6 read6--tight">
           <li className="read6__row">
-            <span className="read6__k">오늘 내 단계</span>
+            <span className="read6__k">오늘 내 상태</span>
             <Sentences className="read6__v" text={`${read.todayMeet.step}. ${read.todayMeet.stepLine}`} />
           </li>
           {read.todayMeet.rows.map((r, i) => (

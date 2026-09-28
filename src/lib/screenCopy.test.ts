@@ -141,8 +141,8 @@ test('네 가지 나가 오늘을 맨 앞에 놓고 네 층을 다 보여준다'
     // 매일 쪽지를 뽑는 앱이다. 오늘이 맨 위여야 한다.
     assert.deepEqual(r.selves.map((x) => x.k),
       ['오늘의 나', '가까운 미래의 나', '먼 미래의 나', '타고난 나']);
-    // 타고난 나는 기준이라 견줄 대상이 없고, 그렇다고 말해준다.
-    assert.ok(r.selves[3].vs?.includes('평소의 나'), r.selves[3].vs ?? '');
+    // 타고난 나는 기준이라 견줄 대상이 없다. 그렇다는 설명은 화면이 붙인다.
+    assert.equal(r.selves[3].vs, null, r.selves[3].vs ?? '');
     for (const x of r.selves.slice(0, 3)) {
       // 평소와 견준 결과와, 그래서 어떻게 하라는지가 둘 다 있어야 한다.
       assert.ok(x.vs && /^평소(와 비슷해요|보다 \d+점 (높|낮)아요)\. .+\.$/.test(x.vs),

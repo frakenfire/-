@@ -984,7 +984,7 @@ async function run(browser) {
       // '좋아요' 였다. 한 단어가 두 가지 뜻이면 읽는 사람이 둘을 잇는다.
       const BAND_WORDS = ['좋아요', '무난해요', '조심할 때'];
       const clash = await page.evaluate((words) => {
-        const LABELS = '.slot__pt-k, .today2__k, .read6__k, .when4__k, .yline__k, .cat4__head, .more__label, .dec__k, .ycmp th';
+        const LABELS = '.slot__pt-k, .today2__k, .read6__k, .when4__k, .yline__k, .cat4__head, .more__label, .dec__k';
         return [...document.querySelectorAll(LABELS)]
           .map((el) => el.textContent.trim())
           .filter((t) => words.includes(t));
@@ -1255,7 +1255,7 @@ async function run(browser) {
     const pillarRows = await page.evaluate(() => {
       const cols = [...document.querySelectorAll('.chart8__col')];
       const rowTop = (sel) => cols.map((c) => Math.round(c.querySelector(sel).getBoundingClientRect().top));
-      return ['.chart8__k', '.chart8__stem', '.chart8__branch', '.chart8__god', '.chart8__step']
+      return ['.chart8__k', '.chart8__stem', '.chart8__branch']
         .map((sel) => { const t = rowTop(sel); return Math.max(...t) - Math.min(...t); });
     });
     check(Math.max(...pillarRows) <= 1, '[상담] 명식 네 기둥의 줄이 서로 맞음', `${pillarRows.join('/')}px`);
@@ -1609,7 +1609,7 @@ async function run(browser) {
     // 덩이 제목이 이미 묻고 있으니 그 밑에서는 바로 답한다.
     check(/오늘[은 ][^\n]{2,40}(세요|돼요|괜찮아요)\./.test(t), '[결과] 오늘만 놓고 바로 답한다');
     check(!/오늘[^\n]{2,30}될까요\?/.test(t), '[결과] 한 화면에서 두 번 묻지 않는다');
-    check(t.includes('평소의 나'), '[결과] 타고난 나가 기준이라고 말한다');
+    check(t.includes('이 점수가 기준이에요'), '[결과] 타고난 나가 기준이라고 말한다');
     // 문장이 끝나면 줄이 바뀌므로 두 문장 사이가 공백일 수도 줄바꿈일 수도 있다.
     check(/평소(와 비슷해요|보다 \d+점 (높|낮)아요)\.\s+.+\./.test(t),
       '[결과] 나머지 셋을 평소와 견주고 할 일까지 말한다');
@@ -1627,7 +1627,7 @@ async function run(browser) {
     const first = await bodyText(page);
     const firstScore = first.match(/(\d+)점/)?.[1] ?? '';
     // 결과 화면 아래 '다른 고민도 궁금하면' 에서 다른 고민을 눌러 한 번 더 뽑는다
-    await page.getByText('모을 때인지 지킬 때인지', { exact: false }).first().click();
+    await page.getByText('지금은 모아야 할지, 써도 될지', { exact: false }).first().click();
     await wait(page, 1200);
     if (!(await page.getByText('쪽지를 골라보세요', { exact: false }).count())) {
       await page.getByText('모으고 싶어요', { exact: true }).first().click();

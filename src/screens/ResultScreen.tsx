@@ -345,7 +345,10 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           <span className="nextday__k" aria-hidden>
             <Icon name="clock" size={16} />
           </span>
-          <Sentences className="nextday__v" text={deep.read.todayMeet.nextDay} />
+          <span className="nextday__body">
+            <span className="nextday__head">내일은 무엇이 달라질까요</span>
+            <Sentences className="nextday__v" text={deep.read.todayMeet.nextDay} />
+          </span>
         </p>
       ) : null}
 

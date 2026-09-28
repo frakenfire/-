@@ -42,6 +42,21 @@ export const TEN_GOD_KO: Record<TenGod, string> = {
   jeongin: '배우는 힘',
 };
 
+// 명식 기둥 하나를 한 줄로 읽을 때 쓰는 말. '부담을 견디는 힘' 같은 이름만
+// 적으면 그래서 내가 어떤 사람인지가 안 남는다. 성향으로 풀어 적는다.
+export const TEN_GOD_TRAIT: Record<TenGod, string> = {
+  bijian: '혼자서도 버티고 해내려는 성향',
+  geopjae: '남과 겨뤄서 앞서려는 성향',
+  siksin: '손으로 직접 만들어 보이려는 성향',
+  sanggwan: '생각을 말로 분명하게 드러내려는 성향',
+  pyeonjae: '직접 움직여 결과를 만들려는 성향',
+  jeongjae: '조금씩 꾸준히 모으려는 성향',
+  pyeongwan: '부담이 있어도 맡은 일을 버티는 성향',
+  jeonggwan: '정해진 규칙과 약속을 지키려는 성향',
+  pyeonin: '남과 다른 방식으로 배우려는 성향',
+  jeongin: '차근차근 배워서 익히려는 성향',
+};
+
 /** 십신을 성격 축으로 묶은 다섯 무리 — 화면에서는 이 단위로 말하는 게 알아듣기 쉽다. */
 export type GodGroup = 'self' | 'output' | 'wealth' | 'authority' | 'support';
 export const GOD_GROUP_OF: Record<TenGod, GodGroup> = {

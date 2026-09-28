@@ -198,9 +198,9 @@ export function computeConcernScore(
 function highTail(good: string): string {
   // 예순 개 중 여덟은 '것' 이 아니라 딴 말로 끝난다('동료와 나눠서 하는 일',
   // '받을 수 있는 지원금이나 환급'). '것' 만 보고 자르면 '지금은 동료와
-  // 나눠서 하는 일 통해요' 가 된다. 받침을 보고 조사를 붙인다.
+  // 나눠서 하는 일 도움이 돼요' 가 된다. 받침을 보고 조사를 붙인다.
   const body = good.endsWith('것') ? `${good.slice(0, -1)}게` : withJosa(good, '이가');
-  return `지금은 ${body} 통해요`;
+  return `지금은 ${body} 도움이 돼요`;
 }
 function lowTail(care: string): string {
   // '한 사람을 두고 경쟁이 붙는 것' -> '한 사람을 두고 경쟁이 붙는 것만 조심하면 돼요'
@@ -222,7 +222,7 @@ export function scoreVerdictLine(
   const head = `${withJosa(c.label, '은는')} ${score.total}점이에요.`;
 
   if (!top || !low || top === low || top.score - low.score < 8) {
-    return `${head} 위 다섯 점수가 비슷해서 어느 시기가 특별히 높거나 낮지 않아요. 새로운 일을 크게 벌이기보다 하던 일을 이어가는 편이 나아요.`;
+    return `${head} 아래 다섯 점수가 비슷해서 어느 시기가 특별히 높거나 낮지 않아요. 새로운 일을 크게 벌이기보다 하던 일을 이어가는 편이 나아요.`;
   }
   // 합계는 아래 설명 줄이 말한다. 여기서는 어느 칸이 올리고 어느 칸이 눌렀는지만 짚는다.
   //
@@ -244,7 +244,7 @@ export function scoreVerdictLine(
     //
     // 높은 칸에는 지금 통하는 것(good)을, 낮은 칸에는 조심할 것(care)을
     // 붙인다. 둘 다 고민을 보고 쓴 말이라 돈을 물으면 돈 얘기가 나온다.
-    `${head} 위 다섯 줄 중 ${withJosa(top.k, '이가')} ${top.score}점으로 가장 높아요. ` +
+    `${head} 아래 다섯 항목 중 ${withJosa(top.k, '이가')} ${top.score}점으로 가장 높아요. ` +
     `그래서 ${highTail(G(top.god!).good)}. ` +
     `가장 낮은 건 ${low.k} ${low.score}점이에요. ` +
     `${lowTail(G(low.god!).care)}.`

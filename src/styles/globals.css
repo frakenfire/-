@@ -3224,6 +3224,17 @@ strong {
   border-top: 1px solid var(--gray-100);
 }
 .why-score__row:first-child { border-top: 0; }
+.why-score__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px 30px 34px;
+  gap: 8px;
+  padding: 0 0 6px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+  color: var(--gray-600);
+}
+.why-score__head span:nth-child(n+3) { text-align: right; }
 /* 줄마다 아래에 선을 긋는 목록은 마지막 줄 밑에도 선을 남긴다. 카드 안쪽
    여백만 남은 자리에 선이 하나 떠 있으면 '아래에 뭔가 더 있다가 잘린' 것처럼
    보인다. 위에 쓴 border-top + first-child 가 맞는 모양인데, 아래 목록들은
@@ -3412,39 +3423,9 @@ strong {
 }
 
 /* 올해와 내년을 같은 줄에 맞대 놓는 표 */
-.ycmp {
-  width: 100%;
-  margin-top: 14px;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-.ycmp th,
-.ycmp td {
-  padding: 9px 6px;
-  border-top: 1px solid var(--gray-100);
-  text-align: left;
-  vertical-align: top;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
-.ycmp thead th {
-  border-top: 0;
-  padding-top: 0;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
-.ycmp tbody th {
-  width: 78px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-600);
-}
+.yline__pts { grid-column: 1 / -1; margin-top: 4px; }
+/* 꼬리표가 '올해 이렇게 하세요' 로 길어서 옆 칸에 두면 62px 에 안 들어간다. 위아래로 쌓는다. */
+.yline__pts .slot__pt { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 10px 0; }
 .ycmp__gap {
   margin: 14px 0 0;
   padding-top: 12px;
@@ -3596,6 +3577,15 @@ strong {
   color: var(--gray-900);
   word-break: keep-all;
 }
+.decide__body { display: grid; gap: 2px; min-width: 0; }
+.decide__list--do .decide__v { font-weight: 600; }
+.decide__why {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 400;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
 
 /* 내 정보 관리로 가는 한 줄. 카드가 아니라 글자다 */
 .data-link {
@@ -3661,7 +3651,7 @@ strong {
      기운 이름이 옆 칸보다 17px 아래로 내려가 있었다. 명식은 네 기둥을 나란히
      놓고 보는 것이라 줄이 안 맞으면 보는 방식 자체가 깨진다.
      위 네 줄은 내용 높이로 고정하고, 남는 자리는 맨 아래 한 줄이 받는다. */
-  grid-template-rows: auto auto auto auto 1fr;
+  grid-template-rows: auto auto auto;
   min-width: 0;
   justify-items: center;
   gap: 2px;
@@ -3669,7 +3659,6 @@ strong {
   border-radius: 14px;
   background: var(--gray-50);
 }
-.chart8__step { align-self: start; }
 .chart8__col--me {
   background: var(--brand-soft);
 }
@@ -3693,15 +3682,6 @@ strong {
   color: var(--gray-700);
 }
 .chart8__col--me .chart8__stem { color: var(--brand-strong); }
-.chart8__god {
-  margin-top: 2px;
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 500;
-  color: var(--gray-700);
-  text-align: center;
-  word-break: keep-all;
-}
 
 /* 다섯 기운 비중 */
 .elbar { list-style: none; margin: 0; padding: 0; }
@@ -3742,27 +3722,12 @@ strong {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+.read6__kk { display: block; }
 .read6--tight .read6__row {
   grid-template-columns: 92px minmax(0, 1fr);
   padding: 9px 0;
 }
 
-/* 명식 기둥 밑의 십이운성 한 단어 */
-.chart8__step {
-  margin-top: 3px;
-  padding: 2px 6px;
-  border-radius: 999px;
-  background: #ffffff;
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 600;
-  color: var(--gray-700);
-  /* nowrap 이면 '갈무리하는 자리'가 칸보다 넓어져 네 칸 전체를 밀어낸다.
-     줄이 접히더라도 칸 안에 들어와야 한다. */
-  word-break: keep-all;
-  text-align: center;
-}
-.chart8__col--me .chart8__step { color: var(--brand-strong); }
 
 /* 근거 줄의 작은 꼬리표 (어느 자리인지, 어떤 관계인지) */
 .read6__at {
@@ -4074,6 +4039,13 @@ strong {
   justify-content: center;
   height: 21px;
   color: var(--gray-700);
+}
+.nextday__body { display: grid; gap: 2px; min-width: 0; }
+.nextday__head {
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 700;
+  color: var(--gray-900);
 }
 .nextday__v {
   margin: 0;
