@@ -152,13 +152,13 @@ export const CONCERNS: Concern[] = [
     question: '요즘 몸은 어때요?',
     questionLead: '지금 가장 불편한 부분이 무엇인지부터 볼게요.',
     options: [
-      { key: 'tired', label: '기운이 없어요', line: '쓰는 곳이 많고 채우는 곳이 적은 상태예요.' },
+      { key: 'tired', label: '기운이 없어요', line: '할 일은 많은데 쉴 시간이 부족한 상태예요.' },
       { key: 'sleep', label: '잠을 잘 못 자요', line: '생각이 계속 이어져 잠들기 어려울 수 있어요. 자기 전에는 생각을 멈추고 쉬는 시간이 필요해요.' },
       { key: 'ache', label: '아픈 데가 있어요', line: '사주는 병을 못 봐요. 다만 무리하기 쉬운 달은 알려줄 수 있어요.' },
       { key: 'keep', label: '그냥 관리하고 싶어요', line: '불편해지기 전에 생활 습관과 검진을 챙기는 게 좋아요.' },
     ],
     resultTitle: '몸과 컨디션',
-    basis: '나를 채우는 글자와 빼가는 글자가 얼마나 맞는지로 봐요.',
+    basis: '사주에서 나를 도와주는 글자와 지치게 하는 글자가 얼마나 맞는지로 봐요.',
   },
   {
     key: 'mind',

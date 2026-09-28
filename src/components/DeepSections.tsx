@@ -77,33 +77,11 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </div>
       )}
 
-      {/* (1) 지금 어떻게 하면 될까요 — 오늘 얘기다. 매일 쪽지를 뽑는 앱이라
-          맨 먼저 오늘 하나만 놓고 묻고 답한다.
-          오늘 답 두 줄은 위 쪽지 카드의 큰 글씨가 맡는다. 여기서 또 그리면
-          한 화면에 같은 문장이 두 번 나온다. 여기는 오늘 할 일과, 언제가
-          좋은지만 맡는다. */}
-      <Chapter title="지금 어떻게 하면 될까요" hint="오늘 할 일과, 언제가 좋은지">
-      {/* 오늘 하면 좋은 것 / 피할 것 — 오늘 답 바로 밑이 제자리다. */}
-      <div className="sec-card">
-        <p className="cat4__head">오늘은 이렇게</p>
-        <ul className="today2">
-          <li className="today2__row today2__row--do">
-            <span className="today2__k">하면 좋은 것</span>
-            <Sentences className="today2__v" text={read.today.doIt} />
-          </li>
-          <li className="today2__row today2__row--dont">
-            <span className="today2__k">피할 것</span>
-            <Sentences className="today2__v" text={read.today.avoid} />
-          </li>
-          {read.today.hold ? (
-            <li className="today2__row today2__row--hold">
-              <span className="today2__k">오늘은 미뤄도 돼요</span>
-              <Sentences className="today2__v" text={read.today.hold} />
-            </li>
-          ) : null}
-        </ul>
-      </div>
-
+      {/* (1) 지금 어떻게 하면 될까요.
+          오늘 할 것과 하지 말 것은 이 덩이 위, 결과 맨 위 카드(TodayDecisionCard)
+          가 까닭과 함께 맡는다. 예전엔 여기 '오늘은 이렇게' 카드가 까닭 없이
+          같은 말을 또 했다. 이 덩이는 '그럼 언제' 와 '이번 달에는' 만 맡는다. */}
+      <Chapter title="지금 어떻게 하면 될까요" hint="크게 움직일 때와 이번 달 계획">
       {/* 언제가 좋은지 — 올해·이번 달 판정이 큰 글씨 자리에서 내려온 곳이다.
           오늘 할 일을 다 읽은 다음에 '그럼 크게 움직이는 건 언제' 가 온다. */}
       <div className="sec-card">
@@ -121,10 +99,13 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
       {/* 결정 카드 — 이 리포트가 실패하지 않으려면 여기서 끝이 나야 한다.
           다 읽고 '그래서 뭘 하라는 거지' 가 남으면 진 것이다. */}
       <div className="sec-card sec-card--decide">
-        <p className="cat4__head">지금 할 것과 하지 말 것</p>
+        {/* 이번 달 판정(stance)에서 나온 목록이다. 맨 위 카드가 '오늘' 을 맡으므로
+            여기는 이름부터 이번 달이라고 밝힌다. 둘 다 '지금' 이라고 쓰면 어느 쪽이
+            오늘 할 일인지 헷갈린다. */}
+        <p className="cat4__head">이번 달에 할 것과 하지 말 것</p>
         <span className={`decide__stance decide__stance--${read.decision.stance}`}>{read.decision.stanceWord}</span>
         <Sentences className="decide__verdict" text={read.decision.verdict} />
-        <p className="decide__sub">지금 할 것</p>
+        <p className="decide__sub">이번 달에 할 것</p>
         <ol className="decide__list decide__list--do">
           {read.decision.dos.map((d, i) => (
             <li key={d} className="decide__row">
@@ -133,7 +114,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ol>
-        <p className="decide__sub">지금 하지 말 것</p>
+        <p className="decide__sub">이번 달에 하지 말 것</p>
         <ul className="decide__list decide__list--dont">
           {read.decision.donts.map((d) => (
             <li key={d} className="decide__row">
@@ -142,7 +123,6 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <p className="mflow__foot">맨 위 항목은 오늘 바로 할 수 있는 일이에요.</p>
       </div>
 
       </Chapter>

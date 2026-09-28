@@ -264,6 +264,8 @@ function collect() {
   {
     const SENT = /[가-힣]{2}요[.!?]?$/;
     const ends = [];
+    // 어느 줄들이 잇달았는지 같이 보여준다. 몇 번인지만 알면 어디를 고칠지 모른다.
+    const sents = [];
     for (const el of document.querySelectorAll('body *')) {
       const r = el.getBoundingClientRect();
       if (r.width < 1 || r.height < 1) continue;
@@ -272,19 +274,21 @@ function collect() {
       if (!own) continue;
       for (const raw of own.split(/(?<=[.!?])\s+/)) {
         const t = raw.trim();
-        if (t.length >= 6 && SENT.test(t)) ends.push(t.replace(/[.!?]$/, '').slice(-2));
+        if (t.length >= 6 && SENT.test(t)) { ends.push(t.replace(/[.!?]$/, '').slice(-2)); sents.push(t); }
       }
     }
     let best = ends.length ? 1 : 0;
     let cur = 1;
     let worst = '';
+    let worstAt = -1;
     for (let i = 1; i < ends.length; i += 1) {
-      if (ends[i] === ends[i - 1]) { cur += 1; if (cur > best) { best = cur; worst = ends[i]; } } else cur = 1;
+      if (ends[i] === ends[i - 1]) { cur += 1; if (cur > best) { best = cur; worst = ends[i]; worstAt = i; } } else cur = 1;
     }
+    const runLines = worstAt >= 0 ? sents.slice(worstAt - best + 1, worstAt + 1) : [];
     const count = new Map();
     for (const e of ends) count.set(e, (count.get(e) ?? 0) + 1);
     const top = [...count.entries()].sort((a, b) => b[1] - a[1])[0] ?? ['-', 0];
-    out.endings = { n: ends.length, run: best, runWord: worst, top: top[0], topShare: ends.length ? Math.round((top[1] / ends.length) * 100) : 0 };
+    out.endings = { n: ends.length, run: best, runWord: worst, runLines, top: top[0], topShare: ends.length ? Math.round((top[1] / ends.length) * 100) : 0 };
   }
 
   // 카드 제목은 한 벌이다.
@@ -529,7 +533,8 @@ function auditScreen(name, data) {
   const e = data.endings;
   const endOk = e.run <= 3 && (e.n < 10 || e.topShare <= 35);
   check(endOk, `[${name}] 말끝이 이어지지 않음`,
-    `문장 ${e.n} · 최장연속 ${e.run}${e.runWord ? `(${e.runWord})` : ''} · 1위 ${e.top} ${e.topShare}%`);
+    `문장 ${e.n} · 최장연속 ${e.run}${e.runWord ? `(${e.runWord})` : ''} · 1위 ${e.top} ${e.topShare}%`
+      + (e.run > 3 && e.runLines?.length ? `\n      ${e.runLines.join('\n      ')}` : ''));
 
   // 14) 카드 제목이 한 벌인가 (카드가 없는 화면은 0가지로 지나간다)
   check(data.cardTitles.length <= 1, `[${name}] 카드 제목이 한 벌`,
@@ -628,7 +633,7 @@ async function run() {
   // 글자 길이가 달라서 같은 카드가 다르게 접힌다.
   const REST = [
     ['일과 이직', '지금은 쉬는 중이에요'],
-    ['일과 이직', '이제 첫 자리를 구해요'],
+    ['일과 이직', '첫 직장을 구하고 있어요'],
     ['일과 이직', '내 일을 해볼까 해요'],
     ['돈', '모으고 싶어요'],
     ['돈', '나가는 게 너무 많아요'],

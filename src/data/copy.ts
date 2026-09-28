@@ -82,7 +82,7 @@ export const NOTE_PICK_LEADS = [
 export const NOTE_PICK_HINTS = [
   '눈에 들어오는 한 장을 눌러요',
   '오래 고르지 않아도 돼요',
-  '고민은 3초. 한 장만 톡',
+  '고민은 3초, 한 장만 톡',
   '누르면 바로 열려요',
   '처음 눈이 간 쪽지를 골라도 괜찮아요',
 ];

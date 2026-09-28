@@ -8,7 +8,7 @@ import { FAVOR_WORD } from '../data/concernFocus.ts';
 import { computeConcernScore, scoreVerdictLine, type ConcernScore } from './concernScore.ts';
 import { withJosa, withRo } from './josa.ts';
 import { NATAL_SHAPE, SHAPE_LABELS, type ShapeRow } from '../data/natalShape.ts';
-import { dayActOf } from '../data/concernDayOverride.ts';
+import { composeTodayDecision } from './todayDecision.ts';
 import { todayAskOf } from '../data/todayVerdict.ts';
 import { verdictTwoOf } from '../data/verdictBySituation.ts';
 import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
@@ -17,7 +17,7 @@ import { STANCE_WORD, WHEN_ACT, type Stance } from '../data/decision.ts';
 import { planOf, STANCE_LEAD } from '../data/situationPlan.ts';
 import { NATAL_REASON } from '../data/natalReason.ts';
 import { dayPillarOf, dayPillarKey } from '../data/dayPillar.ts';
-import { todayWhyOf } from '../data/todayWhy.ts';
+import type { TodayDecision } from '../types/fortune.ts';
 import { NEEDED_MONTH } from '../data/tenGodDay.ts';
 import { needFit } from './dailySaju.ts';
 import { GOD_GROUP_OF, analyzeSaju, tenGodOf, mainHiddenStem, type TenGod } from './tenGods.ts';
@@ -44,16 +44,14 @@ export type DeepRead = {
   /** 평생 안 바뀌는 바탕 — 나는 원래 어떤 사람인가 */
   shape: ShapeRow & { head: string; rows: { k: string; v: string }[] };
   /** 오늘 하루의 행동. 고른 주제에 일진을 대어 뽑는다 */
-  today: { doIt: string; avoid: string; hold: string | null };
+  /** 결과 맨 위 결론 - 오늘 전체 종합, 오늘 할 것과 까닭, 하지 말 것과 까닭 */
+  todayDecision: TodayDecision;
   /** 결정 카드 — 지금 어느 상태이고, 뭘 하고 뭘 하지 말 것인가 */
   decision: { stance: Stance; stanceWord: string; verdict: string; dos: string[]; donts: string[] };
   /** 왜 지금 이 고민이 커졌는지 — 십 년, 올해, 이번 달을 겹쳐 본다 */
   now: { head: string; situation: string; rows: { k: string; label: string; v: string }[] };
   headline: string;
   sub: string;
-  /** 이번 달 기운으로 읽은 한 줄. 행동 바로 위에 붙는다 */
-  /** 맨 위 카드 세 번째 줄 - 오늘 들어온 글자가 이 고민에 어떻게 닿는가 */
-  todayWhy: string;
   situationLine: string;
   /** 시기 표 */
   when: { k: string; v: string; band?: string; bandKey?: Band; act?: string }[];
@@ -126,7 +124,7 @@ export type DeepRead = {
    */
   selves: { k: string; label: string; score: number; line: string; vs: string | null }[];
   /** 오늘 하나만 놓고 바로 하는 답. 덩이 제목이 이미 묻고 있어서 또 묻지 않는다 */
-  todayAsk: { a: string; band: Band };
+  todayAsk: { head: string; sum: string; band: Band };
   /** 올해·이번 달 판정. 큰 글씨가 오늘을 맡게 되면서 '언제' 칸으로 내려왔다 */
   whenVerdict: { head: string; sub: string };
   /** 이 답이 언제 다시 계산되는지 */
@@ -305,13 +303,6 @@ export function buildDeepRead(
     donts: [...plan.donts],
   };
 
-  // 오늘 칸이 버거울 때만 '미뤄도 돼요' 를 낸다. 늘 띄우면 접어두라는 말만 쌓인다.
-  const dayAct = dayActOf(concernKey, optionKey, score.dayGod);
-  const today = {
-    doIt: dayAct.doIt,
-    avoid: dayAct.avoid,
-    hold: score.dayBand === 'hard' ? dayAct.hold : null,
-  };
 
   // 지금 이 고민이 왜 커졌는지. 십 년이 배경을 깔고, 올해가 방향을 정하고,
   // 이번 달이 눈앞에 밀어놓는다. 세 칸을 따로 두면 사용자가 제 상황을 짚어 읽는다.
@@ -460,7 +451,7 @@ export function buildDeepRead(
   const focusCount = prof.gods.filter((g) => timing.favor.good.includes(GOD_GROUP_OF[g.god])).length;
   const focus =
     focusCount > 0
-      ? `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 태어난 여덟 글자에도 이 특징이 ${focusCount >= 3 ? '여러 번' : '조금'} 보여요.`
+      ? `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 내 사주에도 이 특징이 ${focusCount >= 3 ? '여러 번' : '조금'} 보여요.`
       : `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 태어난 여덟 글자에는 이 특징이 없어서, 올해나 이번 달에 관련 글자가 나타날 때 더 두드러져요.`;
 
   // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
@@ -478,7 +469,7 @@ export function buildDeepRead(
   // 읽는 사람은 그게 언제 오는 해인지 알 길이 없다. 지지 차례와 띠 차례가
   // 같으니 띠 이름으로 적는다. 달은 뺐다 - 띠로는 달을 가리킬 수 없다.
   const gongmangZodiac = (b: number) => findZodiac(BRANCHES[b].animal)?.label ?? BRANCHES[b].kor;
-  const gongmang = `${withJosa(gongmangZodiac(g1), '과와')} ${gongmangZodiac(g2)} 해가 비어 있어요. 이 두 해에는 일을 크게 벌여도 기대한 만큼 결과를 얻기 어려울 수 있어요.`;
+  const gongmang = `${withJosa(gongmangZodiac(g1), '과와')} ${gongmangZodiac(g2)} 해가 비어 있어요. 이 두 해에는 일을 크게 벌여도 기대만큼 결과가 나오지 않기 쉬워요.`;
 
   const chart = {
     pillars: chartPillars,
@@ -669,6 +660,9 @@ export function buildDeepRead(
   // 될까요' 라고 물으면 꺼낼 자리가 없는 사람에게 묻는 말이 된다.
   const todayAsk = todayAskOf(concernKey, optionKey, todayPart.band);
 
+  // 결과 맨 위 결론. 조립은 todayDecision.ts 한 곳에서만 한다.
+  const todayDecision = composeTodayDecision(concernKey, optionKey, todayPart.band, score.dayGod);
+
   const todayMeet = {
     // '무술날' 이라고 적어 놓고 있었다. 간지 이름은 읽는 사람에게 아무것도
     // 아니고, 하필 무술은 운동으로 읽힌다. 오행과 띠로 풀어 적는다.
@@ -680,7 +674,7 @@ export function buildDeepRead(
     rows: meetRows,
     quiet:
       meetRows.length === 0
-        ? '오늘 글자는 내 여덟 글자 중 어느 것과도 엮이지 않아요. 흔들림이 적은 날이라 하던 대로 가면 돼요.'
+        ? '오늘 글자는 내 여덟 글자 중 어느 것과도 엮이지 않아요. 흔들림이 적은 날이라 평소처럼 지내면 돼요.'
         : null,
     nextDay,
   };
@@ -807,7 +801,6 @@ export function buildDeepRead(
     score,
     scoreLine: scoreVerdictLine(score, concernKey, optionKey),
     shape,
-    today,
     decision,
     now,
     // 제일 큰 글자는 오늘 이야기여야 한다.
@@ -820,7 +813,7 @@ export function buildDeepRead(
     // 그래서 오늘 답을 위로 올리고, 올해·이번 달 판정은 아래 '언제' 칸으로
     // 내렸다(whenVerdict). 오늘 답은 두 줄이라 첫 줄이 큰 글씨, 둘째 줄이
     // 그 아래 줄이 된다.
-    headline: todayAsk.a.split('\n')[0],
+    headline: todayAsk.head,
     // month 를 쓰면 아래 '앞으로 열두 달'의 이번 달 칸과 글자 하나까지 같은
     // 문장이 된다. 결정 카드는 같은 기운을 '무엇을 정할 때인가'로 읽는다.
     // 큰 글씨와 이 줄은 둘 다 판정에서 나와야 한 목소리가 된다.
@@ -830,17 +823,13 @@ export function buildDeepRead(
     //   큰 글씨  지금은 상대보다 나를 먼저 채울 때예요
     //   이 줄    상대를 먼저 챙겨줄 때예요
     // 가 붙어 있었다. 정반대다. decide 는 아래 행동 칸으로 옮겼다.
-    sub: todayAsk.a.split('\n').slice(1).join(' ') || todayAsk.a,
+    sub: todayAsk.sum,
     // 올해·이번 달 판정. 큰 글씨 자리에서 내려온 말이라 '언제' 칸이 맡는다.
     whenVerdict: {
       head: verdictTwo.head.replace('{when}', away === 1 ? '다음 달에' : `${away}달 뒤에`),
       sub: verdictTwo.sub,
     },
-    /** 이번 달 기운으로 읽은 한 줄. 행동 바로 위에 붙는다 */
-    // 맨 위 카드 세 번째 줄. 전에는 이번 달 글자를 봤는데, 매일 뽑는 앱의
-    // 제일 큰 카드에서 오늘이 아닌 것을 말하고 있었다. 이번 달 근거는
-    // 시기 덩이의 '이번 달' 줄로 내려보냈다.
-    todayWhy: todayWhyOf(concernKey, optionKey, todayGod),
+    todayDecision,
     slots,
     monthSlots,
     yearLines,

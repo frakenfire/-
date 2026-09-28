@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { CONCERN_DAY } from './concernDay.ts';
 import { CONCERNS } from './concerns.ts';
 
-// '오늘은 이렇게' 는 고민과 그날 기운으로만 뽑는다. 고른 상황은 안 본다.
+// '오늘 할 것 / 하지 말아야 할 것' 은 고민과 그날 기운으로만 뽑는다. 고른 상황은 안 본다.
 // 그건 그대로 두되(상황까지 곱하면 이백마흔 칸이 된다), 어느 상황에서 읽어도
 // 말이 되게 써야 한다. 전에는 '지금은 쉬는 중이에요' 를 고른 사람에게
 // '내가 맡은 범위를 문서로 한 장 정리해두기' 가 나갔다. 맡은 일이 없다.
@@ -42,14 +42,14 @@ test('예순 칸이 다 차 있고 서로 다른 말이다', () => {
     assert.equal(Object.keys(byGod).length, 10, `${c.key}: 십신 열 개가 아니에요`);
     for (const [god, act] of Object.entries(byGod)) {
       for (const [k, t] of Object.entries(act)) {
-        // hold 는 '오늘은 미뤄도 돼요' 목록이라 짧은 명사구가 맞다.
         assert.ok(t.length >= 7, `${c.key}.${god}.${k} 너무 짧아요: ${t}`);
         all.push(`${c.key}|${t}`);
       }
     }
   }
-  assert.equal(all.length, 180);
-  assert.equal(new Set(all).size, 180, '한 고민 안에서 같은 말을 두 번 써요');
+  // 고민 여섯 x 십신 열 x (할 것, 까닭, 하지 말 것, 까닭)
+  assert.equal(all.length, 240);
+  assert.equal(new Set(all).size, 240, '한 고민 안에서 같은 말을 두 번 써요');
 });
 
 // 상황을 알고 나면 더 엄하게 잴 수 있다. '내 일을 해볼까 해요' 를 고른
@@ -102,11 +102,12 @@ test('덮는 칸은 원래 칸과 다른 말이다', async () => {
       for (const god of TEN_GODS) {
         const a = dayActOf(c.key, o.key, god);
         const b = CONCERN_DAY[c.key][god];
-        for (const k of ['doIt', 'avoid', 'hold'] as const) {
+        for (const k of ['doIt', 'doWhy', 'avoid', 'avoidWhy'] as const) {
           if (a[k] !== b[k]) { n += 1; assert.ok(a[k].length > 8, `${c.key}/${o.key}: ${a[k]}`); }
         }
       }
     }
   }
-  assert.equal(n, 11, `덮은 칸이 ${n}개예요`);
+  // 첫 자리 1, 내 일 1, 끝난 연애 10(할 것과 까닭 넷 칸 + 하지 말 것과 까닭 한 칸), 새로 만난 사람 1
+  assert.equal(n, 13, `덮은 칸이 ${n}개예요`);
 });

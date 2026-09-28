@@ -5,7 +5,9 @@ import { MoreConcerns } from '../components/MoreConcerns.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
 import { GRADE_KO } from '../lib/luck.ts';
-import { softBreak } from '../lib/softBreak.ts';
+import { todayKey } from '../lib/dateSeed.ts';
+import { TodayDecisionCard } from '../components/TodayDecisionCard.tsx';
+import { todayVibe } from '../lib/dayVibe.ts';
 import { Sentences } from '../components/Sentences.tsx';
 import { luckyWhen } from '../lib/luckyWhen.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
@@ -132,35 +134,20 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
             <span className="score-hero__grade">{headGrade}</span>
           </div>
         </div>
-        {/* 캡처해서 친구에게 보내도 뜻이 통해야 하는 자리. 결론과 지금 할 일까지
-            여기서 끝낸다. 아래 상세를 안 읽어도 무엇을 할지는 알 수 있어야 한다. */}
+        {/* 뽑은 쪽지 이름은 한 줄로 끝낸다. 결론은 바로 아래 카드가 맡는다.
+            예전엔 여기 결론 한 줄과 까닭 한 줄을 크게 두고, 할 일과 피할 일은
+            한참 아래에 까닭 없이 따로 뒀다. '그래서 오늘 뭘 하라는 거지' 가
+            남는다는 말을 들었다. 점수와 쪽지는 여기, 결론은 그 바로 밑이다. */}
         <div className="score-hero__note">
-          {/* 뽑은 쪽지 이름은 한 줄로 끝낸다. 18px 굵은 글씨로 따로 세우면
-              바로 밑 결론(20px)과 굵기가 같아져 무엇이 제목인지 안 읽힌다. */}
           <span className="drawn__k">
             내가 뽑은 쪽지 · <span className="drawn__kw">{note.name}</span>
           </span>
-          {deep ? (
-            <>
-              <strong className="drawn__verdict">{softBreak(deep.read.headline, 16)}</strong>
-              <Sentences className="drawn__lead" text={deep.read.sub} />
-              {/* 배지와 문장을 한 줄에 흘리면 문장이 배지 뒤에서 접혀
-                  줄바꿈이 사고처럼 보인다. 배지는 제 줄을 갖는다. */}
-              {/* 예전엔 여기에 판정 배지와 할 일 첫 줄도 같이 뒀다. 그런데 아래
-                  '지금 할 것과 하지 말 것' 카드가 같은 배지와 같은 첫 줄을
-                  다시 그린다. 한 화면을 통째로 뽑아 세어보니 '하던 대로
-                  이어가기' 가 열여섯 화면에서 두 번씩 나오고 있었다.
-                  같은 말을 두 번 읽히면 두 번째는 안 읽힌다. 여기는 이유만
-                  두고, 배지와 할 일은 아래 카드 한 곳에서만 그린다. */}
-              <span className="drawn__now">
-                <span className="drawn__why">{deep.read.todayWhy}</span>
-              </span>
-            </>
-          ) : (
-            <span className="drawn__lead">{result.summaryLines[0]}</span>
-          )}
         </div>
       </div>
+
+      {/* 오늘 전체 종합 → 오늘 할 것과 까닭 → 오늘 하지 말아야 할 것과 까닭.
+          고민을 골라 뽑았든 그냥 뽑았든 같은 카드로 그린다. */}
+      <TodayDecisionCard decision={deep ? deep.read.todayDecision : todayVibe(todayKey()).decision} />
 
       {/* 고민 답 — 뽑은 쪽지와 오늘 할 일 다음에 온다 */}
       {deep ? (

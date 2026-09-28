@@ -8,6 +8,7 @@ import { generateFortune } from './lib/generateFortune.ts';
 import { luckPercentile } from './lib/luck.ts';
 import { showRewardAd, preloadAd, isRewarded, isUnsupportedFreePass } from './lib/ads.ts';
 import { shouldShowNoteAd } from './lib/adPolicy.ts';
+import { todayVibe } from './lib/dayVibe.ts';
 import { shareBriefing, shareForUnlock, shareMessage } from './lib/share.ts';
 import { ConcernScreen } from './screens/ConcernScreen.tsx';
 import { ConcernAskScreen } from './screens/ConcernAskScreen.tsx';
@@ -389,15 +390,19 @@ export default function App() {
   async function handleShare() {
     if (!result) return;
     const brag = luckPercentile(result.luck.total);
+    // 공유 문구의 결론과 할 것·하지 말 것은 결과 화면 맨 위 카드와 같은 것을
+    // 쓴다. 전에는 화면과 상관없는 하루 설계표(dayPlan)에서 따로 가져와서,
+    // 친구가 받은 '오늘 할 것' 이 내 화면의 '오늘 할 것' 과 달랐다.
+    const decision = deep ? deep.read.todayDecision : todayVibe(dateKey).decision;
     const r = await shareBriefing({
       title: result.title,
       topic: deep && concernKey ? findConcern(concernKey).label : undefined,
       score: deep ? deep.read.score.total : result.luck.total,
-      headline: deep ? deep.read.headline : result.dayPlan.headline,
+      headline: decision.overall.headline,
       bestWhen: deep ? deep.timing.bestMonth.label : undefined,
       careWhen: deep ? deep.timing.hardMonth.label : undefined,
-      doItem: result.dayPlan.steps[0].text,
-      dontItem: result.dayPlan.holdOff,
+      doItem: decision.do.action,
+      dontItem: decision.dont.action,
       // 자랑거리일 때만 공유 문구에 넣는다 — "상위 90% " 를 친구에게 보내는 건
       // 자랑이 아니라 김빠지는 일이라, 그런 날엔 점수만 담아 보낸다.
       brag: brag.isBrag ? `상위 ${brag.pct}%` : undefined,

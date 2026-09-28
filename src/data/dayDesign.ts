@@ -375,7 +375,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
       },
       {
         headline: '이번 달은 배운 게 힘이 되는 달이에요.',
-        vibe: '들인 시간이 눈에 보이는 결과로 돌아와요.',
+        vibe: '들인 시간만큼 눈에 보이는 결과가 생겨요.',
         steps: [
           { when: '1주차', text: '배우고 싶던 것 하나를 시작해요.' },
           { when: '2주차', text: '주 2회, 30분씩만 꾸준히 해요.' },
@@ -1600,7 +1600,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
       },
       {
         headline: '오늘은 소문과 뒷말에서 반 발 물러나요.',
-        vibe: '옮긴 말은 꼭 돌아오는 날이에요.',
+        vibe: '남에게 옮긴 말이 결국 당사자 귀에 들어가는 날이에요.',
         steps: [
           { when: '아침', text: '오늘은 내가 말하기보다 상대 얘기를 듣는 데 집중해보세요.' },
           { when: '낮', text: '남 얘기가 나오면 화제를 슬쩍 돌려요.' },
@@ -1806,7 +1806,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
       },
       {
         headline: '좋은 일이 있으면 주변과 나눠보세요.',
-        vibe: '작은 나눔이 기쁨으로 돌아오는 날이에요.',
+        vibe: '작게 나눈 것에 고맙다는 말을 듣기 쉬운 날이에요.',
         steps: [
           { when: '아침', text: '간식 하나를 더 사요.' },
           { when: '낮', text: '옆 사람에게 건네요.' },

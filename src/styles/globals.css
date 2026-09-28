@@ -1814,13 +1814,6 @@ strong {
   font-weight: 700;
   color: var(--gray-700);
 }
-.drawn__lead {
-  margin-top: 3px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--gray-800);
-  line-height: 19.5px;
-}
 .drawn__kw {
   font-weight: 700;
   color: var(--gray-800);
@@ -2001,8 +1994,7 @@ strong {
   padding: 0;
 }
 .score-hero 
-.score-hero .drawn__k,
-.score-hero .drawn__lead {
+.score-hero .drawn__k {
   color: var(--gray-700); /* 파란 틴트 위 AA */
 }
 
@@ -3093,6 +3085,71 @@ strong {
 .sent { display: block; }
 .sent + .sent { margin-top: 3px; }
 
+/* 오늘 결론 — 결과 맨 위. 오늘 전체 종합, 오늘 할 것, 오늘 하지 말아야 할 것.
+   할 것과 하지 말 것은 제목 색으로만 가른다. 한쪽 두꺼운 테두리나 초록·빨강은
+   이 앱에서 안 쓴다. 각 카드 안에서는 행동이 제일 크고, '왜?' 는 작은 이름표,
+   까닭은 본문 크기다. 읽는 순서가 곧 크기 순서다. */
+.tdc__overall { margin-top: var(--space-5); }
+.tdc__headline {
+  margin: 4px 0 0;
+  font-size: 20px;
+  line-height: 29px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+.tdc__summary {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
+.tdc__act { margin-top: var(--space-4); }
+.tdc__k {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 700;
+}
+.tdc__act--do .tdc__k { color: var(--brand-strong); }
+.tdc__act--dont .tdc__k { color: var(--score-low-text); }
+.tdc__action {
+  margin: 6px 0 0;
+  font-size: 17px;
+  line-height: 25.5px;
+  font-weight: 700;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+.tdc__why-k {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--gray-100);
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+.tdc__why {
+  margin: 4px 0 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-800);
+  word-break: keep-all;
+}
+.tdc__note {
+  margin: 12px 4px 0;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-600);
+  word-break: keep-all;
+}
+
 /* 내 일주 — 예순 가지 중 하나. 별명이 제일 크고, 그 밑에 두 줄 설명,
    그 밑에 잘 되는 자리와 발목 잡히는 데를 한 줄씩 */
 .dayp__nick {
@@ -3129,35 +3186,6 @@ strong {
 }
 .dayp__row:first-child .dayp__k { color: var(--brand-strong); }
 .dayp__v {
-  min-width: 0;
-  margin: 0;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 600;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
-
-/* 오늘은 이렇게 — 할 것과 피할 것을 한 줄씩 못 박는다 */
-.today2 { list-style: none; margin: 0; padding: 0; }
-.today2__row {
-  display: grid;
-  grid-template-columns: 86px minmax(0, 1fr);
-  gap: 10px;
-  padding: 11px 0;
-  border-top: 1px solid var(--gray-100);
-}
-.today2__row:first-child { border-top: 0; padding-top: 0; }
-.today2__k {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  padding-top: 2px;
-}
-.today2__row--do .today2__k { color: var(--brand-strong); }
-.today2__row--dont .today2__k { color: #9c5d00; }
-.today2__row--hold .today2__k { color: var(--gray-600); }
-.today2__v {
   min-width: 0;
   margin: 0;
   font-size: 15px;
@@ -3584,60 +3612,6 @@ strong {
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
-}
-
-/* 쪽지 카드 안의 결론 - 캡처해서 보내도 뜻이 통해야 하는 세 줄 */
-.drawn__verdict {
-  display: block;
-  margin-top: 10px;
-  font-size: 20px;
-  line-height: 29px;
-  font-weight: 700;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
-.score-hero .drawn__lead {
-  margin: 4px 0 0;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  word-break: keep-all;
-}
-.drawn__now {
-  display: block;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--gray-200);
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
-.drawn__now b {
-  display: inline-block;
-  margin-right: 6px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: var(--brand-strong);
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: #ffffff;
-}
-/* 배지는 제 줄을 갖는다. 문장과 한 줄에 흘리면 문장이 배지 뒤에서 접혀
-   줄바꿈이 실수처럼 보인다. */
-.drawn__now .drawn__stance {
-  display: block;
-  width: fit-content;
-  margin: 0 0 8px;
-}
-.drawn__do {
-  display: block;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 600;
-  color: var(--gray-900);
 }
 
 /* 지우기 확인 - 되돌릴 수 없는 일이라 한 번 더 묻는다 */
@@ -4141,18 +4115,6 @@ strong {
   line-height: 24px;
   font-weight: 700;
   color: var(--brand-strong);
-}
-
-/* 이번 달 기운 — 행동의 이유. 행동보다 작고 흐리게 둬서 무엇이 할 일인지가
-   먼저 읽히게 한다. */
-.drawn__why {
-  display: block;
-  margin: 0 0 2px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-700);
-  word-break: keep-all;
 }
 
 /* ── 상황 고르기: 고를 것을 남는 자리 가운데로 ──

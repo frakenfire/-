@@ -143,9 +143,9 @@ test('오늘 행동은 고른 주제에서 나온다', () => {
   for (const c of CONCERNS) {
     const t = computeTiming(INPUT, P, 'female', c.key, at);
     const r = buildDeepRead(P, t, c.key, null, '2026-09-17');
-    assert.ok(r.today.doIt.length > 8, `${c.key} 오늘 할 일 비었음`);
-    assert.ok(r.today.avoid.length > 8, `${c.key} 오늘 피할 것 비었음`);
-    seen.add(r.today.doIt);
+    assert.ok(r.todayDecision.do.action.length > 8, `${c.key} 오늘 할 것 비었음`);
+    assert.ok(r.todayDecision.dont.action.length > 8, `${c.key} 오늘 하지 말 것 비었음`);
+    seen.add(r.todayDecision.do.action);
   }
   // 주제가 여섯 개인데 같은 행동이 돌아오면 주제를 물은 뜻이 없다
   assert.equal(seen.size, CONCERNS.length);
@@ -175,7 +175,7 @@ test('날이 바뀌면 오늘 줄이 바뀌고, 명식은 그대로다', () => {
   const a = buildDeepRead(P, t, 'work', null, '2026-09-17');
   const b = buildDeepRead(P, t, 'work', null, '2026-09-18');
   assert.notEqual(a.chart.today, b.chart.today, '오늘 줄이 어제와 같으면 매일 볼 이유가 없다');
-  assert.notEqual(a.today.doIt, b.today.doIt, '오늘 할 일이 어제와 같으면 안 된다');
+  assert.notEqual(a.todayDecision.do.action, b.todayDecision.do.action, '오늘 할 것이 어제와 같으면 안 된다');
   assert.deepEqual(a.chart.pillars, b.chart.pillars, '명식은 날이 바뀌어도 그대로여야 한다');
   assert.deepEqual(a.chart.elements, b.chart.elements);
 });
