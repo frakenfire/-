@@ -40,6 +40,7 @@ const DAY_OVERRIDE: Partial<Record<ConcernKey, Record<string, Override>>> = {
     // 끝난 사이는 다음 약속을 잡는 자리가 아니다.
     past: {
       jeongjae: { doIt: '다시 볼지 말지를 오늘 안에 한 줄로 정해두기' },
+      pyeonjae: { doIt: '그 사람에게 다시 연락할지 말지 한 줄로 정리하기' },
     },
   },
   people: {
