@@ -147,7 +147,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     jeongjae: {
       doIt: '만났을 때 다음 약속을 바로 잡기',
       avoid: '서운한 티만 내고 무슨 일인지 말 안 하는 것',
-      hold: '상대의 조건만 따져보는 일',
+      hold: '현실 조건만 따져보는 일',
     },
     pyeongwan: {
       doIt: '미뤄둔 대화를 짧게라도 시작하기',
