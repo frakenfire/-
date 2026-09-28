@@ -848,7 +848,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
       },
       {
         headline: '혼자 있는 시간이 사람 사이도 단단하게 해요.',
-        vibe: '내 컨디션을 챙기면 관계에서도 여유가 생겨요.',
+        vibe: '내 마음을 먼저 챙기면 관계에서도 여유가 생겨요.',
         steps: [
           { when: '아침', text: '오늘은 나를 위한 일정 하나를 넣어요.' },
           { when: '낮', text: '혼자여서 좋은 점을 세 개 떠올려봐요.' },
