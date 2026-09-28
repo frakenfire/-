@@ -11,13 +11,14 @@
 //
 //   npm run build:web && npm run audit:design
 
+import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const root = new URL('../', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../', import.meta.url)).replace(/\\/g, '/');
 const PORT = Number(process.env.DESIGN_PORT ?? 4174);
 const BASE = `http://localhost:${PORT}/`;
 
@@ -594,7 +595,7 @@ function auditScreen(name, data) {
 
 async function run() {
   const srv = spawn('npx', ['vite', 'preview', '--port', String(PORT)], {
-    cwd: new URL('..', import.meta.url).pathname, stdio: 'ignore',
+    cwd: fileURLToPath(new URL('..', import.meta.url)).replace(/\\/g, '/'), stdio: 'ignore',
   });
   const t0 = Date.now();
   while (Date.now() - t0 < 20000) {

@@ -4,8 +4,9 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = new URL('../../', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../../', import.meta.url));
 const run = (args: string[]) => {
   try {
     return { code: 0, out: execFileSync('node', ['scripts/check-release.mjs', ...args], { cwd: root, encoding: 'utf8' }) };

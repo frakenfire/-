@@ -31,7 +31,7 @@ export default defineConfig({
     // 등록 정보와 다르면 반려 1순위다.
     displayName: '오늘의 마음 한장',
     // TODO: 콘솔에 업로드한 아이콘 URL 로 교체 (static.toss.im/appsintoss/...)
-    icon: 'https://static.toss.im/appsintoss/placeholder-today-note.png',
+    icon: 'https://static.toss.im/appsintoss/95015/75ef5268-a7c6-475e-a54e-71d3b77a4bdb.png',
     primaryColor: '#3182f6',
   },
   webViewProps: {

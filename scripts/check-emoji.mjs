@@ -10,10 +10,11 @@
 //  - UI 화면·문구 파일에는 이모지 리터럴을 두지 않는다.
 //  - 항목 아이콘 데이터(쪽지·띠·기분 등)는 허용한다. 한 항목에 하나씩만 쓰이기 때문이다.
 
+import { fileURLToPath } from 'node:url';
 import { readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
-const root = new URL('../', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../', import.meta.url)).replace(/\\/g, '/');
 const EMOJI = /[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2B00}-\u{2BFF}\u{FE0F}\u{20E3}]/gu;
 
 // 항목당 아이콘 하나씩만 쓰는 데이터 — 규칙을 지키는 사용처라 허용한다.
@@ -44,7 +45,7 @@ function walk(dir, out = []) {
 
 const hits = [];
 for (const file of walk(join(root, 'src'))) {
-  const rel = file.replace(root, '');
+  const rel = file.replace(root, '').replaceAll('\\', '/');
   if (ICON_DATA.has(rel)) continue;
   readFileSync(file, 'utf8').split('\n').forEach((line, i) => {
     if (/^\s*(\/\/|\*)/.test(line)) return; // 주석은 사람이 읽는 자리라 예외

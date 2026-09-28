@@ -13,7 +13,7 @@
 // 밴드에 걸린 문장만 뜬다. 나머지 수백 개는 안 뜬다. 그래서 소스를 훑는다.
 // 주석과 식별자는 뺀다 - 문자열만 화면에 나간다.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
 const RULES = [
   ['기운', "무슨 일이 일어나는지로. '좋은 기운이 와요' 가 아니라 '잘 풀릴 것 같아요'"],

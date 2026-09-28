@@ -4,7 +4,7 @@
 // 안 쓰는 부호다. 그런데 이 앱의 문구와 답변에 계속 끼어들고 있었다.
 // 줄표 자리는 마침표나 쉼표로 끊는다. 짧은 줄표(–)와 말줄임(…)도 같이 본다.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
 const BANNED = [
   ['—', '긴 줄표(—)는 마침표나 쉼표로'],

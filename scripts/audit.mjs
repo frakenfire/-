@@ -10,6 +10,7 @@
 // 미리보기 서버는 이 스크립트가 직접 띄우고 내린다.
 // Playwright 는 devDependency 가 아니라 필요할 때만 쓴다(설치 안 돼 있으면 안내 후 종료).
 
+import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -59,7 +60,7 @@ const check = (cond, name, detail = '') => (cond ? ok(name, detail) : bad(name, 
 // ── 미리보기 서버 ───────────────────────────────────────────
 function startPreview() {
   const p = spawn('npx', ['vite', 'preview', '--port', String(PORT)], {
-    cwd: new URL('..', import.meta.url).pathname,
+    cwd: fileURLToPath(new URL('..', import.meta.url)).replace(/\\/g, '/'),
     stdio: 'ignore',
     detached: false,
   });

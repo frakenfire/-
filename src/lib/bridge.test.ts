@@ -2,6 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import {
   saveBase64Data, getServerTime, eventLog, requestReview, requestNotificationAgreement,
   share, getTossShareLink, showFullScreenAd, generateHapticFeedback,
@@ -82,14 +83,14 @@ test('콜백 API 가 Promise 로 바뀌지 않았다', () => {
 // 브릿지를 부르는 파일은 넷뿐이다. 다섯 번째가 생기면 여기서 알아채고
 // 그 파일의 게이팅도 같이 봐야 한다.
 test('SDK 를 import 하는 파일이 넷뿐이다', () => {
-  const dir = new URL('../', import.meta.url).pathname;
+  const dir = fileURLToPath(new URL('../', import.meta.url));
   const files: string[] = [];
   const walk = (d: string) => {
     for (const f of readdirSync(d)) {
       const p = join(d, f);
       if (statSync(p).isDirectory()) walk(p);
       else if (/\.tsx?$/.test(f) && !/\.test\.tsx?$/.test(f)
-        && readFileSync(p, 'utf8').includes("from '@apps-in-toss")) files.push(p.slice(dir.length));
+        && readFileSync(p, 'utf8').includes("from '@apps-in-toss")) files.push(p.slice(dir.length).replace(/\\/g, '/'));
     }
   };
   walk(dir);

@@ -4,7 +4,7 @@
 //   npm run doctor
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
 const rows = [];
 const ok = (what, note = '') => rows.push(['✅', what, note]);

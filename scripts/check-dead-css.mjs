@@ -12,7 +12,7 @@
 // 그렇게 살아남았다. 조립되는 자리(`base--${`)가 소스에 실제로 있을 때만 봐준다.
 // 점검 스크립트도 클래스로 화면을 집으므로 같이 훑는다.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
 function walk(dir) {
   const out = [];
