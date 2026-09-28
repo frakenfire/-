@@ -45,7 +45,7 @@ const TODAY_WHY: Record<ConcernKey, Record<TenGod, string>> = {
     geopjae: '오늘은 마음을 쉽게 정하지 못해요.',
     siksin: '오늘은 함께 무언가를 하면 더 가까워져요.',
     sanggwan: '오늘은 무심코 한 말 한마디가 오래 남아요.',
-    pyeonjae: '오늘은 새 사람을 만날 일이 생겨요.',
+    pyeonjae: '오늘은 사람을 만날 약속이 생길 수 있어요.',
     jeongjae: '오늘은 앞으로의 관계를 생각해보게 돼요.',
     pyeongwan: '오늘은 미뤄둔 다툼이 다시 떠오를 수 있어요.',
     jeonggwan: '오늘은 관계를 어떻게 할지 정하는 대화를 하게 돼요.',
