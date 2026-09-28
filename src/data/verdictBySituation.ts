@@ -100,7 +100,7 @@ const VERDICT_BY_SITUATION: Record<ConcernKey, Record<string, Record<Verdict, Tw
     },
     new: {
       now: { head: '지금 먼저 다가가면 가까워지기 쉬워요', sub: '먼저 말을 걸어도 되는 때예요. 밥 한 번 먹자고 해보세요.' },
-      soon: { head: '{when} 그 사람과 가까워질 기회가 생길 수 있어요', sub: '지금은 조금 더 지켜본 뒤 천천히 속 얘기를 나눠도 괜찮아요.' },
+      soon: { head: '{when} 그 사람과 약속을 잡아보기 좋아요', sub: '지금은 조금 더 지켜본 뒤 천천히 속 얘기를 나눠도 괜찮아요.' },
       wait: { head: '올해는 새 사람을 천천히 보는 해예요', sub: '빨리 가까워질 때가 아니에요. 두어 번 더 만나보고 정하세요.' },
     },
   },
