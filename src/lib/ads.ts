@@ -27,11 +27,11 @@ export type { AdResult } from './adResult.ts';
 export const AD_GROUPS = {
   // 쪽지를 누른 뒤 결과 전에 한 번. 오늘 첫 장부터 붙는다 — 규칙은
   // adPolicy.ts 의 shouldShowNoteAd 에 있고 테스트가 못 박는다.
-  note: 'REPLACE_REWARD_NOTE',
-  compat: 'REPLACE_REWARD_COMPAT',
+  note: 'ait.v2.live.6735b1fea3ce40de',
+  compat: 'ait.v2.live.26a13f971a204709',
   // 결과를 다 본 뒤 '다른 고민도' 를 여는 자리. 본문은 전부 무료이고
   // 여기만 광고를 낀다 — 이미 값을 받은 사람에게만 더 받겠다고 묻는다.
-  concern: 'REPLACE_REWARD_CONCERN',
+  concern: 'ait.v2.live.6d5d7c31970f4dc7',
 } as const;
 
 export type AdPlacement = keyof typeof AD_GROUPS;
