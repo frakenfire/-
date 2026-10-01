@@ -24,7 +24,7 @@ import {
   updateStreak,
   peekStreak, loadSkipBirth } from './lib/storage.ts';
 import { clearAllData } from './lib/storage.ts';
-import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError, askReview, canAskNotification, askNotificationAgreement } from './lib/toss.ts';
+import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, closeAppView, logEvent, reportError, askReview, canAskNotification, askNotificationAgreement } from './lib/toss.ts';
 import { findZodiac } from './data/zodiac.ts';
 import type { Zodiac, ZodiacId } from './data/zodiac.ts';
 import { findStarSign } from './data/starSign.ts';
@@ -217,11 +217,18 @@ export default function App() {
   hasResultRef.current = !!result;
   const busyRef = useRef(busy);
   busyRef.current = busy;
+  const askWhoRef = useRef(askWho);
+  askWhoRef.current = askWho;
 
   // 토스 하드웨어 뒤로가기도 같은 길을 되짚는다. 화면마다 따로 적어두면 어긋난다.
   function handleHardwareBack() {
     if (busyRef.current) return;
-    if (screenRef.current === 'home') return; // 토스가 앱 종료를 처리
+    // 뒤로가기를 구독하면 토스가 대신 닫아주지 않는다. 첫 화면이면 직접 닫는다(검토 반려 사유).
+    if (screenRef.current === 'home') {
+      if (askWhoRef.current) setAskWho(false);
+      else closeAppView();
+      return;
+    }
     goBack();
   }
 

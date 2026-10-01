@@ -97,3 +97,14 @@ test('SDK 를 import 하는 파일이 넷뿐이다', () => {
   assert.deepEqual(files.sort(), ['lib/ads.ts', 'lib/haptic.ts', 'lib/share.ts', 'lib/toss.ts'],
     '브릿지를 부르는 파일이 바뀌었습니다. 새 파일의 게이팅도 확인하세요');
 });
+
+// 검토 반려(2026-10-01): 첫 화면에서 뒤로가기를 눌러도 미니앱이 안 닫혔다.
+// 뒤로가기를 구독하면 토스가 대신 닫아주지 않으므로, 구독과 첫 화면 닫기가 함께 있어야 한다.
+test('뒤로가기를 구독하고, 첫 화면에서는 미니앱을 닫는다', () => {
+  const toss = readFileSync(new URL('./toss.ts', import.meta.url), 'utf8');
+  const app = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8');
+  assert.match(toss, /graniteEvent\.addEventListener\('backEvent'/, 'backEvent 를 구독하지 않아요');
+  assert.match(toss, /closeView\(\)/, 'closeView 를 부르지 않아요');
+  const fn = app.slice(app.indexOf('function handleHardwareBack'), app.indexOf('function handleHardwareBack') + 500);
+  assert.match(fn, /screenRef\.current === 'home'[\s\S]*closeAppView\(\)/, '첫 화면 뒤로가기에서 closeAppView 를 안 불러요');
+});
