@@ -68,26 +68,7 @@ a:focus-visible {
   padding-right: var(--space-4);
   flex-shrink: 0;
 }
-.app__nav-back {
-  width: 44px;
-  height: 44px;
-  margin-left: -6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  line-height: 31px;
-  color: var(--color-dark-gray);
-  border-radius: 999px;
-}
-.app__nav-title {
-  font-size: 17px;
-  line-height: 25.5px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--gray-900);
-}
-/* 홈처럼 네비에 아무것도 없을 땐 높이를 줄여 본문이 위로 올라오게 */
+/* 자체 헤더는 없다(토스 내비게이션 바가 맡는다). 위 여백만 남겨 본문이 위로 올라오게 */
 .app__nav--empty {
   height: 24px;
 }
@@ -216,6 +197,45 @@ strong {
   background: var(--color-white);
   color: var(--color-dark-gray);
   border: 1px solid var(--color-border);
+}
+.btn--weak {
+  background: var(--gray-100);
+  color: var(--gray-700);
+}
+/* 쪽지를 열 때 누구 걸로 볼지 묻는 아래 시트 */
+.who-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+}
+.who-sheet__panel {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-5)
+    calc(var(--space-5) + var(--sab, env(safe-area-inset-bottom, 0px)));
+  border-radius: 20px 20px 0 0;
+  background: var(--color-white);
+}
+.who-sheet__title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 29px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.who-sheet__sub {
+  margin: 0 0 var(--space-3);
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-600);
 }
 .btn-stack {
   display: flex;
@@ -1814,13 +1834,6 @@ strong {
   font-weight: 700;
   color: var(--gray-700);
 }
-.drawn__lead {
-  margin-top: 3px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--gray-800);
-  line-height: 19.5px;
-}
 .drawn__kw {
   font-weight: 700;
   color: var(--gray-800);
@@ -1833,6 +1846,20 @@ strong {
   text-align: left;
   color: var(--gray-700);
   font-weight: 500;}
+/* 쪽지 앞 광고 예고 — 회색 줄로 두면 지나친다. 옅은 바탕 한 칸으로 따로 세운다 */
+.pick-ad {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: var(--space-3) 0 var(--space-2);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--gray-50);
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+}
 .pick-basis b {
   font-weight: 700;
 }
@@ -2001,8 +2028,7 @@ strong {
   padding: 0;
 }
 .score-hero 
-.score-hero .drawn__k,
-.score-hero .drawn__lead {
+.score-hero .drawn__k {
   color: var(--gray-700); /* 파란 틴트 위 AA */
 }
 
@@ -3093,6 +3119,71 @@ strong {
 .sent { display: block; }
 .sent + .sent { margin-top: 3px; }
 
+/* 오늘 결론 — 결과 맨 위. 오늘 전체 종합, 오늘 할 것, 오늘 하지 말아야 할 것.
+   할 것과 하지 말 것은 제목 색으로만 가른다. 한쪽 두꺼운 테두리나 초록·빨강은
+   이 앱에서 안 쓴다. 각 카드 안에서는 행동이 제일 크고, '왜?' 는 작은 이름표,
+   까닭은 본문 크기다. 읽는 순서가 곧 크기 순서다. */
+.tdc__overall { margin-top: var(--space-5); }
+.tdc__headline {
+  margin: 4px 0 0;
+  font-size: 20px;
+  line-height: 29px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+.tdc__summary {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
+.tdc__act { margin-top: var(--space-4); }
+.tdc__k {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 700;
+}
+.tdc__act--do .tdc__k { color: var(--brand-strong); }
+.tdc__act--dont .tdc__k { color: var(--score-low-text); }
+.tdc__action {
+  margin: 6px 0 0;
+  font-size: 17px;
+  line-height: 25.5px;
+  font-weight: 700;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+.tdc__why-k {
+  margin: 14px 0 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--gray-100);
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 700;
+  color: var(--gray-600);
+}
+.tdc__why {
+  margin: 4px 0 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-800);
+  word-break: keep-all;
+}
+.tdc__note {
+  margin: 12px 4px 0;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-600);
+  word-break: keep-all;
+}
+
 /* 내 일주 — 예순 가지 중 하나. 별명이 제일 크고, 그 밑에 두 줄 설명,
    그 밑에 잘 되는 자리와 발목 잡히는 데를 한 줄씩 */
 .dayp__nick {
@@ -3138,35 +3229,6 @@ strong {
   word-break: keep-all;
 }
 
-/* 오늘은 이렇게 — 할 것과 피할 것을 한 줄씩 못 박는다 */
-.today2 { list-style: none; margin: 0; padding: 0; }
-.today2__row {
-  display: grid;
-  grid-template-columns: 86px minmax(0, 1fr);
-  gap: 10px;
-  padding: 11px 0;
-  border-top: 1px solid var(--gray-100);
-}
-.today2__row:first-child { border-top: 0; padding-top: 0; }
-.today2__k {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  padding-top: 2px;
-}
-.today2__row--do .today2__k { color: var(--brand-strong); }
-.today2__row--dont .today2__k { color: #9c5d00; }
-.today2__row--hold .today2__k { color: var(--gray-600); }
-.today2__v {
-  min-width: 0;
-  margin: 0;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 600;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
-
 /* 이번 주 — 좋은 날과 조심할 날을 목록 밑에 한 줄씩 못 박는다 */
 .week2 { list-style: none; margin: 14px 0 0; padding: 14px 0 0; border-top: 1px solid var(--gray-100); }
 .week2__row { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 10px; padding: 6px 0; }
@@ -3196,6 +3258,17 @@ strong {
   border-top: 1px solid var(--gray-100);
 }
 .why-score__row:first-child { border-top: 0; }
+.why-score__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px 30px 34px;
+  gap: 8px;
+  padding: 0 0 6px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+  color: var(--gray-600);
+}
+.why-score__head span:nth-child(n+3) { text-align: right; }
 /* 줄마다 아래에 선을 긋는 목록은 마지막 줄 밑에도 선을 남긴다. 카드 안쪽
    여백만 남은 자리에 선이 하나 떠 있으면 '아래에 뭔가 더 있다가 잘린' 것처럼
    보인다. 위에 쓴 border-top + first-child 가 맞는 모양인데, 아래 목록들은
@@ -3384,39 +3457,9 @@ strong {
 }
 
 /* 올해와 내년을 같은 줄에 맞대 놓는 표 */
-.ycmp {
-  width: 100%;
-  margin-top: 14px;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-.ycmp th,
-.ycmp td {
-  padding: 9px 6px;
-  border-top: 1px solid var(--gray-100);
-  text-align: left;
-  vertical-align: top;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
-.ycmp thead th {
-  border-top: 0;
-  padding-top: 0;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
-.ycmp tbody th {
-  width: 78px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-600);
-}
+.yline__pts { grid-column: 1 / -1; margin-top: 4px; }
+/* 꼬리표가 '올해 이렇게 하세요' 로 길어서 옆 칸에 두면 62px 에 안 들어간다. 위아래로 쌓는다. */
+.yline__pts .slot__pt { grid-template-columns: minmax(0, 1fr); gap: 2px; padding: 10px 0; }
 .ycmp__gap {
   margin: 14px 0 0;
   padding-top: 12px;
@@ -3568,6 +3611,15 @@ strong {
   color: var(--gray-900);
   word-break: keep-all;
 }
+.decide__body { display: grid; gap: 2px; min-width: 0; }
+.decide__list--do .decide__v { font-weight: 600; }
+.decide__why {
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 400;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
 
 /* 내 정보 관리로 가는 한 줄. 카드가 아니라 글자다 */
 .data-link {
@@ -3584,60 +3636,6 @@ strong {
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
-}
-
-/* 쪽지 카드 안의 결론 - 캡처해서 보내도 뜻이 통해야 하는 세 줄 */
-.drawn__verdict {
-  display: block;
-  margin-top: 10px;
-  font-size: 20px;
-  line-height: 29px;
-  font-weight: 700;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
-.score-hero .drawn__lead {
-  margin: 4px 0 0;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  word-break: keep-all;
-}
-.drawn__now {
-  display: block;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--gray-200);
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
-.drawn__now b {
-  display: inline-block;
-  margin-right: 6px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: var(--brand-strong);
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: #ffffff;
-}
-/* 배지는 제 줄을 갖는다. 문장과 한 줄에 흘리면 문장이 배지 뒤에서 접혀
-   줄바꿈이 실수처럼 보인다. */
-.drawn__now .drawn__stance {
-  display: block;
-  width: fit-content;
-  margin: 0 0 8px;
-}
-.drawn__do {
-  display: block;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 600;
-  color: var(--gray-900);
 }
 
 /* 지우기 확인 - 되돌릴 수 없는 일이라 한 번 더 묻는다 */
@@ -3687,7 +3685,7 @@ strong {
      기운 이름이 옆 칸보다 17px 아래로 내려가 있었다. 명식은 네 기둥을 나란히
      놓고 보는 것이라 줄이 안 맞으면 보는 방식 자체가 깨진다.
      위 네 줄은 내용 높이로 고정하고, 남는 자리는 맨 아래 한 줄이 받는다. */
-  grid-template-rows: auto auto auto auto 1fr;
+  grid-template-rows: auto auto auto;
   min-width: 0;
   justify-items: center;
   gap: 2px;
@@ -3695,7 +3693,6 @@ strong {
   border-radius: 14px;
   background: var(--gray-50);
 }
-.chart8__step { align-self: start; }
 .chart8__col--me {
   background: var(--brand-soft);
 }
@@ -3719,15 +3716,6 @@ strong {
   color: var(--gray-700);
 }
 .chart8__col--me .chart8__stem { color: var(--brand-strong); }
-.chart8__god {
-  margin-top: 2px;
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 500;
-  color: var(--gray-700);
-  text-align: center;
-  word-break: keep-all;
-}
 
 /* 다섯 기운 비중 */
 .elbar { list-style: none; margin: 0; padding: 0; }
@@ -3768,27 +3756,12 @@ strong {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+.read6__kk { display: block; }
 .read6--tight .read6__row {
   grid-template-columns: 92px minmax(0, 1fr);
   padding: 9px 0;
 }
 
-/* 명식 기둥 밑의 십이운성 한 단어 */
-.chart8__step {
-  margin-top: 3px;
-  padding: 2px 6px;
-  border-radius: 999px;
-  background: #ffffff;
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 600;
-  color: var(--gray-700);
-  /* nowrap 이면 '갈무리하는 자리'가 칸보다 넓어져 네 칸 전체를 밀어낸다.
-     줄이 접히더라도 칸 안에 들어와야 한다. */
-  word-break: keep-all;
-  text-align: center;
-}
-.chart8__col--me .chart8__step { color: var(--brand-strong); }
 
 /* 근거 줄의 작은 꼬리표 (어느 자리인지, 어떤 관계인지) */
 .read6__at {
@@ -4101,6 +4074,13 @@ strong {
   height: 21px;
   color: var(--gray-700);
 }
+.nextday__body { display: grid; gap: 2px; min-width: 0; }
+.nextday__head {
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
 .nextday__v {
   margin: 0;
   font-size: 14px;
@@ -4141,18 +4121,6 @@ strong {
   line-height: 24px;
   font-weight: 700;
   color: var(--brand-strong);
-}
-
-/* 이번 달 기운 — 행동의 이유. 행동보다 작고 흐리게 둬서 무엇이 할 일인지가
-   먼저 읽히게 한다. */
-.drawn__why {
-  display: block;
-  margin: 0 0 2px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-700);
-  word-break: keep-all;
 }
 
 /* ── 상황 고르기: 고를 것을 남는 자리 가운데로 ──

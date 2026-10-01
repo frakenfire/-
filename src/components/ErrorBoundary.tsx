@@ -29,7 +29,7 @@ export class ErrorBoundary extends Component<Props, State> {
               앗, 쪽지가 바람에 날아갔어요
             </h1>
             <p className="lead" style={{ textAlign: 'center' }}>
-              잠깐 문제가 생겼어요. 다시 열면 괜찮아질 거예요.
+              잠깐 문제가 생겼어요. 다시 한 번 열어보세요.
             </p>
             <button
               type="button"

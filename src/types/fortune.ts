@@ -79,3 +79,26 @@ export type LetterParts = {
   closing: string; // 맺음
   sign: string; // 서명
 };
+
+/**
+ * 결과 화면 맨 위 결론 — 쪽지 종류와 상관없이 같은 모양으로 그린다.
+ *
+ * '결과가 둥글게 말해서 오늘 뭘 하라는 건지 모르겠다' 는 말을 들었다. 그때
+ * 결과 맨 위에는 결론 한 줄, 까닭 한 줄이 있었고 할 일과 피할 일은 아래
+ * 카드에 따로 있었다. 할 일에는 까닭이 없었다.
+ *
+ * 그래서 맨 위를 이 다섯 칸으로 못 박는다. 칸마다 맡은 일이 다르다.
+ *   overall.headline  오늘 전체 판단. 해도 되는 것과 미룰 것을 같이 말한다
+ *   overall.summary   그 판단의 까닭. 할 일을 또 적지 않는다
+ *   do.action         오늘 할 것 하나. '~하세요' 로 끝난다
+ *   do.why            왜 오늘 그걸 하면 좋은가
+ *   dont.action       오늘 하지 말 것 하나. '~마세요' 로 끝난다
+ *   dont.why          하면 무슨 일이 생기는가
+ */
+export type TodayDecision = {
+  overall: { headline: string; summary: string };
+  do: { action: string; why: string };
+  dont: { action: string; why: string };
+  /** 몸·투자처럼 운세가 실제 판단을 대신하면 안 되는 자리에 붙는 한 줄 */
+  note?: string;
+};

@@ -45,7 +45,7 @@ export function MoreConcerns({ current, unlocked, onUnlock, onOpen }: Props) {
     setFailed(null);
     try {
       const ok = await onUnlock(key);
-      if (!ok) setFailed('광고를 끝까지 봐야 열려요');
+      if (!ok) setFailed('광고를 끝까지 보면 다음 내용을 볼 수 있어요');
     } finally {
       setBusy(null);
     }
@@ -53,10 +53,10 @@ export function MoreConcerns({ current, unlocked, onUnlock, onOpen }: Props) {
 
   return (
     <div className="sec-card">
-      <p className="cat4__head">다른 고민도 궁금하면</p>
+      <p className="cat4__head">다른 고민도 궁금하다면</p>
       <Sentences
         className="more__lead"
-        text="같은 명식으로 답만 다시 계산해요. 지금 보신 내용은 그대로 있어요."
+        text="같은 사주 정보로 고른 주제에 맞는 답만 새로 계산해요. 지금 본 내용은 그대로 남아 있어요."
       />
       <ul className="more">
         {rest.map((c) => {

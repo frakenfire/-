@@ -5,6 +5,7 @@ import { NOTE_TEASERS, NOTE_PICK_TITLES, NOTE_PICK_LEADS, NOTE_PICK_HINTS, FAQ_P
 import { todayKey, hashSeed } from '../lib/dateSeed.ts';
 import type { Note } from '../types/fortune.ts';
 import { Sentences } from '../components/Sentences.tsx';
+import { AdBadge } from '../components/AdNotice.tsx';
 
 // 여섯 장에 서로 다른 문구를 준다. 날짜가 바뀌면 조합도 바뀌고, 같은 날엔 고정.
 function pickTeasers(seedKey: string): string[] {
@@ -28,6 +29,8 @@ type Props = {
   spin?: number;
   /** 사주가 후보 선정에 반영됐는지 — 근거를 화면에서 밝힌다 */
   personal?: boolean;
+  /** 고르면 결과 전에 광고가 나오는지. 갑자기 뜨면 이상하니 미리 알린다 */
+  adNext?: boolean;
 };
 
 // 접힌 쪽지 여섯 장 중 한 장 선택. 누르면 그 쪽지가 펼쳐지는 모션.
@@ -41,6 +44,7 @@ export function NotePickScreen({
   onBack,
   personal = false,
   spin = 0,
+  adNext = false,
 }: Props) {
   const teasers = pickTeasers(`${todayKey()}|${fortuneLabel}|${spin}`);
   // 한 장만 고른다. 누르면 바로 열린다.
@@ -63,6 +67,12 @@ export function NotePickScreen({
     <AppLayout onBack={busy ? undefined : onBack} step={4} totalSteps={4}>
       <h2 className="h2" data-screen="pick">{title}</h2>
       <p className="pick-basis">{personal ? lead : '느낌 오는 걸 하나 고르면 돼요'}</p>
+      {/* 쪽지 아래 회색 줄로 두었더니 실기기에서 못 보고 지나쳤다. 제목 바로 밑, 배지와 함께 */}
+      {adNext ? (
+        <p className="pick-ad">
+          <AdBadge label="광고" /> 고른 쪽지는 광고 하나 보고 열려요
+        </p>
+      ) : null}
       <div className="note-stage">
       <div className="note-grid">
         {notes.map((note, i) => (

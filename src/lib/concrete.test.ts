@@ -15,11 +15,11 @@ const TEN_GODS = Object.keys(TEN_GOD_KO) as TenGod[];
 // 원인은 GOD_SCALE / GOD_PULL 이 고민을 안 보고 십성만 보고 쓴 문장이라는 것.
 // 고민별로 다시 쓴 뒤 78%. 이 테스트가 다시 내려가는 걸 막는다.
 const WORD: Record<ConcernKey, RegExp> = {
-  work: /일|직장|회사|이직|연봉|자리|직책|경력|면접|계약|업무|성과|상사|팀|승진|이력|평가|보고|포트폴리오|독립|지원|합격|자격|기술|담당|결과물|과제|메일|미팅|추천|문서|범위/,
+  work: /일|직장|회사|이직|연봉|자리|직책|경력|면접|계약|업무|성과|상사|팀|승진|이력|평가|보고|포트폴리오|독립|지원|합격|자격|기술|담당|역할|결과물|과제|메일|미팅|추천|문서|범위/,
   money: /돈|수입|지출|저축|투자|고정비|할부|구독|연봉|금액|값|비용|이자|빚|예산|자산|계좌|카드|환급|지원금|부업|외주|원금|결제|저금|거래처|상품|조건|더치|몫|이체/,
   love: /연애|마음|만남|사이|연락|고백|헤어|데이트|상대|애인|썸|결혼|동거|소개|인연|친구|사람|관계|서운|약속/,
   people: /사람|사이|관계|말|거리|모임|친구|동료|가족|연락|부탁|인연|거절|소개|몫|선|역할|모임|스터디/,
-  health: /몸|건강|잠|밥|운동|피로|컨디션|병원|쉬|무리|체력|검진|통증|진료|먹|강도|약속|일정|검색|기록|취침|기상/,
+  health: /몸|건강|잠|수면|밥|식사|운동|피로|컨디션|병원|아프|쉬|무리|체력|검진|통증|진료|먹|강도|약속|일정|검색|기록|취침|기상/,
   mind: /마음|기분|생각|불안|걱정|쉬|여유|감정|스트레스|잠|취미|기준|속|말|하루|취미|규칙|시간|자극/,
 };
 
@@ -52,9 +52,10 @@ function onePersonLines(p: (typeof PEOPLE)[number], key: ConcernKey, option: str
   const r = buildDeepRead(pill, t, key, option, p.dateKey, '김한별');
   return [
     r.headline, r.sub, r.decision.verdict,
-    // 맨 위 카드의 한 줄. 화면에 늘 떠 있는데 이 목록에 빠져 있어서, 예순 줄을
-    // 다시 쓰는 동안 화면 검사는 한 번도 그 줄을 안 봤다.
-    r.todayWhy,
+    // 맨 위 결론 카드의 할 것·하지 말 것과 그 까닭. 화면에 늘 떠 있는 줄이라
+    // 이 목록에서 빠지면 화면 검사가 제일 중요한 네 줄을 안 보게 된다.
+    r.todayDecision.do.action, r.todayDecision.do.why,
+    r.todayDecision.dont.action, r.todayDecision.dont.why,
     // 시기 덩이의 '이번 달' 줄. 맨 위 카드에서 내려온 뒤로 이 목록에서
     // 빠져 있어 열 칸이 한 번도 안 보이고 있었다.
     ...r.when.map((w) => w.act ?? ''),
@@ -247,14 +248,13 @@ test('맨 위 카드의 두 줄이 같은 층에서 나온다', () => {
   }
 });
 
-// 맨 위 카드 세 번째 줄은 오늘 글자에서 나오고, 이번 달 근거는 시기 덩이의
-// '이번 달' 줄로 내려가 있다. 둘이 자리를 바꾼 뒤로도 각자 제 말을 하는지 본다.
-test('맨 위는 오늘 근거, 이번 달 근거는 시기 줄에 있다', () => {
+// 맨 위 결론은 오늘 얘기고, 이번 달 근거는 시기 덩이의 '이번 달' 줄로
+// 내려가 있다. 둘이 자리를 나눈 뒤로도 각자 제 말을 하는지 본다.
+test('맨 위는 오늘 얘기, 이번 달 근거는 시기 줄에 있다', () => {
   for (const c of CONCERNS) {
     const t = computeTiming(INPUT, P, 'female', c.key, new Date('2026-09-21T09:00:00+09:00'));
     const r = buildDeepRead(P, t, c.key, c.options[0].key, '2026-09-21', '김한별');
-    assert.ok(r.todayWhy.startsWith('오늘'), `${c.key}: 맨 위 근거가 오늘 얘기가 아니에요 — ${r.todayWhy}`);
-    assert.ok(!r.sub.includes(r.todayWhy), `${c.key}: 밑 줄에 아직 섞여 있어요`);
+    assert.ok(/오늘/.test(r.todayDecision.overall.headline), `${c.key}: 맨 위 결론이 오늘 얘기가 아니에요 — ${r.todayDecision.overall.headline}`);
     const thisMonth = r.when.find((w) => w.k === '이번 달');
     assert.ok(thisMonth?.act && thisMonth.act.length > 6, `${c.key}: 이번 달 줄에 근거가 없어요`);
     assert.ok(WORD[c.key].test(thisMonth!.act!), `${c.key}: 이번 달 근거에 고민 말이 없어요 — ${thisMonth!.act}`);
@@ -298,7 +298,7 @@ test('점수 푸는 줄이 앞뒤 거꾸로가 아니다', () => {
       const body = cell.good.endsWith('것')
         ? `${cell.good.slice(0, -1)}게`
         : withJosa(cell.good, '이가');
-      const high = `${cell.pull} 때예요. 지금은 ${body} 통해요.`;
+      const high = `${cell.pull} 때예요. 지금은 ${body} 도움이 돼요.`;
       const low = `${cell.pull} 때예요. ${cell.care}만 조심하면 돼요.`;
       for (const line of [high, low]) {
         // 점수 말('보탬이 돼요' / '발목을 잡아요')은 이 줄에 다시 오면 안 된다
@@ -308,7 +308,7 @@ test('점수 푸는 줄이 앞뒤 거꾸로가 아니다', () => {
         if (/이 고민/.test(line)) bad.push(`${c.key}.${g}  ${line}`);
       }
       // 조사 없이 낱말이 그냥 붙는 자리가 없어야 한다
-      assert.ok(/(게|이|가) 통해요\.$/.test(high), `${c.key}.${g}: ${high}`);
+      assert.ok(/(게|이|가) 도움이 돼요\.$/.test(high), `${c.key}.${g}: ${high}`);
       assert.ok(/만 조심하면 돼요\.$/.test(low), `${c.key}.${g}: ${low}`);
     }
   }

@@ -11,13 +11,14 @@
 //
 //   npm run build:web && npm run audit:design
 
+import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { readdirSync, readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const root = new URL('../', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../', import.meta.url)).replace(/\\/g, '/');
 const PORT = Number(process.env.DESIGN_PORT ?? 4174);
 const BASE = `http://localhost:${PORT}/`;
 
@@ -264,6 +265,8 @@ function collect() {
   {
     const SENT = /[가-힣]{2}요[.!?]?$/;
     const ends = [];
+    // 어느 줄들이 잇달았는지 같이 보여준다. 몇 번인지만 알면 어디를 고칠지 모른다.
+    const sents = [];
     for (const el of document.querySelectorAll('body *')) {
       const r = el.getBoundingClientRect();
       if (r.width < 1 || r.height < 1) continue;
@@ -272,19 +275,21 @@ function collect() {
       if (!own) continue;
       for (const raw of own.split(/(?<=[.!?])\s+/)) {
         const t = raw.trim();
-        if (t.length >= 6 && SENT.test(t)) ends.push(t.replace(/[.!?]$/, '').slice(-2));
+        if (t.length >= 6 && SENT.test(t)) { ends.push(t.replace(/[.!?]$/, '').slice(-2)); sents.push(t); }
       }
     }
     let best = ends.length ? 1 : 0;
     let cur = 1;
     let worst = '';
+    let worstAt = -1;
     for (let i = 1; i < ends.length; i += 1) {
-      if (ends[i] === ends[i - 1]) { cur += 1; if (cur > best) { best = cur; worst = ends[i]; } } else cur = 1;
+      if (ends[i] === ends[i - 1]) { cur += 1; if (cur > best) { best = cur; worst = ends[i]; worstAt = i; } } else cur = 1;
     }
+    const runLines = worstAt >= 0 ? sents.slice(worstAt - best + 1, worstAt + 1) : [];
     const count = new Map();
     for (const e of ends) count.set(e, (count.get(e) ?? 0) + 1);
     const top = [...count.entries()].sort((a, b) => b[1] - a[1])[0] ?? ['-', 0];
-    out.endings = { n: ends.length, run: best, runWord: worst, top: top[0], topShare: ends.length ? Math.round((top[1] / ends.length) * 100) : 0 };
+    out.endings = { n: ends.length, run: best, runWord: worst, runLines, top: top[0], topShare: ends.length ? Math.round((top[1] / ends.length) * 100) : 0 };
   }
 
   // 카드 제목은 한 벌이다.
@@ -374,13 +379,32 @@ function collect() {
       const r = el.getBoundingClientRect();
       if (r.width < 1 || r.height < 1) continue;
       // 마침표 뒤에 글자가 더 붙어 있으면 두 문장이 한 덩이로 흐른 것이다.
-      // 물음표·느낌표는 제목에도 쓰여서 마침표만 본다.
-      if (!/[.]\s+\S/.test(own)) { seen += 1; continue; }
+      // 물음표·느낌표는 제목 끝에 혼자 오면 괜찮고, 뒤에 한글 문장이 이어지면 같은 사고다.
+      if (!/[.]\s+\S/.test(own) && !/[?!]\s+[가-힣]/.test(own)) { seen += 1; continue; }
       seen += 1;
       bad.push(own.slice(0, 46));
     }
     out.unsplit = [...new Set(bad)];
     out.unsplitSeen = seen;
+  }
+
+  // 여러 줄로 접히는 한글 글자가 낱말 가운데서 잘리는가.
+  // word-break 가 keep-all 이 아니면 '가능합니\n다' 처럼 낱말 한가운데서 줄이 바뀐다.
+  {
+    const bad = [];
+    for (const el of document.querySelectorAll('.app *')) {
+      let own = '';
+      for (const n of el.childNodes) if (n.nodeType === 3) own += n.nodeValue;
+      own = own.trim();
+      if (!/[가-힣]{2,}.*\s.*[가-힣]/.test(own)) continue;
+      const r = el.getBoundingClientRect();
+      if (r.width < 1 || r.height < 1) continue;
+      const cs = getComputedStyle(el);
+      const lh = parseFloat(cs.lineHeight) || parseFloat(cs.fontSize) * 1.5;
+      if (r.height < lh * 1.6) continue;
+      if (cs.wordBreak !== 'keep-all') bad.push(`${el.className || el.tagName}: ${own.slice(0, 30)}`);
+    }
+    out.midword = [...new Set(bad)];
   }
 
   // 맨 아래 카드가 화면 끝에 딱 붙어 있는가.
@@ -529,7 +553,8 @@ function auditScreen(name, data) {
   const e = data.endings;
   const endOk = e.run <= 3 && (e.n < 10 || e.topShare <= 35);
   check(endOk, `[${name}] 말끝이 이어지지 않음`,
-    `문장 ${e.n} · 최장연속 ${e.run}${e.runWord ? `(${e.runWord})` : ''} · 1위 ${e.top} ${e.topShare}%`);
+    `문장 ${e.n} · 최장연속 ${e.run}${e.runWord ? `(${e.runWord})` : ''} · 1위 ${e.top} ${e.topShare}%`
+      + (e.run > 3 && e.runLines?.length ? `\n      ${e.runLines.join('\n      ')}` : ''));
 
   // 14) 카드 제목이 한 벌인가 (카드가 없는 화면은 0가지로 지나간다)
   check(data.cardTitles.length <= 1, `[${name}] 카드 제목이 한 벌`,
@@ -541,6 +566,8 @@ function auditScreen(name, data) {
     data.repeated.length ? data.repeated.slice(0, 3).join(' / ') : `문장 ${data.repeatedSeen}가지 검사`);
 
   // 15-2) 마침표가 찍혔는데 한 덩이로 흐르지 않는가
+  check(data.midword.length === 0, `[${name}] 여러 줄 한글이 낱말 가운데서 안 잘림`,
+    data.midword.length ? data.midword.slice(0, 3).join(' / ') : '');
   check(data.unsplit.length === 0, `[${name}] 문장이 끝나면 줄이 바뀜`,
     data.unsplit.length ? data.unsplit.slice(0, 3).join(' / ') : `덩이 ${data.unsplitSeen}개 검사`);
 
@@ -568,7 +595,7 @@ function auditScreen(name, data) {
 
 async function run() {
   const srv = spawn('npx', ['vite', 'preview', '--port', String(PORT)], {
-    cwd: new URL('..', import.meta.url).pathname, stdio: 'ignore',
+    cwd: fileURLToPath(new URL('..', import.meta.url)).replace(/\\/g, '/'), stdio: 'ignore',
   });
   const t0 = Date.now();
   while (Date.now() - t0 < 20000) {
@@ -628,7 +655,7 @@ async function run() {
   // 글자 길이가 달라서 같은 카드가 다르게 접힌다.
   const REST = [
     ['일과 이직', '지금은 쉬는 중이에요'],
-    ['일과 이직', '이제 첫 자리를 구해요'],
+    ['일과 이직', '첫 직장을 구하고 있어요'],
     ['일과 이직', '내 일을 해볼까 해요'],
     ['돈', '모으고 싶어요'],
     ['돈', '나가는 게 너무 많아요'],

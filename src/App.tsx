@@ -8,6 +8,8 @@ import { generateFortune } from './lib/generateFortune.ts';
 import { luckPercentile } from './lib/luck.ts';
 import { showRewardAd, preloadAd, isRewarded, isUnsupportedFreePass } from './lib/ads.ts';
 import { shouldShowNoteAd } from './lib/adPolicy.ts';
+import { WhoSheet } from './components/WhoSheet.tsx';
+import { todayVibe } from './lib/dayVibe.ts';
 import { shareBriefing, shareForUnlock, shareMessage } from './lib/share.ts';
 import { ConcernScreen } from './screens/ConcernScreen.tsx';
 import { ConcernAskScreen } from './screens/ConcernAskScreen.tsx';
@@ -22,7 +24,7 @@ import {
   updateStreak,
   peekStreak, loadSkipBirth } from './lib/storage.ts';
 import { clearAllData } from './lib/storage.ts';
-import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError, askReview, canAskNotification, askNotificationAgreement } from './lib/toss.ts';
+import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, closeAppView, logEvent, reportError, askReview, canAskNotification, askNotificationAgreement } from './lib/toss.ts';
 import { findZodiac } from './data/zodiac.ts';
 import type { Zodiac, ZodiacId } from './data/zodiac.ts';
 import { findStarSign } from './data/starSign.ts';
@@ -114,6 +116,10 @@ export default function App() {
   // '다른 고민도 궁금하면' 에서 광고를 보고 들어왔는지. 이 흐름에서는
   // 쪽지 광고를 한 번 더 붙이지 않는다.
   const paidAtEntry = useRef(false);
+  const [askWho, setAskWho] = useState(false);
+  // 쪽지를 고르면 광고가 나오는지 — 고르는 화면과 로딩에서 미리 알린다.
+  // handlePick 은 뽑은 횟수를 먼저 올리고 규칙을 보므로 그 시점의 값은 늘 1 이상이다.
+  const noteAdNext = shouldShowNoteAd(1, paidAtEntry.current);
 
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -211,11 +217,18 @@ export default function App() {
   hasResultRef.current = !!result;
   const busyRef = useRef(busy);
   busyRef.current = busy;
+  const askWhoRef = useRef(askWho);
+  askWhoRef.current = askWho;
 
   // 토스 하드웨어 뒤로가기도 같은 길을 되짚는다. 화면마다 따로 적어두면 어긋난다.
   function handleHardwareBack() {
     if (busyRef.current) return;
-    if (screenRef.current === 'home') return; // 토스가 앱 종료를 처리
+    // 뒤로가기를 구독하면 토스가 대신 닫아주지 않는다. 첫 화면이면 직접 닫는다(검토 반려 사유).
+    if (screenRef.current === 'home') {
+      if (askWhoRef.current) setAskWho(false);
+      else closeAppView();
+      return;
+    }
     goBack();
   }
 
@@ -350,6 +363,9 @@ export default function App() {
       // 열리는 앱이 되면 심사에서 걸린다.
       const drawsToday = incrementDailyDrawCount(dateKey);
       if (shouldShowNoteAd(drawsToday, paidAtEntry.current)) {
+        // 로딩 멘트는 0.62초마다 넘어가 마지막('광고가 끝나면 결과가 열려요')이 1.9초쯤 나온다.
+        // 그걸 읽을 틈을 주고 광고를 띄운다 - 예고 없이 뜨면 이상하다는 실기기 지적.
+        await wait(1200);
         try {
           const ad = await showRewardAd('note');
           logEvent('reward_ad', { placement: 'note', status: ad.status, draws: drawsToday });
@@ -376,7 +392,7 @@ export default function App() {
       }
     } catch (e) {
       reportError('handlePick', e);
-      flash('앗, 쪽지를 여는 중 문제가 생겼어요. 다시 시도해 주세요');
+      flash('앗, 쪽지를 여는 중에 문제가 생겼어요. 다시 시도해 주세요');
       setScreen('pick');
     } finally {
       setBusy(false);
@@ -389,15 +405,19 @@ export default function App() {
   async function handleShare() {
     if (!result) return;
     const brag = luckPercentile(result.luck.total);
+    // 공유 문구의 결론과 할 것·하지 말 것은 결과 화면 맨 위 카드와 같은 것을
+    // 쓴다. 전에는 화면과 상관없는 하루 설계표(dayPlan)에서 따로 가져와서,
+    // 친구가 받은 '오늘 할 것' 이 내 화면의 '오늘 할 것' 과 달랐다.
+    const decision = deep ? deep.read.todayDecision : todayVibe(dateKey).decision;
     const r = await shareBriefing({
       title: result.title,
       topic: deep && concernKey ? findConcern(concernKey).label : undefined,
       score: deep ? deep.read.score.total : result.luck.total,
-      headline: deep ? deep.read.headline : result.dayPlan.headline,
+      headline: decision.overall.headline,
       bestWhen: deep ? deep.timing.bestMonth.label : undefined,
       careWhen: deep ? deep.timing.hardMonth.label : undefined,
-      doItem: result.dayPlan.steps[0].text,
-      dontItem: result.dayPlan.holdOff,
+      doItem: decision.do.action,
+      dontItem: decision.dont.action,
       // 자랑거리일 때만 공유 문구에 넣는다 — "상위 90% " 를 친구에게 보내는 건
       // 자랑이 아니라 김빠지는 일이라, 그런 날엔 점수만 담아 보낸다.
       brag: brag.isBrag ? `상위 ${brag.pct}%` : undefined,
@@ -405,7 +425,7 @@ export default function App() {
     });
     logEvent('share', { outcome: r });
     if (r === 'shared') flash('친구에게 공유했어요');
-    else if (r === 'copied') flash('공유 문구 복사 완료!');
+    else if (r === 'copied') flash('공유 문구를 복사했어요!');
     else if (r === 'cancelled') return; // 취소 — 아무 안내 없이 조용히
     else flash('앗, 공유를 못 했어요');
   }
@@ -414,7 +434,7 @@ export default function App() {
     const r = await shareMessage(text);
     logEvent('share_week', { outcome: r });
     if (r === 'shared') flash('이번 주 운세를 공유했어요');
-    else if (r === 'copied') flash('공유 문구 복사 완료!');
+    else if (r === 'copied') flash('공유 문구를 복사했어요!');
     else if (r === 'failed') flash('앗, 공유를 못 했어요');
   }
 
@@ -530,6 +550,19 @@ export default function App() {
     setScreen('home');
   }
 
+  // 다른 사람 것을 볼 때. 넣어둔 이름·생년월일만 비우고 바로 넣는 화면으로 간다.
+  // '지우기' 는 고치기 화면 맨 밑에 있어 못 찾았고, 연속 기록까지 다 지웠다(실기기 지적).
+  function handleNewPerson() {
+    clearBirth();
+    setBirth(null);
+    setZodiac(null);
+    setStarSign(null);
+    setResult(null);
+    logEvent('birth_new_person', {});
+    setBirthNext('concern');
+    setScreen('birth');
+  }
+
   // 결과 카드 저장(이미지)과 한 줄 복사는 상세 화면에만 버튼이 있었다.
   // 그 화면이 setScreen 으로 열리지 않아 두 기능 다 이미 안 도는 상태였다.
   // 코드만 지운다 — 다시 넣으려면 결과 화면에 버튼부터 있어야 한다.
@@ -586,8 +619,9 @@ export default function App() {
           // 고칠 길은 홈에 따로 낸다(아래 onEditBirth). 화면을 건너뛰면서
           // 고칠 데까지 없애면 생년월일을 영영 못 고친다.
           onStart={() => {
+            // 넣어둔 정보가 있으면 그걸로 볼지 새로 넣을지 먼저 묻는다
             if (birthReady) {
-              startDraw();
+              setAskWho(true);
               return;
             }
             setBirthNext('concern');
@@ -601,8 +635,24 @@ export default function App() {
         />
       )}
 
+      {screen === 'home' && askWho && birth ? (
+        <WhoSheet
+          name={birth.name ?? '저장된'}
+          detail={(birthSummary ?? '').replace(`${birth.name} · `, '')}
+          onUseSaved={() => {
+            setAskWho(false);
+            startDraw();
+          }}
+          onNew={() => {
+            setAskWho(false);
+            handleNewPerson();
+          }}
+          onClose={() => setAskWho(false)}
+        />
+      ) : null}
+
       {screen === 'reveal' && fortuneType && (
-        <RevealScreen fortuneType={fortuneType} special={result?.rarity.special} />
+        <RevealScreen fortuneType={fortuneType} special={result?.rarity.special} adNext={noteAdNext} />
       )}
 
       {screen === 'pick' && (
@@ -613,6 +663,7 @@ export default function App() {
           openingId={busy ? note?.id : undefined}
           fortuneLabel={fortuneType ? FORTUNE_LABEL[fortuneType] : ''}
           personal={notePick.personal}
+          adNext={noteAdNext}
           onPick={handlePick}
           onBack={() => goBack()}
         />

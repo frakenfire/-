@@ -34,12 +34,27 @@ export const TEN_GOD_KO: Record<TenGod, string> = {
   geopjae: '겨루는 힘',
   siksin: '만드는 힘',
   sanggwan: '드러내는 힘',
-  pyeonjae: '잡아채는 힘',
+  pyeonjae: '움직여 버는 힘',
   jeongjae: '쌓는 힘',
-  pyeongwan: '밀어붙이는 힘',
+  pyeongwan: '부담을 견디는 힘',
   jeonggwan: '지키는 힘',
-  pyeonin: '달리 배우는 힘',
+  pyeonin: '다르게 배우는 힘',
   jeongin: '배우는 힘',
+};
+
+// 명식 기둥 하나를 한 줄로 읽을 때 쓰는 말. '부담을 견디는 힘' 같은 이름만
+// 적으면 그래서 내가 어떤 사람인지가 안 남는다. 성향으로 풀어 적는다.
+export const TEN_GOD_TRAIT: Record<TenGod, string> = {
+  bijian: '혼자서도 버티면서 맡은 일을 해내려는 성향이 있어요.',
+  geopjae: '남과 겨뤄서 앞서고 싶은 마음이 강한 편이에요.',
+  siksin: '생각에 머물기보다 직접 만들어서 결과로 보여주려고 해요.',
+  sanggwan: '하고 싶은 말을 분명하게 드러내는 편이에요.',
+  pyeonjae: '직접 움직여서 결과를 만들어내려는 성향이 보여요.',
+  jeongjae: '조금씩이라도 꾸준히 모으고 쌓으려고 해요.',
+  pyeongwan: '부담이 있어도 맡은 일을 쉽게 놓지 않는 편이에요.',
+  jeonggwan: '정해진 규칙과 약속을 잘 지키려는 성향이 있어요.',
+  pyeonin: '남과 다른 방식으로 배우고 생각하는 편이에요.',
+  jeongin: '차근차근 배워서 내 것으로 익히려고 해요.',
 };
 
 /** 십신을 성격 축으로 묶은 다섯 무리 — 화면에서는 이 단위로 말하는 게 알아듣기 쉽다. */

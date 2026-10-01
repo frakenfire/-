@@ -11,10 +11,11 @@
 //
 //   node scripts/check-dead.mjs
 
+import { fileURLToPath } from 'node:url';
 import { readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
-const root = new URL('../src/', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../src/', import.meta.url)).replace(/\\/g, '/');
 
 // 앱이 안 쓰지만 남겨두는 것. 무엇을 위해 남기는지 적는다.
 const ALLOW = new Map([
@@ -94,7 +95,7 @@ const isTest = (f) => /\.test\.tsx?$/.test(f);
 
 const dead = [];
 for (const f of files.filter((x) => !isTest(x))) {
-  const rel = f.replace(root, '');
+  const rel = f.replace(root, '').replaceAll('\\', '/');
   const s = text.get(f);
   const names = new Set();
   for (const m of s.matchAll(/^export (?:async )?function (\w+)/gm)) names.add(m[1]);

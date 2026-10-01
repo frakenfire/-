@@ -131,7 +131,7 @@ export function CompatScreen({
     const { list, saved, duplicate } = addSavedPerson({ mode, value: friend, relation });
     setSavedPeople(list);
     if (duplicate) onToast('이미 저장돼 있어요');
-    else if (saved) onToast('내 사람으로 저장했어요 다음엔 바로 확인할 수 있어요');
+    else if (saved) onToast('내 사람으로 저장했어요. 다음에는 바로 확인할 수 있어요');
     else onToast('앗, 저장 공간이 부족해 저장을 못 했어요');
   }
 
@@ -169,7 +169,7 @@ export function CompatScreen({
     try {
       const ok = await onAdUnlock();
       if (ok) setUnlocked(true);
-      else onToast('광고를 끝까지 봐야 열려요');
+      else onToast('광고를 끝까지 보면 다음 내용을 볼 수 있어요');
     } catch {
       onToast('앗, 광고를 불러오지 못했어요');
     } finally {
@@ -200,14 +200,14 @@ export function CompatScreen({
     const ohaeng = result.elements
       ? `\n${result.elements.aKo} × ${result.elements.bKo} = ${result.elements.flowKo} 조합`
       : '';
-    return `[오늘의 마음 한장] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 · ${result.archetype}\n${myLabel.label} × ${friendLabel.label}${ohaeng}\n"${result.headline}"\n너도 누구랑 몇 점인지 봐봐`;
+    return `[오늘의 마음 한장] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 · ${result.archetype}\n${myLabel.label} × ${friendLabel.label}${ohaeng}\n"${result.headline}"\n\n나도 궁합 보러가기`;
   }
 
   async function brag() {
     const text = bragText();
     if (!text) return;
     const ok = await onShare(text);
-    onToast(ok ? '궁합 자랑 완료!' : '앗, 공유를 못 했어요');
+    onToast(ok ? '궁합을 공유했어요!' : '앗, 공유를 못 했어요');
   }
 
   // 스토리에 올리는 바이럴 카드 — 광고 없이(확산 우선) 바로 이미지 저장.
@@ -216,7 +216,7 @@ export function CompatScreen({
     setBusy(true);
     try {
       const ok = await saveCompatCard({ modeLabel, me: myLabel, friend: friendLabel, result });
-      onToast(ok ?'궁합 카드 저장 완료!  스토리에 올려봐요' : '앗, 저장을 못 했어요');
+      onToast(ok ?'궁합 카드를 저장했어요. 스토리에 올려봐요' : '앗, 저장을 못 했어요');
     } catch {
       onToast('앗, 저장 중 문제가 생겼어요');
     } finally {
@@ -327,7 +327,7 @@ export function CompatScreen({
 
       {savedRanked.length > 0 ? (
         <div className="saved-people">
-          <p className="saved-people__title">내 사람들 · 오늘의 랭킹</p>
+          <p className="saved-people__title">내 사람들 · 오늘 궁합 순위</p>
           {savedRanked.map(({ person, label, score }) => {
             const rel = relationMeta(person.relation);
             return (
@@ -340,7 +340,7 @@ export function CompatScreen({
                       {score}점
                     </span>
                   ) : (
-                    <span className="saved-row__hint">내 {person.mode === 'zodiac' ? '띠' : '별자리'} 선택 필요</span>
+                    <span className="saved-row__hint">내 {person.mode === 'zodiac' ? '띠' : '별자리'}를 먼저 골라주세요</span>
                   )}
                 </button>
                 <button
@@ -364,7 +364,7 @@ export function CompatScreen({
           <div className="compat-lock__score">?</div>
           <p className="compat-lock__title">오늘 우리 궁합, 몇 점일까요?</p>
           <p className="compat-lock__teaser">
-            잘 맞는 정도, 대화, 안 싸우기 점수부터 오늘 두 사람 유형, 잘 맞는 점과 조언까지 한 번에 나와요
+            잘 맞는 정도, 대화 점수, 다툼을 피하는 점수부터 오늘의 두 사람 유형과 조언까지 한 번에 보여드려요
           </p>
           <div className="btn-stack">
             <button type="button" className="btn btn--primary" disabled={busy} onClick={unlockByShare}>
@@ -410,7 +410,7 @@ export function CompatScreen({
                 '상극' 이 모순처럼 읽히지 않게 한다 */}
             {result.elements ? (
               <div className="compat-ohaeng">
-                <span className="compat-ohaeng__label">속 성질</span>
+                <span className="compat-ohaeng__label">기본 성향</span>
                 <span className="compat-ohaeng__pair">
                   {/* 앞에 오행 이모지를 붙이던 자리다. 이모지를 다 걷어내면서
                       빈 문자열 다섯 개짜리 맵만 남았고, 화면에는 글자 앞에
@@ -431,7 +431,7 @@ export function CompatScreen({
                 <span className="compat-line__v">{result.good}</span>
               </div>
               <div className="compat-line">
-                <span className="compat-line__k">오늘 조심</span>
+                <span className="compat-line__k">오늘 조심할 점</span>
                 <span className="compat-line__v">{result.caution}</span>
               </div>
               <div className="compat-line">
@@ -472,7 +472,7 @@ export function CompatScreen({
 
           <div className="save-person">
             <p className="save-person__title">이 사람, 내 사람으로 저장할까요?</p>
-            <p className="save-person__desc">관계만 골라두면, 올 때마다 이 사람과의 오늘 궁합이 자동으로 떠요 (로그인 없이 이 폰에만 저장)</p>
+            <Sentences className="save-person__desc" text="관계만 골라두면 다음에 들어올 때 오늘 이 사람과의 궁합이 바로 보여요. 로그인 없이 이 기기에만 저장돼요." />
             <div className="save-person__chips">
               {RELATIONS.map((r) => (
                 <button

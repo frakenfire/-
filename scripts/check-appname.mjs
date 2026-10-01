@@ -10,7 +10,7 @@
 //
 //   node scripts/check-appname.mjs
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
 const NAME = '오늘의 마음 한장';
 // 화면·공유 글에 쓰이는 옛 이름들. 'today-note' 는 npm 꾸러미 이름이라 여기 없다.

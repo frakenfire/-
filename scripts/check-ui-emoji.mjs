@@ -13,7 +13,7 @@
 // 직접 보는 점검은 scripts/audit.mjs 의 '[화면] 화면에 이모지 없음' 이 한다.
 // 둘 다 있어야 한다: 이쪽은 빠르고, 저쪽은 새는 곳을 잡는다.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
 const EMOJI = /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/u;
 
