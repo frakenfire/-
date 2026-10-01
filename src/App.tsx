@@ -8,6 +8,7 @@ import { generateFortune } from './lib/generateFortune.ts';
 import { luckPercentile } from './lib/luck.ts';
 import { showRewardAd, preloadAd, isRewarded, isUnsupportedFreePass } from './lib/ads.ts';
 import { shouldShowNoteAd } from './lib/adPolicy.ts';
+import { WhoSheet } from './components/WhoSheet.tsx';
 import { todayVibe } from './lib/dayVibe.ts';
 import { shareBriefing, shareForUnlock, shareMessage } from './lib/share.ts';
 import { ConcernScreen } from './screens/ConcernScreen.tsx';
@@ -115,6 +116,7 @@ export default function App() {
   // '다른 고민도 궁금하면' 에서 광고를 보고 들어왔는지. 이 흐름에서는
   // 쪽지 광고를 한 번 더 붙이지 않는다.
   const paidAtEntry = useRef(false);
+  const [askWho, setAskWho] = useState(false);
   // 쪽지를 고르면 광고가 나오는지 — 고르는 화면과 로딩에서 미리 알린다.
   // handlePick 은 뽑은 횟수를 먼저 올리고 규칙을 보므로 그 시점의 값은 늘 1 이상이다.
   const noteAdNext = shouldShowNoteAd(1, paidAtEntry.current);
@@ -610,8 +612,9 @@ export default function App() {
           // 고칠 길은 홈에 따로 낸다(아래 onEditBirth). 화면을 건너뛰면서
           // 고칠 데까지 없애면 생년월일을 영영 못 고친다.
           onStart={() => {
+            // 넣어둔 정보가 있으면 그걸로 볼지 새로 넣을지 먼저 묻는다
             if (birthReady) {
-              startDraw();
+              setAskWho(true);
               return;
             }
             setBirthNext('concern');
@@ -622,9 +625,24 @@ export default function App() {
             setBirthNext('saju');
             setScreen('birth');
           }}
-          onNewPerson={handleNewPerson}
         />
       )}
+
+      {screen === 'home' && askWho && birth ? (
+        <WhoSheet
+          name={birth.name ?? '저장된'}
+          detail={(birthSummary ?? '').replace(`${birth.name} · `, '')}
+          onUseSaved={() => {
+            setAskWho(false);
+            startDraw();
+          }}
+          onNew={() => {
+            setAskWho(false);
+            handleNewPerson();
+          }}
+          onClose={() => setAskWho(false)}
+        />
+      ) : null}
 
       {screen === 'reveal' && fortuneType && (
         <RevealScreen fortuneType={fortuneType} special={result?.rarity.special} adNext={noteAdNext} />
