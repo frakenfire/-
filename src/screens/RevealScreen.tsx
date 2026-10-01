@@ -27,9 +27,11 @@ const SPECIAL_STEP = '앗, 이건 조금 특별한 쪽지예요';
 type Props = {
   fortuneType: FortuneType;
   special?: boolean;
+  /** 이 로딩 뒤에 광고가 나오는지. 단계 문구는 광고 전에 끝까지 못 가므로 따로 처음부터 띄운다 */
+  adNext?: boolean;
 };
 
-export function RevealScreen({ fortuneType, special }: Props) {
+export function RevealScreen({ fortuneType, special, adNext = false }: Props) {
   const steps = [
     ...COMMON_STEPS,
     TYPE_STEP[fortuneType],
@@ -65,6 +67,7 @@ export function RevealScreen({ fortuneType, special }: Props) {
             />
           ))}
         </div>
+        {adNext ? <p className="note-fan__hint">결과 전에 짧은 광고가 하나 나와요</p> : null}
       </div>
     </AppLayout>
   );

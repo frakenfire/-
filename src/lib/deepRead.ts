@@ -452,7 +452,7 @@ export function buildDeepRead(
   const focus =
     focusCount > 0
       ? `${withJosa(concern.label, '은는')} ${withJosa(favorNames, '을를')} 중심으로 봐요. 내 사주에도 이런 특징이 ${focusCount >= 3 ? '여러 곳에서' : '조금'} 보여요.`
-        : `${withJosa(concern.label, '은는')} ${withJosa(favorNames, '을를')} 중심으로 봐요. 태어난 여덟 글자에는 이런 특징이 없어서, 올해나 이번 달에 관련 글자가 들어올 때 더 크게 느껴져요.`;
+        : `${withJosa(concern.label, '은는')} ${withJosa(favorNames, '을를')} 중심으로 봐요. 타고난 사주에는 이런 특징이 없어서, 올해나 이번 달에 관련 글자가 들어올 때 더 크게 느껴져요.`;
 
   // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
   // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
@@ -654,8 +654,8 @@ export function buildDeepRead(
       // '2개가 일을 맡고 있어요. 적은 편이라 때를 더 타요' 는 사주 말을 옮긴
       // 것이라 무슨 뜻인지 안 남았다. 그래서 어떻다는 건지까지 풀어 적는다.
       line: (score.natalCount === 0
-        ? `여덟 글자에는 ${withJosa(concern.shortName, '과와')} 관련된 특징이 따로 보이지 않아요. `
-        : `${withJosa(concern.shortName, '과와')} 관련된 특징이 여덟 글자 중 ${score.natalCount}개에서 보여요. `)
+        ? `내 사주에는 ${withJosa(concern.shortName, '과와')} 관련된 특징이 따로 보이지 않아요. `
+        : `${withJosa(concern.shortName, '과와')} 관련된 특징이 내 사주 글자 중 ${score.natalCount}개에서 보여요. `)
         + `${score.natalCount >= 3
           ? '타고난 성향이 받쳐줘서 시기를 덜 타는 편이에요.'
           : '타고난 성향보다 언제 움직이느냐에 더 영향을 받는 편이에요.'}`,
@@ -684,7 +684,7 @@ export function buildDeepRead(
     rows: meetRows,
     quiet:
       meetRows.length === 0
-        ? '오늘 글자는 내 여덟 글자 중 어느 것과도 엮이지 않아요. 흔들림이 적은 날이라 평소처럼 지내면 돼요.'
+        ? '오늘 글자는 내 사주 글자 중 어느 것과도 엮이지 않아요. 흔들림이 적은 날이라 평소처럼 지내면 돼요.'
         : null,
     nextDay,
   };

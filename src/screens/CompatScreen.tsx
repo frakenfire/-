@@ -200,7 +200,7 @@ export function CompatScreen({
     const ohaeng = result.elements
       ? `\n${result.elements.aKo} × ${result.elements.bKo} = ${result.elements.flowKo} 조합`
       : '';
-    return `[오늘의 마음 한장] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 · ${result.archetype}\n${myLabel.label} × ${friendLabel.label}${ohaeng}\n"${result.headline}"\n너도 누구랑 몇 점인지 봐봐`;
+    return `[오늘의 마음 한장] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 · ${result.archetype}\n${myLabel.label} × ${friendLabel.label}${ohaeng}\n"${result.headline}"\n\n나도 궁합 보러가기`;
   }
 
   async function brag() {

@@ -172,7 +172,7 @@ export async function saveCompatCard(input: CompatCardInput): Promise<boolean> {
     // 워터마크 + 초대 문구
     ctx.fillStyle = style.accent;
     ctx.font = `bold 40px ${CARD_FONT}`;
-    ctx.fillText('너도 우리 궁합 봐봐', cx, cardY + cardH - 120);
+    ctx.fillText('나도 궁합 보러가기', cx, cardY + cardH - 120);
     ctx.fillStyle = '#8b95a1';
     ctx.font = `bold 34px ${CARD_FONT}`;
     ctx.fillText('오늘의 마음 한장 · 친구 궁합', cx, cardY + cardH - 60);

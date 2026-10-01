@@ -188,7 +188,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <Sentences className="mflow__foot" text="이 다섯 줄은 태어난 여덟 글자에서만 나와요. 해가 바뀌어도 내용은 그대로예요." />
+        <Sentences className="mflow__foot" text="이 다섯 줄은 타고난 사주에서만 나와요. 해가 바뀌어도 내용은 그대로예요." />
       </div>
 
       {/* 왜 지금 이 고민이 커졌나 — 타고난 구조가 '원래 어떤 사람이냐' 라면
@@ -365,7 +365,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       </Chapter>
 
-      <Chapter title="다양한 관점에서 본 나의 사주" hint="내 일주, 네 가지 나, 사주 여덟 글자, 오늘 글자">
+      <Chapter title="다양한 관점에서 본 나의 사주" hint="내 일주, 네 가지 나, 내 사주 글자, 오늘 글자">
       {/* 내 일주 — 사주에서 사람을 가리키는 제일 작은 단위. 진짜 사주를 보러
           온 사람이 제일 먼저 찾는 자리라 이 덩이 맨 위에 둔다. 일간 열 가지만
           읽던 때는 열 명 중 한 명이 같은 말을 받았는데, 이제 예순 명 중 하나다. */}
@@ -424,7 +424,12 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           무엇을 보고 읽었는지 한 줄(basis)은 아래 '이 주제에서 본 자리' 가 맡는다. */}
       {/* 명식을 그대로 펼친다. 근거를 안 보여주면 '아무 말이나 하는 앱' 이 된다. */}
       <div className="sec-card">
-        <p className="cat4__head">내 사주 여덟 글자</p>
+        {/* 시각을 모르면 시 기둥이 빠져 여섯 글자다. '여덟 글자' 라고 적어 두면
+            몰라요를 골랐는데 안 먹은 것처럼 보인다(실기기에서 받은 지적). */}
+        <p className="cat4__head">{read.chart.pillars.length < 4 ? '내 사주 여섯 글자' : '내 사주 여덟 글자'}</p>
+        {read.chart.pillars.length < 4 ? (
+          <Sentences className="mflow__foot" text="태어난 시각을 몰라서 시 기둥은 빼고 봤어요." />
+        ) : null}
         <ul className="chart8">
           {read.chart.pillars.map((c) => (
             <li key={c.k} className={`chart8__col${c.me ? ' chart8__col--me' : ''}`}>

@@ -89,6 +89,7 @@ export function buildWeekShareText(week: WeekAhead, zodiacLabel: string, zodiacE
     ...week.days.map((d) => `${mark[d.tone]} ${d.weekday} ${d.short} · ${d.toneWord}`),
     ``,
     ` ${week.headline}`,
-    `네 띠는 이번 주 어떤지 봐봐 `,
+    ``,
+    `나도 이번 주 보러가기`,
   ].join('\n');
 }

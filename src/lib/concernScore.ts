@@ -114,7 +114,7 @@ export function computeConcernScore(
   const parts: ScorePart[] = [
     {
       k: '타고난 성향',
-      label: `태어난 여덟 글자`,
+      label: `타고난 사주`,
       score: natal.score,
       band: bandOf(natal.score),
       weight: WEIGHTS.natal,

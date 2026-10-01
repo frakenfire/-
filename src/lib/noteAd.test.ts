@@ -32,7 +32,8 @@ test('App 은 횟수를 세고 나서 부른다', () => {
   const src = readFileSync(new URL('../App.tsx', import.meta.url), 'utf8');
   const call = src.indexOf("showRewardAd('note')");
   assert.ok(call > 0, "App.tsx 에서 showRewardAd('note') 를 못 찾았어요");
-  const guard = src.indexOf('shouldShowNoteAd(');
+  // 미리 알리는 용도(noteAdNext)로도 부르므로, 실제로 거르는 자리(drawsToday)를 본다
+  const guard = src.indexOf('shouldShowNoteAd(drawsToday');
   assert.ok(guard > 0 && guard < call, '광고를 부르기 전에 shouldShowNoteAd 로 걸러야 해요');
   const count = src.indexOf('incrementDailyDrawCount(');
   assert.ok(count > 0 && count < guard, '횟수를 먼저 센 다음에 판단해야 해요');

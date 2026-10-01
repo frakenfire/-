@@ -28,6 +28,8 @@ type Props = {
   spin?: number;
   /** 사주가 후보 선정에 반영됐는지 — 근거를 화면에서 밝힌다 */
   personal?: boolean;
+  /** 고르면 결과 전에 광고가 나오는지. 갑자기 뜨면 이상하니 미리 알린다 */
+  adNext?: boolean;
 };
 
 // 접힌 쪽지 여섯 장 중 한 장 선택. 누르면 그 쪽지가 펼쳐지는 모션.
@@ -41,6 +43,7 @@ export function NotePickScreen({
   onBack,
   personal = false,
   spin = 0,
+  adNext = false,
 }: Props) {
   const teasers = pickTeasers(`${todayKey()}|${fortuneLabel}|${spin}`);
   // 한 장만 고른다. 누르면 바로 열린다.
@@ -88,6 +91,7 @@ export function NotePickScreen({
         ))}
       </div>
       <p className="note-fan__hint">{picked ? '열어볼게요' : hint}</p>
+      {adNext ? <p className="note-fan__hint">고르면 짧은 광고 하나 보고 결과가 열려요</p> : null}
       </div>
 
       {/* 아래는 비워두지 않는다. 어떻게 뽑히는지, 자주 묻는 것 다섯 줄 */}

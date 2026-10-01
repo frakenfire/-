@@ -115,6 +115,9 @@ export default function App() {
   // '다른 고민도 궁금하면' 에서 광고를 보고 들어왔는지. 이 흐름에서는
   // 쪽지 광고를 한 번 더 붙이지 않는다.
   const paidAtEntry = useRef(false);
+  // 쪽지를 고르면 광고가 나오는지 — 고르는 화면과 로딩에서 미리 알린다.
+  // handlePick 은 뽑은 횟수를 먼저 올리고 규칙을 보므로 그 시점의 값은 늘 1 이상이다.
+  const noteAdNext = shouldShowNoteAd(1, paidAtEntry.current);
 
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
@@ -607,7 +610,7 @@ export default function App() {
       )}
 
       {screen === 'reveal' && fortuneType && (
-        <RevealScreen fortuneType={fortuneType} special={result?.rarity.special} />
+        <RevealScreen fortuneType={fortuneType} special={result?.rarity.special} adNext={noteAdNext} />
       )}
 
       {screen === 'pick' && (
@@ -618,6 +621,7 @@ export default function App() {
           openingId={busy ? note?.id : undefined}
           fortuneLabel={fortuneType ? FORTUNE_LABEL[fortuneType] : ''}
           personal={notePick.personal}
+          adNext={noteAdNext}
           onPick={handlePick}
           onBack={() => goBack()}
         />
