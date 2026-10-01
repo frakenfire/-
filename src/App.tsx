@@ -541,6 +541,19 @@ export default function App() {
     setScreen('home');
   }
 
+  // 다른 사람 것을 볼 때. 넣어둔 이름·생년월일만 비우고 바로 넣는 화면으로 간다.
+  // '지우기' 는 고치기 화면 맨 밑에 있어 못 찾았고, 연속 기록까지 다 지웠다(실기기 지적).
+  function handleNewPerson() {
+    clearBirth();
+    setBirth(null);
+    setZodiac(null);
+    setStarSign(null);
+    setResult(null);
+    logEvent('birth_new_person', {});
+    setBirthNext('concern');
+    setScreen('birth');
+  }
+
   // 결과 카드 저장(이미지)과 한 줄 복사는 상세 화면에만 버튼이 있었다.
   // 그 화면이 setScreen 으로 열리지 않아 두 기능 다 이미 안 도는 상태였다.
   // 코드만 지운다 — 다시 넣으려면 결과 화면에 버튼부터 있어야 한다.
@@ -609,6 +622,7 @@ export default function App() {
             setBirthNext('saju');
             setScreen('birth');
           }}
+          onNewPerson={handleNewPerson}
         />
       )}
 

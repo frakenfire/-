@@ -48,6 +48,8 @@ type Props = {
   savedBirth?: string | null;
   /** 저장된 값을 고치러 가는 길 */
   onEditBirth?: () => void;
+  /** 넣어둔 정보를 비우고 다른 사람 것을 넣으러 가는 길 */
+  onNewPerson?: () => void;
   /** 회전 값 — 겉 문구가 열 때마다 돌아간다 */
   spin?: number;
   /** 띠 서열을 단톡방에 던진다. 주간 카드와 같은 자리, 같은 모양 */
@@ -61,6 +63,7 @@ export function HomeScreen({
   onStart,
   savedBirth = null,
   onEditBirth,
+  onNewPerson,
   onShareRanking,
   spin = 0,
 }: Props) {
@@ -103,6 +106,11 @@ export function HomeScreen({
             <button type="button" className="home-hero__who-edit" onClick={onEditBirth}>
               고치기
             </button>
+            {onNewPerson ? (
+              <button type="button" className="home-hero__who-edit" onClick={onNewPerson}>
+                다른 사람 보기
+              </button>
+            ) : null}
           </p>
         ) : null}
       </div>
