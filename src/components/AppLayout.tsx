@@ -11,31 +11,14 @@ type Props = {
 };
 
 // PRD §6 — 상단 Navigation + body + 하단 고정 CTA. 375px 기준.
-export function AppLayout({
-  children,
-  bottom,
-  onBack,
-  title,
-  step,
-  totalSteps,
-}: Props) {
+// onBack·title 은 받기만 하고 그리지 않는다. 뒤로가기와 화면 이름은 토스 내비게이션
+// 바가 이미 보여준다 — 자체 헤더를 같이 두면 뒤로가기가 둘이 돼 검토에서 반려됐다
+// (2026-10-01). 토스 뒤로가기는 App 의 handleHardwareBack 이 같은 길로 처리한다.
+export function AppLayout({ children, bottom, step, totalSteps }: Props) {
   return (
     <div className="app">
-      {/* 토스 화면의 네비는 뒤로가기와(필요할 때만) 화면 이름뿐이다. 앱 이름을 매 화면
-          반복하면 본문의 큰 제목과 헤더가 둘이 된다. 홈은 아예 비운다. */}
-      <nav className={onBack || title ? 'app__nav' : 'app__nav app__nav--empty'}>
-        {onBack ? (
-          <button
-            type="button"
-            className="app__nav-back"
-            aria-label="뒤로"
-            onClick={onBack}
-          >
-            ‹
-          </button>
-        ) : null}
-        {title ? <span className="app__nav-title">{title}</span> : null}
-      </nav>
+      {/* 위 여백(Safe Area)만 남긴다 */}
+      <div className="app__nav app__nav--empty" aria-hidden />
 
       <div className="app__body">
         {typeof step === 'number' && totalSteps ? (

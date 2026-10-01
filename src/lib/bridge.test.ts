@@ -108,3 +108,9 @@ test('뒤로가기를 구독하고, 첫 화면에서는 미니앱을 닫는다',
   const fn = app.slice(app.indexOf('function handleHardwareBack'), app.indexOf('function handleHardwareBack') + 500);
   assert.match(fn, /screenRef\.current === 'home'[\s\S]*closeAppView\(\)/, '첫 화면 뒤로가기에서 closeAppView 를 안 불러요');
 });
+
+// 검토 반려(2026-10-01): 토스 내비게이션 바 뒤로가기와 미니앱 자체 헤더·뒤로가기가 같이 보였다.
+test('자체 헤더에 뒤로가기 버튼을 그리지 않는다', () => {
+  const layout = readFileSync(new URL('../components/AppLayout.tsx', import.meta.url), 'utf8');
+  assert.doesNotMatch(layout, /onClick=\{onBack\}|aria-label="뒤로"/, 'AppLayout 이 뒤로가기 버튼을 다시 그려요');
+});
