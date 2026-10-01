@@ -1865,6 +1865,20 @@ strong {
   text-align: left;
   color: var(--gray-700);
   font-weight: 500;}
+/* 쪽지 앞 광고 예고 — 회색 줄로 두면 지나친다. 옅은 바탕 한 칸으로 따로 세운다 */
+.pick-ad {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: var(--space-3) 0 var(--space-2);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--gray-50);
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+}
 .pick-basis b {
   font-weight: 700;
 }

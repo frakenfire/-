@@ -69,7 +69,7 @@ export function NotePickScreen({
       <p className="pick-basis">{personal ? lead : '느낌 오는 걸 하나 고르면 돼요'}</p>
       {/* 쪽지 아래 회색 줄로 두었더니 실기기에서 못 보고 지나쳤다. 제목 바로 밑, 배지와 함께 */}
       {adNext ? (
-        <p className="pick-basis">
+        <p className="pick-ad">
           <AdBadge label="광고" /> 고른 쪽지는 광고 하나 보고 열려요
         </p>
       ) : null}
