@@ -5,6 +5,7 @@ import { NOTE_TEASERS, NOTE_PICK_TITLES, NOTE_PICK_LEADS, NOTE_PICK_HINTS, FAQ_P
 import { todayKey, hashSeed } from '../lib/dateSeed.ts';
 import type { Note } from '../types/fortune.ts';
 import { Sentences } from '../components/Sentences.tsx';
+import { AdBadge } from '../components/AdNotice.tsx';
 
 // 여섯 장에 서로 다른 문구를 준다. 날짜가 바뀌면 조합도 바뀌고, 같은 날엔 고정.
 function pickTeasers(seedKey: string): string[] {
@@ -66,6 +67,12 @@ export function NotePickScreen({
     <AppLayout onBack={busy ? undefined : onBack} step={4} totalSteps={4}>
       <h2 className="h2" data-screen="pick">{title}</h2>
       <p className="pick-basis">{personal ? lead : '느낌 오는 걸 하나 고르면 돼요'}</p>
+      {/* 쪽지 아래 회색 줄로 두었더니 실기기에서 못 보고 지나쳤다. 제목 바로 밑, 배지와 함께 */}
+      {adNext ? (
+        <p className="pick-basis">
+          <AdBadge label="광고" /> 고른 쪽지는 광고 하나 보고 열려요
+        </p>
+      ) : null}
       <div className="note-stage">
       <div className="note-grid">
         {notes.map((note, i) => (
@@ -91,7 +98,6 @@ export function NotePickScreen({
         ))}
       </div>
       <p className="note-fan__hint">{picked ? '열어볼게요' : hint}</p>
-      {adNext ? <p className="note-fan__hint">고르면 짧은 광고 하나 보고 결과가 열려요</p> : null}
       </div>
 
       {/* 아래는 비워두지 않는다. 어떻게 뽑히는지, 자주 묻는 것 다섯 줄 */}

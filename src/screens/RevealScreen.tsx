@@ -32,10 +32,11 @@ type Props = {
 };
 
 export function RevealScreen({ fortuneType, special, adNext = false }: Props) {
+  // 광고가 이어지면 마지막 멘트가 그 예고다. App 은 이 멘트가 보일 만큼 기다렸다 광고를 띄운다.
   const steps = [
     ...COMMON_STEPS,
     TYPE_STEP[fortuneType],
-    special ? SPECIAL_STEP : LAST_STEP,
+    adNext ? '광고가 끝나면 결과가 열려요' : special ? SPECIAL_STEP : LAST_STEP,
   ];
   const [idx, setIdx] = useState(0);
 

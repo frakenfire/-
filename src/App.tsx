@@ -354,6 +354,9 @@ export default function App() {
       // 열리는 앱이 되면 심사에서 걸린다.
       const drawsToday = incrementDailyDrawCount(dateKey);
       if (shouldShowNoteAd(drawsToday, paidAtEntry.current)) {
+        // 로딩 멘트는 0.62초마다 넘어가 마지막('광고가 끝나면 결과가 열려요')이 1.9초쯤 나온다.
+        // 그걸 읽을 틈을 주고 광고를 띄운다 - 예고 없이 뜨면 이상하다는 실기기 지적.
+        await wait(1200);
         try {
           const ad = await showRewardAd('note');
           logEvent('reward_ad', { placement: 'note', status: ad.status, draws: drawsToday });
