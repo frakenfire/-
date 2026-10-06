@@ -357,7 +357,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           그 자리에서 나간다. 콘솔 템플릿이 없으면 줄 자체가 안 나온다. */}
       {deep && onAskNoti ? (
         <button type="button" className="notiask" onClick={onAskNoti}>
-          <span className="notiask__k">내일 쪽지가 바뀌면 알려드릴까요</span>
+          <span className="notiask__k">매일 오전 10시, 새 쪽지 알림 받기</span>
           <span className="notiask__c" aria-hidden>›</span>
         </button>
       ) : null}

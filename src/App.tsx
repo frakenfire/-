@@ -592,7 +592,7 @@ export default function App() {
     setNotiAsked(true);
     const r = await askNotificationAgreement();
     logEvent('noti_asked', { result: r });
-    if (r === 'newAgreement' || r === 'alreadyAgreed') flash('내일 아침에 알려드릴게요');
+    if (r === 'newAgreement' || r === 'alreadyAgreed') flash('내일 오전 10시에 알려드릴게요');
     else if (r === 'agreementRejected') flash('알림은 언제든 다시 켤 수 있어요');
   }
 

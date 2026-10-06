@@ -188,7 +188,7 @@ export function reportError(where: string, error: unknown): void {
 // 운세 앱의 재방문은 '아침에 오는 알림'이 만든다(점신·포스텔러의 공통 장치).
 // 앱인토스는 콘솔에서 알림 템플릿을 등록하고, SDK 로 동의 UI 를 띄운 뒤
 // 콘솔에서 발송하는 구조다. 템플릿 코드를 아직 안 받았으면 기능 전체를 숨긴다.
-export const NOTI_TEMPLATE_CODE = 'REPLACE_NOTI_TEMPLATE';
+export const NOTI_TEMPLATE_CODE = 'todaymyheart-morning-note';
 
 /** 알림 동의를 요청할 수 있는 상태인가 (콘솔 템플릿 코드가 채워졌는가) */
 export function canAskNotification(): boolean {
