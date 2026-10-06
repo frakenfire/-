@@ -1,6 +1,7 @@
 import type { TenGod } from '../lib/tenGods.ts';
 import type { ConcernKey } from './concerns.ts';
 import { CONCERN_GOD } from './concernReadings.ts';
+import { TIP_OVERRIDE } from './concernTipOverride.ts';
 
 // 고민 x 십신 표가 고른 상황과 부딪히는 칸만 덮는다.
 //
@@ -141,5 +142,6 @@ const OVERRIDE: Partial<Record<ConcernKey, Record<string, Override>>> = {
 export function godLineOf(concern: ConcernKey, optionKey: string | null, god: TenGod): Line {
   const base = CONCERN_GOD[concern][god];
   const over = optionKey ? OVERRIDE[concern]?.[optionKey]?.[god] : undefined;
-  return over ? { ...base, ...over } : base;
+  const tip = optionKey ? TIP_OVERRIDE[concern]?.[optionKey]?.[god] : undefined;
+  return over || tip ? { ...base, ...over, ...tip } : base;
 }

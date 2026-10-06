@@ -729,18 +729,25 @@ export function buildDeepRead(
   // '이 해에 할 일' 줄에 '사람과 기회 늘리기' 같은 한 단어를 넣고 있었다.
   // 한 칸에 들어갈 만큼 짧게 쓰면 결국 무슨 기회인지 못 적는다. 바로 밑
   // '유리하게 쓰는 법' 줄이 같은 말을 구체적으로 하고 있어서 그 줄을 없앴다.
+  // 해 단위 문장 한 벌을 올해 줄과 내년 줄이 같이 쓴다. '올해' 라고 적힌 말이
+  // 내년 줄에 그대로 가지 않게 그 줄 기준으로 바꿔 읽는다. 해 중간에 읽으면
+  // '연초에' 는 이미 지난 때라 뺀다.
+  const asYear = (t: string, next: boolean) => {
+    const u = t.replace(/연초에 /g, '');
+    return next ? u.replace(/내년/g, '그다음 해').replace(/올해/g, '내년') : u;
+  };
   const yearCompare = [
     // good/care 는 달 단위 문장이다. 여기에 그대로 쓰면 그 해와 같은 기운을 가진
     // 달이 아래 차트에 뜰 때 글자 하나까지 같은 문장이 두 번 나온다.
     {
       k: '유리하게 쓰는 법',
-      thisYear: G(y0.tenGod).yearGood,
-      nextYear: G(y1.tenGod).yearGood,
+      thisYear: asYear(G(y0.tenGod).yearGood, false),
+      nextYear: asYear(G(y1.tenGod).yearGood, true),
     },
     {
       k: '조심할 것',
-      thisYear: G(y0.branchGod).yearCare,
-      nextYear: G(y1.branchGod).yearCare,
+      thisYear: asYear(G(y0.branchGod).yearCare, false),
+      nextYear: asYear(G(y1.branchGod).yearCare, true),
     },
   ];
   const yearGap =
@@ -763,8 +770,8 @@ export function buildDeepRead(
     // GOD_SCALE 은 고민을 안 본다. 돈을 물었는데 '안으로 파고드는 달'
     // 같은 문장이 나오던 자리다. 고민별로 쓴 문장을 쓴다.
     outer: `${G(slot.tenGod).month} ${monthFit(slot.tenGod)}`,
-    good: G(slot.tenGod).good,
-    care: G(slot.branchGod).care,
+    good: G(slot.tenGod).goodTip,
+    care: G(slot.branchGod).careTip,
   });
 
   const slots = [
@@ -779,8 +786,8 @@ export function buildDeepRead(
     band: bandLabel(m),
     bandKey: m.band,
     outer: `${G(m.tenGod).month} ${monthFit(m.tenGod)}`,
-    good: G(m.tenGod).good,
-    care: G(m.branchGod).care,
+    good: G(m.tenGod).goodTip,
+    care: G(m.branchGod).careTip,
   }));
 
   const yearLines = timing.years.slice(0, 2).map((y, i) => ({
