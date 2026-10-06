@@ -115,7 +115,7 @@ test('점수 푸는 줄이 몇 점인지까지 말한다', () => {
 
 test('비어 있는 자리를 띠로 알려준다', () => {
   for (const { r } of ALL) {
-    assert.ok(/띠와 .*띠 해가 비어 있어요/.test(r.chart.gongmang), r.chart.gongmang);
+    assert.ok(/띠 해와 .*띠 해에는 내 사주에 힘이 덜 실려요/.test(r.chart.gongmang), r.chart.gongmang);
   }
 });
 

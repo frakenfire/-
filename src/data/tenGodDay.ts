@@ -117,7 +117,7 @@ export const TEN_GOD_DAY: Record<TenGod, DayGodReading> = {
  *  사람에게는 약이다. 이 꼬리가 없으면 열두 달 표가 누구에게나 같은 열 문장이 된다. */
 export const NEEDED_MONTH: Record<'needed' | 'excess' | 'neutral', string> = {
   needed: '내 사주에 모자란 글자라 이번 달에는 힘이 돼요.',
-  excess: '내 사주에 이미 많은 글자라 이번 달에는 일을 크게 벌이지 마세요.',
+  excess: '내 사주에 원래 많은 글자라 이번 달에는 이런 성향이 더 세게 나와요.',
   neutral: '내 사주에 많지도 적지도 않은 글자라 평소대로 하면 돼요.',
 };
 

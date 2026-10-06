@@ -780,7 +780,7 @@ export const TEMPLATES: Record<FortuneType, Variant[]> = {
       ],
       flow: '오늘 한 일과 배운 점을 짧게 적어두세요. 다음에 비슷한 일을 할 때 시간이 줄어요.',
       good: '적어둔 기록이 평가 때 좋은 근거가 돼요.',
-      caution: '머릿속에만 두고 잊어버리지 않게 해요.',
+      caution: '할 일을 머릿속에만 두고 잊어버리지 않게 해요.',
       lucky: '저녁 · 남색 · 오늘 한 일 세 줄',
       share: '적어두면 내 일이 남아요.',
     },

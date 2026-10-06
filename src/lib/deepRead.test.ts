@@ -196,7 +196,7 @@ test('명식 기둥마다 성향 한 줄이 붙는다', () => {
   const t = computeTiming(INPUT, P, 'female', 'work', new Date('2026-09-17T12:00:00+09:00'));
   const r = buildDeepRead(P, t, 'work', null, '2026-09-17');
   for (const c of r.chart.pillars) assert.ok(c.trait.length > 8, `${c.k} 성향 비었음`);
-  assert.ok(r.chart.gongmang.includes('비어 있어요'));
+  assert.ok(r.chart.gongmang.includes('힘이 덜 실려요'));
   for (const x of r.chart.sinsal) {
     assert.ok(x.k.length > 2 && x.v.length > 10, `${x.k} 설명 비었음`);
   }

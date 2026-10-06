@@ -471,11 +471,11 @@ export function buildDeepRead(
   // 읽는 사람은 그게 언제 오는 해인지 알 길이 없다. 지지 차례와 띠 차례가
   // 같으니 띠 이름으로 적는다. 달은 뺐다 - 띠로는 달을 가리킬 수 없다.
   const gongmangZodiac = (b: number) => findZodiac(BRANCHES[b].animal)?.label ?? BRANCHES[b].kor;
-  const gongmang = `${withJosa(gongmangZodiac(g1), '과와')} ${gongmangZodiac(g2)} 해가 비어 있어요. 이 두 띠 해에는 일을 크게 벌이기보다 결과가 따라오는지 중간중간 확인하면서 움직이세요.`;
+  const gongmang = `${gongmangZodiac(g1)} 해와 ${gongmangZodiac(g2)} 해에는 내 사주에 힘이 덜 실려요. 그 두 해에는 일을 크게 벌이기보다 결과가 따라오는지 중간중간 확인하면서 움직이세요.`;
 
   const chart = {
     pillars: chartPillars,
-    dayMaster: `${pillars.dayMaster.kor}, 다섯 요소 가운데 ${ELEMENT_KO[myEl]}에 속해요. ${dm.nature.split(/(?<=[.])\s+/)[0]}`,
+    dayMaster: `태어난 날의 글자 ${withJosa(pillars.dayMaster.kor, '은는')} 다섯 요소 가운데 ${ELEMENT_KO[myEl]}에 속해요. ${dm.nature.split(/(?<=[.])\s+/)[0]}`,
     elements,
     strength:
       prof.strength === 'strong'
@@ -483,8 +483,8 @@ export function buildDeepRead(
         : '주변의 도움을 받을 때 강점을 더 잘 써요. 혼자 밀어붙이기보다 배우고 도움받을 때 결과가 좋아요.',
     season: prof.hasSeasonalSupport
       ? '태어난 계절이 내 성향과 잘 맞아서 기본적으로 버티는 힘이 있는 편이에요.'
-      : '태어난 달이 나를 직접 돕는 구성은 아니에요. 그래서 무엇을 하느냐만큼 언제 움직이느냐도 중요하게 봐요.',
-    useful: `내 사주에서는 다섯 요소 중 ${withJosa(ELEMENT_KO[prof.usefulElement], '을를')} 채워주면 좋은 요소로 봐요. 이 요소가 들어오는 해와 달에는 일이 덜 막히는 편이에요.`,
+      : '태어난 달의 글자가 나를 직접 돕지는 않아요. 그래서 무엇을 하느냐만큼 언제 움직이느냐도 중요하게 봐요.',
+    useful: `내 사주에는 다섯 요소 중 ${withJosa(ELEMENT_KO[prof.usefulElement], '이가')} 모자라요. ${withJosa(ELEMENT_KO[prof.usefulElement], '이가')} 들어오는 해와 달에는 일이 덜 막히는 편이에요.`,
     focus,
     today: chartToday,
     sinsal: stars,
@@ -737,8 +737,8 @@ export function buildDeepRead(
     if (!next) return u;
     // 조사까지 같이 바꾼다. '올해는' 을 '내년' 으로만 바꾸면 '내년는' 이 된다.
     return u
-      .replace(/내년에는|내년은/g, '그다음 해에는').replace(/내년이/g, '그다음 해가').replace(/내년/g, '그다음 해')
-      .replace(/올해는/g, '내년에는').replace(/올해가/g, '내년이').replace(/올해/g, '내년');
+      .replace(/내년에는|내년은/g, '그다음 해에는').replace(/내년이/g, '그다음 해가').replace(/내년과/g, '그다음 해와').replace(/내년/g, '그다음 해')
+      .replace(/올해는/g, '내년에는').replace(/올해가/g, '내년이').replace(/올해와/g, '내년과').replace(/올해/g, '내년');
   };
   const yearCompare = [
     // good/care 는 달 단위 문장이다. 여기에 그대로 쓰면 그 해와 같은 기운을 가진
@@ -801,7 +801,7 @@ export function buildDeepRead(
     bandKey: y.band,
     // year 가 고민을 보고 쓰였으니 line 은 뺀다. 안 빼면 한 줄 안에서
     // '연봉과 조건을 따지기' 가 두 번 나온다. 십 년 줄과 같은 이유다.
-    v: G(y.tenGod).year,
+    v: asYear(G(y.tenGod).year, i === 1),
   }));
 
   // 할 일 셋 중 하나는 이번 달 글자에서, 하나는 가장 좋은 달 글자에서 뽑는다.

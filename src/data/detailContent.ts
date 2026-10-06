@@ -61,7 +61,7 @@ export const NUMBER_HINTS: string[] = [
 export const MISSION_TEMPLATES: string[] = [
   '{time}에 {item} 챙기고 잠깐 밖에 나가보세요. 바람 쐬는 5분이 남은 하루를 버티게 해줘요.',
   '{color} 물건 하나를 지니고 나가보세요. {time}쯤 반가운 연락이 올 수 있어요.',
-  '{time}에는 {food}로 한 끼를 챙겨보세요. 기분 전환이 될 수 있어요.',
+  '{time}에는 {food} 한 번 챙겨 드세요. 기분 전환이 될 수 있어요.',
   '{dir}으로 가는 길에 주변을 한 번 둘러보세요. 몰랐던 가게나 할인을 찾을 수 있어요.',
   '{time}에는 {color} 소품과 {item} 하나로 기분을 바꿔보세요.',
   '{time}에는 {color} 옷이나 소품을 하나 골라보세요. 작은 기분 전환이 될 수 있어요.',

@@ -126,7 +126,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     leak: {
-      focus: '새는 지출은 대개 셋을 안 넘어요. 큰 것부터 찾으면 금방 끝나요.',
+      focus: '새는 지출은 대개 세 가지를 안 넘어요. 큰 것부터 찾으면 금방 끝나요.',
       dos: [
         '한 달 지출을 전부 적어 큰 것 세 개 찾기',
         '안 쓰는 구독과 멤버십을 오늘 해지하기',
@@ -292,7 +292,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     family: {
-      focus: '가족은 결론을 내려 할수록 길어져요. 한 번에 하나만 꺼내세요.',
+      focus: '가족 얘기는 결론을 내려 할수록 길어져요. 한 번에 하나만 꺼내세요.',
       dos: [
         '하고 싶은 말 하나만 정해서 짧게 말하기',
         '전화보다 직접 만나 이야기할 약속 잡기',
