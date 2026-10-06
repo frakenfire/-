@@ -6,7 +6,7 @@ import type { ConcernKey } from './concerns.ts';
 // 전에는 고민과 상관없이 한 벌만 썼다. 그래서 연애를 물어본 사람에게
 // '연애는 자리와 규칙으로 봐요' 가 나갔다. 연애를 묻는데 규칙 얘기가
 // 나오면 그 줄은 읽을 이유가 없다. 같은 자리라도 돈에서는 갚을 돈이고
-// 연애에서는 관계를 정하는 약속다. 고민마다 그 말로 적는다.
+// 연애에서는 관계를 정하는 약속이다. 고민마다 그 말로 적는다.
 export const FAVOR_WORD: Record<ConcernKey, Record<GodGroup, string>> = {
   work: {
     self: '같이 일하는 사람과의 관계',
@@ -38,15 +38,15 @@ export const FAVOR_WORD: Record<ConcernKey, Record<GodGroup, string>> = {
   },
   health: {
     self: '버티는 체력',
-    output: '힘을 밖으로 쓰는 때',
+    output: '몸을 많이 쓰는 일',
     wealth: '무리하는 습관',
     authority: '몸에 생기는 부담',
     support: '쉬는 시간',
   },
   mind: {
-    self: '내 중심',
+    self: '스스로 정하는 힘',
     output: '마음을 표현하는 말',
-    wealth: '마음이 바깥으로 쏠릴 때',
+    wealth: '남의 일에 신경 쓰는 때',
     authority: '나를 압박하는 기준',
     support: '마음을 편하게 해주는 사람',
   },

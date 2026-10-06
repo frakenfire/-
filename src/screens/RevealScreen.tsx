@@ -22,7 +22,7 @@ const TYPE_STEP: Record<FortuneType, string> = {
 };
 
 const LAST_STEP = '거의 다 됐어요';
-const SPECIAL_STEP = '앗, 이건 조금 특별한 쪽지예요';
+const SPECIAL_STEP = '오늘은 자주 안 나오는 쪽지예요';
 
 type Props = {
   fortuneType: FortuneType;
@@ -36,7 +36,7 @@ export function RevealScreen({ fortuneType, special, adNext = false }: Props) {
   const steps = [
     ...COMMON_STEPS,
     TYPE_STEP[fortuneType],
-    adNext ? '광고가 끝나면 결과가 열려요' : special ? SPECIAL_STEP : LAST_STEP,
+    adNext ? '광고 뒤에 결과가 열려요' : special ? SPECIAL_STEP : LAST_STEP,
   ];
   const [idx, setIdx] = useState(0);
 

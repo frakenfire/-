@@ -23,7 +23,7 @@ export type DayVibe = { head: string; line: string; decision: TodayDecision };
 const VIBES: DayVibe[] = [
   {
     head: '오늘은 벌이기보다 정리하는 날이에요.',
-    line: '하나씩 치우다 보면 막혔던 게 풀려요.',
+    line: '책상 하나만 치워도 미뤄둔 일이 눈에 들어와요.',
     decision: {
       overall: {
         headline: '오늘은 밀린 일을 정리하기는 좋지만, 새 일을 벌이지는 마세요.',
@@ -119,7 +119,7 @@ const VIBES: DayVibe[] = [
   },
   {
     head: '오늘은 하던 대로 하면 돼요.',
-    line: '익숙한 데서 힘이 나와요.',
+    line: '손에 익은 일부터 하면 할 일이 빨리 줄어요.',
     decision: {
       overall: {
         headline: '오늘은 하던 대로 하면 되니, 갑자기 계획을 바꾸지는 마세요.',

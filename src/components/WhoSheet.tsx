@@ -21,7 +21,7 @@ export function WhoSheet({ name, detail, onUseSaved, onNew, onClose }: Props) {
           {name}님으로 볼게요
         </button>
         <button type="button" className="btn btn--weak" onClick={onNew}>
-          다른 사람 정보 새로 입력할게요
+          다른 사람 정보 넣기
         </button>
       </div>
     </div>

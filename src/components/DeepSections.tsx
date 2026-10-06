@@ -173,7 +173,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </ul>
         <Sentences
           className="mflow__foot"
-          text={`다섯 칸을 정해진 비율대로 더하면 ${read.score.total}점이에요. 모델이 아니라 계산이라, 같은 날 몇 번을 봐도 같은 숫자가 나와요.`}
+          text={`다섯 칸을 정해진 비율대로 더하면 ${read.score.total}점이에요. 정해진 계산이라 같은 날에는 몇 번을 봐도 같은 숫자가 나와요.`}
         />
       </div>
 
@@ -212,9 +212,9 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       </Chapter>
 
-      <Chapter title="시기별로는 이렇게 하는 게 좋아요" hint="가장 좋은 때와 조심할 때, 앞으로 열두 달">
+      <Chapter title="달마다 해마다 할 일" hint="좋은 달과 피할 달, 올해와 내년, 지금 지나는 십 년">
       <div className="sec-card">
-        <p className="cat4__head">언제가 좋을까요</p>
+        <p className="cat4__head">좋은 때와 피할 때</p>
         <ul className="when4">
           {read.when.map((w) => (
             <li key={w.k} className="when4__row">
@@ -365,7 +365,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       </Chapter>
 
-      <Chapter title="다양한 관점에서 본 나의 사주" hint="내 일주, 네 가지 나, 내 사주 글자, 오늘 글자">
+      <Chapter title="내 사주 자세히 보기" hint="내 일주, 네 가지 나, 내 사주 글자, 오늘 글자">
       {/* 내 일주 — 사주에서 사람을 가리키는 제일 작은 단위. 진짜 사주를 보러
           온 사람이 제일 먼저 찾는 자리라 이 덩이 맨 위에 둔다. 일간 열 가지만
           읽던 때는 열 명 중 한 명이 같은 말을 받았는데, 이제 예순 명 중 하나다. */}

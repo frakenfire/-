@@ -199,7 +199,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
             });
           }}
         >
-          {ctaLabel ?? (inFlow ? '쪽지 열어보기' : '내 사주 보기')}
+          {ctaLabel ?? (inFlow ? '쪽지 열기' : '내 사주 보기')}
         </button>
       )}
     >

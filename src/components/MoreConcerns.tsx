@@ -56,7 +56,7 @@ export function MoreConcerns({ current, unlocked, onUnlock, onOpen }: Props) {
       <p className="cat4__head">다른 고민도 궁금하다면</p>
       <Sentences
         className="more__lead"
-        text="같은 사주 정보로 고른 주제에 맞는 답만 새로 계산해요. 지금 본 내용은 그대로 남아 있어요."
+        text="짧은 광고 뒤에 같은 사주 정보로 다른 주제의 답을 계산해요. 지금 본 내용은 그대로 남아요."
       />
       <ul className="more">
         {rest.map((c) => {

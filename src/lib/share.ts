@@ -29,10 +29,10 @@ export function buildShareText(b: ShareBriefing): string {
   // 남에게 시키는 말이 된다(실기기에서 받아본 사용자 지적). 생년월일과
   // 명식은 절대 넣지 않는다 - 단톡방에 던져지는 글이다.
   const head = b.topic
-    ? `오늘의 마음 한장 · ${b.topic} ${b.score}점`
+    ? `[오늘의 마음 한장] ${b.topic} ${b.score}점`
     : b.brag
-      ? `오늘의 마음 한장 · ${b.title} · 오늘 점수 ${b.score}점 (${b.brag})`
-      : `오늘의 마음 한장 · ${b.title} (오늘 점수 ${b.score}점)`;
+      ? `[오늘의 마음 한장] ${b.title}, 오늘 점수 ${b.score}점 (${b.brag})`
+      : `[오늘의 마음 한장] ${b.title}, 오늘 점수 ${b.score}점`;
   const quote = !b.topic && b.pinpoint ? b.pinpoint : b.headline;
   return [head, ``, `"${quote}"`, ``, `나도 보러가기`].join('\n');
 }

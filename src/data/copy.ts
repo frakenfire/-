@@ -7,7 +7,7 @@
 export const GREETINGS: Record<'morning' | 'afternoon' | 'evening' | 'night', string[]> = {
   morning: [
     '좋은 아침이에요',
-    '오늘 하루도 잘 부탁해요',
+    '오늘도 쪽지 한 장으로 시작해요',
     '아침부터 쪽지를 보러 왔네요',
     '기분 좋게 시작해봐요',
     '오늘은 어떤 하루가 될까요',
@@ -17,7 +17,7 @@ export const GREETINGS: Record<'morning' | 'afternoon' | 'evening' | 'night', st
     '오후도 잘 버티고 있죠?',
     '점심은 챙겨 드셨어요?',
     '반은 지나왔어요, 잘하고 있어요',
-    '남은 오후도 무리 말아요',
+    '남은 오후는 조금 천천히 가요',
     '잠깐 쉬어가는 중이죠?',
     '지금 한숨 돌리는 오후 시간이에요',
   ],

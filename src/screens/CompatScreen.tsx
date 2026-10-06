@@ -181,7 +181,7 @@ export function CompatScreen({
     if (busy || !myLabel || !friendLabel) return;
     setBusy(true);
     try {
-      const invite = `${myLabel.label} × ${friendLabel.label}\n오늘 우리 ${modeLabel} 궁합 얼마나 맞을까? 나 방금 봤어\n[오늘의 마음 한장] 친구 궁합에서 너도 확인해봐`;
+      const invite = `[오늘의 마음 한장] 친구 궁합\n${myLabel.label} × ${friendLabel.label}, 오늘 우리 ${modeLabel} 궁합은 몇 점일까?\n나도 보러가기`;
       const ok = await onShare(invite);
       if (ok) {
         setUnlocked(true);
@@ -198,9 +198,9 @@ export function CompatScreen({
   function bragText() {
     if (!myLabel || !friendLabel || !result) return '';
     const ohaeng = result.elements
-      ? `\n${result.elements.aKo} × ${result.elements.bKo} = ${result.elements.flowKo} 조합`
+      ? `\n${result.elements.aKo} × ${result.elements.bKo}, ${result.elements.flowKo}`
       : '';
-    return `[오늘의 마음 한장] 오늘 우리 ${modeLabel} 궁합 ${result.score}점 · ${result.archetype}\n${myLabel.label} × ${friendLabel.label}${ohaeng}\n"${result.headline}"\n\n나도 궁합 보러가기`;
+    return `[오늘의 마음 한장] 친구 궁합\n${myLabel.label} × ${friendLabel.label} ${result.score}점, ${result.archetype}${ohaeng}\n"${result.headline}"\n\n나도 궁합 보러가기`;
   }
 
   async function brag() {
@@ -274,12 +274,12 @@ export function CompatScreen({
         </div>
         <p className="pick-foot">
           <span className="pick-foot__lock" aria-hidden><Icon name="lock" size={18} /></span>
-          이름·생년월일 없이 {modeLabel}만으로 봐요
+          이름이나 생년월일 없이 {modeLabel}만으로 봐요
         </p>
         {/* 띠가 바뀌는 자리는 1월 1일이 아니라 입춘이다. 연도는 고르는 데
             쓰는 실마리지 판정이 아니라서, 어긋나는 구간을 적어둔다. */}
         {mode === 'zodiac' ? (
-          <p className="pick-foot pick-foot--note">1~2월 초에 태어났으면 앞 띠일 수 있어요</p>
+          <p className="pick-foot pick-foot--note">1월이나 2월 초에 태어났으면 한 해 앞 띠일 수 있어요</p>
         ) : null}
       </AppLayout>
     );
@@ -327,7 +327,7 @@ export function CompatScreen({
 
       {savedRanked.length > 0 ? (
         <div className="saved-people">
-          <p className="saved-people__title">내 사람들 · 오늘 궁합 순위</p>
+          <p className="saved-people__title">오늘 내 사람들 궁합 순위</p>
           {savedRanked.map(({ person, label, score }) => {
             const rel = relationMeta(person.relation);
             return (
@@ -364,7 +364,7 @@ export function CompatScreen({
           <div className="compat-lock__score">?</div>
           <p className="compat-lock__title">오늘 우리 궁합, 몇 점일까요?</p>
           <p className="compat-lock__teaser">
-            잘 맞는 정도, 대화 점수, 다툼을 피하는 점수부터 오늘의 두 사람 유형과 조언까지 한 번에 보여드려요
+            잘 맞는 정도, 대화, 안 싸우기 점수와 오늘 둘이 해볼 일까지 보여드려요
           </p>
           <div className="btn-stack">
             <button type="button" className="btn btn--primary" disabled={busy} onClick={unlockByShare}>
@@ -472,7 +472,7 @@ export function CompatScreen({
 
           <div className="save-person">
             <p className="save-person__title">이 사람, 내 사람으로 저장할까요?</p>
-            <Sentences className="save-person__desc" text="관계만 골라두면 다음에 들어올 때 오늘 이 사람과의 궁합이 바로 보여요. 로그인 없이 이 기기에만 저장돼요." />
+            <Sentences className="save-person__desc" text="관계만 골라두면 다음에 들어왔을 때 그날 궁합이 바로 보여요. 로그인 없이 이 기기에만 저장돼요." />
             <div className="save-person__chips">
               {RELATIONS.map((r) => (
                 <button

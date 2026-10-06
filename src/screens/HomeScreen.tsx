@@ -137,7 +137,7 @@ export function HomeScreen({
           </span>
         </div>
         <button type="button" className="btn btn--primary today-hook__cta" onClick={onStart}>
-          오늘 쪽지 열어보기
+          오늘 쪽지 열기
         </button>
       </div>
 

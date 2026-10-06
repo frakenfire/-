@@ -62,8 +62,8 @@ export function WeekCard({ zodiac, onShare }: Props) {
             <span className="week2__v">
               {week.caution
                 ? (week.caution.isToday
-                  ? '오늘은 서두르지 말고 천천히 움직이세요'
-                  : `${week.caution.weekday}요일 ${week.caution.short}에는 서두르지 말고 천천히 움직이세요`)
+                  ? '오늘은 큰 결정과 결제를 미뤄두세요'
+                  : `${week.caution.weekday}요일 ${week.caution.short}에는 큰 결정과 결제를 미뤄두세요`)
                 : '이번 주에는 특별히 조심할 날이 없어요'}
             </span>
           </li>

@@ -392,7 +392,7 @@ export default function App() {
       }
     } catch (e) {
       reportError('handlePick', e);
-      flash('앗, 쪽지를 여는 중에 문제가 생겼어요. 다시 시도해 주세요');
+      flash('쪽지를 열지 못했어요. 다시 골라 주세요');
       setScreen('pick');
     } finally {
       setBusy(false);
@@ -427,7 +427,7 @@ export default function App() {
     if (r === 'shared') flash('친구에게 공유했어요');
     else if (r === 'copied') flash('공유 문구를 복사했어요!');
     else if (r === 'cancelled') return; // 취소 — 아무 안내 없이 조용히
-    else flash('앗, 공유를 못 했어요');
+    else flash('공유하지 못했어요. 다시 눌러 주세요');
   }
 
   async function handleShareWeek(text: string) {
@@ -435,7 +435,7 @@ export default function App() {
     logEvent('share_week', { outcome: r });
     if (r === 'shared') flash('이번 주 운세를 공유했어요');
     else if (r === 'copied') flash('공유 문구를 복사했어요!');
-    else if (r === 'failed') flash('앗, 공유를 못 했어요');
+    else if (r === 'failed') flash('공유하지 못했어요. 다시 눌러 주세요');
   }
 
   //  내 사주 
@@ -546,7 +546,7 @@ export default function App() {
     setStreak(0);
     setSkipBirth(false);
     logEvent('birth_deleted', {});
-    flash(ok ? '내 정보를 모두 지웠어요' : '앗, 데이터를 지우지 못했어요');
+    flash(ok ? '내 정보를 모두 지웠어요' : '정보를 지우지 못했어요. 다시 눌러 주세요');
     setScreen('home');
   }
 
@@ -707,7 +707,7 @@ export default function App() {
         <AppLayout onBack={() => goBack()} title="오늘의 쪽지">
           <div className="empty-state">
             <p className="empty-state__title">쪽지를 불러오지 못했어요</p>
-            <p className="empty-state__desc">잠시 문제가 있었어요. 다시 뽑아볼까요?</p>
+            <p className="empty-state__desc">처음 화면에서 쪽지를 다시 뽑아 주세요.</p>
             <button
               type="button"
               className="btn btn--primary"
@@ -717,7 +717,7 @@ export default function App() {
                 goHome();
               }}
             >
-              처음으로 돌아가기
+              처음으로
             </button>
           </div>
         </AppLayout>
