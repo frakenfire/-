@@ -169,7 +169,7 @@ export function CompatScreen({
     try {
       const ok = await onAdUnlock();
       if (ok) setUnlocked(true);
-      else onToast('광고를 끝까지 보면 다음 내용을 볼 수 있어요');
+      else onToast('광고가 뜨지 않았어요. 한 번 더 눌러주세요');
     } catch {
       onToast('앗, 광고를 불러오지 못했어요');
     } finally {
