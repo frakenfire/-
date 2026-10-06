@@ -57,10 +57,10 @@ const TODOS = [
   {
     id: 'app-name',
     what: '앱 ID',
-    where: 'granite.config.ts 의 appName',
+    where: 'apps-in-toss.config.ts 의 appName',
     how: '개발자센터에서 앱 등록 시 발급',
     find: (s) => (/appName:\s*'today-note'/.test(s) ? ['today-note (임시 slug)'] : []),
-    files: ['granite.config.ts'],
+    files: ['apps-in-toss.config.ts'],
   },
   {
     // 스토어 목록에 보이는 아이콘은 이 값이 아니다. 그건 콘솔 2단계
@@ -77,10 +77,10 @@ const TODOS = [
     optional: '앱 안에서 이 주소를 쓰는 자리에 그림이 깨집니다. 스토어 목록 아이콘은 콘솔에 올린 앱 로고라 이것과 무관해요',
     id: 'icon',
     what: '앱 아이콘 URL (brand.icon)',
-    where: 'granite.config.ts 의 brand.icon',
+    where: 'apps-in-toss.config.ts 의 brand.icon',
     how: '콘솔에 올린 로고의 주소를 쓸 수 있으면 그것으로, 아니면 직접 올린 이미지 주소로',
     find: (s) => [...s.matchAll(/'(https:\/\/[^']*placeholder[^']*)'/g)].map((m) => m[1]),
-    files: ['granite.config.ts'],
+    files: ['apps-in-toss.config.ts'],
   },
 ];
 

@@ -19,7 +19,7 @@ const sdk = 'node_modules/@apps-in-toss/web-framework/package.json';
 if (existsSync(sdk)) ok('앱인토스 SDK', `web-framework ${JSON.parse(readFileSync(sdk, 'utf8')).version}`);
 else no('앱인토스 SDK', 'npm install 을 먼저 실행하세요');
 
-const cfg = readFileSync('granite.config.ts', 'utf8');
+const cfg = readFileSync('apps-in-toss.config.ts', 'utf8');
 const appName = (cfg.match(/appName:\s*'([^']+)'/) || [])[1];
 const displayName = (cfg.match(/displayName:\s*'([^']+)'/) || [])[1];
 ok('앱 설정', `appName ${appName} · 이름 '${displayName}' (콘솔 등록값과 글자까지 같아야 해요)`);

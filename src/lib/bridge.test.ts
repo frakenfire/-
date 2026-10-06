@@ -19,9 +19,9 @@ import {
 // 그때 supported() 의 전제를 다시 봐야 한다.
 // 앱이 실제로 쓰는 브릿지 함수 전부. 네 파일(toss.ts, share.ts, ads.ts,
 // haptic.ts)이 SDK 를 import 하고, 그 안에서 부르는 게 아래 아홉이다.
-const HAS_IS_SUPPORTED = { getServerTime, requestReview, showFullScreenAd };
+const HAS_IS_SUPPORTED = { getServerTime, requestReview, showFullScreenAd, saveBase64Data, requestNotificationAgreement };
 const NO_IS_SUPPORTED = {
-  saveBase64Data, eventLog, requestNotificationAgreement,
+  eventLog,
   share, getTossShareLink, generateHapticFeedback,
 };
 

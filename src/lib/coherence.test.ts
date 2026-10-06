@@ -264,7 +264,7 @@ test('띠 서열 공유 문구 — 순위·기운·훅·내 순위가 전부 담
 });
 
 test('공유 딥링크 슬러그가 granite appName 과 일치한다 (죽은 링크 방지)', () => {
-  const granite = readFileSync(new URL('../../granite.config.ts', import.meta.url), 'utf8');
+  const granite = readFileSync(new URL('../../apps-in-toss.config.ts', import.meta.url), 'utf8');
   const appName = granite.match(/appName:\s*'([^']+)'/)?.[1];
   assert.equal(INTOSS_APP_SLUG, appName);
 });

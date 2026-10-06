@@ -42,7 +42,7 @@ function tossSupported(fn: unknown): fn is { isSupported?: () => boolean } {
 }
 
 // 앱인토스 딥링크 슬러그 — 콘솔 발급 앱 ID 와 반드시 같아야 링크가 열린다.
-// apply-console-values.mjs 가 granite.config.ts 의 appName 과 함께 교체하고,
+// apply-console-values.mjs 가 apps-in-toss.config.ts 의 appName 과 함께 교체하고,
 // check-release-ready 가 둘의 불일치를 잡는다.
 export const INTOSS_APP_SLUG = 'todaymyheart';
 
