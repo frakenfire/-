@@ -67,7 +67,7 @@ test('콜백 등록을 풀어준다', () => {
   assert.ok(/unregister\(\)/.test(ADS), 'unregister 를 안 불러요');
 });
 
-test("보상은 'userEarnedReward' 일 때만 준다", () => {
+test("광고가 실제로 떴을 때만 연다", () => {
   assert.ok(/earned = true/.test(ADS));
   // dismissed 가지에서 earned 를 안 보고 rewarded 를 주면 안 된다
   const m = ADS.match(/event\.type === 'dismissed'\) \{\s*\n\s*done\(([^)]*)\)/);
@@ -77,7 +77,7 @@ test("보상은 'userEarnedReward' 일 때만 준다", () => {
 
 test('개발 중에는 테스트 광고 ID 를 쓴다', () => {
   // 문서: '실제 광고 ID로 테스트하면 정책 위반으로 간주해 불이익을 받을 수 있어요.'
-  assert.ok(ADS.includes("'ait-ad-test-rewarded-id'"), '문서에 적힌 테스트 ID 가 없어요');
+  assert.ok(ADS.includes("'ait-ad-test-interstitial-id'"), '문서에 적힌 테스트 ID 가 없어요');
   assert.ok(/startsWith\('REPLACE_'\) \? AD_TEST_GROUP/.test(ADS),
     '콘솔 값이 비었을 때 테스트 ID 로 넘어가지 않아요');
 });

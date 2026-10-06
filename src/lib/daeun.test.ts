@@ -66,7 +66,7 @@ test('대운은 열 해씩 이어지고 지금 대운이 잡힌다', () => {
     assert.equal(pillar.endAge - pillar.startAge, 9);
     if (i > 0) assert.equal(pillar.startAge, set.pillars[i - 1].endAge + 1);
   });
-  assert.ok(set.age >= 33 && set.age <= 35, `만 나이 ${set.age}`);
+  assert.ok(set.age >= 34 && set.age <= 36, `세는 나이 ${set.age}`);
   assert.ok(set.current, '서른 넘은 사람은 대운 안에 있다');
   assert.ok(set.yearsToNext !== null && set.yearsToNext >= 1 && set.yearsToNext <= 10);
 });
