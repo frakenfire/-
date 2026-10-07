@@ -23,7 +23,7 @@ import {
   markVisit,
   updateStreak,
   peekStreak, loadSkipBirth } from './lib/storage.ts';
-import { clearAllData } from './lib/storage.ts';
+import { clearAllData, saveTodayDraw, loadTodayDraw, type TodayDraw } from './lib/storage.ts';
 import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, closeAppView, logEvent, reportError, askReview, canAskNotification, askNotificationAgreement } from './lib/toss.ts';
 import { findZodiac } from './data/zodiac.ts';
 import type { Zodiac, ZodiacId } from './data/zodiac.ts';
@@ -146,6 +146,9 @@ export default function App() {
   // 자정을 넘겨도(앱을 계속 켜둬도) 날짜가 갱신되도록 state 로 관리하고,
   // 앱이 포그라운드로 돌아올 때마다 신뢰 가능한 '오늘'을 다시 확인한다.
   const [dateKey, setDateKey] = useState(() => todayKey());
+  // 오늘 뽑은 쪽지. 있으면 홈에서 광고 없이 다시 열 수 있다.
+  const [todayDraw, setTodayDraw] = useState<TodayDraw | null>(() => loadTodayDraw(todayKey()));
+  useEffect(() => { setTodayDraw(loadTodayDraw(dateKey)); }, [dateKey]);
   // 회전 값 — 열 때마다, 뽑을 때마다 바뀐다. 결과 자체(점수·쪽지)는 날짜와 사주로 고정이고,
   // 제목·한마디·힌트·질문답 같은 겉 문구만 이 값으로 돌아간다. 같은 말이 계속 나오지 않게.
   const [spin, setSpin] = useState(() => hashSeed(String(Date.now())) % 100000);
@@ -377,6 +380,11 @@ export default function App() {
       logEvent('result_viewed', { fortuneType, engineVersion: generated.engineVersion });
       paidAtEntry.current = false;
       commitDraw();
+      {
+        const d: TodayDraw = { date: dateKey, noteId: picked.id, fortuneType, mood, concernKey, option: concernOption };
+        saveTodayDraw(d);
+        setTodayDraw(d);
+      }
       replaceScreen('result');
       setSpin((v) => v + 7);
       // 기분 좋은 순간(대길·3일 스트릭)에 미니앱 리뷰를 한 번만 요청.
@@ -499,6 +507,23 @@ export default function App() {
 
   // 뽑기 시작 — 이름·성별을 받고, 고민과 보고 싶은 부분을 물은 뒤에 쪽지를 고른다.
   // 기분은 묻지 않는다. 보통 기분이 기본이다.
+  // 오늘 이미 연 쪽지를 광고 없이 다시 연다. 결과는 같은 입력이면 같게 계산된다.
+  function reopenToday() {
+    const d = loadTodayDraw(dateKey);
+    const n = d ? NOTES.find((x) => x.id === d.noteId) : undefined;
+    if (!d || !n) return;
+    const ft = d.fortuneType as FortuneType;
+    const md = d.mood as Mood;
+    setFortuneType(ft);
+    setMood(md);
+    setNote(n);
+    setConcernKey(d.concernKey as ConcernKey | null);
+    setConcernOption(d.option);
+    setResult(generateFortune({ fortuneType: ft, note: n, mood: md, dateKey, zodiac: zodiac?.id ?? null, star: starSign?.id ?? null, birth: birthInput }));
+    logEvent('result_reopened', { fortuneType: ft });
+    setScreen('result');
+  }
+
   function startDraw(type: FortuneType = 'tomorrow') {
     markVisit(dateKey);
     setSpin((v) => v + 1);
@@ -606,6 +631,8 @@ export default function App() {
       {screen === 'home' && (
         <HomeScreen
           onShareRanking={handleShareWeek}
+          todayNoteName={todayDraw ? NOTES.find((x) => x.id === todayDraw.noteId)?.name ?? null : null}
+          onReopen={reopenToday}
           streak={streak}
           zodiac={zodiac}
           spin={spin}

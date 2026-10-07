@@ -2104,6 +2104,12 @@ strong {
   padding: 0 16px;
   text-align: center;
 }
+/* 오늘 이미 연 쪽지 다시 보기. 새로 뽑기보다 한 단계 낮게 보인다. */
+.today-hook .today-hook__cta.btn--weak {
+  margin-top: 8px;
+  background: var(--white);
+  color: var(--brand-strong);
+}
 
 /* ── 누르는 맛: 토스는 누르는 것마다 손끝에 반응이 온다 ── */
 .btn,

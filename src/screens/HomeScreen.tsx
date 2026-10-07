@@ -52,6 +52,9 @@ type Props = {
   spin?: number;
   /** 띠 서열을 단톡방에 던진다. 주간 카드와 같은 자리, 같은 모양 */
   onShareRanking?: (text: string) => void;
+  /** 오늘 이미 뽑은 쪽지 이름. 있으면 광고 없이 다시 여는 버튼을 단다 */
+  todayNoteName?: string | null;
+  onReopen?: () => void;
 };
 
 // 홈 — '클릭해서 시작'하는 호기심 히어로(물음표)를 중심으로 정리.
@@ -63,6 +66,8 @@ export function HomeScreen({
   onEditBirth,
   onShareRanking,
   spin = 0,
+  todayNoteName = null,
+  onReopen,
 }: Props) {
   // 오늘 이미 뽑았으면 그 결과를 히어로 카드에도 반영한다(잠긴 ?  실제 값).
   // 주간 캘린더는 띠가 있어야 계산된다. 잠금 상태에서도 미리 계산해두면
@@ -137,8 +142,15 @@ export function HomeScreen({
           </span>
         </div>
         <button type="button" className="btn btn--primary today-hook__cta" onClick={onStart}>
-          오늘 쪽지 열기
+          {todayNoteName ? '새 쪽지 뽑기' : '오늘 쪽지 열기'}
         </button>
+        {/* 오늘 이미 광고를 보고 연 쪽지는 광고 없이 다시 연다(노출 가이드: 광고를 한 번
+            본 뒤에는 결과를 바로 보여주세요). 새 쪽지를 뽑을 때만 광고가 붙는다. */}
+        {todayNoteName && onReopen ? (
+          <button type="button" className="btn btn--weak today-hook__cta" onClick={onReopen}>
+            오늘 뽑은 {todayNoteName} 쪽지 다시 보기
+          </button>
+        ) : null}
       </div>
 
       {/* 오늘의 띠 서열 — 매일 갈리는 열두 띠 순위. 아직 아무것도 안 넣은 사람도
