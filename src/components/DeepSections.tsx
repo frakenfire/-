@@ -111,11 +111,11 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         {/* 이번 달 판정(stance)에서 나온 목록이다. 맨 위 카드가 '오늘' 을 맡으므로
             여기는 이름부터 이번 달이라고 밝힌다. 둘 다 '지금' 이라고 쓰면 어느 쪽이
             오늘 할 일인지 헷갈린다. */}
-        <p className="cat4__head">이번 달에 할 것과 하지 말 것</p>
+        <p className="cat4__head">이번 달에 해보면 좋은 것과 미뤄둘 것</p>
         <span className={`decide__stance decide__stance--${read.decision.stance}`}>{read.decision.stanceWord}</span>
         <p className="decide__sub">이번 달 결론</p>
         <Sentences className="decide__verdict" text={read.decision.verdict} />
-        <p className="decide__sub">이번 달에 할 것</p>
+        <p className="decide__sub">이번 달에 해보면 좋은 것</p>
         <ol className="decide__list decide__list--do">
           {read.decision.dos.map((d, i) => (
             <li key={d} className="decide__row">
@@ -128,7 +128,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ol>
-        <p className="decide__sub">이번 달에 하지 말 것</p>
+        <p className="decide__sub">이번 달엔 미뤄둘 것</p>
         <ul className="decide__list decide__list--dont">
           {read.decision.donts.map((d) => (
             <li key={d} className="decide__row">
@@ -327,7 +327,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
                 <ul className="slot__pts yline__pts">
                   {good ? (
                     <li className="slot__pt slot__pt--good">
-                      <span className="slot__pt-k">{word} 이렇게 하세요</span>
+                      <span className="slot__pt-k">{word} 해보면 좋은 것</span>
                       <Sentences className="slot__pt-v" text={good} />
                     </li>
                   ) : null}

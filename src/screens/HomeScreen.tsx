@@ -9,7 +9,7 @@ import { GREETINGS } from '../data/copy.ts';
 import { HOW_ROWS, HOW_HEAD, HOW_LEAD, HOW_FOOT } from '../data/howItWorks.ts';
 import { todayVibe } from '../lib/dayVibe.ts';
 import { todayKey, hashSeed } from '../lib/dateSeed.ts';
-import { sajuToday, iljinOf, dailyZodiacRanking } from '../lib/saju.ts';
+import { sajuToday, dailyZodiacRanking } from '../lib/saju.ts';
 import type { BranchRelation } from '../lib/saju.ts';
 import { softBreak } from '../lib/softBreak.ts';
 import { buildRankingShareText } from '../lib/share.ts';
@@ -76,7 +76,6 @@ export function HomeScreen({
   // 일곱 시에도 '오후' 라고 인사한다.
   const clock = useDayPart();
   const vibe = todayVibe(todayKey());
-  const iljin = iljinOf(todayKey());
   const saju = zodiac ? sajuToday(todayKey(), zodiac.id) : null;
   const ranking = dailyZodiacRanking(todayKey());
 
@@ -121,7 +120,7 @@ export function HomeScreen({
       <div className="today-hook">
         <div className="today-hook__head">
           <div className="today-hook__txt">
-            <span className="today-hook__kw">오늘은 {iljin.kor}일</span>
+            <span className="today-hook__kw">{zodiac && saju ? "오늘 내 사주로 보면" : "오늘의 한마디"}</span>
             {zodiac && saju ? (
               <>
                 <p className="today-hook__line">{softBreak(saju.title, 14)}</p>

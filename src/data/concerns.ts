@@ -82,7 +82,7 @@ export const CONCERNS: Concern[] = [
       { key: 'own', label: '내 일을 해볼까 해요', line: '혼자 시작하려면 수입 없이 몇 달을 버틸 수 있는지부터 봐야 해요. 시작할 달도 함께 볼게요.' },
     ],
     resultTitle: '일과 이직',
-    basis: '직장과 서류를 뜻하는 글자가 언제 나타나는지로 봐요.',
+    basis: '내 사주에서 직장과 서류를 맡는 자리가 언제 힘을 받는지로 봐요.',
   },
   {
     key: 'money',
@@ -101,7 +101,7 @@ export const CONCERNS: Concern[] = [
       { key: 'invest', label: '투자를 생각 중이에요', line: '넣는 시기와 빼는 시기를 같이 정해두면 흔들릴 일이 줄어요.' },
     ],
     resultTitle: '돈',
-    basis: '돈을 맡는 글자가 언제 들어오고 언제 빠지는지로 봐요.',
+    basis: '내 사주에서 돈을 맡는 자리가 언제 힘을 받고 언제 약해지는지로 봐요.',
   },
   {
     key: 'love',
@@ -120,7 +120,7 @@ export const CONCERNS: Concern[] = [
       { key: 'past', label: '끝난 사이가 남아 있어요', line: '다시 연락해도 되는 때와 그대로 끝내는 게 나은 때는 사주에서 다르게 보여요.' },
     ],
     resultTitle: '연애',
-    basis: '연애와 배우자를 뜻하는 글자를 보고, 성별에 따라 계산하는 기준을 달리해요.',
+    basis: '내 사주에서 연애와 배우자를 맡는 자리를 보고, 성별에 따라 계산하는 기준을 달리해요.',
   },
   {
     key: 'people',
@@ -139,7 +139,7 @@ export const CONCERNS: Concern[] = [
       { key: 'new', label: '새로 만난 사람이에요', line: '아직 정해지지 않은 사이예요. 처음 몇 번 만날 때 서로 편한 거리가 정해져요.' },
     ],
     resultTitle: '사람 관계',
-    basis: '내 편이 되는 글자와 나를 누르는 글자의 세기로 봐요.',
+    basis: '내 편이 되는 힘과 나를 누르는 힘 중 어느 쪽이 센지로 봐요.',
   },
   {
     key: 'health',
@@ -158,7 +158,7 @@ export const CONCERNS: Concern[] = [
       { key: 'keep', label: '그냥 관리하고 싶어요', line: '불편해지기 전에 생활 습관과 검진을 챙기는 게 좋아요.' },
     ],
     resultTitle: '몸과 컨디션',
-    basis: '사주에서 나를 도와주는 글자와 지치게 하는 글자가 얼마나 맞는지로 봐요.',
+    basis: '사주에서 나를 도와주는 힘과 지치게 하는 힘 중 어느 쪽이 센지로 봐요.',
   },
   {
     key: 'mind',
@@ -177,7 +177,7 @@ export const CONCERNS: Concern[] = [
       { key: 'lonely', label: '외로워요', line: '외로움은 사람이 없어서보다 털어놓을 곳이 없어서 커지기 쉬워요. 한 사람만 있어도 달라져요.' },
     ],
     resultTitle: '마음',
-    basis: '마음을 안정시키는 글자와 표현을 돕는 글자가 언제 들어오는지 봐요.',
+    basis: '마음을 안정시키는 힘과 표현을 돕는 힘이 언제 들어오는지로 봐요.',
   },
 ];
 

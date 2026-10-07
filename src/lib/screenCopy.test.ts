@@ -192,9 +192,9 @@ test('오늘 하나만 놓고 바로 답한다', () => {
     // 물으면 질문이 두 번이다. 여기서는 바로 답한다.
     const both = `${r.todayAsk.head} ${r.todayAsk.sum}`;
     assert.ok(!both.includes('?'), `또 묻고 있어요: ${both}`);
-    // 첫 줄은 오늘 무엇을 하라는 단언이어야 한다.
+    // 첫 줄은 오늘 무엇을 해도 되는지 판정하고, 시키는 대신 권하는 말로 끝난다.
     assert.ok(r.todayAsk.head.includes('오늘'), `오늘 얘기가 아니에요: ${r.todayAsk.head}`);
-    assert.ok(/(세요|돼요|괜찮아요)\.$/.test(r.todayAsk.head), `단언이 아니에요: ${r.todayAsk.head}`);
+    assert.ok(/(좋아요|나아요|돼요|괜찮아요|않아요|충분해요|보세요|봐요|두세요)\.$/.test(r.todayAsk.head), `권하는 말로 끝나지 않아요: ${r.todayAsk.head}`);
     assert.ok(r.todayAsk.sum.endsWith('.'), r.todayAsk.sum);
     const god = Object.values(TEN_GOD_KO).find((g) => both.includes(g));
     assert.equal(god, undefined, `십신 이름이 들어갔어요: ${both}`);
@@ -277,7 +277,11 @@ test('네 벌 모두 오늘 하나만 놓고 단언하고, 두 줄이 같은 말
           const both = `${head} ${sum}`;
           if (both.includes('?')) bad.push(`${at} 또 묻고 있어요: ${both}`);
           if (!head.includes('오늘')) bad.push(`${at} 오늘 얘기가 아니에요: ${head}`);
-          if (!/(세요|돼요|괜찮아요)\.$/.test(head)) bad.push(`${at} 단언이 아니에요: ${head}`);
+          // 판정은 살리되 시키지 않는다. 'A 는 해도 좋아요. B 는 언제로 미뤄두는 게
+          // 나아요' 처럼 권하는 말로 끝내고, 하지 마세요 는 보증, 대출, 서명, 송금,
+          // 술처럼 한 번에 손해가 큰 일에만 남긴다.
+          if (!/(좋아요|나아요|돼요|괜찮아요|않아요|충분해요|보세요|봐요|두세요)\.$/.test(head)) bad.push(`${at} 권하는 말로 끝나지 않아요: ${head}`);
+          if (/마세요/.test(head) && !/보증|대출|서명|송금|술/.test(head)) bad.push(`${at} 막는 말이 남았어요: ${head}`);
           if (!sum.endsWith('.')) bad.push(`${at} 마침표가 없어요: ${sum}`);
           const god = gods.find((g) => both.includes(g));
           if (god) bad.push(`${at} 십신 이름 [${god}]: ${both}`);

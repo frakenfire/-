@@ -63,6 +63,7 @@ const ALLOW = new Map([
   ['lib/sentences.ts:splitSentences', '문장 자르기 - 줄 묶기(lineGroups)와 되풀이 검사가 쓴다'],
   ['data/noteToday/index.ts:NOTE_TODAY', '쪽지 한 줄 표 - 서른여섯 장 x 일곱 칸이 다 찼는지 테스트가 직접 본다'],
   ['lib/deepRead.ts:stanceLead', '판정 한 줄 - 점수와 달 이름이 박혔는지 테스트가 직접 본다'],
+  ['lib/saju.ts:iljinOf', '홈 카드에서 간지 이름을 뺐다(누구나 아는 말). 일진 계산이 밀리지 않았는지 coherence 테스트가 직접 본다'],
   ['lib/daeun.ts:isYangYearStem', '양간 판정 검산'],
   ['lib/fourPillars.ts:pillarsHanja', '한자 표기 검산'],
   ['lib/fourPillars.ts:ipchunJdUt', '입춘 경계 검산'],

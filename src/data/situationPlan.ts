@@ -22,7 +22,7 @@ type Plan = {
 const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
   work: {
     stay: {
-      focus: '지금 회사에서 연봉이나 맡은 일을 먼저 올려보고, 그다음에 밖을 보세요.',
+      focus: '지금 회사에서 연봉이나 맡은 일을 먼저 올려보고, 이직 공고는 그다음에 봐도 늦지 않아요.',
       dos: [
         '올해 맡은 일과 성과를 한 문서로 모아두기',
         '결정권까지 함께 맡는 일을 하나 요청하기',
@@ -40,7 +40,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     rest: {
-      focus: '쉬는 기간이 길어질수록 아무 회사나 고르기 쉬워져요. 먼저 원하는 조건부터 정하세요.',
+      focus: '쉬는 기간이 길어지면 불안한 마음에 아무 회사나 붙잡고 싶어져요. 그래서 원하는 연봉과 근무 지역부터 먼저 정해두는 게 좋아요.',
       dos: [
         '가고 싶은 회사 세 곳을 적고 요건을 맞춰보기',
         '쉬는 동안 한 일을 이력서에 한 줄로 만들기',
@@ -76,7 +76,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     own: {
-      focus: '내 일은 몇 달을 버틸 돈이 있는지가 먼저예요. 나갈 돈부터 세고 시작하세요.',
+      focus: '내 일은 몇 달을 버틸 돈이 있는지가 먼저예요. 개업 전에 매달 나갈 돈부터 세어보세요.',
       dos: [
         '개업에 들어갈 돈과 버틸 개월을 숫자로 적어보기',
         '첫 손님이 될 사람 다섯 명을 적어보기',
@@ -96,7 +96,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
   },
   money: {
     save: {
-      focus: '의지로 모으면 석 달을 못 가요. 월급날에 자동으로 빠지게 만들어두세요.',
+      focus: '의지로 모으면 석 달을 못 가요. 월급날에 적금으로 자동 이체되게 만들어두면 좋아요.',
       dos: [
         '자동이체 금액을 한 단계 올리고 날짜를 월급날로 맞추기',
         '이번 달 고정비를 한 줄씩 보고 하나 해지하기',
@@ -132,7 +132,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     big: {
-      focus: '같은 물건도 달마다 값이 달라요. 급하지 않으면 날짜를 옮기세요.',
+      focus: '같은 물건도 달마다 값이 달라요. 급하지 않으면 결제 날짜를 세일 기간으로 옮기는 게 나아요.',
       dos: [
         '같은 물건을 두 군데서 견적 받아 적어두기',
         '할부 이자까지 더한 총액을 계산해보기',
@@ -150,7 +150,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     invest: {
-      focus: '투자는 들어갈 때보다 나올 때가 어려워요. 뺄 기준을 먼저 적어두세요.',
+      focus: '투자는 들어갈 때보다 나올 때가 어려워요. 얼마가 되면 뺄지 기준을 먼저 적어두면 좋아요.',
       dos: [
         '넣을 금액 한도를 먼저 정하고 그 안에서만 움직이기',
         '상품 설명서의 수수료와 조건을 읽어두기',
@@ -170,7 +170,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
   },
   love: {
     alone: {
-      focus: '사람을 만나려면 실제로 모임이나 약속에 나가는 게 먼저예요.',
+      focus: '혼자인 시간이 길어지면 나가는 것부터 귀찮아져요. 그래도 사람을 만나려면 실제로 모임이나 약속에 나가는 게 먼저예요.',
       dos: [
         '이번 주에 모임이나 약속 하나 잡기',
         '아는 사람에게 소개를 한 번 부탁해보기',
@@ -188,7 +188,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     some: {
-      focus: '애매한 관계는 오래 끌수록 한쪽만 지칠 수 있어요. 상대에게 직접 물어보는 게 나아요.',
+      focus: '애매한 사이에서는 물었다가 끝날까 봐 겁이 나요. 그래도 오래 끌수록 한쪽만 지치니, 상대에게 직접 물어보는 게 나아요.',
       dos: [
         '만났을 때 다음 약속을 바로 정하기',
         '애매하면 사귀는 사이인지 한 번 물어보기',
@@ -224,7 +224,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     past: {
-      focus: '끝난 사이는 눈에 띄는 것부터 치워야 덜 생각나요. 남은 것을 하나씩 정리하세요.',
+      focus: '끝난 사이는 사진 한 장에도 마음이 다시 흔들려요. 그래서 눈에 띄는 사진과 선물부터 이번 주에 치워두면 덜 생각나요.',
       dos: [
         '그 사람 물건과 사진을 한 번에 정리하기',
         '그 사람을 생각하는 시간에 다른 일정 잡기',
@@ -244,7 +244,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
   },
   people: {
     work: {
-      focus: '회사 사람과는 좋고 싫음보다 누가 무엇을 맡는지부터 정하세요.',
+      focus: '회사 사람이 불편하면 마주치는 것부터 피하고 싶어져요. 그래도 좋고 싫음보다 누가 무엇을 맡는지부터 정해두는 게 나아요.',
       dos: [
         '맡은 범위를 글로 남겨 서로 확인하기',
         '껄끄러운 얘기는 동료에게 짧게 한 번만 하기',
@@ -262,7 +262,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     friend: {
-      focus: '친구는 자주 보는 사람이 아니라 먼저 부르는 사람이 남아요.',
+      focus: '늘 내가 먼저 연락하는 것 같아 서운할 때가 있어요. 그래도 친구는 자주 보는 사람이 아니라 먼저 부르는 사람이 남아요.',
       dos: [
         '오래 안 본 사람에게 먼저 연락하기',
         '친구를 만났을 때 다음에 볼 날짜 정하기',
@@ -280,7 +280,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     family: {
-      focus: '가족 얘기는 결론을 내려 할수록 길어져요. 한 번에 하나만 꺼내세요.',
+      focus: '가족이라 더 서운하고 쌓인 말도 많아요. 그래도 결론을 내려 할수록 얘기가 길어지니, 한 번에 하나만 꺼내는 게 나아요.',
       dos: [
         '하고 싶은 말 하나만 정해서 짧게 말하기',
         '전화보다 직접 만나 이야기할 약속 잡기',
@@ -298,7 +298,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     new: {
-      focus: '새로 만난 사람은 첫인상만으로 알기 어려워요. 서두르지 말고 천천히 보세요.',
+      focus: '새로 만난 사람과는 빨리 가까워지고 싶은 마음이 앞서요. 그래도 첫인상만으로는 알기 어려우니, 세 번은 만나보고 거리를 정해도 늦지 않아요.',
       dos: [
         '그 사람을 몇 번 더 겪어보고 정하기',
         '같이 아는 사람이 있으면 한 번 물어보기',
@@ -336,7 +336,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     sleep: {
-      focus: '잠은 억지로 자려 할수록 안 와요. 눕기 전 한 시간을 어떻게 보내는지부터 바꾸세요.',
+      focus: '잠은 억지로 자려 할수록 안 와요. 눕기 전 한 시간을 어떻게 보내는지부터 바꿔보세요.',
       dos: [
         '눕는 시각을 정하고 알람을 거기에 맞추기',
         '잠들기 한 시간 전에는 휴대폰을 보지 않기',
@@ -354,7 +354,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     ache: {
-      focus: '아픈 곳은 운세보다 몸 상태를 먼저 보세요. 불편한 곳이 있으면 진료로 확인하세요.',
+      focus: '아픈 곳은 운세보다 몸 상태가 먼저예요. 불편한 곳이 있으면 진료로 확인하세요.',
       dos: [
         '미룬 진료를 오늘 예약하기',
         '언제 어떻게 아픈지 적어서 병원에 가기',
@@ -375,7 +375,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       focus: '몸 관리는 한 번에 많이 하는 것보다 꾸준히 이어가는 게 중요해요.',
       dos: [
         '운동은 한 번에 끝낼 수 있는 분량으로 정하기',
-        '운동을 빠뜨린 날을 세지 말고 다음 날 그냥 하기',
+        '운동을 빠뜨린 날을 세기보다 다음 날 그냥 하기',
         '올해 건강검진 날짜를 잡아두기',
       ],
       doWhys: [
@@ -392,7 +392,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
   },
   mind: {
     anxious: {
-      focus: '불안은 무엇이 걱정인지 모를 때 더 커지기 쉬워요. 하나씩 꺼내서 보세요.',
+      focus: '불안할 때는 무엇이 걱정인지조차 흐릿해서 더 커져요. 오늘 밤 걱정을 종이에 다 적어보면 생각보다 몇 개 안 된다는 게 보여요.',
       dos: [
         '걱정되는 것을 종이에 다 적어보기',
         '그 걱정 중 내가 할 수 있는 것에만 표시하기',
@@ -410,7 +410,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     burnt: {
-      focus: '지친 건 의지가 약해서가 아니에요. 먼저 쉬고, 할 일은 그다음에 줄여서 하세요.',
+      focus: '지친 건 의지가 약해서가 아니에요. 이번 주는 먼저 쉬고, 할 일은 그다음에 반으로 줄여서 해도 늦지 않아요.',
       dos: [
         '제일 무거운 일 하나만 끝내고 하루를 접기',
         '쉬는 날부터 달력에 표시해두기',
@@ -446,7 +446,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
     },
     lonely: {
-      focus: '외로움은 사람 수가 아니라 한 사람과의 시간으로 줄어요.',
+      focus: '외로우면 사람을 많이 만나야 할 것 같지만, 외로움은 사람 수가 아니라 한 사람과의 시간으로 줄어요.',
       dos: [
         '오래 안 본 사람 한 명에게 연락하기',
         '외로울 때 혼자라도 나갈 수 있는 일정 하나 이번 주에 잡기',

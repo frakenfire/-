@@ -359,3 +359,26 @@ test('화면 검사가 문구의 90퍼센트 이상을 실제로 본다', () => 
   const pct = Math.round((hit / tot) * 100);
   assert.ok(pct >= 90, `화면 검사가 문구의 ${pct}퍼센트만 봅니다 (${hit}/${tot}). 안 닿은 것: ${miss.slice(0, 8).join(' ')}`);
 });
+
+// 오늘 줄·달 칸·해 칸·십 년 줄·결정 줄은 시키는 말이 아니라 권하는 말로 끝난다.
+// 재보니 이 여섯 칸 문장의 절반 가까이가 '~하세요' 였고 스물세 줄이 '~하지 마세요' 였다.
+// 하지 말 것도 무엇을 대신 할지로 쓴다. 한 번에 손해가 큰 일(보증·대출·서명·송금·술)만 막는 말을 남긴다.
+test('달 칸과 해 칸이 시키지 않고 권한다', () => {
+  const RISK = /보증|대출|서명|송금|술/;
+  const bad: string[] = [];
+  let tot = 0, bare = 0;
+  for (const c of CONCERNS) {
+    for (const god of TEN_GODS) {
+      const g = CONCERN_GOD[c.key][god];
+      for (const f of ['line', 'goodTip', 'careTip', 'yearGood', 'yearCare', 'month', 'decide', 'year', 'daeun'] as const) {
+        for (const s of g[f].split(/(?<=[.!?])\s+/)) {
+          tot += 1;
+          if (/지(는|도)? 마세요\.?$/.test(s)) { if (!RISK.test(s)) bad.push(`${c.key}.${god}.${f} ${s}`); }
+          else if (/세요\.?$/.test(s) && !/보세요\.?$/.test(s)) bare += 1;
+        }
+      }
+    }
+  }
+  assert.deepEqual(bad, [], '하지 말라는 말 대신 무엇을 할지로 써주세요');
+  assert.ok(bare / tot <= 0.15, `맨 '~하세요' 가 ${bare}/${tot} 문장이에요`);
+});

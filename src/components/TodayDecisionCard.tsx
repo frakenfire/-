@@ -17,13 +17,13 @@ export function TodayDecisionCard({ decision }: { decision: TodayDecision }) {
         <Sentences className="tdc__summary" text={decision.overall.summary} />
       </div>
       <div className="sec-card tdc__act tdc__act--do">
-        <p className="tdc__k">오늘 할 것</p>
+        <p className="tdc__k">오늘 해보면 좋은 것</p>
         <Sentences className="tdc__action" text={decision.do.action} />
         <p className="tdc__why-k">왜?</p>
         <Sentences className="tdc__why" text={decision.do.why} />
       </div>
       <div className="sec-card tdc__act tdc__act--dont">
-        <p className="tdc__k">오늘 하지 말아야 할 것</p>
+        <p className="tdc__k">오늘은 미뤄두면 좋은 것</p>
         <Sentences className="tdc__action" text={decision.dont.action} />
         <p className="tdc__why-k">왜?</p>
         <Sentences className="tdc__why" text={decision.dont.why} />

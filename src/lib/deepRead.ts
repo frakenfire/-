@@ -10,6 +10,7 @@ import { withJosa } from './josa.ts';
 import { NATAL_SHAPE, SHAPE_LABELS, type ShapeRow } from '../data/natalShape.ts';
 import { composeTodayDecision } from './todayDecision.ts';
 import { asDo, asDont } from './polite.ts';
+import { feelingOf } from '../data/feeling.ts';
 import { todayAskOf } from '../data/todayVerdict.ts';
 import { verdictTwoOf } from '../data/verdictBySituation.ts';
 import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
@@ -199,7 +200,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
       '중요한 대화는 점수가 높은 달로 옮겨요',
     ],
     wait: [
-      '새로운 사람을 더 만나기보다 지금 아는 사람 중 오래 볼 사람을 고르세요',
+      '새로운 사람을 더 만나기보다 지금 아는 사람 중 오래 볼 사람을 골라봐요',
       '부탁을 거절해도 되는 때예요. 다 들어주면 내 일이 밀려요',
       '단톡방이나 모임을 하나만 줄여도 저녁 시간이 생겨요',
     ],
@@ -216,7 +217,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
       '무리한 일정은 점수가 높은 달로 미뤄요',
     ],
     wait: [
-      '이 달에는 밤을 새우지 마세요. 다음 날 컨디션이 바로 떨어질 수 있어요',
+      '이 달에는 밤을 새우기보다 자정 전에 눕는 게 나아요. 다음 날 컨디션이 바로 떨어질 수 있어요',
       '아픈 데가 있으면 참지 말고 병원에 가요. 사주는 병을 못 봐요',
       '약속을 하나 줄이고 그 시간에 누워요',
     ],
@@ -241,11 +242,11 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
 };
 
 const CAUTION: Record<ConcernKey, string> = {
-  work: '힘든 달에 급하게 퇴사하면 다음 직장을 조건도 안 보고 정하게 돼요. 그래서 사직서는 그 달을 넘긴 다음 달에 내세요.',
+  work: '힘든 달에 급하게 퇴사하면 다음 직장을 조건도 안 보고 정하게 돼요. 그래서 사직서는 그 달을 넘긴 다음 달에 내도 늦지 않아요.',
   money: '버거운 달엔 큰 계약과 보증을 피해요. 한 달만 미뤄도 조건을 다시 따져볼 수 있어요.',
   love: '버거운 달엔 말이 세게 나가요. 중요한 얘기는 그 달을 넘겨요.',
   people: '버거운 달엔 오해가 잘 생겨요. 말보다 글로 남기면 덜 꼬여요.',
-  health: '버거운 달에는 무리하면 컨디션이 바로 떨어질 수 있어요. 일정을 미리 줄여두세요.',
+  health: '버거운 달에는 무리하면 컨디션이 바로 떨어질 수 있어요. 일정을 미리 줄여두면 좋아요.',
   mind: '버거운 달엔 혼자 결론 내지 말아요. 하루만 자고 다시 봐요.',
 };
 
@@ -283,15 +284,15 @@ export function stanceLead(stance: Stance, timing: TimingRead, move: string): st
     case 'run':
       return `이번 달은 ${m.score}점이라 ${withJosa(move, '을를')} 해도 되는 달이에요. 앞으로 열두 달 중 이만한 달이 ${goodCount}번뿐이라 ${m.label} 안에 하는 게 좋아요.`;
     case 'prep':
-      return `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} 아직 일러요. ${bestWhy} 그때 바로 하려면 이번 달엔 준비만 해두세요.`;
+      return `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} 아직 일러요. ${bestWhy} 그때 바로 할 수 있게 이번 달엔 준비만 해두면 돼요.`;
     case 'hold':
       return later
-        ? `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} 하지 마세요. ${bestWhy} 같은 일을 그달에 하면 결과가 달라요.`
-        : `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} 하지 마세요. 다음 달 점수가 나오면 그때 다시 정하세요.`;
+        ? `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} 이번 달보다 ${best.label}에 하는 게 나아요. ${bestWhy} 같은 일도 그달에 하면 결과가 달라요.`
+        : `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} 이번 달엔 쉬어 가는 게 나아요. 다음 달 점수가 나오면 그때 다시 정해도 늦지 않아요.`;
     default:
       return later
-        ? `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} ${best.label}로 미루세요. ${bestWhy} 그래서 이번 달은 아래 할 일만 하면 돼요.`
-        : `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} 다음 달 점수를 보고 정하세요. 그래서 이번 달은 아래 할 일만 하면 돼요.`;
+        ? `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} ${best.label}에 해도 늦지 않아요. ${bestWhy} 그래서 이번 달은 아래 할 일만 해두면 돼요.`
+        : `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} 다음 달 점수를 보고 정해도 늦지 않아요. 그래서 이번 달은 아래 할 일만 해두면 돼요.`;
   }
 }
 
@@ -455,7 +456,7 @@ export function buildDeepRead(
     // tagline 은 명식 카드의 '나를 뜻하는 글자' 줄이 이미 쓴다. 여기서 또 쓰면
     // 같은 문장이 한 화면에 두 번 나온다. 이 줄은 '왜 이렇게 봤나' 자리이므로
     // 그 성격이 어디서 드러나는지(shines)를 적는다.
-    { k: '내 글자', v: `${dm.name}이에요. ${dm.shines.replace(/\.?$/, '.')}` },
+    { k: '나의 성향', v: `${dm.name}이에요. ${dm.shines.replace(/\.?$/, '.')}` },
     ...[...grouped.entries()].map(([god, ks]) => ({
       k: ks.join(', '),
       v:
@@ -500,7 +501,7 @@ export function buildDeepRead(
   const focus =
     focusCount > 0
       ? `${withJosa(concern.label, '은는')} ${withJosa(favorNames, '을를')} 중심으로 봐요. 내 사주에도 이런 특징이 ${focusCount >= 3 ? '여러 곳에서' : '조금'} 보여요.`
-        : `${withJosa(concern.label, '은는')} ${withJosa(favorNames, '을를')} 중심으로 봐요. 타고난 사주에는 이런 특징이 없어서, 올해나 이번 달에 관련 글자가 들어올 때 더 크게 느껴져요.`;
+        : `${withJosa(concern.label, '은는')} ${withJosa(favorNames, '을를')} 중심으로 봐요. 타고난 사주에는 이런 특징이 없어서, 올해나 이번 달에 그런 일이 생기면 더 크게 느껴져요.`;
 
   // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
   // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
@@ -519,11 +520,11 @@ export function buildDeepRead(
   // 읽는 사람은 그게 언제 오는 해인지 알 길이 없다. 지지 차례와 띠 차례가
   // 같으니 띠 이름으로 적는다. 달은 뺐다 - 띠로는 달을 가리킬 수 없다.
   const gongmangZodiac = (b: number) => findZodiac(BRANCHES[b].animal)?.label ?? BRANCHES[b].kor;
-  const gongmang = `${gongmangZodiac(g1)} 해와 ${gongmangZodiac(g2)} 해에는 내 사주에 힘이 덜 실려요. 그 두 해에는 큰돈이 드는 계약을 하기 전에 석 달 동안 결과를 확인하세요.`;
+  const gongmang = `${gongmangZodiac(g1)} 해와 ${gongmangZodiac(g2)} 해에는 내 사주에 힘이 덜 실려요. 그 두 해에는 큰돈이 드는 계약 전에 석 달쯤 지켜보고 정해도 늦지 않아요.`;
 
   const chart = {
     pillars: chartPillars,
-    dayMaster: `태어난 날의 글자 ${withJosa(pillars.dayMaster.kor, '은는')} 다섯 요소 가운데 ${ELEMENT_KO[myEl]}에 속해요. ${dm.nature.split(/(?<=[.])\s+/)[0]}`,
+    dayMaster: `나를 나타내는 태어난 날은 다섯 요소 가운데 ${ELEMENT_KO[myEl]}에 속해요. ${dm.nature.split(/(?<=[.])\s+/)[0]}`,
     elements,
     strength:
       prof.strength === 'strong'
@@ -531,7 +532,7 @@ export function buildDeepRead(
         : '주변의 도움을 받을 때 강점을 더 잘 써요. 혼자 밀어붙이기보다 배우고 도움받을 때 결과가 좋아요.',
     season: prof.hasSeasonalSupport
       ? '태어난 계절이 내 성향과 잘 맞아서 기본적으로 버티는 힘이 있는 편이에요.'
-      : '태어난 달의 글자가 나를 직접 돕지는 않아요. 그래서 무엇을 하느냐만큼 이사나 계약 날짜를 언제로 잡느냐도 중요하게 봐요.',
+      : '태어난 계절이 나를 직접 돕지는 않아요. 그래서 무엇을 하느냐만큼 이사나 계약 날짜를 언제로 잡느냐도 중요하게 봐요.',
     useful: `내 사주에는 다섯 요소 중 ${withJosa(ELEMENT_KO[prof.usefulElement], '이가')} 모자라요. ${withJosa(ELEMENT_KO[prof.usefulElement], '이가')} 들어오는 해와 달에는 일이 덜 막히는 편이에요.`,
     focus,
     today: chartToday,
@@ -618,10 +619,10 @@ export function buildDeepRead(
   );
   const nextDay =
     tomorrowGod === todayGod && tomorrowRels.length === meetRows.length
-      ? '내일도 오늘과 같은 날이에요. 오늘 정한 할 일을 내일까지 그대로 가져가세요.'
+      ? '내일도 오늘과 같은 날이에요. 오늘 정한 할 일을 내일까지 그대로 가져가도 돼요.'
       : tomorrowGod === todayGod
-        ? `내일도 오늘과 같은 종류의 날이지만 내 사주와 만나는 자리가 달라요. 오늘 할 일은 오늘 끝내세요.`
-        : `내일은 ${G(tomorrowGod).pull} 날이에요. 오늘 할 일은 오늘 안에 끝내세요.`;
+        ? `내일도 오늘과 같은 종류의 날이지만 내 사주와 만나는 자리가 달라요. 오늘 정한 일은 오늘 안에 끝내두면 좋아요.`
+        : `내일은 ${G(tomorrowGod).pull} 날이에요. 오늘 할 일은 내일로 넘기지 않는 게 좋아요.`;
 
   const todayStep = unseongOf(pillars.dayStem, todayPillar.branch);
   // 네 가지 나. 다섯 칸을 사람이 자기를 생각하는 말로 다시 묶는다.
@@ -649,25 +650,25 @@ export function buildDeepRead(
   const bestLater = timing.bestMonth.label !== timing.thisMonth.label;
   const SPAN = {
     today: {
-      same: `오늘은 ${asDo(plan.dos[0])} ${withJosa(bigMoveOf(concernKey, optionKey), '은는')} 오늘 하지 마세요.`,
+      same: `오늘은 ${asDo(plan.dos[0])} ${withJosa(bigMoveOf(concernKey, optionKey), '은는')} 점수가 더 높은 날로 미뤄두는 게 나아요.`,
       up: `오늘은 ${asDo(plan.dos[0])}`,
       down: `오늘은 ${asDont(plan.donts[0])}`,
     },
     near: {
       same: bestLater
-        ? `이번 달은 ${asDo(plan.dos[1])} 결정은 ${timing.bestMonth.label}에 하세요.`
+        ? `이번 달은 ${asDo(plan.dos[1])} 결정은 ${timing.bestMonth.label}에 해도 늦지 않아요.`
         : `이번 달은 ${asDo(plan.dos[1])}`,
       up: `이번 달 안에 ${asDo(plan.dos[1])}`,
       // dos/donts 는 '~하기' 로 끝나는 목록이다. 동사를 그대로 붙이면 '안 하기 하지 마세요',
-      // '모아두기예요' 가 된다. polite.ts 가 받침을 보고 '~세요', '~지 마세요' 로 바꾼다.
+      // '모아두기예요' 가 된다. polite.ts 가 '~는 게 좋아요', '~는 건 피하는 게 나아요' 로 바꾼다.
       down: bestLater
-        ? `이번 달은 ${asDont(plan.donts[1])} 결정은 ${timing.bestMonth.label}에 하세요.`
+        ? `이번 달은 ${asDont(plan.donts[1])} 결정은 ${timing.bestMonth.label}에 해도 늦지 않아요.`
         : `이번 달은 ${asDont(plan.donts[1])}`,
     },
     far: {
       same: areas ? areas.task : '이 십 년은 점수 차가 작아서 올해와 이번 달 점수를 보고 정하면 돼요.',
       up: areas ? areas.task : '이 십 년 동안 하고 싶던 일을 밀어도 돼요.',
-      down: areas ? areas.task : `이 십 년은 ${withJosa(bigMoveOf(concernKey, optionKey), '을를')} 한 해에 하나씩만 하세요.`,
+      down: areas ? areas.task : `이 십 년은 ${withJosa(bigMoveOf(concernKey, optionKey), '을를')} 한 해에 하나씩만 하는 게 좋아요.`,
     },
   } as const;
   const vsNatal = (n: number, span: keyof typeof SPAN): string | null => {
@@ -694,7 +695,7 @@ export function buildDeepRead(
       label: '올해와 이번 달',
       score: near,
       line: thisMonthPart.god === todayPart.god
-        ? '오늘 온 글자가 이번 달에도 그대로 이어져요.'
+        ? '오늘 겪는 일이 이번 달 내내 이어져요.'
         : `${pullOf(thisMonthPart.god)} 때예요.`,
       vs: vsNatal(near, 'near'),
     },
@@ -708,7 +709,7 @@ export function buildDeepRead(
       line: !daeunPart.god
         ? '아직 첫 십 년이 시작되기 전이에요.'
         : daeunPart.god === todayPart.god
-          ? '오늘 온 글자가 이 십 년 전체에도 들어 있어요. 오늘 겪는 일이 앞으로 자주 반복되기 쉬워요.'
+          ? '오늘 겪는 일이 이 십 년 전체에도 깔려 있어요. 앞으로 비슷한 일이 자주 반복되기 쉬워요.'
           : `${pullOf(daeunPart.god)} 십 년이에요.`,
       vs: vsNatal(daeunPart.score, 'far'),
     },
@@ -725,7 +726,7 @@ export function buildDeepRead(
       // 것이라 무슨 뜻인지 안 남았다. 그래서 어떻다는 건지까지 풀어 적는다.
       line: (score.natalCount === 0
         ? `내 사주에는 ${withJosa(concern.shortName, '과와')} 관련된 특징이 따로 보이지 않아요. `
-        : `${withJosa(concern.shortName, '과와')} 관련된 특징이 내 사주 글자 중 ${score.natalCount}개에서 보여요. `)
+        : `${withJosa(concern.shortName, '과와')} 관련된 특징이 내 사주 여덟 자리 중 ${score.natalCount}곳에서 보여요. `)
         + `${score.natalCount >= 3
           ? '타고난 성향이 받쳐줘서 시기를 덜 타는 편이에요.'
           : '타고난 성향보다 언제 움직이느냐에 더 영향을 받는 편이에요.'}`,
@@ -747,12 +748,12 @@ export function buildDeepRead(
   // 맨 위 결론이 매일 바뀌어도, 왜 오늘 이렇게 나왔는지가 안 보이면 사주를 본
   // 느낌이 안 난다(사장님 지적). 오늘 날의 글자가 내 사주와 만나 무슨 날이 됐는지를
   // 결론 카드 첫 줄에 박는다. 할 것이 이 글자에서 나오므로 두 줄이 같은 근거를 쓴다.
-  const todayLabel = `${ELEMENT_KO[STEMS[todayPillar.stem].el]}에 드는 ${
-    findZodiac(BRANCHES[todayPillar.branch].animal)?.label ?? BRANCHES[todayPillar.branch].kor
-  }`;
+  // '물에 드는 소띠 날' 같은 간지 풀이는 사주를 모르는 사람에게 뜻이 없다(토스 원칙:
+  // 누구나 아는 말). 그 날이 나에게 무슨 날인지만 말하고, 그 앞에 지금 마음을 읽어준다.
+  const feeling = feelingOf(concernKey, optionKey ?? '');
   const todayDecision = {
     ...composeTodayDecision(concernKey, optionKey, todayPart.band, score.dayGod, todayBranchGod, dayNo),
-    basis: `오늘 ${cm}월 ${cd}일은 ${todayLabel} 날이에요. 내 사주로 보면 ${G(score.dayGod).pull} 날이라, ${concern.label} 쪽은 아래처럼 하면 돼요.`,
+    basis: `${feeling ? `${feeling} ` : ''}오늘 ${cm}월 ${cd}일은 내 사주로 보면 ${G(score.dayGod).pull} 날이에요. 그래서 ${concern.label} 쪽은 아래처럼 해보면 좋아요.`,
   };
 
   const todayMeet = {
@@ -766,7 +767,7 @@ export function buildDeepRead(
     rows: meetRows,
     quiet:
       meetRows.length === 0
-        ? '오늘 글자는 내 사주 글자 중 어느 것과도 엮이지 않아요. 흔들림이 적은 날이라 평소처럼 지내면 돼요.'
+        ? '오늘은 내 사주와 부딪치거나 겹치는 곳이 없어요. 흔들림이 적은 날이라 평소처럼 지내면 돼요.'
         : null,
     nextDay,
   };
@@ -837,8 +838,8 @@ export function buildDeepRead(
   ];
   const yearGap =
     y0.score >= y1.score
-      ? `올해 ${y0.score}점, 내년 ${y1.score}점이에요. ${concern.label} 쪽 결정은 올해 안에 끝내고 내년은 지키는 해로 쓰세요.`
-      : `올해 ${y0.score}점, 내년 ${y1.score}점이에요. 올해는 준비만 하고 ${concern.label} 쪽 결정과 시작은 내년에 하세요.`;
+      ? `올해 ${y0.score}점, 내년 ${y1.score}점이에요. ${concern.label} 쪽 결정은 올해 안에 끝내고 내년은 지키는 해로 두면 좋아요.`
+      : `올해 ${y0.score}점, 내년 ${y1.score}점이에요. 올해는 준비만 하고 ${concern.label} 쪽 결정과 시작은 내년에 해도 늦지 않아요.`;
 
   // 달 한 덩이 — 겉(천간)과 속(지지)을 따로 대야 열두 달이 전부 다른 얼굴이 된다
   // 같은 달이 누구에게나 같은 문장이면 표만 열둘이고 말은 하나다. 십신이 열,

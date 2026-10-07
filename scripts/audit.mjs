@@ -1159,7 +1159,7 @@ async function run(browser) {
       const hero = document.querySelector('.score-hero');
       if (!card || !hero) return null;
       const txt = card.innerText.replace(/\s+/g, ' ');
-      const order = ['오늘 전체 종합', '오늘 할 것', '왜?', '오늘 하지 말아야 할 것', '왜?'];
+      const order = ['오늘 전체 종합', '오늘 해보면 좋은 것', '왜?', '오늘은 미뤄두면 좋은 것', '왜?'];
       let at = -1;
       const pos = [];
       for (const k of order) { at = txt.indexOf(k, at + 1); pos.push(at); }
