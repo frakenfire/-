@@ -14,7 +14,7 @@ import { verdictTwoOf } from '../data/verdictBySituation.ts';
 import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
 import { DECADE_AREAS, type DecadeAreas } from '../data/decadeAreas.ts';
 import { STANCE_WORD, WHEN_ACT, type Stance } from '../data/decision.ts';
-import { planOf, STANCE_LEAD } from '../data/situationPlan.ts';
+import { planOf } from '../data/situationPlan.ts';
 import { NATAL_REASON } from '../data/natalReason.ts';
 import { dayPillarOf, dayPillarKey } from '../data/dayPillar.ts';
 import type { TodayDecision } from '../types/fortune.ts';
@@ -247,6 +247,30 @@ const CAUTION: Record<ConcernKey, string> = {
 };
 
 
+/**
+ * 이번 달 판정 한 줄. 점수와 달 이름을 박는다.
+ * '크게 좋지도 나쁘지도 않아요' 는 판정이 아니다. 보통 점수대도 뭘 하라고 말한다.
+ */
+export function stanceLead(stance: Stance, timing: TimingRead): string {
+  const m = timing.thisMonth;
+  const best = timing.bestMonth;
+  const later = best.label !== m.label;
+  switch (stance) {
+    case 'run':
+      return `이번 달은 ${m.score}점, 움직여도 되는 달이에요. 미루던 일은 ${m.label} 안에 시작하세요.`;
+    case 'prep':
+      return `이번 달은 ${m.score}점이라 아직 일러요. ${best.label}이 ${best.score}점으로 더 좋으니 그때까지는 준비만 하세요.`;
+    case 'hold':
+      return later
+        ? `이번 달은 ${m.score}점이라 결정을 내리지 마세요. 답은 ${best.label}에 내리면 돼요.`
+        : `이번 달은 ${m.score}점이라 결정을 내리지 마세요. 다음 달 점수를 보고 정하세요.`;
+    default:
+      return later
+        ? `이번 달은 ${m.score}점, 새로 벌이면 남는 게 없는 달이에요. 하던 것만 그대로 굴리고 새 시작은 ${best.label}에 하세요.`
+        : `이번 달은 ${m.score}점, 새로 벌이면 남는 게 없는 달이에요. 하던 것만 그대로 굴리세요.`;
+  }
+}
+
 export function buildDeepRead(
   pillars: FourPillars,
   timing: TimingRead,
@@ -298,7 +322,7 @@ export function buildDeepRead(
     // 판정(이번 달) + 할 일(고른 상황) 뒤에 '왜 나한테 그런가' 를 붙인다.
     // 앞의 두 줄은 내가 입력한 것에서만 나와서, 생년월일이 다른 사람도
     // 글자 하나까지 같은 답을 받고 있었다. 이 줄이 여덟 글자를 본다.
-    verdict: `${STANCE_LEAD[stance]} ${plan.focus} ${NATAL_REASON[concernKey][GOD_GROUP_OF[score.natalTopGod]]}`,
+    verdict: `${stanceLead(stance, timing)} ${plan.focus} ${NATAL_REASON[concernKey][GOD_GROUP_OF[score.natalTopGod]]}`,
     dos: [...plan.dos],
     doWhys: [...plan.doWhys],
     donts: [...plan.donts],
@@ -570,10 +594,10 @@ export function buildDeepRead(
   );
   const nextDay =
     tomorrowGod === todayGod && tomorrowRels.length === meetRows.length
-      ? '내일도 오늘과 비슷한 날이라, 오늘 정한 계획을 그대로 이어가도 괜찮아요.'
+      ? '내일도 오늘과 같은 날이에요. 오늘 정한 할 일을 내일까지 그대로 가져가세요.'
       : tomorrowGod === todayGod
-        ? `내일도 오늘과 같은 종류의 날이지만, 내 사주와 만나는 부분이 달라져요. 그래서 오늘과 조금 다른 답이 나와요.`
-        : `내일은 ${G(tomorrowGod).pull} 날이에요. 오늘과 다른 답이 나와요.`;
+        ? `내일도 오늘과 같은 종류의 날이지만 내 사주와 만나는 자리가 달라요. 오늘 할 일은 오늘 끝내세요.`
+        : `내일은 ${G(tomorrowGod).pull} 날이에요. 오늘 할 일은 오늘 안에 끝내세요.`;
 
   const todayStep = unseongOf(pillars.dayStem, todayPillar.branch);
   // 네 가지 나. 다섯 칸을 사람이 자기를 생각하는 말로 다시 묶는다.
@@ -595,15 +619,37 @@ export function buildDeepRead(
   // 하던 만큼만 하면 돼요.' 가 한 화면에 두 번 그대로 나온다. 실제로 열두
   // 화면에서 그러고 있었다. 줄마다 가리키는 기간이 다르니 뒷문장도 그
   // 기간으로 말한다. 그러면 안 겹치고, 무엇을 언제 하라는지도 분명해진다.
+  // 점수만 말하고 '하던 만큼만 하면 돼요' 로 끝내면 판정이 없다. 기간마다
+  // 실제 할 일 하나(고른 상황의 할 것/하지 말 것, 십 년 숙제)를 박는다.
+  const areas: DecadeAreas | null = timing.daeunSlot ? DECADE_AREAS[timing.daeunSlot.tenGod] : null;
+  const bestLater = timing.bestMonth.label !== timing.thisMonth.label;
   const SPAN = {
-    today: { same: '오늘은 하던 만큼만 하면 돼요.', up: '오늘 미뤄둔 일을 시작하기 좋아요.', down: '오늘은 새 일을 벌이지 말고 하던 일만 하세요.' },
-    near: { same: '이번 달도 하던 대로 가면 돼요.', up: '이번 달에는 미뤄둔 일을 하나 시작해볼 만해요.', down: '이번 달은 새 일을 시작하기보다 하던 일을 마무리하세요.' },
-    far: { same: '이 십 년은 큰 오르내림이 없어요.', up: '이 십 년 동안 하고 싶던 일을 밀어볼 만해요.', down: '이 십 년은 큰일을 한꺼번에 벌이지 않는 편이 나아요.' },
+    today: {
+      same: `오늘 할 일은 ${plan.dos[0]}예요. 새 일은 내일로 넘기세요.`,
+      up: `오늘 먼저 할 일은 ${plan.dos[0]}예요.`,
+      down: `오늘 하지 말 것은 ${plan.donts[0]}예요.`,
+    },
+    near: {
+      same: bestLater
+        ? `이번 달 할 일은 ${plan.dos[1]}예요. 결정은 ${timing.bestMonth.label}에 하세요.`
+        : `이번 달 할 일은 ${plan.dos[1]}예요.`,
+      up: `이번 달 안에 할 일은 ${plan.dos[1]}예요.`,
+      // dos/donts 는 '~하기' 로 끝나는 명사형이다. 동사를 붙이면 '안 하기 하지 마세요',
+      // '맞춰보기부터 끝내세요' 처럼 깨진다. '할 일은 ~예요' 꼴로만 싣는다.
+      down: bestLater
+        ? `이번 달 하지 말 것은 ${plan.donts[1]}예요. 결정은 ${timing.bestMonth.label}에 하세요.`
+        : `이번 달 하지 말 것은 ${plan.donts[1]}예요.`,
+    },
+    far: {
+      same: areas ? areas.task : '이 십 년은 점수 차가 작아서 올해와 이번 달 점수를 보고 정하면 돼요.',
+      up: areas ? areas.task : '이 십 년 동안 하고 싶던 일을 밀어도 돼요.',
+      down: areas ? areas.task : '이 십 년은 일을 한꺼번에 벌이지 마세요.',
+    },
   } as const;
   const vsNatal = (n: number, span: keyof typeof SPAN): string | null => {
     const gap = n - natal.score;
     const w = SPAN[span];
-    if (Math.abs(gap) <= 5) return `평소와 비슷해요. ${w.same}`;
+    if (Math.abs(gap) <= 5) return `평소와 같은 ${n}점이에요. ${w.same}`;
     return gap > 0
       ? `평소보다 ${gap}점 높아요. ${w.up}`
       : `평소보다 ${-gap}점 낮아요. ${w.down}`;
@@ -704,7 +750,6 @@ export function buildDeepRead(
     : `${timing.daeun.startAge}세부터 첫 십 년 운이 시작돼요. 그전까지는 태어날 때의 성향을 기준으로 봐요.`;
 
   // 십 년을 자리별로 쪼갠다. '틀을 깨는 십 년입니다' 로 끝내면 아무것도 안 남는다.
-  const areas: DecadeAreas | null = timing.daeunSlot ? DECADE_AREAS[timing.daeunSlot.tenGod] : null;
   const decade =
     cur && areas
       ? {
@@ -755,9 +800,9 @@ export function buildDeepRead(
     },
   ];
   const yearGap =
-    y0.tenGod === y1.tenGod
-      ? '올해와 내년이 비슷해요. 올해 시작한 일을 내년까지 그대로 이어가면 돼요.'
-      : '올해와 내년은 할 일이 달라요. 지금은 올해 할 것부터 챙기세요.';
+    y0.score >= y1.score
+      ? `올해 ${y0.score}점, 내년 ${y1.score}점이에요. ${concern.label} 쪽 결정은 올해 안에 끝내고 내년은 지키는 해로 쓰세요.`
+      : `올해 ${y0.score}점, 내년 ${y1.score}점이에요. 올해는 준비만 하고 ${concern.label} 쪽 결정과 시작은 내년에 하세요.`;
 
   // 달 한 덩이 — 겉(천간)과 속(지지)을 따로 대야 열두 달이 전부 다른 얼굴이 된다
   // 같은 달이 누구에게나 같은 문장이면 표만 열둘이고 말은 하나다. 십신이 열,

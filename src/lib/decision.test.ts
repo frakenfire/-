@@ -4,7 +4,10 @@ import { computeFourPillars } from './fourPillars.ts';
 import { computeTiming } from './timing.ts';
 import { buildDeepRead } from './deepRead.ts';
 import { STANCE_WORD } from '../data/decision.ts';
-import { planOf, STANCE_LEAD } from '../data/situationPlan.ts';
+import { planOf } from '../data/situationPlan.ts';
+import { stanceLead } from './deepRead.ts';
+const FAKE_TIMING = { thisMonth: { score: 65, label: '2026년 10월' }, bestMonth: { score: 88, label: '2027년 2월' } } as unknown as Parameters<typeof stanceLead>[1];
+
 import { CONCERNS } from '../data/concerns.ts';
 
 const INPUT = { year: 1992, month: 3, day: 3, hour: 20 };
@@ -19,7 +22,7 @@ test('모든 고민과 상황에서 결정 카드가 비지 않는다', () => {
     for (const o of c.options) {
       const cell = planOf(c.key, o.key);
       for (const stance of ['run', 'prep', 'hold', 'keep'] as const) {
-        const verdict = `${STANCE_LEAD[stance]} ${cell.focus}`;
+        const verdict = `${stanceLead(stance, FAKE_TIMING)} ${cell.focus}`;
         assert.ok(verdict.length > 40, `${c.key}/${o.key}/${stance} 결론이 너무 짧음`);
       }
       assert.equal(cell.dos.length, 3);

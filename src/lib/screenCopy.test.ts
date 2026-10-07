@@ -137,7 +137,7 @@ test('네 가지 나가 오늘을 맨 앞에 놓고 네 층을 다 보여준다'
     assert.equal(r.selves[3].vs, null, r.selves[3].vs ?? '');
     for (const x of r.selves.slice(0, 3)) {
       // 평소와 견준 결과와, 그래서 어떻게 하라는지가 둘 다 있어야 한다.
-      assert.ok(x.vs && /^평소(와 비슷해요|보다 \d+점 (높|낮)아요)\. .+\.$/.test(x.vs),
+      assert.ok(x.vs && /^평소(와 같은 \d+점이에요|보다 \d+점 (높|낮)아요)\. .+\.$/.test(x.vs),
         `${x.k}: ${x.vs}`);
     }
     const part = (k: string) => r.score.parts.find((p) => p.k === k)!.score;
@@ -153,7 +153,7 @@ test('타고난 것과 견주는 말이 실제 점수와 맞다', () => {
     const base = r.selves[3].score;
     for (const x of r.selves.slice(0, 3)) {
       const gap = x.score - base;
-      const head = Math.abs(gap) <= 5 ? '평소와 비슷해요'
+      const head = Math.abs(gap) <= 5 ? `평소와 같은 ${x.score}점이에요`
         : gap > 0 ? `평소보다 ${gap}점 높아요`
           : `평소보다 ${-gap}점 낮아요`;
       assert.ok(x.vs?.startsWith(head), `${x.k} ${x.score} vs ${base}: ${x.vs}`);

@@ -1,5 +1,4 @@
 import type { ConcernKey } from './concerns.ts';
-import type { Stance } from './decision.ts';
 
 // 결정 카드를 고른 상황으로 다시 짠 표.
 //
@@ -9,21 +8,10 @@ import type { Stance } from './decision.ts';
 // 맡은 일이 없는 사람이다.
 //
 // 판정 x 상황을 전부 따로 쓰면 여섯 x 넷 x 넷 = 아흔여섯 칸이 된다.
-// 대신 둘로 나눈다 - 판정은 '지금 움직일 때인가' 만 말하고(STANCE_LEAD),
-// 무엇을 할지는 상황이 말한다(SITUATION_PLAN). 둘을 이어 붙이면 문장이 된다.
-
-// '어느 쪽으로도 안 기울어요. 새로 벌이기보다 하던 것을 이어갈 때예요' 는
-// 읽고 나서 남는 게 없다. 이번 달이 열렸는지 막혔는지를 먼저 말하고,
-// 그래서 이번 달에 뭘 하라는지를 바로 붙인다.
-export const STANCE_LEAD: Record<Stance, string> = {
-  run: '이번 달은 움직여볼 만해요. 미루던 일을 이번 달 안에 시작하세요.',
-  prep: '이번 달은 조금 일러요. 몇 달 안에 더 나은 달이 있으니 지금은 준비만 해두세요.',
-  hold: '이번 달은 큰 결정을 내리지 말고 지켜보세요. 다음 달에 다시 판단해도 늦지 않아요.',
-  keep: '이번 달은 크게 좋지도 나쁘지도 않아요. 새로 시작하지 말고 지금 하는 것만 이어가세요.',
-};
-
+// 대신 둘로 나눈다 - 판정은 '지금 움직일 때인가' 만 말하고(deepRead 의 stanceLead,
+// 점수와 달 이름을 박는다), 무엇을 할지는 상황이 말한다(SITUATION_PLAN).
 type Plan = {
-  /** 이 상황에서 무엇에 시간을 쓸 것인가. STANCE_LEAD 뒤에 붙는다 */
+  /** 이 상황에서 무엇에 시간을 쓸 것인가. 판정 한 줄(stanceLead) 뒤에 붙는다 */
   focus: string;
   dos: [string, string, string];
   /** dos 와 같은 순서. 왜 그걸 하라는지 한 줄씩 */

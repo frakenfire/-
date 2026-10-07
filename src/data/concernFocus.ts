@@ -39,15 +39,15 @@ export const FAVOR_WORD: Record<ConcernKey, Record<GodGroup, string>> = {
   health: {
     self: '버티는 체력',
     output: '몸을 많이 쓰는 일',
-    wealth: '무리하는 습관',
-    authority: '몸에 생기는 부담',
+    wealth: '밤늦게까지 버티는 습관',
+    authority: '쌓이는 피로와 통증',
     support: '쉬는 시간',
   },
   mind: {
     self: '스스로 정하는 힘',
     output: '마음을 표현하는 말',
-    wealth: '남의 일에 신경 쓰는 때',
-    authority: '나를 압박하는 기준',
+    wealth: '남의 일까지 떠맡는 때',
+    authority: '남이 정해준 기준에 맞추는 일',
     support: '마음을 편하게 해주는 사람',
   },
 };

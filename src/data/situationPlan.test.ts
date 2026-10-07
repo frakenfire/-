@@ -1,6 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { planOf, STANCE_LEAD } from './situationPlan.ts';
+import { planOf } from './situationPlan.ts';
+import { stanceLead } from '../lib/deepRead.ts';
+const FAKE_TIMING = { thisMonth: { score: 65, label: '2026년 10월' }, bestMonth: { score: 88, label: '2027년 2월' } } as unknown as Parameters<typeof stanceLead>[1];
+
 import { CONCERNS } from './concerns.ts';
 
 // 결정 카드는 이 리포트에서 제일 행동에 가까운 카드다. 그런데 한때 문장
@@ -47,9 +50,14 @@ test("결정 카드가 '구간' 으로 도망가지 않는다", () => {
 });
 
 test('판정 넷이 서로 다른 말로 시작한다', () => {
-  const leads = Object.values(STANCE_LEAD);
+  const leads = (['run', 'prep', 'hold', 'keep'] as const).map((st) => stanceLead(st, FAKE_TIMING));
   assert.equal(new Set(leads).size, 4);
-  for (const l of leads) assert.ok(l.endsWith('.'), l);
+  for (const l of leads) {
+    assert.ok(l.endsWith('.'), l);
+    // 판정은 점수와 달 이름을 박아야 한다. '좋지도 나쁘지도' 는 판정이 아니다
+    assert.match(l, /\d+점/, l);
+    assert.doesNotMatch(l, /좋지도 나쁘지도|무난/, l);
+  }
 });
 
 test('상황을 안 골라도 고른 상황 중 하나로 떨어진다', () => {
