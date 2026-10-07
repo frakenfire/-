@@ -3126,6 +3126,14 @@ strong {
 .sent { display: block; }
 .sent + .sent { margin-top: 3px; }
 
+/* 오늘 날의 글자와 내 사주가 만난 근거. 결론보다 작게, 결론 바로 위에. */
+.tdc__basis {
+  margin-bottom: 8px;
+  font-size: 13px;
+  line-height: 19.5px;
+  color: var(--gray-700);
+}
+
 /* 오늘 결론 — 결과 맨 위. 오늘 전체 종합, 오늘 할 것, 오늘 하지 말아야 할 것.
    할 것과 하지 말 것은 제목 색으로만 가른다. 한쪽 두꺼운 테두리나 초록·빨강은
    이 앱에서 안 쓴다. 각 카드 안에서는 행동이 제일 크고, '왜?' 는 작은 이름표,

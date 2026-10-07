@@ -12,6 +12,7 @@ export function TodayDecisionCard({ decision }: { decision: TodayDecision }) {
     <section className="tdc" aria-label="오늘 결론">
       <div className="sec-card tdc__overall">
         <p className="cat4__head">오늘 전체 종합</p>
+        {decision.basis ? <Sentences className="tdc__basis" text={decision.basis} /> : null}
         <Sentences className="tdc__headline" text={decision.overall.headline} />
         <Sentences className="tdc__summary" text={decision.overall.summary} />
       </div>

@@ -743,7 +743,16 @@ export function buildDeepRead(
   const todayBranchGod = tenGodOf(pillars.dayStem, mainHiddenStem(todayPillar.branch)) as TenGod;
 
   // 결과 맨 위 결론. 조립은 todayDecision.ts 한 곳에서만 한다.
-  const todayDecision = composeTodayDecision(concernKey, optionKey, todayPart.band, score.dayGod, todayBranchGod, dayNo);
+  // 맨 위 결론이 매일 바뀌어도, 왜 오늘 이렇게 나왔는지가 안 보이면 사주를 본
+  // 느낌이 안 난다(사장님 지적). 오늘 날의 글자가 내 사주와 만나 무슨 날이 됐는지를
+  // 결론 카드 첫 줄에 박는다. 할 것이 이 글자에서 나오므로 두 줄이 같은 근거를 쓴다.
+  const todayLabel = `${ELEMENT_KO[STEMS[todayPillar.stem].el]}에 드는 ${
+    findZodiac(BRANCHES[todayPillar.branch].animal)?.label ?? BRANCHES[todayPillar.branch].kor
+  }`;
+  const todayDecision = {
+    ...composeTodayDecision(concernKey, optionKey, todayPart.band, score.dayGod, todayBranchGod, dayNo),
+    basis: `오늘 ${cm}월 ${cd}일은 ${todayLabel} 날이에요. 내 사주로 보면 ${G(score.dayGod).pull} 날이라, ${concern.label} 쪽은 아래처럼 하면 돼요.`,
+  };
 
   const todayMeet = {
     // '무술날' 이라고 적어 놓고 있었다. 간지 이름은 읽는 사람에게 아무것도
