@@ -9,6 +9,7 @@ import { computeConcernScore, scoreVerdictLine, type ConcernScore } from './conc
 import { withJosa } from './josa.ts';
 import { NATAL_SHAPE, SHAPE_LABELS, type ShapeRow } from '../data/natalShape.ts';
 import { composeTodayDecision } from './todayDecision.ts';
+import { asDo, asDont } from './polite.ts';
 import { todayAskOf } from '../data/todayVerdict.ts';
 import { verdictTwoOf } from '../data/verdictBySituation.ts';
 import { CONCERN_NOW, NOW_HEAD } from '../data/concernNow.ts';
@@ -648,20 +649,20 @@ export function buildDeepRead(
   const bestLater = timing.bestMonth.label !== timing.thisMonth.label;
   const SPAN = {
     today: {
-      same: `오늘 할 일은 ${plan.dos[0]}예요. ${withJosa(bigMoveOf(concernKey, optionKey), '은는')} 오늘 하지 마세요.`,
-      up: `오늘 먼저 할 일은 ${plan.dos[0]}예요.`,
-      down: `오늘 하지 말 것은 ${plan.donts[0]}예요.`,
+      same: `오늘은 ${asDo(plan.dos[0])} ${withJosa(bigMoveOf(concernKey, optionKey), '은는')} 오늘 하지 마세요.`,
+      up: `오늘은 ${asDo(plan.dos[0])}`,
+      down: `오늘은 ${asDont(plan.donts[0])}`,
     },
     near: {
       same: bestLater
-        ? `이번 달 할 일은 ${plan.dos[1]}예요. 결정은 ${timing.bestMonth.label}에 하세요.`
-        : `이번 달 할 일은 ${plan.dos[1]}예요.`,
-      up: `이번 달 안에 할 일은 ${plan.dos[1]}예요.`,
-      // dos/donts 는 '~하기' 로 끝나는 명사형이다. 동사를 붙이면 '안 하기 하지 마세요',
-      // '맞춰보기부터 끝내세요' 처럼 깨진다. '할 일은 ~예요' 꼴로만 싣는다.
+        ? `이번 달은 ${asDo(plan.dos[1])} 결정은 ${timing.bestMonth.label}에 하세요.`
+        : `이번 달은 ${asDo(plan.dos[1])}`,
+      up: `이번 달 안에 ${asDo(plan.dos[1])}`,
+      // dos/donts 는 '~하기' 로 끝나는 목록이다. 동사를 그대로 붙이면 '안 하기 하지 마세요',
+      // '모아두기예요' 가 된다. polite.ts 가 받침을 보고 '~세요', '~지 마세요' 로 바꾼다.
       down: bestLater
-        ? `이번 달 하지 말 것은 ${plan.donts[1]}예요. 결정은 ${timing.bestMonth.label}에 하세요.`
-        : `이번 달 하지 말 것은 ${plan.donts[1]}예요.`,
+        ? `이번 달은 ${asDont(plan.donts[1])} 결정은 ${timing.bestMonth.label}에 하세요.`
+        : `이번 달은 ${asDont(plan.donts[1])}`,
     },
     far: {
       same: areas ? areas.task : '이 십 년은 점수 차가 작아서 올해와 이번 달 점수를 보고 정하면 돼요.',

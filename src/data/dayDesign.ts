@@ -152,7 +152,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '심심하다고 필요 없는 약속을 잡는 것',
       },
       {
-        headline: '오늘은 그냥저냥이 정답이에요. 애쓰지 않아도 돼요.',
+        headline: '오늘은 할 일을 세 개까지만 적고 그 셋만 끝내는 날이에요. 나머지는 내일 목록으로 넘기면 돼요.',
         vibe: '할 일을 줄일수록 마음이 편해지는 날이에요.',
         steps: [
           { when: '아침', text: '알람보다 조금 늦게 일어나도 괜찮아요.' },

@@ -146,7 +146,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       donts: [
         '오늘 아니면 못 산다는 말에 바로 결제하기',
         '할부 개월을 늘려 매달 부담을 숨기기',
-        '사고 나서 조건을 읽기',
+        '조건을 안 읽고 먼저 결제하기',
       ],
     },
     invest: {
@@ -340,7 +340,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       dos: [
         '눕는 시각을 정하고 알람을 거기에 맞추기',
         '잠들기 한 시간 전에는 휴대폰을 보지 않기',
-        '잠이 안 오면 일어나서 다른 방에 있기',
+        '잠이 안 오면 일어나서 다른 방으로 옮기기',
       ],
       doWhys: [
         '눕는 시각이 같아야 몸이 그 시각에 잠들 준비를 해요.',
