@@ -5,7 +5,8 @@ import { softBreak } from '../lib/softBreak.ts';
 import { Sentences } from './Sentences.tsx';
 import { Chapter } from './Chapter.tsx';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
-import type { DeepRead } from '../lib/deepRead.ts';
+import { bigMoveOf, type DeepRead } from '../lib/deepRead.ts';
+import { withJosa } from '../lib/josa.ts';
 import type { TimingRead } from '../lib/timing.ts';
 
 type Props = {
@@ -34,7 +35,10 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
   // 서로 싸우는 것처럼 읽힌다. 층이 달라서 그런 건데 읽는 사람이 알 리 없다.
   // 밴드마다 다르게 묻던 때는 '오늘도 괜찮고, 크게 움직일 때는?' 처럼 말이
   // 반쯤 끊겼다. 이 칸이 묻는 건 늘 같다 - 오늘 말고 크게 움직일 때가 언제냐.
-  const whenAsk = '크게 움직이려면 언제가 좋을까요?';
+  // '크게 움직이려면' 은 무엇을 움직이는지가 없었다(사장님 지적). 고른 상황의
+  // 큰 한 걸음(이직 지원서, 고백, 100만 원 넘는 결제 등)을 그대로 묻는다.
+  const move = bigMoveOf(concernKey, read.optionKey);
+  const whenAsk = `${withJosa(move, '은는')} 언제 하면 좋을까요?`;
   const concern = findConcern(concernKey);
   const max = Math.max(...timing.months.map((m) => m.score));
   // 막대만 보여주면 '그래서 그 달에 뭐가 있는데' 가 남는다. 눌러서 펴 볼 수 있게 한다.
@@ -95,7 +99,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         <Sentences className="today-ask__a" text={read.whenVerdict.sub} />
         {bestWhen ? (
           <p className="today-ask__when">
-            <span className="today-ask__when-k">크게 움직인다면</span>
+            <span className="today-ask__when-k">{withJosa(move, '을를')} 한다면</span>
             <Sentences className="today-ask__when-v" text={bestWhen} />
           </p>
         ) : null}

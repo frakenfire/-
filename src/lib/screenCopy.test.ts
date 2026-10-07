@@ -213,38 +213,93 @@ test('오늘 답이 밴드마다 갈린다', () => {
   assert.equal(new Set(all).size, all.length, '다른 밴드가 같은 답을 써요');
 });
 
+// 전체 종합은 칸마다 네 벌을 두고 날짜로 돌려 고른다(pick). 아래 검사는 네 벌을
+// 전부 본다. 첫 벌만 보면 나머지 세 벌은 한 번도 안 읽고 통과시킨다.
+const PICKS = [0, 1, 2, 3];
+const BANDS3 = ['good', 'ok', 'hard'] as const;
+
 test('오늘 답이 고른 상황마다 다르다', () => {
   // '지금은 쉬는 중이에요' 를 고른 사람에게 '이직 얘기를 꺼내도 돼요' 는
   // 꺼낼 자리가 없는 사람에게 하는 말이다.
   for (const c of CONCERNS) {
-    const firsts = new Set(c.options.map((o) => todayAskOf(c.key, o.key, 'ok').head));
-    assert.equal(firsts.size, c.options.length,
-      `${c.key}: 상황 ${c.options.length}가지인데 답은 ${firsts.size}가지`);
+    for (const p of PICKS) {
+      const firsts = new Set(c.options.map((o) => todayAskOf(c.key, o.key, 'ok', p).head));
+      assert.equal(firsts.size, c.options.length,
+        `${c.key}/${p}: 상황 ${c.options.length}가지인데 답은 ${firsts.size}가지`);
+    }
   }
 });
 
 test('상황마다 답도 다르고, 밴드마다 또 갈린다', () => {
   const seen = new Set<string>();
+  const sums = new Set<string>();
   for (const c of CONCERNS) {
     for (const o of c.options) {
-      for (const b of ['good', 'ok', 'hard'] as const) {
-        const { head, sum } = todayAskOf(c.key, o.key, b);
-        assert.ok(!seen.has(head), `같은 결론을 두 자리에서 써요: ${head}`);
-        seen.add(head);
-        assert.ok(head.trim().length > 0 && sum.trim().length > 0, `빈 칸이 있어요: ${head} / ${sum}`);
+      for (const b of BANDS3) {
+        for (const p of PICKS) {
+          const { head, sum } = todayAskOf(c.key, o.key, b, p);
+          assert.ok(!seen.has(head), `같은 결론을 두 자리에서 써요: ${head}`);
+          seen.add(head);
+          assert.ok(!sums.has(sum), `같은 까닭을 두 자리에서 써요: ${sum}`);
+          sums.add(sum);
+          assert.ok(head.trim().length > 0 && sum.trim().length > 0, `빈 칸이 있어요: ${head} / ${sum}`);
+        }
+        // 다섯 번째 날은 첫 벌로 돌아간다. 네 벌보다 많거나 적으면 여기서 갈린다.
+        assert.equal(todayAskOf(c.key, o.key, b, 4).head, todayAskOf(c.key, o.key, b, 0).head);
       }
     }
   }
-  // 고민 여섯 x 상황 넷 x 밴드 셋
-  assert.equal(seen.size, 72, `${seen.size}개만 있어요`);
+  // 고민 여섯 x 상황 넷 x 밴드 셋 x 네 벌
+  assert.equal(seen.size, 72 * PICKS.length, `${seen.size}개만 있어요`);
+});
+
+test('네 벌 모두 오늘 하나만 놓고 단언하고, 두 줄이 같은 말을 되풀이하지 않는다', () => {
+  // 화면 검사(오늘 하나만 놓고 바로 답한다)는 그날 걸린 벌만 본다. 표를 직접 돈다.
+  const gods = Object.values(TEN_GOD_KO);
+  // 종결어미를 떼고 네 글자씩 잘라 겹치는지 본다. concrete.test 의 맨 위 카드 검사와 같은 잣대.
+  const grams = (x: string) => {
+    const out = new Set<string>();
+    const t = x
+      .split(/(?<=[.!?])\s+/)
+      .map((one) => one.replace(/(는|은|을|를|이|가)?\s*(때|해|거|것)?(예요|에요|이에요|돼요|해요|나아요|남아요|와요|줘요|봐요|세요|어요|아요)\.?$/, ''))
+      .join('')
+      .replace(/[^가-힣]/g, '');
+    for (let i = 0; i + 4 <= t.length; i += 1) out.add(t.slice(i, i + 4));
+    return out;
+  };
+  const bad: string[] = [];
+  for (const c of CONCERNS) {
+    for (const o of c.options) {
+      for (const b of BANDS3) {
+        for (const p of PICKS) {
+          const { head, sum } = todayAskOf(c.key, o.key, b, p);
+          const at = `${c.key}/${o.key}/${b}/${p}`;
+          const both = `${head} ${sum}`;
+          if (both.includes('?')) bad.push(`${at} 또 묻고 있어요: ${both}`);
+          if (!head.includes('오늘')) bad.push(`${at} 오늘 얘기가 아니에요: ${head}`);
+          if (!/(세요|돼요|괜찮아요)\.$/.test(head)) bad.push(`${at} 단언이 아니에요: ${head}`);
+          if (!sum.endsWith('.')) bad.push(`${at} 마침표가 없어요: ${sum}`);
+          const god = gods.find((g) => both.includes(g));
+          if (god) bad.push(`${at} 십신 이름 [${god}]: ${both}`);
+          const shared = [...grams(head)].filter((g) => grams(sum).has(g));
+          if (shared.length) bad.push(`${at} 두 줄이 겹쳐요 [${shared.join(',')}]\n    ${head}\n    ${sum}`);
+          const endings = sum.split(/(?<=[.!?])\s+/).map((x) => x.trim().slice(-4)).filter(Boolean);
+          if (new Set(endings).size !== endings.length) bad.push(`${at} 밑 줄 종결 반복: ${sum}`);
+        }
+      }
+    }
+  }
+  assert.deepEqual(bad, []);
 });
 
 test('상황을 안 골라도 답이 나온다', () => {
   for (const c of CONCERNS) {
-    const r = todayAskOf(c.key, null, 'ok');
-    assert.ok(r.head.length > 0 && r.sum.length > 0, `${c.key}: ${r.head}`);
-    // 없는 상황 키가 와도 터지지 않는다
-    assert.equal(todayAskOf(c.key, 'nope', 'ok').head, r.head);
+    for (const p of PICKS) {
+      const r = todayAskOf(c.key, null, 'ok', p);
+      assert.ok(r.head.length > 0 && r.sum.length > 0, `${c.key}: ${r.head}`);
+      // 없는 상황 키가 와도 터지지 않는다
+      assert.equal(todayAskOf(c.key, 'nope', 'ok', p).head, r.head);
+    }
   }
 });
 
@@ -253,9 +308,11 @@ test("'오늘 말고' 처럼 동사가 빠진 말을 안 쓴다", () => {
   // '이직 얘기는 오늘 하지 말고 미루세요' 가 맞다.
   for (const c of CONCERNS) {
     for (const o of c.options) {
-      for (const b of ['good', 'ok', 'hard'] as const) {
-        const { head, sum } = todayAskOf(c.key, o.key, b);
-        assert.ok(!/오늘 말고/.test(`${head} ${sum}`), `동사가 빠졌어요: ${head}`);
+      for (const b of BANDS3) {
+        for (const p of PICKS) {
+          const { head, sum } = todayAskOf(c.key, o.key, b, p);
+          assert.ok(!/오늘 말고/.test(`${head} ${sum}`), `동사가 빠졌어요: ${head}`);
+        }
       }
     }
   }

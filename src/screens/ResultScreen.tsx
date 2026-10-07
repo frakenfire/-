@@ -20,6 +20,7 @@ import { Chapter } from '../components/Chapter.tsx';
 import type { Zodiac } from '../data/zodiac.ts';
 import { partPassed } from '../lib/dayPart.ts';
 import { useDayPart } from '../lib/useDayPart.ts';
+import { noteTodayOf } from '../data/noteToday/index.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { ohaengWhy } from '../data/ohaeng.ts';
 import type { Band } from '../lib/timing.ts';
@@ -92,6 +93,9 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
     return () => cancelAnimationFrame(raf);
   }, [headScore]);
 
+  // 뽑은 쪽지가 오늘 하는 말. 고민을 골라 들어왔으면 그 고민의 말로.
+  const noteMsg = noteTodayOf(note.id, deep ? deep.concernKey : null, deep ? deep.read.optionKey : null);
+
   const RING = 2 * Math.PI * 54;
   // 이미 지나간 때를 오늘의 행운이라고 띄우지 않는다.
   // 시계를 구독해서, 켜둔 채 그 시각을 넘겨도 따라간다.
@@ -142,6 +146,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           <span className="drawn__k">
             내가 뽑은 쪽지 · <span className="drawn__kw">{note.name}</span>
           </span>
+          {noteMsg ? <Sentences className="score-hero__msg" text={noteMsg} /> : null}
         </div>
       </div>
 

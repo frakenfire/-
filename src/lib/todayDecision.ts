@@ -19,9 +19,14 @@ export function composeTodayDecision(
   option: string | null,
   band: Band,
   god: TenGod,
+  // 하지 말 것은 오늘 아래 글자(지지)에서 따로 고른다. 위 글자 하나로 둘 다
+  // 고르면 열흘마다 같은 두 줄이 그대로 돌아왔다. 둘을 나누면 육십 일에 한 번이다.
+  avoidGod: TenGod = god,
+  pick = 0,
 ): TodayDecision {
-  const overall = todayAskOf(concern, option, band);
+  const overall = todayAskOf(concern, option, band, pick);
   const act = dayActOf(concern, option, god);
+  const avoid = dayActOf(concern, option, avoidGod);
   const note =
     concern === 'health'
       ? '몸이 아프거나 불편하면 운세와 상관없이 의료진에게 확인하세요.'
@@ -31,7 +36,7 @@ export function composeTodayDecision(
   return {
     overall: { headline: overall.head, summary: overall.sum },
     do: { action: act.doIt, why: act.doWhy },
-    dont: { action: act.avoid, why: act.avoidWhy },
+    dont: { action: avoid.avoid, why: avoid.avoidWhy },
     ...(note ? { note } : {}),
   };
 }

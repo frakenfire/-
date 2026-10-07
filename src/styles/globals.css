@@ -2027,9 +2027,16 @@ strong {
   background: none;
   padding: 0;
 }
-.score-hero 
 .score-hero .drawn__k {
   color: var(--gray-700); /* 파란 틴트 위 AA */
+}
+/* 뽑은 쪽지가 오늘 무엇을 말하는지. 이름만 띄우면 쪽지를 왜 골랐는지 모른다. */
+.score-hero__msg {
+  margin-top: 6px;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-900);
 }
 
 /* ── 메인 카드 재설계: 글 왼쪽, 마스코트 오른쪽 크게, 버튼 한 줄 ── */

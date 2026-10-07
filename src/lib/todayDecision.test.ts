@@ -13,9 +13,12 @@ import type { Band } from './timing.ts';
 // 카드를 만든 뜻이 없다.
 //
 // 샘플 생년월일 몇 개로만 보면 그 사람들에게 걸린 칸만 본다. 그래서 조합을
-// 전부 조립한다. 고민 여섯 x 상황 넷 x 밴드 셋 x 오늘 글자 열 = 칠백스무 개.
+// 전부 조립한다. 고민 여섯 x 상황 넷 x 밴드 셋 x 위 글자 열 x 아래 글자 열 = 칠천이백 개.
+// 전체 종합은 칸마다 네 벌을 날짜로 돌려 고른다(pick). 한 벌만 보면 나머지 세 벌이
+// 할 것과 반대로 말해도 모른다. 그래서 네 벌을 다 곱해 이만 팔천팔백 개.
 
 const BANDS: Band[] = ['good', 'ok', 'hard'];
+const PICKS = [0, 1, 2, 3];
 const GODS = Object.keys(TEN_GOD_KO) as TenGod[];
 
 type Case = { where: string; concern: ConcernKey | null; option: string | null; d: TodayDecision };
@@ -25,8 +28,13 @@ const ALL: Case[] = (() => {
   for (const c of CONCERNS) {
     for (const o of c.options) {
       for (const b of BANDS) {
-        for (const g of GODS) {
-          out.push({ where: `${c.key}/${o.key}/${b}/${g}`, concern: c.key, option: o.key, d: composeTodayDecision(c.key, o.key, b, g) });
+        for (const p of PICKS) {
+          for (const g of GODS) {
+            // 할 것은 위 글자, 하지 말 것은 아래 글자에서 따로 고른다. 두 글자 조합을 전부 본다.
+            for (const g2 of GODS) {
+              out.push({ where: `${c.key}/${o.key}/${b}/${p}/${g}+${g2}`, concern: c.key, option: o.key, d: composeTodayDecision(c.key, o.key, b, g, g2, p) });
+            }
+          }
         }
       }
     }
@@ -55,7 +63,7 @@ const fields = (d: TodayDecision) => [
 ] as const;
 
 test('조합을 빠짐없이 돌았다', () => {
-  assert.equal(ALL.filter((x) => x.concern).length, 720);
+  assert.equal(ALL.filter((x) => x.concern).length, 7200 * PICKS.length);
   assert.equal(ALL.filter((x) => !x.concern).length, 10, '일반 쪽지 열 칸이 다 안 모였어요');
 });
 
@@ -109,7 +117,7 @@ test('한 카드 안에서 같은 말을 되풀이하지 않는다', () => {
     for (let i = 0; i < fs.length; i += 1) {
       for (let j = i + 1; j < fs.length; j += 1) {
         const g = sharedRun(fs[i][1], fs[j][1]);
-        if (g) bad.add(`${where.split('/').slice(0, 2).join('/')} ${fs[i][0]} x ${fs[j][0]} [${g}]\n    ${fs[i][1]}\n    ${fs[j][1]}`);
+        if (g) bad.add(`${where.split('/').slice(0, 4).join('/')} ${fs[i][0]} x ${fs[j][0]} [${g}]\n    ${fs[i][1]}\n    ${fs[j][1]}`);
       }
     }
   }
@@ -214,7 +222,7 @@ test('전체 종합이 고른 상황과 부딪히지 않는다', () => {
     if (!re) continue;
     for (const [k, t] of [['전체 종합', d.overall.headline], ['종합 설명', d.overall.summary]] as const) {
       const m = t.match(re);
-      if (m) bad.add(`${where.split('/').slice(0, 3).join('/')} ${k} [${m[0]}] ${t}`);
+      if (m) bad.add(`${where.split('/').slice(0, 4).join('/')} ${k} [${m[0]}] ${t}`);
     }
   }
   assert.deepEqual([...bad], []);

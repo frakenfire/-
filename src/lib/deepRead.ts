@@ -36,6 +36,8 @@ import { findZodiac } from '../data/zodiac.ts';
 export type Verdict = 'now' | 'soon' | 'wait';
 
 export type DeepRead = {
+  /** 고른 상황. 쪽지 한 줄처럼 상황을 다시 봐야 하는 화면이 쓴다 */
+  optionKey: string | null;
   verdict: Verdict;
   /** 명식에서 계산된 이 고민의 점수 — 날짜 seed 가 아니라 여덟 글자에서 나온다 */
   score: ConcernScore;
@@ -735,10 +737,13 @@ export function buildDeepRead(
   // 오늘 하나만 놓고 답하는 줄. 오늘 점수 밴드로 고른다.
   // 고른 상황까지 보고 묻는다. '쉬는 중' 인 사람에게 '이직 얘기를 꺼내도
   // 될까요' 라고 물으면 꺼낼 자리가 없는 사람에게 묻는 말이 된다.
-  const todayAsk = todayAskOf(concernKey, optionKey, todayPart.band);
+  // 날짜 순번. 전체 종합 여러 벌을 날마다 돌려 고른다.
+  const dayNo = Math.floor(Date.UTC(cy, cm - 1, cd) / 86400000);
+  const todayAsk = todayAskOf(concernKey, optionKey, todayPart.band, dayNo);
+  const todayBranchGod = tenGodOf(pillars.dayStem, mainHiddenStem(todayPillar.branch)) as TenGod;
 
   // 결과 맨 위 결론. 조립은 todayDecision.ts 한 곳에서만 한다.
-  const todayDecision = composeTodayDecision(concernKey, optionKey, todayPart.band, score.dayGod);
+  const todayDecision = composeTodayDecision(concernKey, optionKey, todayPart.band, score.dayGod, todayBranchGod, dayNo);
 
   const todayMeet = {
     // '무술날' 이라고 적어 놓고 있었다. 간지 이름은 읽는 사람에게 아무것도
@@ -916,6 +921,7 @@ export function buildDeepRead(
       head: verdictTwo.head.replace('{when}', away === 1 ? '다음 달에' : `${away}달 뒤에`),
       sub: verdictTwo.sub,
     },
+    optionKey,
     todayDecision,
     slots,
     monthSlots,
