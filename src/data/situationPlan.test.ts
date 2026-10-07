@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { planOf } from './situationPlan.ts';
 import { stanceLead } from '../lib/deepRead.ts';
-const FAKE_TIMING = { thisMonth: { score: 65, label: '2026년 10월' }, bestMonth: { score: 88, label: '2027년 2월' } } as unknown as Parameters<typeof stanceLead>[1];
+const FAKE_TIMING = { thisMonth: { score: 65, label: '2026년 10월' }, bestMonth: { score: 88, label: '2027년 2월' }, months: [{ band: 'good' }, { band: 'ok' }] } as unknown as Parameters<typeof stanceLead>[1];
 
 import { CONCERNS } from './concerns.ts';
 
@@ -50,13 +50,16 @@ test("결정 카드가 '구간' 으로 도망가지 않는다", () => {
 });
 
 test('판정 넷이 서로 다른 말로 시작한다', () => {
-  const leads = (['run', 'prep', 'hold', 'keep'] as const).map((st) => stanceLead(st, FAKE_TIMING));
+  const leads = (['run', 'prep', 'hold', 'keep'] as const).map((st) => stanceLead(st, FAKE_TIMING, '이직 지원서'));
   assert.equal(new Set(leads).size, 4);
   for (const l of leads) {
     assert.ok(l.endsWith('.'), l);
     // 판정은 점수와 달 이름을 박아야 한다. '좋지도 나쁘지도' 는 판정이 아니다
     assert.match(l, /\d+점/, l);
     assert.doesNotMatch(l, /좋지도 나쁘지도|무난/, l);
+    // 무엇을 하라는지가 있어야 한다. '새로 벌이면' 은 무엇을 벌이는지가 없다
+    assert.doesNotMatch(l, /벌이|굴리|새 시작|새 일/, l);
+    assert.ok(l.includes('이직 지원서'), l);
   }
 });
 

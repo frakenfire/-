@@ -137,7 +137,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
     now: [
       '나를 보여줄 자료를 오늘 손봐요. 숫자로 설명할 수 있는 성과부터 적어요',
       '가고 싶은 곳 세 군데를 적고 아는 사람이 있는지 먼저 확인해요',
-      '일을 옮긴다면 그만두는 날보다 새로 시작하는 날을 먼저 정해요',
+      '일을 옮긴다면 퇴사 날짜보다 다음 곳에서 일을 시작할 날짜를 먼저 받아둬요. 그래야 월급이 끊기는 달이 안 생겨요',
     ],
     soon: [
       '준비하는 일은 정해질 때까지 주변에 말하지 말아요. 소문이 먼저 나면 조건을 고르기 어려워져요',
@@ -238,7 +238,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
 };
 
 const CAUTION: Record<ConcernKey, string> = {
-  work: '힘든 달에 급하게 퇴사하면 다음 직장을 서둘러 정하기 쉬워요. 그 달은 넘기고 움직이세요.',
+  work: '힘든 달에 급하게 퇴사하면 다음 직장을 조건도 안 보고 정하게 돼요. 그래서 사직서는 그 달을 넘긴 다음 달에 내세요.',
   money: '버거운 달엔 큰 계약과 보증을 피해요. 한 달만 미뤄도 조건을 다시 따져볼 수 있어요.',
   love: '버거운 달엔 말이 세게 나가요. 중요한 얘기는 그 달을 넘겨요.',
   people: '버거운 달엔 오해가 잘 생겨요. 말보다 글로 남기면 덜 꼬여요.',
@@ -248,26 +248,47 @@ const CAUTION: Record<ConcernKey, string> = {
 
 
 /**
- * 이번 달 판정 한 줄. 점수와 달 이름을 박는다.
+ * 고른 상황에서 '큰 한 걸음' 이 무엇인가. 판정 한 줄이 이걸 목적어로 쓴다.
+ * '새로 벌이면 손해예요' 처럼 무엇을 벌이는지 없는 판정은 판정이 아니다(사장님 지적).
+ */
+const BIG_MOVE: Record<ConcernKey, Record<string, string>> = {
+  work: { stay: '이직 지원서와 퇴사 통보', rest: '입사 지원서', start: '입사 지원서', own: '가게 계약과 장비 결제' },
+  money: { save: '적금 해지와 새 투자', leak: '새 구독과 할부 결제', big: '100만 원 넘는 결제', invest: '새로 넣는 투자금' },
+  love: { alone: '소개팅과 새 만남 약속', some: '고백', couple: '결혼이나 동거 같은 큰 약속', past: '다시 연락하는 것' },
+  people: { work: '동료와 따지는 대화', friend: '오래된 서운함을 꺼내는 대화', family: '집안 돈 문제를 정하는 대화', new: '돈이나 일을 같이 섞는 약속' },
+  health: { tired: '운동량 늘리기', sleep: '수면 습관을 한꺼번에 바꾸기', ache: '아픈 부위를 쓰는 운동', keep: '새 운동 등록' },
+  mind: { anxious: '이직이나 이사 같은 결정', burnt: '새로 일을 맡는 것', stuck: '두 선택지 중 최종 선택', lonely: '새 모임 가입' },
+};
+
+export function bigMoveOf(concern: ConcernKey, optionKey: string | null): string {
+  const t = BIG_MOVE[concern];
+  return (optionKey && t[optionKey]) || Object.values(t)[0];
+}
+
+/**
+ * 이번 달 판정 한 줄. 점수와 달 이름과 무엇을 하라는지를 박는다.
  * '크게 좋지도 나쁘지도 않아요' 는 판정이 아니다. 보통 점수대도 뭘 하라고 말한다.
  */
-export function stanceLead(stance: Stance, timing: TimingRead): string {
+export function stanceLead(stance: Stance, timing: TimingRead, move: string): string {
   const m = timing.thisMonth;
   const best = timing.bestMonth;
   const later = best.label !== m.label;
+  // 행동만 말하면 왜 그 달인지가 빠진다. 열두 달 안에서 이 달이 어디쯤인지를 이유로 붙인다.
+  const goodCount = timing.months.filter((x) => x.band === 'good').length;
+  const bestWhy = `${best.label}이 ${best.score}점으로 앞으로 열두 달 중 가장 높아요.`;
   switch (stance) {
     case 'run':
-      return `이번 달은 ${m.score}점, 움직여도 되는 달이에요. 미루던 일은 ${m.label} 안에 시작하세요.`;
+      return `이번 달은 ${m.score}점이라 ${withJosa(move, '을를')} 해도 되는 달이에요. 앞으로 열두 달 중 이만한 달이 ${goodCount}번뿐이라 ${m.label} 안에 하는 게 좋아요.`;
     case 'prep':
-      return `이번 달은 ${m.score}점이라 아직 일러요. ${best.label}이 ${best.score}점으로 더 좋으니 그때까지는 준비만 하세요.`;
+      return `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} 아직 일러요. ${bestWhy} 그때 바로 하려면 이번 달엔 준비만 해두세요.`;
     case 'hold':
       return later
-        ? `이번 달은 ${m.score}점이라 결정을 내리지 마세요. 답은 ${best.label}에 내리면 돼요.`
-        : `이번 달은 ${m.score}점이라 결정을 내리지 마세요. 다음 달 점수를 보고 정하세요.`;
+        ? `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} 하지 마세요. ${bestWhy} 같은 일을 그달에 하면 결과가 달라요.`
+        : `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} 하지 마세요. 다음 달 점수가 나오면 그때 다시 정하세요.`;
     default:
       return later
-        ? `이번 달은 ${m.score}점, 새로 벌이면 남는 게 없는 달이에요. 하던 것만 그대로 굴리고 새 시작은 ${best.label}에 하세요.`
-        : `이번 달은 ${m.score}점, 새로 벌이면 남는 게 없는 달이에요. 하던 것만 그대로 굴리세요.`;
+        ? `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} ${best.label}로 미루세요. ${bestWhy} 그래서 이번 달은 아래 할 일만 하면 돼요.`
+        : `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} 다음 달 점수를 보고 정하세요. 그래서 이번 달은 아래 할 일만 하면 돼요.`;
   }
 }
 
@@ -322,7 +343,7 @@ export function buildDeepRead(
     // 판정(이번 달) + 할 일(고른 상황) 뒤에 '왜 나한테 그런가' 를 붙인다.
     // 앞의 두 줄은 내가 입력한 것에서만 나와서, 생년월일이 다른 사람도
     // 글자 하나까지 같은 답을 받고 있었다. 이 줄이 여덟 글자를 본다.
-    verdict: `${stanceLead(stance, timing)} ${plan.focus} ${NATAL_REASON[concernKey][GOD_GROUP_OF[score.natalTopGod]]}`,
+    verdict: `${stanceLead(stance, timing, bigMoveOf(concernKey, optionKey))} ${plan.focus} ${NATAL_REASON[concernKey][GOD_GROUP_OF[score.natalTopGod]]}`,
     dos: [...plan.dos],
     doWhys: [...plan.doWhys],
     donts: [...plan.donts],
@@ -495,7 +516,7 @@ export function buildDeepRead(
   // 읽는 사람은 그게 언제 오는 해인지 알 길이 없다. 지지 차례와 띠 차례가
   // 같으니 띠 이름으로 적는다. 달은 뺐다 - 띠로는 달을 가리킬 수 없다.
   const gongmangZodiac = (b: number) => findZodiac(BRANCHES[b].animal)?.label ?? BRANCHES[b].kor;
-  const gongmang = `${gongmangZodiac(g1)} 해와 ${gongmangZodiac(g2)} 해에는 내 사주에 힘이 덜 실려요. 그 두 해에는 일을 크게 벌이기보다 결과가 따라오는지 중간중간 확인하면서 움직이세요.`;
+  const gongmang = `${gongmangZodiac(g1)} 해와 ${gongmangZodiac(g2)} 해에는 내 사주에 힘이 덜 실려요. 그 두 해에는 큰돈이 드는 계약을 하기 전에 석 달 동안 결과를 확인하세요.`;
 
   const chart = {
     pillars: chartPillars,
@@ -503,11 +524,11 @@ export function buildDeepRead(
     elements,
     strength:
       prof.strength === 'strong'
-        ? '내가 주도하려는 성향이 강해요. 직접 결정하고 움직일 때 편하고, 다른 사람 의견이 너무 많으면 오히려 답답할 수 있어요.'
+        ? '내가 주도하려는 성향이 강해요. 그래서 일정과 순서를 직접 정할 때 편하고, 단체방에서 의견이 열 개씩 오가면 오히려 답답해져요.'
         : '주변의 도움을 받을 때 강점을 더 잘 써요. 혼자 밀어붙이기보다 배우고 도움받을 때 결과가 좋아요.',
     season: prof.hasSeasonalSupport
       ? '태어난 계절이 내 성향과 잘 맞아서 기본적으로 버티는 힘이 있는 편이에요.'
-      : '태어난 달의 글자가 나를 직접 돕지는 않아요. 그래서 무엇을 하느냐만큼 언제 움직이느냐도 중요하게 봐요.',
+      : '태어난 달의 글자가 나를 직접 돕지는 않아요. 그래서 무엇을 하느냐만큼 이사나 계약 날짜를 언제로 잡느냐도 중요하게 봐요.',
     useful: `내 사주에는 다섯 요소 중 ${withJosa(ELEMENT_KO[prof.usefulElement], '이가')} 모자라요. ${withJosa(ELEMENT_KO[prof.usefulElement], '이가')} 들어오는 해와 달에는 일이 덜 막히는 편이에요.`,
     focus,
     today: chartToday,
@@ -541,7 +562,7 @@ export function buildDeepRead(
         } else if (smooth) {
           verdict = `이름 소리는 자연스럽게 이어져요. 다만 사주에서 부족한 ${need} 요소가 이름에는 없어서 부족한 부분을 보완해주지는 못해요.`;
         } else {
-          verdict = `이름에는 ${ELEMENT_KO[sound.lead]} 요소의 소리가 가장 많아요. 사주에 부족한 ${need} 요소와는 달라서, 이름보다 움직일 때를 잘 고르는 게 더 중요해요.`;
+          verdict = `이름에는 ${ELEMENT_KO[sound.lead]} 요소의 소리가 가장 많아요. 사주에 부족한 ${need} 요소와는 달라요. 그래서 이름을 바꾸기보다 이사나 계약 날짜를 언제로 잡을지가 더 중요해요.`;
         }
         return {
           letters: sound.letters.map((l) => ({ ch: l.ch, el: ELEMENT_KO[l.el] })),
@@ -625,7 +646,7 @@ export function buildDeepRead(
   const bestLater = timing.bestMonth.label !== timing.thisMonth.label;
   const SPAN = {
     today: {
-      same: `오늘 할 일은 ${plan.dos[0]}예요. 새 일은 내일로 넘기세요.`,
+      same: `오늘 할 일은 ${plan.dos[0]}예요. ${withJosa(bigMoveOf(concernKey, optionKey), '은는')} 오늘 하지 마세요.`,
       up: `오늘 먼저 할 일은 ${plan.dos[0]}예요.`,
       down: `오늘 하지 말 것은 ${plan.donts[0]}예요.`,
     },
@@ -643,7 +664,7 @@ export function buildDeepRead(
     far: {
       same: areas ? areas.task : '이 십 년은 점수 차가 작아서 올해와 이번 달 점수를 보고 정하면 돼요.',
       up: areas ? areas.task : '이 십 년 동안 하고 싶던 일을 밀어도 돼요.',
-      down: areas ? areas.task : '이 십 년은 일을 한꺼번에 벌이지 마세요.',
+      down: areas ? areas.task : `이 십 년은 ${withJosa(bigMoveOf(concernKey, optionKey), '을를')} 한 해에 하나씩만 하세요.`,
     },
   } as const;
   const vsNatal = (n: number, span: keyof typeof SPAN): string | null => {

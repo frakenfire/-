@@ -222,7 +222,7 @@ export function scoreVerdictLine(
   const head = `${withJosa(c.label, '은는')} ${score.total}점이에요.`;
 
   if (!top || !low || top === low || top.score - low.score < 8) {
-    return `${head} 아래 다섯 점수가 비슷해서 어느 시기가 특별히 높거나 낮지 않아요. 새로운 일을 크게 벌이기보다 하던 일을 이어가는 편이 나아요.`;
+    return `${head} 아래 다섯 점수가 비슷해서 어느 시기가 특별히 높거나 낮지 않아요. 그래서 좋은 달을 고르느라 기다리지 말고, 미뤄둔 일 하나를 이번 주 안에 날짜를 정해 시작하세요.`;
   }
   // 합계는 아래 설명 줄이 말한다. 여기서는 어느 칸이 올리고 어느 칸이 눌렀는지만 짚는다.
   //

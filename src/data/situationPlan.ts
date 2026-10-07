@@ -127,7 +127,7 @@ const SITUATION_PLAN: Record<ConcernKey, Record<string, Plan>> = {
       ],
       donts: [
         '새는 곳을 안 막고 수입부터 늘리려 하기',
-        '할부나 구독을 새로 시작하기',
+        '새 할부를 긋거나 새 구독에 가입하기',
         '작은 지출만 줄이고 큰 것은 그대로 두기',
       ],
     },
