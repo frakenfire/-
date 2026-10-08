@@ -101,6 +101,8 @@ export type TodayDecision = {
   dont: { action: string; why: string };
   /** 오늘 날의 글자가 내 사주와 만나 어떤 날이 됐는지. 매일 사주를 본다는 근거 줄 */
   basis?: string;
+  /** 고른 상황에서 들 법한 마음 한 줄. 근거 줄보다 먼저, 본문 크기로 */
+  feeling?: string;
   /** 몸·투자처럼 운세가 실제 판단을 대신하면 안 되는 자리에 붙는 한 줄 */
   note?: string;
 };

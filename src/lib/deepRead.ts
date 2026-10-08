@@ -292,7 +292,8 @@ export function stanceLead(stance: Stance, timing: TimingRead, move: string): st
     default:
       return later
         ? `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} ${best.label}에 해도 늦지 않아요. ${bestWhy} 그래서 이번 달은 아래 할 일만 해두면 돼요.`
-        : `이번 달은 ${m.score}점이라 ${withJosa(move, '은는')} 다음 달 점수를 보고 정해도 늦지 않아요. 그래서 이번 달은 아래 할 일만 해두면 돼요.`;
+        // 이번 달이 열두 달 중 가장 높은데 '다음 달 점수를 보고' 라고 하면 앞뒤가 안 맞는다
+        : `이번 달은 ${m.score}점으로 앞으로 열두 달 중 가장 높아요. 다만 ${withJosa(move, '은는')} 한 번에 정하기보다 아래 할 일을 먼저 해두고 이번 달 말에 정해도 늦지 않아요.`;
   }
 }
 
@@ -753,7 +754,8 @@ export function buildDeepRead(
   const feeling = feelingOf(concernKey, optionKey ?? '');
   const todayDecision = {
     ...composeTodayDecision(concernKey, optionKey, todayPart.band, score.dayGod, todayBranchGod, dayNo),
-    basis: `${feeling ? `${feeling} ` : ''}오늘 ${cm}월 ${cd}일은 내 사주로 보면 ${G(score.dayGod).pull} 날이에요. 그래서 ${concern.label} 쪽은 아래처럼 해보면 좋아요.`,
+    ...(feeling ? { feeling } : {}),
+    basis: `오늘 ${cm}월 ${cd}일은 내 사주로 보면 ${G(score.dayGod).pull} 날이에요.`,
   };
 
   const todayMeet = {
