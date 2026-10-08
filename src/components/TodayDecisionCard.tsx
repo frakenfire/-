@@ -15,17 +15,17 @@ export function TodayDecisionCard({ decision }: { decision: TodayDecision }) {
   return (
     <section className="tdc" aria-label="오늘 결론">
       <div className="sec-card tdc__overall">
-        <p className="cat4__head">오늘 전체 종합</p>
-        {/* 마음 한 줄과 사주 근거는 한 상자로 묶는다. 결론과 같은 바탕에 흘리면
-            크기만 다른 줄 다섯 개가 붙어 보인다. */}
+        {/* 세 카드 모두 같은 순서다: 작은 이름표 → 굵은 결론 → 설명.
+            마음 한 줄과 사주 근거는 결론을 받쳐주는 말이라 맨 아래 상자로. */}
+        <p className="tdc__k">오늘 전체 종합</p>
+        <p className="tdc__headline">{head}</p>
+        <Sentences className="tdc__summary" text={summary} />
         {decision.feeling || decision.basis ? (
           <div className="tdc__mind">
             {decision.feeling ? <p className="tdc__feeling">{decision.feeling}</p> : null}
             {decision.basis ? <p className="tdc__basis">{decision.basis}</p> : null}
           </div>
         ) : null}
-        <p className="tdc__headline">{head}</p>
-        <Sentences className="tdc__summary" text={summary} />
       </div>
       <div className="sec-card tdc__act tdc__act--do">
         <p className="tdc__k">오늘 해보면 좋은 것</p>

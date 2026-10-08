@@ -4,7 +4,7 @@ import { Sentences } from './Sentences.tsx';
 type Props = {
   title: string;
   /** 이 덩이에 뭐가 들었는지 한 줄로 */
-  hint: string;
+  hint?: string;
   children: ReactNode;
 };
 
@@ -21,7 +21,7 @@ export function Chapter({ title, hint, children }: Props) {
   return (
     <section className="chap">
       <p className="chap__title">{title}</p>
-      <Sentences className="chap__hint" text={hint} />
+      {hint ? <Sentences className="chap__hint" text={hint} /> : null}
       <div className="chap__body">{children}</div>
     </section>
   );

@@ -30,7 +30,6 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
   const bestRow = read.when.find((x) => x.k === '가장 좋은 때');
   // '2027년 1월, 4달 뒤' 를 그대로 옮기면 아래 시기 카드와 같은 줄이 된다.
   // 달 이름만 짚고, 몇 달 뒤인지는 아래 카드가 말한다.
-  const bestWhen = bestRow ? `가장 좋은 달은 ${bestRow.v.split(',')[0]}이에요.` : null;
   // '네, 오늘 꺼내도 돼요' 바로 밑에 '가장 좋은 때는 4달 뒤' 가 붙으면 두 줄이
   // 서로 싸우는 것처럼 읽힌다. 층이 달라서 그런 건데 읽는 사람이 알 리 없다.
   // 밴드마다 다르게 묻던 때는 '오늘도 괜찮고, 크게 움직일 때는?' 처럼 말이
@@ -38,7 +37,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
   // '크게 움직이려면' 은 무엇을 움직이는지가 없었다(사장님 지적). 고른 상황의
   // 큰 한 걸음(이직 지원서, 고백, 100만 원 넘는 결제 등)을 그대로 묻는다.
   const move = bigMoveOf(concernKey, read.optionKey);
-  const whenAsk = `${withJosa(move, '은는')} 언제 하면 좋을까요?`;
+  const bestWhen = bestRow ? `${withJosa(move, '은는')} ${bestRow.v.split(',')[0]}이 가장 좋아요.` : null;
   const concern = findConcern(concernKey);
   const max = Math.max(...timing.months.map((m) => m.score));
   // 막대만 보여주면 '그래서 그 달에 뭐가 있는데' 가 남는다. 눌러서 펴 볼 수 있게 한다.
@@ -90,19 +89,16 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           오늘 할 것과 하지 말 것은 이 덩이 위, 결과 맨 위 카드(TodayDecisionCard)
           가 까닭과 함께 맡는다. 예전엔 여기 '오늘은 이렇게' 카드가 까닭 없이
           같은 말을 또 했다. 이 덩이는 '그럼 언제' 와 '이번 달에는' 만 맡는다. */}
-      <Chapter title="지금 어떻게 하면 될까요" hint="크게 움직일 때와 이번 달 계획">
+      <Chapter title="지금 어떻게 하면 될까요">
       {/* 언제가 좋은지 — 올해·이번 달 판정이 큰 글씨 자리에서 내려온 곳이다.
           오늘 할 일을 다 읽은 다음에 '그럼 크게 움직이는 건 언제' 가 온다. */}
       <div className="sec-card">
-        <p className="cat4__head">{whenAsk}</p>
-        <Sentences className="today-ask__a" text={read.whenVerdict.head} />
+        {/* 제목이 묻고, 바로 밑 굵은 줄이 답하고, 그 아래가 까닭이다.
+            답(가장 좋은 달)이 맨 끝 상자에 있으면 설명을 다 읽어야 답이 나온다. */}
+        <p className="cat4__head">결정하기 좋은 달</p>
+        <Sentences className="today-ask__answer" text={bestWhen ?? read.whenVerdict.head} />
+        {bestWhen ? <Sentences className="today-ask__a" text={read.whenVerdict.head.replace(/([^.?!])$/, '$1.')} /> : null}
         <Sentences className="today-ask__a" text={read.whenVerdict.sub} />
-        {bestWhen ? (
-          <p className="today-ask__when">
-            <span className="today-ask__when-k">{withJosa(move, '을를')} 한다면</span>
-            <Sentences className="today-ask__when-v" text={bestWhen} />
-          </p>
-        ) : null}
       </div>
 
       {/* 결정 카드 — 이 리포트가 실패하지 않으려면 여기서 끝이 나야 한다.
@@ -111,11 +107,10 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         {/* 이번 달 판정(stance)에서 나온 목록이다. 맨 위 카드가 '오늘' 을 맡으므로
             여기는 이름부터 이번 달이라고 밝힌다. 둘 다 '지금' 이라고 쓰면 어느 쪽이
             오늘 할 일인지 헷갈린다. */}
-        <p className="cat4__head">이번 달에 해보면 좋은 것과 미뤄둘 것</p>
+        <p className="cat4__head">이번 달 계획</p>
         <span className={`decide__stance decide__stance--${read.decision.stance}`}>{read.decision.stanceWord}</span>
-        <p className="decide__sub">이번 달 결론</p>
         <Sentences className="decide__verdict" text={read.decision.verdict} />
-        <p className="decide__sub">이번 달에 해보면 좋은 것</p>
+        <p className="decide__sub">해보면 좋은 것</p>
         <ol className="decide__list decide__list--do">
           {read.decision.dos.map((d, i) => (
             <li key={d} className="decide__row">
@@ -128,7 +123,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ol>
-        <p className="decide__sub">이번 달엔 미뤄둘 것</p>
+        <p className="decide__sub">미뤄둘 것</p>
         <ul className="decide__list decide__list--dont">
           {read.decision.donts.map((d) => (
             <li key={d} className="decide__row">
@@ -143,11 +138,11 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       {/* '이 고민' 은 앱이 아는 것을 일부러 안 말하는 것이다. 돈을 물었으면
           돈이라고 적는다. */}
-      <Chapter title="왜 그렇게 해야 할까요" hint={`점수가 이렇게 나온 이유와, 지금 ${concern.shortName} 생각이 커진 이유`}>
+      <Chapter title="왜 그렇게 해야 할까요">
       {/* 점수가 어디서 나왔는지 — '87점입니다' 하고 끝내면 아무도 안 믿는다.
           바탕 30, 십 년 20, 올해 20, 이번 달 20, 오늘 10 을 그대로 펼쳐 보여준다. */}
       <div className="sec-card">
-        <p className="cat4__head">왜 {read.score.total}점인가요</p>
+        <p className="cat4__head">{read.score.total}점이 나온 이유</p>
         <Sentences className="why-score__lead" text={read.scoreLine} />
         <ul className="why-score">
           {/* 숫자 두 개가 나란히 있으면 어느 게 점수고 어느 게 몫인지 모른다. */}
@@ -183,7 +178,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       {/* 평생 안 바뀌는 자리 — 오늘 어떠냐가 아니라 나는 원래 어떤 사람이냐 */}
       <div className="sec-card">
-        <p className="cat4__head">{read.shape.head}</p>
+        <p className="cat4__head">타고난 {concern.shortName} 성향</p>
         <ul className="shape4">
           {read.shape.rows.map((r) => (
             <li key={r.k} className="shape4__row">
@@ -198,7 +193,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
       {/* 왜 지금 이 고민이 커졌나 — 타고난 구조가 '원래 어떤 사람이냐' 라면
           여기는 '그래서 지금 왜 이런 상황이냐' 에 답한다. */}
       <div className="sec-card">
-        <p className="cat4__head">{read.now.head}</p>
+        <p className="cat4__head">요즘 {concern.shortName} 생각이 커진 이유</p>
         {read.now.situation ? <Sentences className="deep-situation" text={read.now.situation} /> : null}
         <ul className="nowlist">
           {read.now.rows.map((r) => (
@@ -216,7 +211,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       </Chapter>
 
-      <Chapter title="달마다 해마다 할 일" hint="좋은 달과 피할 달, 올해와 내년, 지금 지나는 십 년">
+      <Chapter title="달마다 해마다 할 일">
       <div className="sec-card">
         <p className="cat4__head">좋은 때와 피할 때</p>
         <ul className="when4">
@@ -309,7 +304,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
       </div>
 
       <div className="sec-card">
-        <p className="cat4__head">올해와 내년, 무엇이 다른가요</p>
+        <p className="cat4__head">올해와 내년</p>
         {/* 두 해를 표로 맞대 놓았더니 좁은 화면에서 칸마다 글자가 서너 줄씩
             접혀 읽히지 않았다. 해마다 할 것과 조심할 것을 바로 밑에 붙인다. */}
         <ul className="yline">
@@ -369,7 +364,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       </Chapter>
 
-      <Chapter title="내 사주 자세히 보기" hint="내 일주, 네 가지 나, 내 사주 글자, 오늘 글자">
+      <Chapter title="내 사주 자세히 보기">
       {/* 내 일주 — 사주에서 사람을 가리키는 제일 작은 단위. 진짜 사주를 보러
           온 사람이 제일 먼저 찾는 자리라 이 덩이 맨 위에 둔다. 일간 열 가지만
           읽던 때는 열 명 중 한 명이 같은 말을 받았는데, 이제 예순 명 중 하나다. */}
@@ -457,7 +452,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </ul>
         <ul className="read6 read6--tight">
           <li className="read6__row">
-            <span className="read6__k">나를 뜻하는 글자</span>
+            <span className="read6__k">타고난 성질</span>
             <Sentences className="read6__v" text={read.chart.dayMaster} />
           </li>
           <li className="read6__row">
@@ -465,7 +460,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             <Sentences className="read6__v" text={read.chart.strength} />
           </li>
           <li className="read6__row">
-            <span className="read6__k">태어난 달</span>
+            <span className="read6__k">태어난 계절</span>
             <Sentences className="read6__v" text={read.chart.season} />
           </li>
           <li className="read6__row">
@@ -526,10 +521,8 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       {/* 오늘 글자와 내 글자가 만나는 자리. 매일 바뀌므로 다시 볼 이유가 된다. */}
       <div className="sec-card">
-        <p className="cat4__head">오늘 글자와 내 사주</p>
-        <p className="meet__pillar">
-          오늘은 <b>{read.todayMeet.pillar}</b> 날이에요
-        </p>
+        {/* '나무에 드는 토끼띠 날' 같은 간지 풀이는 뺐다. 사주를 모르는 사람에겐 뜻이 없다. */}
+        <p className="cat4__head">오늘과 내 사주가 만나는 곳</p>
         <Sentences className="qa qa--sub" text={read.chart.today} />
         <ul className="read6 read6--tight">
           <li className="read6__row">

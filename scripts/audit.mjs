@@ -1186,9 +1186,10 @@ async function run(browser) {
     check(order === true, '[결정] 근거 덩이보다 먼저 나옴');
     // 덩이마다 안에 뭐가 들었는지 한 줄로 말해줘야 제목만 보고도 건너뛸지
     // 읽을지 정할 수 있다. 수를 박아두면 덩이가 늘 때마다 깨지므로 안 센다.
+    // 덩이 밑 안내 한 줄은 뺐다. 번호 붙은 칸 제목이 그 일을 한다(사장님 지적: 덩이 질문 밑에
+    // 부제, 그 밑에 또 질문이 나와 읽는 순서가 안 보였다).
     const hints = await page.locator('.chap__hint').allInnerTexts();
-    check(hints.length >= 3 && hints.every((h) => h.trim().length > 6),
-      '[결정] 덩이마다 안내 한 줄', hints.join(' / '));
+    check(hints.length === 0, '[결정] 결과 덩이에 부제 없음', hints.join(' / '));
     // 복사 버튼은 없앴다. shareMessage 가 공유 못 하는 환경에서 알아서 복사로
     // 떨어지므로 같은 일을 하는 버튼을 둘 세울 이유가 없었다. '복사하기' 라는
     // 글자가 없는지 보는 건 그 글자가 코드에 없어서 늘 통과한다 — 대신 아래
@@ -1649,7 +1650,7 @@ async function run(browser) {
       await back.click();
       await wait(page, 700);
       const t = await bodyText(page);
-      if (/점수/.test(t) && /왜 \d+점인가요/.test(t)) { seenResultAgain = true; break; }
+      if (/점수/.test(t) && /\d+점이 나온 이유/.test(t)) { seenResultAgain = true; break; }
     }
     check(!seenResultAgain, '[두 번 뽑기] 뒤로가기가 지나간 결과로 안 떨어진다',
       seenResultAgain ? `${firstScore}점 자리에 새 쪽지가 그려졌어요` : '홈까지 결과 화면 없음');
