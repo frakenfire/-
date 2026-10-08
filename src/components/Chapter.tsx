@@ -3,21 +3,27 @@ import { Sentences } from './Sentences.tsx';
 
 type Props = {
   title: string;
-  /** 이 덩이에 뭐가 들었는지 한 줄로 */
+  /** 이 덩이에 뭐가 들었는지 한 줄로. 홈의 '이 답은 이렇게 나와요' 만 쓴다 */
   hint?: string;
+  /** 접어 둔다. 답이 아니라 근거와 재미처럼, 더 볼 사람만 여는 덩이 */
+  fold?: boolean;
   children: ReactNode;
 };
 
 // 결과 화면의 큰 덩이.
 //
-// 전에는 접었다 펴는 덩이(Fold)였다. 흰 카드를 여덟 장 세워두면 어디까지가
-// 결론이고 어디부터가 근거인지 안 보여서 접어뒀는데, 접으니 답의 절반이
-// 숨었다. '왜 그렇게 해야 하나' 가 접힘 안에 들어가 있었다.
-//
-// 대신 제목으로 나눈다. 네 덩이가 순서대로 읽히면 접을 이유가 없다.
-//   지금 어떻게 하면 될까요 → 왜 그렇게 해야 할까요
-//   → 시기별로는 이렇게 → 다양한 관점에서 본 나의 사주
-export function Chapter({ title, hint, children }: Props) {
+// 답(오늘 풀이, 할 것, 미룰 것, 앞으로 기대할 것과 조심할 것)은 덩이 없이 카드로
+// 바로 선다. 사주 근거와 재미 칸은 접어 둔다. 전부 펼쳐 두니 답을 받으러 온 사람이
+// 화면을 한참 내려도 끝이 안 보인다는 말을 들었다(사장님).
+export function Chapter({ title, hint, fold = false, children }: Props) {
+  if (fold) {
+    return (
+      <details className="chap chap--fold">
+        <summary className="chap__title">{title}</summary>
+        <div className="chap__body">{children}</div>
+      </details>
+    );
+  }
   return (
     <section className="chap">
       <p className="chap__title">{title}</p>

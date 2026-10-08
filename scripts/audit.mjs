@@ -821,7 +821,7 @@ async function run(browser) {
       // 바로 밑 결론과 굵기가 같아져 무엇이 제목인지 안 읽힌다.
       const name = (await page.locator('.drawn__kw').innerText()).trim();
       check(name.length >= 2, '[쪽지] 뽑은 쪽지 이름이 결과에 남음', name);
-      check(t.includes('내가 뽑은 쪽지'), '[쪽지] 내가 뽑았다는 사실을 명시');
+      check(t.includes('오늘 나의 쪽지'), '[쪽지] 내가 뽑았다는 사실을 명시');
       // 위계 가드 — 결론이 쪽지 이름보다 반드시 커야 한다. 결론은 이제 쪽지
       // 카드 바로 밑 '오늘 전체 종합' 이 맡는다.
       const sizes = await page.evaluate(() => {
@@ -914,13 +914,13 @@ async function run(browser) {
       // ── 다시 올 이유 ──
       // 이 앱의 답은 실제로 매일 바뀌는데 그 사실을 아무 데서도 말하지 않으면
       // 한 번 보고 끝내는 화면이 된다. 단, 지어낸 기대는 걸지 않는다.
-      const nd = await page.locator('.nextday__v').innerText().catch(() => '');
+      const nd = await page.locator('.tdc__tmr-v').innerText().catch(() => '');
       check(nd.includes('내일'), '[재방문] 내일 무엇이 달라지는지 적혀 있다', nd.slice(0, 30));
       check(!/대박|최고의 날|놓치면|서둘러|무조건|반드시/.test(nd),
         '[재방문] 미끼 표현을 안 쓴다', nd.slice(0, 30));
       // 접힌 묶음 안에 넣으면 안 펴는 사람은 못 본다
       const ndOpen = await page.evaluate(() => {
-        const el = document.querySelector('.nextday');
+        const el = document.querySelector('.tdc__tmr');
         if (!el) return false;
         let cur = el.parentElement;
         while (cur) {
@@ -1107,10 +1107,10 @@ async function run(browser) {
     const funOrder = await page.evaluate(() => {
       const titles = [...document.querySelectorAll('.chap__title')].map((t) => t.textContent?.trim() ?? '');
       const fun = titles.indexOf('재미로 하나 더');
-      const now = titles.indexOf('지금 어떻게 하면 될까요');
+      const now = titles.indexOf('내 사주 자세히 보기');
       return { fun, now, titles };
     });
-    check(funOrder.fun > 0 && funOrder.now === 0 && funOrder.fun > funOrder.now,
+    check(funOrder.fun >= 0 && funOrder.now >= 0 && funOrder.fun > funOrder.now,
       '[결과] 고민과 상관없는 칸은 답 뒤에 온다', funOrder.titles.join(' > '));
     await openFolds(page);
     check((await page.locator('.lucky4__tile').count()) === 6, '[결과] 펼치면 행운 여섯 칸');
@@ -1151,7 +1151,7 @@ async function run(browser) {
     // 맨 위 쪽지 카드만 캡처해 보내도 뜻이 통해야 한다 - 결론과 지금 할 일까지 들어간다
     const heroText = (await page.locator('.score-hero').first().innerText()).replace(/\s+/g, ' ');
     check(/점수/.test(heroText) && /점/.test(heroText), '[쪽지카드] 주제와 점수');
-    check(/내가 뽑은 쪽지/.test(heroText), '[쪽지카드] 뽑은 쪽지 키워드');
+    check(/오늘 나의 쪽지/.test(heroText), '[쪽지카드] 뽑은 쪽지 키워드');
     // 결론은 쪽지 카드 바로 밑 카드 하나가 맡는다. 다섯 칸이 이 순서로 다 있어야
     // 한다: 오늘 전체 종합, 오늘 할 것, 왜?, 오늘 하지 말아야 할 것, 왜?
     const top = await page.evaluate(() => {
@@ -1177,9 +1177,9 @@ async function run(browser) {
     // 결정 카드가 '왜 그렇게 해야 할까요' 보다 먼저 온다 — 위쪽만 읽어도
     // 뭘 할지 알 수 있어야 한다. 근거는 그 다음이다.
     const order = await page.evaluate(() => {
-      const d = document.querySelector('.sec-card--decide');
+      const d = document.querySelector('.tdc__act--do');
       const why = [...document.querySelectorAll('.chap__title')]
-        .find((t) => t.textContent?.includes('왜 그렇게'));
+        .find((t) => t.textContent?.includes('자세히 보기'));
       if (!d || !why) return null;
       return d.getBoundingClientRect().top < why.getBoundingClientRect().top;
     });
@@ -1604,7 +1604,7 @@ async function run(browser) {
     const page = await newPage(browser);
     await drawTo(page);
     const t = await bodyText(page);
-    const HAVE = ['지금 어떻게 하면 될까요', '왜 그렇게 해야 할까요', '네 가지 나', '오늘의 나', '가까운 미래의 나', '먼 미래의 나', '타고난 나'];
+    const HAVE = ['오늘 풀이', '오늘 해보면 좋은 것', '오늘은 미뤄두면 좋은 것', '앞으로 기대해도 되는 것', '앞으로 조심하면 좋은 것', '네 가지 나'];
     const miss = HAVE.filter((x) => !t.includes(x));
     check(miss.length === 0, '[결과] 네 덩이가 순서대로 있다', miss.join(', ') || '다 있음');
     // 오늘 하나만 놓고 묻고 답하는가

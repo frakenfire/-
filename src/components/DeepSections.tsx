@@ -1,4 +1,3 @@
-import { useRef, useState } from 'react';
 import { Icon } from './Icon.tsx';
 import { Mascot } from '../components/Mascot.tsx';
 import { softBreak } from '../lib/softBreak.ts';
@@ -20,31 +19,47 @@ type Props = {
 
 const VERDICT_WORD = { now: '지금', soon: '곧', wait: '아직' } as const;
 
-// 고민에 대한 답 한 벌. 상담 화면과 쪽지 결과 화면이 같은 것을 쓴다.
-// 순서는 결론, 언제, 열두 달, 달별 풀이, 올해와 내년, 십 년, 근거, 할 일.
-export function DeepSections({ concernKey, read, timing, userName, compact = false }: Props) {
-  // '그럼 언제가 좋아요' 는 이미 재놓은 '가장 좋은 때' 줄을 그대로 쓴다.
-  // 따로 고르면 아래 시기 덩이와 다른 달을 가리키게 된다.
-  // 아래 시기 덩이가 같은 달을 다시 말한다. 여기서 할 일까지 적으면 한
-  // 화면에서 같은 문장이 두 번 나온다. 여기서는 언제인지만 짚는다.
-  const bestRow = read.when.find((x) => x.k === '가장 좋은 때');
-  // '2027년 1월, 4달 뒤' 를 그대로 옮기면 아래 시기 카드와 같은 줄이 된다.
-  // 달 이름만 짚고, 몇 달 뒤인지는 아래 카드가 말한다.
-  // '네, 오늘 꺼내도 돼요' 바로 밑에 '가장 좋은 때는 4달 뒤' 가 붙으면 두 줄이
-  // 서로 싸우는 것처럼 읽힌다. 층이 달라서 그런 건데 읽는 사람이 알 리 없다.
-  // 밴드마다 다르게 묻던 때는 '오늘도 괜찮고, 크게 움직일 때는?' 처럼 말이
-  // 반쯤 끊겼다. 이 칸이 묻는 건 늘 같다 - 오늘 말고 크게 움직일 때가 언제냐.
-  // '크게 움직이려면' 은 무엇을 움직이는지가 없었다(사장님 지적). 고른 상황의
-  // 큰 한 걸음(이직 지원서, 고백, 100만 원 넘는 결제 등)을 그대로 묻는다.
-  const move = bigMoveOf(concernKey, read.optionKey);
-  const bestWhen = bestRow ? `${withJosa(move, '은는')} ${bestRow.v.split(',')[0]}이 가장 좋아요.` : null;
+// 고민에 대한 답 한 벌. 오늘 할 일은 결과 맨 위 카드(TodayDecisionCard)가 맡고,
+// 여기는 앞으로 기대해도 되는 것과 조심하면 좋은 것 두 카드, 그리고 접어 둔
+// 사주 근거를 맡는다.
+//
+// 전에는 열두 달 표, 올해와 내년, 지금 지나는 십 년을 카드마다 따로 세웠다.
+// 달마다 해마다 십 년마다 읽을 게 너무 많아 하나도 안 와닿는다는 말을 들었다
+// (사장님). 같은 재료를 '기대해도 되는 것' 과 '조심하면 좋은 것' 두 목록으로만
+// 다시 짠다. 시기는 목록 왼쪽 이름표가 말한다.
+export function DeepSections({ concernKey, read, userName, compact = false }: Props) {
   const concern = findConcern(concernKey);
-  const max = Math.max(...timing.months.map((m) => m.score));
-  // 막대만 보여주면 '그래서 그 달에 뭐가 있는데' 가 남는다. 눌러서 펴 볼 수 있게 한다.
-  const [openMonth, setOpenMonth] = useState(0);
-  const picked = read.monthSlots[openMonth] ?? read.monthSlots[0];
-  const flowRef = useRef<HTMLUListElement>(null);
-  const last = read.monthSlots.length - 1;
+  // 고른 상황의 큰 한 걸음(이직 지원서, 고백, 100만 원 넘는 결제 등)을 그대로 쓴다.
+  const move = bigMoveOf(concernKey, read.optionKey);
+  const row = (k: string) => read.when.find((x) => x.k === k);
+  const best = row('가장 좋은 때');
+  const avoid = row('피할 때');
+  const thisMonth = row('이번 달');
+  const goodYear = row('좋은 해');
+  const monthOf = (v: string) => v.split(',')[0];
+  const [y0, y1] = read.yearLines;
+  const good = read.yearCompare[0];
+  const care = read.yearCompare[1];
+  const decadeKeep = read.decade?.rows.find((r) => r.k === '이 십 년 동안 기억할 것');
+
+  const expect: { k: string; v: string }[] = [
+    // 가장 좋은 달이 이번 달이면 같은 달이 두 줄로 선다. 한 줄로 합친다.
+    ...(thisMonth?.act && !(best && monthOf(best.v) === thisMonth.v) ? [{ k: '이번 달', v: thisMonth.act }] : []),
+    ...(best?.act ? [{ k: thisMonth && monthOf(best.v) === thisMonth.v ? '이번 달' : monthOf(best.v), v: best.act }] : []),
+    ...(good?.thisYear && y0 ? [{ k: `올해 ${y0.label}`, v: good.thisYear }] : []),
+    ...(good?.nextYear && y1 ? [{ k: `내년 ${y1.label}`, v: good.nextYear }] : []),
+    ...(goodYear?.act && goodYear.v !== y0?.label && goodYear.v !== y1?.label ? [{ k: `${goodYear.v}`, v: goodYear.act }] : []),
+  ];
+  const watch: { k: string; v: string }[] = [
+    ...(avoid?.act ? [{ k: monthOf(avoid.v), v: avoid.act }] : []),
+    ...(care?.thisYear && y0 ? [{ k: `올해 ${y0.label}`, v: care.thisYear }] : []),
+    ...(care?.nextYear && y1 ? [{ k: `내년 ${y1.label}`, v: care.nextYear }] : []),
+    ...(decadeKeep && read.decade ? [{ k: read.decade.span, v: decadeKeep.v }] : []),
+  ];
+  // 두 카드의 첫 줄은 답이다. 고백은 언제가 가장 좋고, 언제는 미뤄두는 게 나은지.
+  const expectLead = best ? `${withJosa(move, '은는')} ${monthOf(best.v)}이 가장 좋아요.` : read.whenVerdict.head;
+  const watchLead = avoid ? `${withJosa(move, '은는')} ${monthOf(avoid.v)}에는 미뤄두는 게 나아요.` : read.caution;
+
   // 두 기둥이 같은 성향이면 같은 줄이 두 번 나온다. 한 줄로 묶고 기둥 이름을 같이 적는다.
   const traitRows: { trait: string; ks: string[] }[] = [];
   for (const c of read.chart.pillars) {
@@ -53,22 +68,9 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
     else traitRows.push({ trait: c.trait, ks: [c.k] });
   }
 
-  // 막대 하나하나를 버튼으로 두면 폭이 22px 이라 손가락이 옆 달을 누른다.
-  // 그래서 막대는 그림으로만 두고, 차트 위를 문질러 고르게 한다.
-  // 정확히 집어야 할 때는 밑의 좌우 버튼(44px)을 쓰면 된다.
-  function scrubTo(clientX: number) {
-    const el = flowRef.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const ratio = (clientX - r.left) / r.width;
-    const i = Math.round(ratio * last);
-    setOpenMonth(Math.max(0, Math.min(last, i)));
-  }
-
   return (
     <>
-      {/* 결과 화면 안에서는 맨 위 쪽지 카드가 이미 결론을 말했다. 같은 말을 두 번
-          하면 화면만 길어진다. 상담 단독 화면일 때만 결론 카드를 세운다. */}
+      {/* 결과 화면 안에서는 맨 위 쪽지 카드가 이미 결론을 말했다. 상담 단독 화면일 때만 세운다. */}
       {compact ? null : (
         <div className={`deep-hero deep-hero--${read.verdict}`}>
           <div className="deep-hero__main">
@@ -85,67 +87,39 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </div>
       )}
 
-      {/* (1) 지금 어떻게 하면 될까요.
-          오늘 할 것과 하지 말 것은 이 덩이 위, 결과 맨 위 카드(TodayDecisionCard)
-          가 까닭과 함께 맡는다. 예전엔 여기 '오늘은 이렇게' 카드가 까닭 없이
-          같은 말을 또 했다. 이 덩이는 '그럼 언제' 와 '이번 달에는' 만 맡는다. */}
-      <Chapter title="지금 어떻게 하면 될까요">
-      {/* 언제가 좋은지 — 올해·이번 달 판정이 큰 글씨 자리에서 내려온 곳이다.
-          오늘 할 일을 다 읽은 다음에 '그럼 크게 움직이는 건 언제' 가 온다. */}
       <div className="sec-card">
-        {/* 제목이 묻고, 바로 밑 굵은 줄이 답하고, 그 아래가 까닭이다.
-            답(가장 좋은 달)이 맨 끝 상자에 있으면 설명을 다 읽어야 답이 나온다. */}
-        <p className="cat4__head">결정하기 좋은 달</p>
-        <Sentences className="today-ask__answer" text={bestWhen ?? read.whenVerdict.head} />
-        {bestWhen ? <Sentences className="today-ask__a" text={read.whenVerdict.head.replace(/([^.?!])$/, '$1.')} /> : null}
-        <Sentences className="today-ask__a" text={read.whenVerdict.sub} />
-      </div>
-
-      {/* 결정 카드 — 이 리포트가 실패하지 않으려면 여기서 끝이 나야 한다.
-          다 읽고 '그래서 뭘 하라는 거지' 가 남으면 진 것이다. */}
-      <div className="sec-card sec-card--decide">
-        {/* 이번 달 판정(stance)에서 나온 목록이다. 맨 위 카드가 '오늘' 을 맡으므로
-            여기는 이름부터 이번 달이라고 밝힌다. 둘 다 '지금' 이라고 쓰면 어느 쪽이
-            오늘 할 일인지 헷갈린다. */}
-        <p className="cat4__head">이번 달 계획</p>
-        <span className={`decide__stance decide__stance--${read.decision.stance}`}>{read.decision.stanceWord}</span>
-        <Sentences className="decide__verdict" text={read.decision.verdict} />
-        <p className="decide__sub">해보면 좋은 것</p>
-        <ol className="decide__list decide__list--do">
-          {read.decision.dos.map((d, i) => (
-            <li key={d} className="decide__row">
-              <span className="decide__no num">{i + 1}</span>
-              <span className="decide__body">
-                <span className="decide__v">{d}</span>
-                {/* 할 일만 세 줄 적으면 '그걸 왜' 가 남는다. 한 줄씩 까닭을 붙인다. */}
-                <Sentences className="decide__why" text={read.decision.doWhys[i] ?? ''} />
-              </span>
-            </li>
-          ))}
-        </ol>
-        <p className="decide__sub">미뤄둘 것</p>
-        <ul className="decide__list decide__list--dont">
-          {read.decision.donts.map((d) => (
-            <li key={d} className="decide__row">
-              <span className="decide__x" aria-hidden />
-              <span className="decide__v">{d}</span>
+        <p className="cat4__head">앞으로 기대해도 되는 것</p>
+        <Sentences className="ahead__lead" text={expectLead} />
+        <ul className="read6 read6--tight">
+          {expect.map((r) => (
+            <li key={r.k + r.v} className="read6__row">
+              <span className="read6__k">{r.k}</span>
+              <Sentences className="read6__v" text={r.v} />
             </li>
           ))}
         </ul>
       </div>
 
-      </Chapter>
+      <div className="sec-card">
+        <p className="cat4__head">앞으로 조심하면 좋은 것</p>
+        <Sentences className="ahead__lead ahead__lead--care" text={watchLead} />
+        <ul className="read6 read6--tight">
+          {watch.map((r) => (
+            <li key={r.k + r.v} className="read6__row">
+              <span className="read6__k">{r.k}</span>
+              <Sentences className="read6__v" text={r.v} />
+            </li>
+          ))}
+        </ul>
+      </div>
 
-      {/* '이 고민' 은 앱이 아는 것을 일부러 안 말하는 것이다. 돈을 물었으면
-          돈이라고 적는다. */}
-      <Chapter title="왜 그렇게 해야 할까요">
-      {/* 점수가 어디서 나왔는지 — '87점입니다' 하고 끝내면 아무도 안 믿는다.
-          바탕 30, 십 년 20, 올해 20, 이번 달 20, 오늘 10 을 그대로 펼쳐 보여준다. */}
+      {/* 여기부터는 답이 아니라 근거다. 더 볼 사람만 연다. */}
+      <Chapter title="내 사주 자세히 보기" fold>
+      {/* 점수가 어디서 나왔는지 — '87점입니다' 하고 끝내면 아무도 안 믿는다. */}
       <div className="sec-card">
         <p className="cat4__head">{read.score.total}점이 나온 이유</p>
         <Sentences className="why-score__lead" text={read.scoreLine} />
         <ul className="why-score">
-          {/* 숫자 두 개가 나란히 있으면 어느 게 점수고 어느 게 몫인지 모른다. */}
           <li className="why-score__head" aria-hidden>
             <span>항목</span>
             <span />
@@ -159,10 +133,6 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
                 <i className="why-score__label">{p.label}</i>
               </span>
               <span className="why-score__bar" aria-hidden>
-                {/* 네 가지 운·궁합·오행 막대와 같은 자로 잰다. 전에는 50~92 를
-                    0~100 으로 펴서 67과 78을 벌려 놨는데, 그러면 73점 막대가
-                    트랙의 56% 에서 끝나 바로 옆에 적힌 73과 어긋났다. 벌어지는
-                    폭은 좁아지지만 숫자와 그림이 같은 말을 하는 쪽을 택한다. */}
                 <i style={{ width: `${Math.max(0, Math.min(100, p.score))}%` }} />
               </span>
               <span className="why-score__v num">{p.score}</span>
@@ -190,8 +160,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         <Sentences className="mflow__foot" text="이 다섯 줄은 타고난 사주에서만 나와요. 해가 바뀌어도 내용은 그대로예요." />
       </div>
 
-      {/* 왜 지금 이 고민이 커졌나 — 타고난 구조가 '원래 어떤 사람이냐' 라면
-          여기는 '그래서 지금 왜 이런 상황이냐' 에 답한다. */}
+      {/* 왜 지금 이 고민이 커졌나 */}
       <div className="sec-card">
         <p className="cat4__head">요즘 {concern.shortName} 생각이 커진 이유</p>
         {read.now.situation ? <Sentences className="deep-situation" text={read.now.situation} /> : null}
@@ -206,168 +175,8 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <Sentences className="mflow__foot" text="십 년 단위의 변화와 올해, 이번 달을 함께 봐요. 세 시기를 같이 보면 지금 이 생각이 커진 이유를 알 수 있어요." />
       </div>
 
-      </Chapter>
-
-      <Chapter title="달마다 해마다 할 일">
-      <div className="sec-card">
-        <p className="cat4__head">좋은 때와 피할 때</p>
-        <ul className="when4">
-          {read.when.map((w) => (
-            <li key={w.k} className="when4__row">
-              <span className="when4__k">{w.k}</span>
-              <span className="when4__v">{w.v}</span>
-              {w.band ? (
-                <span className={`when4__b when4__b--${w.bandKey ?? 'ok'}`}>{w.band}</span>
-              ) : null}
-              {w.act ? <span className="when4__act">{w.act}</span> : null}
-            </li>
-          ))}
-        </ul>
-
-        <p className="cat4__head cat4__head--sub">앞으로 열두 달</p>
-        <ul
-          className="mflow"
-          ref={flowRef}
-          onPointerDown={(e) => {
-            e.currentTarget.setPointerCapture(e.pointerId);
-            scrubTo(e.clientX);
-          }}
-          onPointerMove={(e) => {
-            if (e.buttons === 0) return;
-            scrubTo(e.clientX);
-          }}
-        >
-          {timing.months.map((m, i) => (
-            <li
-              key={m.label}
-              className={`mflow__col mflow__col--${m.band}${i === openMonth ? ' mflow__col--on' : ''}`
-                + (i > 0 && m.year !== timing.months[i - 1].year ? ' mflow__col--newyear' : '')}
-            >
-              <span className="mflow__barbox">
-                <span className="mflow__bar" style={{ height: `${Math.round((m.score / max) * 56) + 8}px` }} />
-              </span>
-              <span className={`mflow__m num${i === 0 ? ' mflow__m--now' : ''}`}>{m.month}</span>
-            </li>
-          ))}
-        </ul>
-        {/* 가로축에 1 2 3 만 적혀 있으면 그게 내년인지 올해인지 알 수가 없다.
-            해가 바뀌는 자리에 세로선을 긋고, 아래 한 줄이 범위를 말한다. */}
-        <Sentences
-          className="mflow__foot"
-          text={
-            `${timing.months[0].label}부터 ${timing.months[timing.months.length - 1].label}까지예요. ` +
-            `맨 왼쪽이 이번 달이고, 세로선 오른쪽이 ${timing.months[timing.months.length - 1].year}년이에요. ` +
-            '표를 옆으로 넘기면 그 달 풀이가 나와요.'
-          }
-        />
-        <div className="mpick">
-          <p className="mpick__head">
-            <button
-              type="button"
-              className="mpick__step"
-              aria-label="이전 달"
-              disabled={openMonth === 0}
-              onClick={() => setOpenMonth((v) => Math.max(0, v - 1))}
-            >
-              ‹
-            </button>
-            <span className="mpick__label">{picked.label}</span>
-            <span className={`mpick__band mpick__band--${picked.bandKey}`}>{picked.band}</span>
-            <button
-              type="button"
-              className="mpick__step"
-              aria-label="다음 달"
-              disabled={openMonth === last}
-              onClick={() => setOpenMonth((v) => Math.min(last, v + 1))}
-            >
-              ›
-            </button>
-          </p>
-          <Sentences className="mpick__line" text={picked.outer} />
-          <ul className="slot__pts">
-            <li className="slot__pt slot__pt--good">
-              {/* 밴드 칩이 같은 화면에서 '좋아요 92' 로 쓰이고 있다.
-                  여기까지 '좋아요' 라고 적으면 한 단어가 두 가지 뜻이 된다.
-                  점수를 말하는 자리와 내용을 말하는 자리를 갈라놓는다. */}
-              <span className="slot__pt-k">잘 되는 것</span>
-              <Sentences className="slot__pt-v" text={picked.good} />
-            </li>
-            <li className="slot__pt slot__pt--care">
-              <span className="slot__pt-k">조심할 것</span>
-              <Sentences className="slot__pt-v" text={picked.care} />
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="sec-card">
-        <p className="cat4__head">올해와 내년</p>
-        {/* 두 해를 표로 맞대 놓았더니 좁은 화면에서 칸마다 글자가 서너 줄씩
-            접혀 읽히지 않았다. 해마다 할 것과 조심할 것을 바로 밑에 붙인다. */}
-        <ul className="yline">
-          {read.yearLines.map((y, i) => {
-            const word = i === 0 ? '올해' : '내년';
-            const good = read.yearCompare[0]?.[i === 0 ? 'thisYear' : 'nextYear'];
-            const care = read.yearCompare[1]?.[i === 0 ? 'thisYear' : 'nextYear'];
-            return (
-              <li key={y.k} className="yline__row">
-                <span className="yline__k">
-                  {y.k} <b>{y.label}</b>
-                </span>
-                <span className={`yline__b yline__b--${y.bandKey}`}>{y.band}</span>
-                <span className="yline__v"><Sentences text={y.v} /></span>
-                <ul className="slot__pts yline__pts">
-                  {good ? (
-                    <li className="slot__pt slot__pt--good">
-                      <span className="slot__pt-k">{word} 해보면 좋은 것</span>
-                      <Sentences className="slot__pt-v" text={good} />
-                    </li>
-                  ) : null}
-                  {care ? (
-                    <li className="slot__pt slot__pt--care">
-                      <span className="slot__pt-k">{word} 조심할 것</span>
-                      <Sentences className="slot__pt-v" text={care} />
-                    </li>
-                  ) : null}
-                </ul>
-              </li>
-            );
-          })}
-        </ul>
-        <Sentences className="ycmp__gap" text={read.yearGap} />
-      </div>
-
-      {read.decade ? (
-        <div className="sec-card">
-          <p className="cat4__head">지금 지나는 십 년</p>
-          <p className="dec__span">{read.decade.span}</p>
-          <p className="dec__head">{read.decade.head}</p>
-          <ul className="dec">
-            {read.decade.rows.map((r) => (
-              <li key={r.k} className="dec__row">
-                <span className="dec__k">{r.k}</span>
-                <Sentences className="dec__v" text={r.v} />
-              </li>
-            ))}
-          </ul>
-          {read.decade.next ? <Sentences className="mflow__foot" text={read.decade.next} /> : null}
-        </div>
-      ) : (
-        <div className="sec-card">
-          <p className="cat4__head">지금 지나는 십 년</p>
-          <Sentences className="qa qa--sub" text={read.daeunLine} />
-        </div>
-      )}
-
-      </Chapter>
-
-      <Chapter title="내 사주 자세히 보기">
-      {/* 내 일주 — 사주에서 사람을 가리키는 제일 작은 단위. 진짜 사주를 보러
-          온 사람이 제일 먼저 찾는 자리라 이 덩이 맨 위에 둔다. 일간 열 가지만
-          읽던 때는 열 명 중 한 명이 같은 말을 받았는데, 이제 예순 명 중 하나다. */}
       {read.chart.dayPillar ? (
         <div className="sec-card">
           <p className="cat4__head">{read.chart.dayPillar.name}</p>
@@ -390,8 +199,6 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </div>
       ) : null}
 
-      {/* 네 가지 나 — 여러 각도에서 본 요약이라 이 덩이 머리에 둔다.
-          오늘이 맨 위다. 매일 새로 뽑는 건 그 줄뿐이다. */}
       <div className="sec-card">
         <p className="cat4__head">네 가지 나</p>
         <ul className="selves">
@@ -413,18 +220,8 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         />
       </div>
 
-      {/* '층마다 본 것' 카드는 지웠다.
-          네 층을 하나씩 짚어주던 카드인데, 바로 위 '네 가지 나' 가 같은 네
-          층을 같은 재료(pull)로 말한다. 접는 것을 걷어내면서 둘이 한 화면에
-          같이 서게 됐고, '연봉과 조건이 숫자로 정해지는 때예요' 와
-          '연봉과 조건이 숫자로 정해지는 쪽으로 읽었어요' 가 나란히 나왔다.
-          게다가 지운 쪽은 '겨루는 기운이 들어와요' 처럼 기운 이름을 쓴다.
-          읽고 나서 정해지는 게 없는 말이라 남길 이유가 없다.
-          무엇을 보고 읽었는지 한 줄(basis)은 아래 '이 주제에서 본 자리' 가 맡는다. */}
       {/* 명식을 그대로 펼친다. 근거를 안 보여주면 '아무 말이나 하는 앱' 이 된다. */}
       <div className="sec-card">
-        {/* 시각을 모르면 시 기둥이 빠져 여섯 글자다. '여덟 글자' 라고 적어 두면
-            몰라요를 골랐는데 안 먹은 것처럼 보인다(실기기에서 받은 지적). */}
         <p className="cat4__head">{read.chart.pillars.length < 4 ? '내 사주 여섯 글자' : '내 사주 여덟 글자'}</p>
         {read.chart.pillars.length < 4 ? (
           <Sentences className="mflow__foot" text="태어난 시각을 몰라서 시 기둥은 빼고 봤어요." />
@@ -438,8 +235,6 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        {/* 칸 안에 '부담을 견디는 힘' 같은 이름만 두면 그래서 어떤 사람인지가
-            안 남는다. 기둥마다 성향 한 줄을 풀어서 아래에 적는다. */}
         <ul className="read6 read6--tight">
           {traitRows.map((t) => (
             <li key={t.trait} className="read6__row">
@@ -521,7 +316,6 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       {/* 오늘 글자와 내 글자가 만나는 자리. 매일 바뀌므로 다시 볼 이유가 된다. */}
       <div className="sec-card">
-        {/* '나무에 드는 토끼띠 날' 같은 간지 풀이는 뺐다. 사주를 모르는 사람에겐 뜻이 없다. */}
         <p className="cat4__head">오늘과 내 사주가 만나는 곳</p>
         <Sentences className="qa qa--sub" text={read.chart.today} />
         <ul className="read6 read6--tight">

@@ -51,7 +51,7 @@ export type DeepRead = {
   /** 결과 맨 위 결론 - 오늘 전체 종합, 오늘 할 것과 까닭, 하지 말 것과 까닭 */
   todayDecision: TodayDecision;
   /** 결정 카드 — 지금 어느 상태이고, 뭘 하고 뭘 하지 말 것인가 */
-  decision: { stance: Stance; stanceWord: string; verdict: string; dos: string[]; doWhys: string[]; donts: string[] };
+  decision: { stance: Stance; stanceWord: string; verdict: string; dos: string[]; doWhys: string[]; donts: string[]; dontWhys: string[] };
   /** 왜 지금 이 고민이 커졌는지 — 십 년, 올해, 이번 달을 겹쳐 본다 */
   now: { head: string; situation: string; rows: { k: string; label: string; v: string }[] };
   headline: string;
@@ -352,6 +352,7 @@ export function buildDeepRead(
     dos: [...plan.dos],
     doWhys: [...plan.doWhys],
     donts: [...plan.donts],
+    dontWhys: [...plan.dontWhys],
   };
 
 

@@ -60,7 +60,6 @@ const ALLOW = new Map([
   ['lib/toss.ts:NOTI_TEMPLATE_CODE', '콘솔 값 자리'],
   // 엔진 내부를 따로 재보는 자리
   ['lib/daeun.ts:daeunStartAge', '대운 시작 나이 검산'],
-  ['lib/sentences.ts:splitSentences', '문장 자르기 - 줄 묶기(lineGroups)와 되풀이 검사가 쓴다'],
   ['data/noteToday/index.ts:NOTE_TODAY', '쪽지 한 줄 표 - 서른여섯 장 x 일곱 칸이 다 찼는지 테스트가 직접 본다'],
   ['lib/deepRead.ts:stanceLead', '판정 한 줄 - 점수와 달 이름이 박혔는지 테스트가 직접 본다'],
   ['lib/saju.ts:iljinOf', '홈 카드에서 간지 이름을 뺐다(누구나 아는 말). 일진 계산이 밀리지 않았는지 coherence 테스트가 직접 본다'],

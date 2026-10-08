@@ -63,6 +63,28 @@ test('판정 넷이 서로 다른 말로 시작한다', () => {
   }
 });
 
+// 미룰 이유는 할 이유를 뒤집어 쓰면 안 된다. 같은 칸에서 같은 문장이 두 번
+// 나오면 한쪽은 아무 말도 안 한 것이다. 그리고 이유 칸에 '~하세요' 가 오면
+// 그건 이유가 아니라 지시다.
+test('미룰 이유(dontWhys)는 셋 다 있고, 할 이유와 다르고, 시키지 않는다', () => {
+  const seen = new Map<string, string>();
+  for (const c of CONCERNS) {
+    for (const o of c.options) {
+      const p = planOf(c.key, o.key);
+      assert.equal(p.dontWhys.length, 3, `${c.key}.${o.key}`);
+      p.dontWhys.forEach((w, i) => {
+        const at = `${c.key}.${o.key}[${i}]`;
+        assert.ok(w.endsWith('.'), `${at} 마침표로 끝나야 해요: ${w}`);
+        assert.ok(w.length >= 25 && w.length <= 45, `${at} ${w.length}자: ${w}`);
+        assert.ok(!p.doWhys.includes(w), `${at} 할 이유와 같은 문장: ${w}`);
+        assert.doesNotMatch(w, /세요|십시오|지 마[라세]/, `${at} 시키는 말: ${w}`);
+        assert.ok(!seen.has(w), `${at} 는 ${seen.get(w)} 와 같은 문장`);
+        seen.set(w, at);
+      });
+    }
+  }
+});
+
 test('상황을 안 골라도 고른 상황 중 하나로 떨어진다', () => {
   for (const c of CONCERNS) {
     const f = planOf(c.key, null);

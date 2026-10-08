@@ -8,6 +8,7 @@ import { GRADE_KO } from '../lib/luck.ts';
 import { todayKey } from '../lib/dateSeed.ts';
 import { TodayDecisionCard } from '../components/TodayDecisionCard.tsx';
 import { todayVibe } from '../lib/dayVibe.ts';
+import { asDo, asDont } from '../lib/polite.ts';
 import { Sentences } from '../components/Sentences.tsx';
 import { luckyWhen } from '../lib/luckyWhen.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
@@ -144,7 +145,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
             남는다는 말을 들었다. 점수와 쪽지는 여기, 결론은 그 바로 밑이다. */}
         <div className="score-hero__note">
           <span className="drawn__k">
-            내가 뽑은 쪽지 · <span className="drawn__kw">{note.name}</span>
+            오늘 나의 쪽지 · <span className="drawn__kw">{note.name}</span>
           </span>
           {noteMsg ? <Sentences className="score-hero__msg" text={noteMsg} /> : null}
         </div>
@@ -152,7 +153,14 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
 
       {/* 오늘 전체 종합 → 오늘 할 것과 까닭 → 오늘 하지 말아야 할 것과 까닭.
           고민을 골라 뽑았든 그냥 뽑았든 같은 카드로 그린다. */}
-      <TodayDecisionCard decision={deep ? deep.read.todayDecision : todayVibe(todayKey()).decision} />
+      <TodayDecisionCard
+        decision={deep ? deep.read.todayDecision : todayVibe(todayKey()).decision}
+        more={deep ? {
+          dos: deep.read.decision.dos.map((d, i) => ({ v: asDo(d), why: deep.read.decision.doWhys[i] })),
+          donts: deep.read.decision.donts.map((d, i) => ({ v: asDont(d), why: deep.read.decision.dontWhys[i] })),
+        } : undefined}
+        tomorrow={deep ? deep.read.todayMeet.nextDay : undefined}
+      />
 
       {/* 고민 답 — 뽑은 쪽지와 오늘 할 일 다음에 온다 */}
       {deep ? (
@@ -231,7 +239,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           69줄짜리 한 덩이가 통째로 여기였다.
           버리지는 않는다 - 매일 보는 재미는 이쪽에 있다. 대신 접는다.
           답을 받으러 온 사람에게는 답까지만 보이고, 더 볼 사람만 연다. */}
-      <Chapter title="재미로 하나 더">
+      <Chapter title="재미로 하나 더" fold>
       {/* 2. 네 가지 운 — 사랑·돈·일·건강 점수.
           고민을 골라 들어왔으면 안 그린다. 돈을 물어본 사람에게 사랑운·일운·
           건강운을 같이 내밀면 화면이 물어본 것 말고 딴 얘기로 채워진다.
@@ -339,22 +347,6 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           onUnlock={onUnlockConcern}
           onOpen={onOpenConcern}
         />
-      ) : null}
-
-      {/* 마지막에 읽는 한 줄. 다시 올 이유를 만드는 자리다.
-          '내일 대박' 같은 미끼는 안 쓴다 — 지어낸 기대를 걸면 다음 날 한 번
-          속고 다시는 안 온다. 내일 일진을 실제로 계산해서 무엇이 달라지는지만
-          적는다. 접힌 묶음 안에 넣지 않는다. 안 펴면 아무도 못 본다. */}
-      {deep ? (
-        <p className="nextday">
-          <span className="nextday__k" aria-hidden>
-            <Icon name="clock" size={16} />
-          </span>
-          <span className="nextday__body">
-            <span className="nextday__head">내일은 무엇이 달라질까요</span>
-            <Sentences className="nextday__v" text={deep.read.todayMeet.nextDay} />
-          </span>
-        </p>
       ) : null}
 
       {/* 알림은 먼저 띄우지 않는다. 결과를 다 본 사람이 '내일도 본다' 고
