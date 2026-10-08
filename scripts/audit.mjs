@@ -10,6 +10,7 @@
 // 미리보기 서버는 이 스크립트가 직접 띄우고 내린다.
 // Playwright 는 devDependency 가 아니라 필요할 때만 쓴다(설치 안 돼 있으면 안내 후 종료).
 
+import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -59,7 +60,7 @@ const check = (cond, name, detail = '') => (cond ? ok(name, detail) : bad(name, 
 // ── 미리보기 서버 ───────────────────────────────────────────
 function startPreview() {
   const p = spawn('npx', ['vite', 'preview', '--port', String(PORT)], {
-    cwd: new URL('..', import.meta.url).pathname,
+    cwd: fileURLToPath(new URL('..', import.meta.url)).replace(/\\/g, '/'),
     stdio: 'ignore',
     detached: false,
   });
@@ -431,7 +432,9 @@ async function run(browser) {
       check(weekReach.hit && weekReach.veil === '',
         '[주간] 마지막 날 칸까지 덮개 없이 바로 눌린다',
         `${weekReach.hit ? '' : '위에 덮인 것이 있음 '}${weekReach.veil}`);
-      check(/이번 주는 .+(트여요|순해요|잔잔해요)/.test(open), '[주간] 헤드라인 노출',
+      // 예전 문구는 '트여요·순해요·잔잔해요' 였다. 무엇이 좋다는 건지 안 말해서
+      // '화요일(9/29)이 가장 좋아요' 처럼 날을 짚도록 바뀌었다(weekAhead.ts).
+      check(/이번 주는 .+(좋아요|지나가요)/.test(open), '[주간] 헤드라인 노출',
         (open.match(/이번 주는 [^\n]*/) || [''])[0]);
 
       const rows = await page.locator('.week-row').count();
@@ -818,13 +821,14 @@ async function run(browser) {
       // 바로 밑 결론과 굵기가 같아져 무엇이 제목인지 안 읽힌다.
       const name = (await page.locator('.drawn__kw').innerText()).trim();
       check(name.length >= 2, '[쪽지] 뽑은 쪽지 이름이 결과에 남음', name);
-      check(t.includes('내가 뽑은 쪽지'), '[쪽지] 내가 뽑았다는 사실을 명시');
-      // 위계 가드 — 결론이 쪽지 이름보다 반드시 커야 한다
+      check(t.includes('오늘 나의 쪽지'), '[쪽지] 내가 뽑았다는 사실을 명시');
+      // 위계 가드 — 결론이 쪽지 이름보다 반드시 커야 한다. 결론은 이제 쪽지
+      // 카드 바로 밑 '오늘 전체 종합' 이 맡는다.
       const sizes = await page.evaluate(() => {
         const px = (el) => (el ? Number.parseFloat(getComputedStyle(el).fontSize) : 0);
         return {
           name: px(document.querySelector('.drawn__kw')),
-          verdict: px(document.querySelector('.drawn__verdict')),
+          verdict: px(document.querySelector('.tdc__headline')),
         };
       });
       check(sizes.verdict > sizes.name + 3,
@@ -847,9 +851,10 @@ async function run(browser) {
       const cls = await page.locator('.drawn').getAttribute('class');
       check(/drawn--(softGreen|cream|softYellow|softPink)/.test(cls),
         '[쪽지] 뽑은 쪽지 색이 결과까지 이어짐', cls);
-      // 쪽지 이름이 실제로 고른 것과 같아야 한다 (아무 쪽지나 보여주면 의미 없다)
-      const lead = (await page.locator('.drawn__lead').innerText()).trim();
-      check(lead.length >= 5, '[쪽지] 쪽지별 풀이 한 줄이 함께 나옴', lead.slice(0, 24));
+      // 쪽지 바로 밑에서 오늘 결론이 나온다. 쪽지만 보여주고 결론을 한참
+      // 아래에 두면 '그래서 오늘 뭘 하라는 거지' 가 남는다.
+      const lead = (await page.locator('.tdc__headline').first().innerText()).trim();
+      check(lead.length >= 10, '[쪽지] 쪽지 바로 밑에 오늘 결론이 나옴', lead.slice(0, 24));
 
       // ── 광고 자리 ──
       // 결과를 보기 전에 막으면 그 자리에서 나간다. 본문 중간에 끼우면 어디까지가
@@ -909,13 +914,13 @@ async function run(browser) {
       // ── 다시 올 이유 ──
       // 이 앱의 답은 실제로 매일 바뀌는데 그 사실을 아무 데서도 말하지 않으면
       // 한 번 보고 끝내는 화면이 된다. 단, 지어낸 기대는 걸지 않는다.
-      const nd = await page.locator('.nextday__v').innerText().catch(() => '');
+      const nd = await page.locator('.tdc__tmr-v').innerText().catch(() => '');
       check(nd.includes('내일'), '[재방문] 내일 무엇이 달라지는지 적혀 있다', nd.slice(0, 30));
       check(!/대박|최고의 날|놓치면|서둘러|무조건|반드시/.test(nd),
         '[재방문] 미끼 표현을 안 쓴다', nd.slice(0, 30));
       // 접힌 묶음 안에 넣으면 안 펴는 사람은 못 본다
       const ndOpen = await page.evaluate(() => {
-        const el = document.querySelector('.nextday');
+        const el = document.querySelector('.tdc__tmr');
         if (!el) return false;
         let cur = el.parentElement;
         while (cur) {
@@ -980,7 +985,7 @@ async function run(browser) {
       // '좋아요' 였다. 한 단어가 두 가지 뜻이면 읽는 사람이 둘을 잇는다.
       const BAND_WORDS = ['좋아요', '무난해요', '조심할 때'];
       const clash = await page.evaluate((words) => {
-        const LABELS = '.slot__pt-k, .today2__k, .read6__k, .when4__k, .yline__k, .cat4__head, .more__label, .dec__k, .ycmp th';
+        const LABELS = '.slot__pt-k, .today2__k, .read6__k, .when4__k, .yline__k, .cat4__head, .more__label, .dec__k';
         return [...document.querySelectorAll(LABELS)]
           .map((el) => el.textContent.trim())
           .filter((t) => words.includes(t));
@@ -1102,10 +1107,10 @@ async function run(browser) {
     const funOrder = await page.evaluate(() => {
       const titles = [...document.querySelectorAll('.chap__title')].map((t) => t.textContent?.trim() ?? '');
       const fun = titles.indexOf('재미로 하나 더');
-      const now = titles.indexOf('지금 어떻게 하면 될까요');
+      const now = titles.indexOf('내 사주 자세히 보기');
       return { fun, now, titles };
     });
-    check(funOrder.fun > 0 && funOrder.now === 0 && funOrder.fun > funOrder.now,
+    check(funOrder.fun >= 0 && funOrder.now >= 0 && funOrder.fun > funOrder.now,
       '[결과] 고민과 상관없는 칸은 답 뒤에 온다', funOrder.titles.join(' > '));
     await openFolds(page);
     check((await page.locator('.lucky4__tile').count()) === 6, '[결과] 펼치면 행운 여섯 칸');
@@ -1146,26 +1151,45 @@ async function run(browser) {
     // 맨 위 쪽지 카드만 캡처해 보내도 뜻이 통해야 한다 - 결론과 지금 할 일까지 들어간다
     const heroText = (await page.locator('.score-hero').first().innerText()).replace(/\s+/g, ' ');
     check(/점수/.test(heroText) && /점/.test(heroText), '[쪽지카드] 주제와 점수');
-    check(/내가 뽑은 쪽지/.test(heroText), '[쪽지카드] 뽑은 쪽지 키워드');
-    check((await page.locator('.drawn__verdict').count()) === 1, '[쪽지카드] 한 문장 결론');
-    check((await page.locator('.drawn__now').count()) === 1, '[쪽지카드] 지금 할 일 한 줄');
+    check(/오늘 나의 쪽지/.test(heroText), '[쪽지카드] 뽑은 쪽지 키워드');
+    // 결론은 쪽지 카드 바로 밑 카드 하나가 맡는다. 다섯 칸이 이 순서로 다 있어야
+    // 한다: 오늘 전체 종합, 오늘 할 것, 왜?, 오늘 하지 말아야 할 것, 왜?
+    const top = await page.evaluate(() => {
+      const card = document.querySelector('.tdc');
+      const hero = document.querySelector('.score-hero');
+      if (!card || !hero) return null;
+      const txt = card.innerText.replace(/\s+/g, ' ');
+      const order = ['오늘 전체 종합', '오늘 해보면 좋은 것', '왜?', '오늘은 미뤄두면 좋은 것', '왜?'];
+      let at = -1;
+      const pos = [];
+      for (const k of order) { at = txt.indexOf(k, at + 1); pos.push(at); }
+      // 쪽지 카드와 결론 카드 사이에 다른 카드가 끼면 안 된다
+      const next = hero.nextElementSibling;
+      return { pos, right: next === card, texts: [...card.querySelectorAll('.tdc__headline, .tdc__summary, .tdc__action, .tdc__why')].map((e) => e.innerText.trim()) };
+    });
+    check(!!top && top.pos.every((p, i) => p >= 0 && (i === 0 || p > top.pos[i - 1])),
+      '[쪽지카드] 종합, 할 것, 왜, 하지 말 것, 왜 가 이 순서로 있다', top ? top.pos.join(',') : '카드 없음');
+    check(!!top && top.right, '[쪽지카드] 쪽지 카드 바로 밑이 결론 카드다');
+    check(!!top && top.texts.length === 6 && top.texts.every((t) => t.length >= 6),
+      '[쪽지카드] 결론 여섯 줄이 다 차 있다', top ? top.texts.map((t) => t.length).join(',') : '');
     // 같은 결론을 아래에서 또 카드로 세우지 않는다
     check((await page.locator('.deep-hero').count()) === 0, '[쪽지카드] 결론 카드가 두 번 안 나옴');
     // 결정 카드가 '왜 그렇게 해야 할까요' 보다 먼저 온다 — 위쪽만 읽어도
     // 뭘 할지 알 수 있어야 한다. 근거는 그 다음이다.
     const order = await page.evaluate(() => {
-      const d = document.querySelector('.sec-card--decide');
+      const d = document.querySelector('.tdc__act--do');
       const why = [...document.querySelectorAll('.chap__title')]
-        .find((t) => t.textContent?.includes('왜 그렇게'));
+        .find((t) => t.textContent?.includes('자세히 보기'));
       if (!d || !why) return null;
       return d.getBoundingClientRect().top < why.getBoundingClientRect().top;
     });
     check(order === true, '[결정] 근거 덩이보다 먼저 나옴');
     // 덩이마다 안에 뭐가 들었는지 한 줄로 말해줘야 제목만 보고도 건너뛸지
     // 읽을지 정할 수 있다. 수를 박아두면 덩이가 늘 때마다 깨지므로 안 센다.
+    // 덩이 밑 안내 한 줄은 뺐다. 번호 붙은 칸 제목이 그 일을 한다(사장님 지적: 덩이 질문 밑에
+    // 부제, 그 밑에 또 질문이 나와 읽는 순서가 안 보였다).
     const hints = await page.locator('.chap__hint').allInnerTexts();
-    check(hints.length >= 3 && hints.every((h) => h.trim().length > 6),
-      '[결정] 덩이마다 안내 한 줄', hints.join(' / '));
+    check(hints.length === 0, '[결정] 결과 덩이에 부제 없음', hints.join(' / '));
     // 복사 버튼은 없앴다. shareMessage 가 공유 못 하는 환경에서 알아서 복사로
     // 떨어지므로 같은 일을 하는 버튼을 둘 세울 이유가 없었다. '복사하기' 라는
     // 글자가 없는지 보는 건 그 글자가 코드에 없어서 늘 통과한다 — 대신 아래
@@ -1233,7 +1257,7 @@ async function run(browser) {
     const pillarRows = await page.evaluate(() => {
       const cols = [...document.querySelectorAll('.chart8__col')];
       const rowTop = (sel) => cols.map((c) => Math.round(c.querySelector(sel).getBoundingClientRect().top));
-      return ['.chart8__k', '.chart8__stem', '.chart8__branch', '.chart8__god', '.chart8__step']
+      return ['.chart8__k', '.chart8__stem', '.chart8__branch']
         .map((sel) => { const t = rowTop(sel); return Math.max(...t) - Math.min(...t); });
     });
     check(Math.max(...pillarRows) <= 1, '[상담] 명식 네 기둥의 줄이 서로 맞음', `${pillarRows.join('/')}px`);
@@ -1580,14 +1604,14 @@ async function run(browser) {
     const page = await newPage(browser);
     await drawTo(page);
     const t = await bodyText(page);
-    const HAVE = ['지금 어떻게 하면 될까요', '왜 그렇게 해야 할까요', '네 가지 나', '오늘의 나', '가까운 미래의 나', '먼 미래의 나', '타고난 나'];
+    const HAVE = ['오늘 풀이', '오늘 해보면 좋은 것', '오늘은 미뤄두면 좋은 것', '앞으로 기대해도 되는 것', '앞으로 조심하면 좋은 것', '네 가지 나'];
     const miss = HAVE.filter((x) => !t.includes(x));
     check(miss.length === 0, '[결과] 네 덩이가 순서대로 있다', miss.join(', ') || '다 있음');
     // 오늘 하나만 놓고 묻고 답하는가
     // 덩이 제목이 이미 묻고 있으니 그 밑에서는 바로 답한다.
     check(/오늘[은 ][^\n]{2,40}(세요|돼요|괜찮아요)\./.test(t), '[결과] 오늘만 놓고 바로 답한다');
     check(!/오늘[^\n]{2,30}될까요\?/.test(t), '[결과] 한 화면에서 두 번 묻지 않는다');
-    check(t.includes('평소의 나'), '[결과] 타고난 나가 기준이라고 말한다');
+    check(t.includes('이 점수가 기준이에요'), '[결과] 타고난 나가 기준이라고 말한다');
     // 문장이 끝나면 줄이 바뀌므로 두 문장 사이가 공백일 수도 줄바꿈일 수도 있다.
     check(/평소(와 비슷해요|보다 \d+점 (높|낮)아요)\.\s+.+\./.test(t),
       '[결과] 나머지 셋을 평소와 견주고 할 일까지 말한다');
@@ -1605,7 +1629,7 @@ async function run(browser) {
     const first = await bodyText(page);
     const firstScore = first.match(/(\d+)점/)?.[1] ?? '';
     // 결과 화면 아래 '다른 고민도 궁금하면' 에서 다른 고민을 눌러 한 번 더 뽑는다
-    await page.getByText('모을 때인지 지킬 때인지', { exact: false }).first().click();
+    await page.getByText('지금은 모아야 할지, 써도 될지', { exact: false }).first().click();
     await wait(page, 1200);
     if (!(await page.getByText('쪽지를 골라보세요', { exact: false }).count())) {
       await page.getByText('모으고 싶어요', { exact: true }).first().click();
@@ -1626,7 +1650,7 @@ async function run(browser) {
       await back.click();
       await wait(page, 700);
       const t = await bodyText(page);
-      if (/점수/.test(t) && /왜 \d+점인가요/.test(t)) { seenResultAgain = true; break; }
+      if (/점수/.test(t) && /\d+점이 나온 이유/.test(t)) { seenResultAgain = true; break; }
     }
     check(!seenResultAgain, '[두 번 뽑기] 뒤로가기가 지나간 결과로 안 떨어진다',
       seenResultAgain ? `${firstScore}점 자리에 새 쪽지가 그려졌어요` : '홈까지 결과 화면 없음');

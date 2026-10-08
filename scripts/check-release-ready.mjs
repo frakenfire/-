@@ -15,9 +15,9 @@ function check(file, pattern, message) {
   if (pattern.test(text)) problems.push(`${file}: ${message}`);
 }
 
-// P0-05: granite.config 의 콘솔 연동값이 placeholder 면 안 됨
-check('granite.config.ts', /placeholder-today-note/, '아이콘이 아직 placeholder 예요 (콘솔 업로드 URL 로 교체)');
-check('granite.config.ts', /appName:\s*'today-note'/, 'appName 이 임시값이에요 (콘솔 발급 앱 ID 로 교체)');
+// P0-05: apps-in-toss.config 의 콘솔 연동값이 placeholder 면 안 됨
+check('apps-in-toss.config.ts', /placeholder-today-note/, '아이콘이 아직 placeholder 예요 (콘솔 업로드 URL 로 교체)');
+check('apps-in-toss.config.ts', /appName:\s*'today-note'/, 'appName 이 임시값이에요 (콘솔 발급 앱 ID 로 교체)');
 
 // P0-01/05: 광고 그룹 ID 가 아직 REPLACE_ 접두사면 실광고가 안 열림.
 // 주의: 파일 전체에서 'REPLACE_' 를 찾으면 안 된다. ads.ts 에는 런타임 안전장치
@@ -32,7 +32,7 @@ check(
 
 // 공유 딥링크 슬러그는 granite appName 과 같아야 링크가 열린다 (불일치 = 죽은 링크)
 try {
-  const granite = readFileSync(new URL('../granite.config.ts', import.meta.url), 'utf8');
+  const granite = readFileSync(new URL('../apps-in-toss.config.ts', import.meta.url), 'utf8');
   const shareSrc = readFileSync(new URL('../src/lib/share.ts', import.meta.url), 'utf8');
   const appName = granite.match(/appName:\s*'([^']+)'/)?.[1];
   const slug = shareSrc.match(/INTOSS_APP_SLUG = '([^']+)'/)?.[1];

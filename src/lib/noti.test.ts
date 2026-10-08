@@ -51,7 +51,7 @@ test('알림 줄은 템플릿이 채워져야 뜬다', () => {
   assert.match(screen, /\{deep && onAskNoti \? \(/);
   assert.match(screen, /className="notiask"/);
   // 무엇을 묻는지 문구로 분명해야 한다. 그냥 '알림 받기' 면 왜 받는지가 없다.
-  assert.match(screen, /내일 쪽지가 바뀌면 알려드릴까요/);
+  assert.match(screen, /매일 오전 10시, 새 쪽지 알림 받기/);
 });
 
 test('알림 줄이 결과를 다 본 자리에 있다', () => {

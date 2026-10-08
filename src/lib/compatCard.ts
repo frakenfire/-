@@ -139,7 +139,7 @@ export async function saveCompatCard(input: CompatCardInput): Promise<boolean> {
       ctx.fillStyle = '#4e5968';
       ctx.font = `bold 36px ${CARD_FONT}`;
       ctx.fillText(
-        `${result.elements.aKo} × ${result.elements.bKo} · ${result.elements.flowKo}`,
+        `${result.elements.aKo} × ${result.elements.bKo}, ${result.elements.flowKo}`,
         cx,
         badgeY + 150,
       );
@@ -172,10 +172,10 @@ export async function saveCompatCard(input: CompatCardInput): Promise<boolean> {
     // 워터마크 + 초대 문구
     ctx.fillStyle = style.accent;
     ctx.font = `bold 40px ${CARD_FONT}`;
-    ctx.fillText('너도 우리 궁합 봐봐', cx, cardY + cardH - 120);
+    ctx.fillText('나도 궁합 보러가기', cx, cardY + cardH - 120);
     ctx.fillStyle = '#8b95a1';
     ctx.font = `bold 34px ${CARD_FONT}`;
-    ctx.fillText('오늘의 마음 한장 · 친구 궁합', cx, cardY + cardH - 60);
+    ctx.fillText('[오늘의 마음 한장] 친구 궁합', cx, cardY + cardH - 60);
 
     const dataUrl = canvas.toDataURL('image/png');
     const now = new Date();

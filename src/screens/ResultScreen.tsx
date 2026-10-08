@@ -5,7 +5,10 @@ import { MoreConcerns } from '../components/MoreConcerns.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
 import { GRADE_KO } from '../lib/luck.ts';
-import { softBreak } from '../lib/softBreak.ts';
+import { todayKey } from '../lib/dateSeed.ts';
+import { TodayDecisionCard } from '../components/TodayDecisionCard.tsx';
+import { todayVibe } from '../lib/dayVibe.ts';
+import { asDo, asDont } from '../lib/polite.ts';
 import { Sentences } from '../components/Sentences.tsx';
 import { luckyWhen } from '../lib/luckyWhen.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
@@ -18,12 +21,13 @@ import { Chapter } from '../components/Chapter.tsx';
 import type { Zodiac } from '../data/zodiac.ts';
 import { partPassed } from '../lib/dayPart.ts';
 import { useDayPart } from '../lib/useDayPart.ts';
+import { noteTodayOf } from '../data/noteToday/index.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { ohaengWhy } from '../data/ohaeng.ts';
 import type { Band } from '../lib/timing.ts';
 
 // 고민 점수의 등급말 - 숫자 옆에 한 단어가 있어야 '이게 높은 건가' 가 안 생긴다
-const BAND_LABEL: Record<Band, string> = { good: '열려 있어요', ok: '무난해요', hard: '지킬 때예요' };
+const BAND_LABEL: Record<Band, string> = { good: '해볼 만해요', ok: '무난해요', hard: '조심할 때예요' };
 import type { DeepRead } from '../lib/deepRead.ts';
 import type { TimingRead } from '../lib/timing.ts';
 
@@ -90,6 +94,9 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
     return () => cancelAnimationFrame(raf);
   }, [headScore]);
 
+  // 뽑은 쪽지가 오늘 하는 말. 고민을 골라 들어왔으면 그 고민의 말로.
+  const noteMsg = noteTodayOf(note.id, deep ? deep.concernKey : null, deep ? deep.read.optionKey : null);
+
   const RING = 2 * Math.PI * 54;
   // 이미 지나간 때를 오늘의 행운이라고 띄우지 않는다.
   // 시계를 구독해서, 켜둔 채 그 시각을 넘겨도 따라간다.
@@ -132,35 +139,28 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
             <span className="score-hero__grade">{headGrade}</span>
           </div>
         </div>
-        {/* 캡처해서 친구에게 보내도 뜻이 통해야 하는 자리. 결론과 지금 할 일까지
-            여기서 끝낸다. 아래 상세를 안 읽어도 무엇을 할지는 알 수 있어야 한다. */}
+        {/* 뽑은 쪽지 이름은 한 줄로 끝낸다. 결론은 바로 아래 카드가 맡는다.
+            예전엔 여기 결론 한 줄과 까닭 한 줄을 크게 두고, 할 일과 피할 일은
+            한참 아래에 까닭 없이 따로 뒀다. '그래서 오늘 뭘 하라는 거지' 가
+            남는다는 말을 들었다. 점수와 쪽지는 여기, 결론은 그 바로 밑이다. */}
         <div className="score-hero__note">
-          {/* 뽑은 쪽지 이름은 한 줄로 끝낸다. 18px 굵은 글씨로 따로 세우면
-              바로 밑 결론(20px)과 굵기가 같아져 무엇이 제목인지 안 읽힌다. */}
           <span className="drawn__k">
-            내가 뽑은 쪽지 · <span className="drawn__kw">{note.name}</span>
+            오늘 나의 쪽지 · <span className="drawn__kw">{note.name}</span>
           </span>
-          {deep ? (
-            <>
-              <strong className="drawn__verdict">{softBreak(deep.read.headline, 16)}</strong>
-              <Sentences className="drawn__lead" text={deep.read.sub} />
-              {/* 배지와 문장을 한 줄에 흘리면 문장이 배지 뒤에서 접혀
-                  줄바꿈이 사고처럼 보인다. 배지는 제 줄을 갖는다. */}
-              {/* 예전엔 여기에 판정 배지와 할 일 첫 줄도 같이 뒀다. 그런데 아래
-                  '지금 할 것과 하지 말 것' 카드가 같은 배지와 같은 첫 줄을
-                  다시 그린다. 한 화면을 통째로 뽑아 세어보니 '하던 대로
-                  이어가기' 가 열여섯 화면에서 두 번씩 나오고 있었다.
-                  같은 말을 두 번 읽히면 두 번째는 안 읽힌다. 여기는 이유만
-                  두고, 배지와 할 일은 아래 카드 한 곳에서만 그린다. */}
-              <span className="drawn__now">
-                <span className="drawn__why">{deep.read.todayWhy}</span>
-              </span>
-            </>
-          ) : (
-            <span className="drawn__lead">{result.summaryLines[0]}</span>
-          )}
+          {noteMsg ? <Sentences className="score-hero__msg" text={noteMsg} /> : null}
         </div>
       </div>
+
+      {/* 오늘 전체 종합 → 오늘 할 것과 까닭 → 오늘 하지 말아야 할 것과 까닭.
+          고민을 골라 뽑았든 그냥 뽑았든 같은 카드로 그린다. */}
+      <TodayDecisionCard
+        decision={deep ? deep.read.todayDecision : todayVibe(todayKey()).decision}
+        more={deep ? {
+          dos: deep.read.decision.dos.map((d, i) => ({ v: asDo(d), why: deep.read.decision.doWhys[i] })),
+          donts: deep.read.decision.donts.map((d, i) => ({ v: asDont(d), why: deep.read.decision.dontWhys[i] })),
+        } : undefined}
+        tomorrow={deep ? deep.read.todayMeet.nextDay : undefined}
+      />
 
       {/* 고민 답 — 뽑은 쪽지와 오늘 할 일 다음에 온다 */}
       {deep ? (
@@ -220,7 +220,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           {!isMonth && allPartsPassed ? (
             <Sentences
               className="mflow__foot"
-              text="오늘 시간대 풀이는 다 지나갔어요. 내일 아침에 새 쪽지를 뽑아보세요."
+              text="오늘 시간대별 풀이는 모두 지나갔어요. 내일 아침에 새 쪽지를 뽑아보세요."
             />
           ) : null}
         </div>
@@ -239,7 +239,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           69줄짜리 한 덩이가 통째로 여기였다.
           버리지는 않는다 - 매일 보는 재미는 이쪽에 있다. 대신 접는다.
           답을 받으러 온 사람에게는 답까지만 보이고, 더 볼 사람만 연다. */}
-      <Chapter title="재미로 하나 더" hint="행운 여섯 가지, 오늘 잘 맞는 띠, 이번 주 운세">
+      <Chapter title="재미로 하나 더" fold>
       {/* 2. 네 가지 운 — 사랑·돈·일·건강 점수.
           고민을 골라 들어왔으면 안 그린다. 돈을 물어본 사람에게 사랑운·일운·
           건강운을 같이 내밀면 화면이 물어본 것 말고 딴 얘기로 채워진다.
@@ -349,25 +349,12 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
         />
       ) : null}
 
-      {/* 마지막에 읽는 한 줄. 다시 올 이유를 만드는 자리다.
-          '내일 대박' 같은 미끼는 안 쓴다 — 지어낸 기대를 걸면 다음 날 한 번
-          속고 다시는 안 온다. 내일 일진을 실제로 계산해서 무엇이 달라지는지만
-          적는다. 접힌 묶음 안에 넣지 않는다. 안 펴면 아무도 못 본다. */}
-      {deep ? (
-        <p className="nextday">
-          <span className="nextday__k" aria-hidden>
-            <Icon name="clock" size={16} />
-          </span>
-          <Sentences className="nextday__v" text={deep.read.todayMeet.nextDay} />
-        </p>
-      ) : null}
-
       {/* 알림은 먼저 띄우지 않는다. 결과를 다 본 사람이 '내일도 본다' 고
           누를 때만 동의 UI 가 뜬다. 시스템 팝업이 불쑥 뜨는 앱이 되면
           그 자리에서 나간다. 콘솔 템플릿이 없으면 줄 자체가 안 나온다. */}
       {deep && onAskNoti ? (
         <button type="button" className="notiask" onClick={onAskNoti}>
-          <span className="notiask__k">내일 쪽지가 바뀌면 알려드릴까요</span>
+          <span className="notiask__k">매일 오전 10시, 새 쪽지 알림 받기</span>
           <span className="notiask__c" aria-hidden>›</span>
         </button>
       ) : null}

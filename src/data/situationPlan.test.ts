@@ -1,6 +1,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { planOf, STANCE_LEAD } from './situationPlan.ts';
+import { planOf } from './situationPlan.ts';
+import { stanceLead } from '../lib/deepRead.ts';
+const FAKE_TIMING = { thisMonth: { score: 65, label: '2026년 10월' }, bestMonth: { score: 88, label: '2027년 2월' }, months: [{ band: 'good' }, { band: 'ok' }] } as unknown as Parameters<typeof stanceLead>[1];
+
 import { CONCERNS } from './concerns.ts';
 
 // 결정 카드는 이 리포트에서 제일 행동에 가까운 카드다. 그런데 한때 문장
@@ -47,9 +50,39 @@ test("결정 카드가 '구간' 으로 도망가지 않는다", () => {
 });
 
 test('판정 넷이 서로 다른 말로 시작한다', () => {
-  const leads = Object.values(STANCE_LEAD);
+  const leads = (['run', 'prep', 'hold', 'keep'] as const).map((st) => stanceLead(st, FAKE_TIMING, '이직 지원서'));
   assert.equal(new Set(leads).size, 4);
-  for (const l of leads) assert.ok(l.endsWith('.'), l);
+  for (const l of leads) {
+    assert.ok(l.endsWith('.'), l);
+    // 판정은 점수와 달 이름을 박아야 한다. '좋지도 나쁘지도' 는 판정이 아니다
+    assert.match(l, /\d+점/, l);
+    assert.doesNotMatch(l, /좋지도 나쁘지도|무난/, l);
+    // 무엇을 하라는지가 있어야 한다. '새로 벌이면' 은 무엇을 벌이는지가 없다
+    assert.doesNotMatch(l, /벌이|굴리|새 시작|새 일/, l);
+    assert.ok(l.includes('이직 지원서'), l);
+  }
+});
+
+// 미룰 이유는 할 이유를 뒤집어 쓰면 안 된다. 같은 칸에서 같은 문장이 두 번
+// 나오면 한쪽은 아무 말도 안 한 것이다. 그리고 이유 칸에 '~하세요' 가 오면
+// 그건 이유가 아니라 지시다.
+test('미룰 이유(dontWhys)는 셋 다 있고, 할 이유와 다르고, 시키지 않는다', () => {
+  const seen = new Map<string, string>();
+  for (const c of CONCERNS) {
+    for (const o of c.options) {
+      const p = planOf(c.key, o.key);
+      assert.equal(p.dontWhys.length, 3, `${c.key}.${o.key}`);
+      p.dontWhys.forEach((w, i) => {
+        const at = `${c.key}.${o.key}[${i}]`;
+        assert.ok(w.endsWith('.'), `${at} 마침표로 끝나야 해요: ${w}`);
+        assert.ok(w.length >= 25 && w.length <= 45, `${at} ${w.length}자: ${w}`);
+        assert.ok(!p.doWhys.includes(w), `${at} 할 이유와 같은 문장: ${w}`);
+        assert.doesNotMatch(w, /세요|십시오|지 마[라세]/, `${at} 시키는 말: ${w}`);
+        assert.ok(!seen.has(w), `${at} 는 ${seen.get(w)} 와 같은 문장`);
+        seen.set(w, at);
+      });
+    }
+  }
 });
 
 test('상황을 안 골라도 고른 상황 중 하나로 떨어진다', () => {

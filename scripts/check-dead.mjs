@@ -11,10 +11,11 @@
 //
 //   node scripts/check-dead.mjs
 
+import { fileURLToPath } from 'node:url';
 import { readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
-const root = new URL('../src/', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../src/', import.meta.url)).replace(/\\/g, '/');
 
 // 앱이 안 쓰지만 남겨두는 것. 무엇을 위해 남기는지 적는다.
 const ALLOW = new Map([
@@ -59,6 +60,9 @@ const ALLOW = new Map([
   ['lib/toss.ts:NOTI_TEMPLATE_CODE', '콘솔 값 자리'],
   // 엔진 내부를 따로 재보는 자리
   ['lib/daeun.ts:daeunStartAge', '대운 시작 나이 검산'],
+  ['data/noteToday/index.ts:NOTE_TODAY', '쪽지 한 줄 표 - 서른여섯 장 x 일곱 칸이 다 찼는지 테스트가 직접 본다'],
+  ['lib/deepRead.ts:stanceLead', '판정 한 줄 - 점수와 달 이름이 박혔는지 테스트가 직접 본다'],
+  ['lib/saju.ts:iljinOf', '홈 카드에서 간지 이름을 뺐다(누구나 아는 말). 일진 계산이 밀리지 않았는지 coherence 테스트가 직접 본다'],
   ['lib/daeun.ts:isYangYearStem', '양간 판정 검산'],
   ['lib/fourPillars.ts:pillarsHanja', '한자 표기 검산'],
   ['lib/fourPillars.ts:ipchunJdUt', '입춘 경계 검산'],
@@ -94,7 +98,7 @@ const isTest = (f) => /\.test\.tsx?$/.test(f);
 
 const dead = [];
 for (const f of files.filter((x) => !isTest(x))) {
-  const rel = f.replace(root, '');
+  const rel = f.replace(root, '').replaceAll('\\', '/');
   const s = text.get(f);
   const names = new Set();
   for (const m of s.matchAll(/^export (?:async )?function (\w+)/gm)) names.add(m[1]);

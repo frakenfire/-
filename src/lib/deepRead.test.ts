@@ -143,9 +143,9 @@ test('오늘 행동은 고른 주제에서 나온다', () => {
   for (const c of CONCERNS) {
     const t = computeTiming(INPUT, P, 'female', c.key, at);
     const r = buildDeepRead(P, t, c.key, null, '2026-09-17');
-    assert.ok(r.today.doIt.length > 8, `${c.key} 오늘 할 일 비었음`);
-    assert.ok(r.today.avoid.length > 8, `${c.key} 오늘 피할 것 비었음`);
-    seen.add(r.today.doIt);
+    assert.ok(r.todayDecision.do.action.length > 8, `${c.key} 오늘 할 것 비었음`);
+    assert.ok(r.todayDecision.dont.action.length > 8, `${c.key} 오늘 하지 말 것 비었음`);
+    seen.add(r.todayDecision.do.action);
   }
   // 주제가 여섯 개인데 같은 행동이 돌아오면 주제를 물은 뜻이 없다
   assert.equal(seen.size, CONCERNS.length);
@@ -160,6 +160,8 @@ test('근거에 내 명식이 그대로 펼쳐진다', () => {
   assert.equal(r.chart.pillars.filter((c) => c.me).length, 1, '나를 뜻하는 기둥이 하나여야 한다');
   for (const c of r.chart.pillars) {
     assert.ok(c.stem.length > 0 && c.branch.length > 0, `${c.k} 글자가 비었음`);
+    // 기둥마다 성향 한 줄이 붙는다. 기운 이름만 적으면 읽고 남는 게 없다.
+    assert.ok(/요\.$/.test(c.trait), `${c.k} 성향 줄: ${c.trait}`);
   }
   assert.equal(r.chart.elements.length, 5);
   const sum = r.chart.elements.reduce((a, e) => a + e.pct, 0);
@@ -175,7 +177,7 @@ test('날이 바뀌면 오늘 줄이 바뀌고, 명식은 그대로다', () => {
   const a = buildDeepRead(P, t, 'work', null, '2026-09-17');
   const b = buildDeepRead(P, t, 'work', null, '2026-09-18');
   assert.notEqual(a.chart.today, b.chart.today, '오늘 줄이 어제와 같으면 매일 볼 이유가 없다');
-  assert.notEqual(a.today.doIt, b.today.doIt, '오늘 할 일이 어제와 같으면 안 된다');
+  assert.notEqual(a.todayDecision.do.action, b.todayDecision.do.action, '오늘 할 것이 어제와 같으면 안 된다');
   assert.deepEqual(a.chart.pillars, b.chart.pillars, '명식은 날이 바뀌어도 그대로여야 한다');
   assert.deepEqual(a.chart.elements, b.chart.elements);
 });
@@ -190,11 +192,11 @@ test('오늘 글자와 내 글자가 만나는 자리가 날마다 바뀐다', (
   assert.equal(seen.size, days.length, '닷새가 다 달라야 매일 볼 이유가 생긴다');
 });
 
-test('명식 기둥마다 십이운성 단계가 붙는다', () => {
+test('명식 기둥마다 성향 한 줄이 붙는다', () => {
   const t = computeTiming(INPUT, P, 'female', 'work', new Date('2026-09-17T12:00:00+09:00'));
   const r = buildDeepRead(P, t, 'work', null, '2026-09-17');
-  for (const c of r.chart.pillars) assert.ok(c.step.length > 2, `${c.k} 단계 비었음`);
-  assert.ok(r.chart.gongmang.includes('비어 있어요'));
+  for (const c of r.chart.pillars) assert.ok(c.trait.length > 8, `${c.k} 성향 비었음`);
+  assert.ok(r.chart.gongmang.includes('힘이 덜 실려요'));
   for (const x of r.chart.sinsal) {
     assert.ok(x.k.length > 2 && x.v.length > 10, `${x.k} 설명 비었음`);
   }

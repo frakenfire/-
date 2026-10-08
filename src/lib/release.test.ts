@@ -4,8 +4,9 @@ import { execFileSync } from 'node:child_process';
 import { readFileSync, mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = new URL('../../', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../../', import.meta.url));
 const run = (args: string[]) => {
   try {
     return { code: 0, out: execFileSync('node', ['scripts/check-release.mjs', ...args], { cwd: root, encoding: 'utf8' }) };
@@ -32,7 +33,7 @@ function fixture(filled: boolean): string {
     : 'https://static.toss.im/appsintoss/placeholder-today-note.png';
   writeFileSync(join(dir, 'src/lib/ads.ts'), `export const AD_GROUPS = { note: '${ad}' } as const;\n`);
   writeFileSync(join(dir, 'src/lib/toss.ts'), `export const NOTI_TEMPLATE_CODE = '${noti}';\n`);
-  writeFileSync(join(dir, 'granite.config.ts'), `export default { appName: '${app}', brand: { icon: '${icon}' } };\n`);
+  writeFileSync(join(dir, 'apps-in-toss.config.ts'), `export default { appName: '${app}', brand: { icon: '${icon}' } };\n`);
   return dir;
 }
 
@@ -60,7 +61,7 @@ test('광고 그룹과 알림 템플릿만 비면 제출을 막지 않는다', (
 test('앱 ID 가 임시 slug 면 제출을 막는다', () => {
   // 이건 진짜 막아야 한다. 콘솔 등록값과 다르면 반려 1순위다.
   const dir = fixture(true);
-  writeFileSync(join(dir, 'granite.config.ts'),
+  writeFileSync(join(dir, 'apps-in-toss.config.ts'),
     "export default { appName: 'today-note', brand: { icon: 'https://static.toss.im/appsintoss/real.png' } };\n");
   const r = run([`--dir=${dir}`, '--release']);
   rmSync(dir, { recursive: true, force: true });

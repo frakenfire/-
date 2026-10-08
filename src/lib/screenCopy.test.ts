@@ -4,7 +4,7 @@ import { computeFourPillars } from './fourPillars.ts';
 import { computeTiming } from './timing.ts';
 import { buildDeepRead } from './deepRead.ts';
 import { FAVOR_WORD } from '../data/concernFocus.ts';
-import { withRo, withJosa } from './josa.ts';
+import { withJosa } from './josa.ts';
 import { CONCERN_GOD } from '../data/concernReadings.ts';
 import { TEN_GOD_KO } from './tenGods.ts';
 import { CONCERNS, findConcern, type ConcernKey } from '../data/concerns.ts';
@@ -42,13 +42,6 @@ function* everyRead() {
 
 const ALL = [...everyRead()];
 
-test("'으로' 와 '로' 를 받침 보고 가른다", () => {
-  assert.equal(withRo('자리와 규칙'), '자리와 규칙으로');
-  assert.equal(withRo('거두는 자리'), '거두는 자리로');
-  assert.equal(withRo('서울'), '서울로');
-  assert.equal(withRo('돈'), '돈으로');
-});
-
 test('무엇을 보고 읽었는지가 고민마다 다른 말로 나온다', () => {
   // 한 벌을 여섯 고민에 돌려쓰면 '연애는 자리와 규칙으로 봐요' 가 나온다.
   //
@@ -73,9 +66,8 @@ test("'규칙로' 처럼 조사가 어긋난 자리가 없다", () => {
   // 받침 있는 글자 뒤에 바로 '로' 가 붙었으면 틀린 것이다 (ㄹ 받침은 뺀다).
   //
   // 솔직히 적어둔다: 지금 표의 값이 전부 '자리' 로 끝나서 이 줄이 잡을 게
-  // 오늘은 없다. withRo 를 통째로 걷어내도 이 검사는 안 울린다. 받침으로
-  // 끝나는 말을 표에 새로 넣는 날을 위한 덫이다. 조사 규칙 자체는 바로 위
-  // withRo 검사가 지킨다 - 거기는 '규칙으로' 를 글자 그대로 맞대본다.
+  // 오늘은 없다. 지금 줄은 '~을 중심으로 봐요' 라 '로' 앞이 늘 '중심' 이다.
+  // 받침으로 끝나는 말을 '로 봐요' 앞에 다시 넣는 날을 위한 덫이다.
   const wrong = ALL.filter(({ r }) => {
     const m = r.chart.focus.match(/(.)로 봐요/);
     if (!m) return false;
@@ -123,7 +115,7 @@ test('점수 푸는 줄이 몇 점인지까지 말한다', () => {
 
 test('비어 있는 자리를 띠로 알려준다', () => {
   for (const { r } of ALL) {
-    assert.ok(/띠와 .*띠 해가 비어 있어요/.test(r.chart.gongmang), r.chart.gongmang);
+    assert.ok(/띠 해와 .*띠 해에는 내 사주에 힘이 덜 실려요/.test(r.chart.gongmang), r.chart.gongmang);
   }
 });
 
@@ -141,18 +133,18 @@ test('네 가지 나가 오늘을 맨 앞에 놓고 네 층을 다 보여준다'
     // 매일 쪽지를 뽑는 앱이다. 오늘이 맨 위여야 한다.
     assert.deepEqual(r.selves.map((x) => x.k),
       ['오늘의 나', '가까운 미래의 나', '먼 미래의 나', '타고난 나']);
-    // 타고난 나는 기준이라 견줄 대상이 없고, 그렇다고 말해준다.
-    assert.ok(r.selves[3].vs?.includes('평소의 나'), r.selves[3].vs ?? '');
+    // 타고난 나는 기준이라 견줄 대상이 없다. 그렇다는 설명은 화면이 붙인다.
+    assert.equal(r.selves[3].vs, null, r.selves[3].vs ?? '');
     for (const x of r.selves.slice(0, 3)) {
       // 평소와 견준 결과와, 그래서 어떻게 하라는지가 둘 다 있어야 한다.
-      assert.ok(x.vs && /^평소(와 비슷해요|보다 \d+점 (높|낮)아요)\. .+\.$/.test(x.vs),
+      assert.ok(x.vs && /^평소(와 같은 \d+점이에요|보다 \d+점 (높|낮)아요)\. .+\.$/.test(x.vs),
         `${x.k}: ${x.vs}`);
     }
     const part = (k: string) => r.score.parts.find((p) => p.k === k)!.score;
     assert.equal(r.selves[0].score, part('오늘'));
     assert.equal(r.selves[1].score, Math.round((part('올해') + part('이번 달')) / 2));
     assert.equal(r.selves[2].score, part('지금 지나는 십 년'));
-    assert.equal(r.selves[3].score, part('타고난 자리'));
+    assert.equal(r.selves[3].score, part('타고난 성향'));
   }
 });
 
@@ -161,7 +153,7 @@ test('타고난 것과 견주는 말이 실제 점수와 맞다', () => {
     const base = r.selves[3].score;
     for (const x of r.selves.slice(0, 3)) {
       const gap = x.score - base;
-      const head = Math.abs(gap) <= 5 ? '평소와 비슷해요'
+      const head = Math.abs(gap) <= 5 ? `평소와 같은 ${x.score}점이에요`
         : gap > 0 ? `평소보다 ${gap}점 높아요`
           : `평소보다 ${-gap}점 낮아요`;
       assert.ok(x.vs?.startsWith(head), `${x.k} ${x.score} vs ${base}: ${x.vs}`);
@@ -198,16 +190,14 @@ test('오늘 하나만 놓고 바로 답한다', () => {
   for (const { k, r } of ALL) {
     // 덩이 제목이 이미 '지금 어떻게 하면 될까요' 라고 묻는다. 그 밑에서 또
     // 물으면 질문이 두 번이다. 여기서는 바로 답한다.
-    assert.ok(!r.todayAsk.a.includes('?'), `또 묻고 있어요: ${r.todayAsk.a}`);
-    const lines = r.todayAsk.a.split('\n');
-    assert.equal(lines.length, 2, `두 줄이 아니에요: ${r.todayAsk.a}`);
-    // 첫 줄은 오늘 무엇을 하라는 단언이어야 한다. 자리는 문장마다 다르다 -
-    // '오늘은 지원서를 넣으세요' 도 '지원은 오늘 말고요' 도 맞는 말이다.
-    assert.ok(lines[0].includes('오늘'), `오늘 얘기가 아니에요: ${lines[0]}`);
-    assert.ok(/(세요|돼요|괜찮아요)\.$/.test(lines[0]), `단언이 아니에요: ${lines[0]}`);
-    assert.ok(lines[1].endsWith('.'), r.todayAsk.a);
-    const god = Object.values(TEN_GOD_KO).find((g) => r.todayAsk.a.includes(g));
-    assert.equal(god, undefined, `십신 이름이 들어갔어요: ${r.todayAsk.a}`);
+    const both = `${r.todayAsk.head} ${r.todayAsk.sum}`;
+    assert.ok(!both.includes('?'), `또 묻고 있어요: ${both}`);
+    // 첫 줄은 오늘 무엇을 해도 되는지 판정하고, 시키는 대신 권하는 말로 끝난다.
+    assert.ok(r.todayAsk.head.includes('오늘'), `오늘 얘기가 아니에요: ${r.todayAsk.head}`);
+    assert.ok(/(좋아요|나아요|돼요|괜찮아요|않아요|충분해요|보세요|봐요|두세요)\.$/.test(r.todayAsk.head), `권하는 말로 끝나지 않아요: ${r.todayAsk.head}`);
+    assert.ok(r.todayAsk.sum.endsWith('.'), r.todayAsk.sum);
+    const god = Object.values(TEN_GOD_KO).find((g) => both.includes(g));
+    assert.equal(god, undefined, `십신 이름이 들어갔어요: ${both}`);
     assert.equal(r.todayAsk.band, r.score.parts.find((p) => p.k === '오늘')!.band, k);
   }
 });
@@ -217,44 +207,103 @@ test('오늘 답이 밴드마다 갈린다', () => {
   const byBand = new Map<string, Set<string>>();
   for (const { r } of ALL) {
     if (!byBand.has(r.todayAsk.band)) byBand.set(r.todayAsk.band, new Set());
-    byBand.get(r.todayAsk.band)!.add(r.todayAsk.a);
+    byBand.get(r.todayAsk.band)!.add(r.todayAsk.head);
   }
   const all = [...byBand.values()].flatMap((v) => [...v]);
   assert.equal(new Set(all).size, all.length, '다른 밴드가 같은 답을 써요');
 });
 
+// 전체 종합은 칸마다 네 벌을 두고 날짜로 돌려 고른다(pick). 아래 검사는 네 벌을
+// 전부 본다. 첫 벌만 보면 나머지 세 벌은 한 번도 안 읽고 통과시킨다.
+const PICKS = [0, 1, 2, 3];
+const BANDS3 = ['good', 'ok', 'hard'] as const;
+
 test('오늘 답이 고른 상황마다 다르다', () => {
   // '지금은 쉬는 중이에요' 를 고른 사람에게 '이직 얘기를 꺼내도 돼요' 는
   // 꺼낼 자리가 없는 사람에게 하는 말이다.
   for (const c of CONCERNS) {
-    const firsts = new Set(c.options.map((o) => todayAskOf(c.key, o.key, 'ok').a.split('\n')[0]));
-    assert.equal(firsts.size, c.options.length,
-      `${c.key}: 상황 ${c.options.length}가지인데 답은 ${firsts.size}가지`);
+    for (const p of PICKS) {
+      const firsts = new Set(c.options.map((o) => todayAskOf(c.key, o.key, 'ok', p).head));
+      assert.equal(firsts.size, c.options.length,
+        `${c.key}/${p}: 상황 ${c.options.length}가지인데 답은 ${firsts.size}가지`);
+    }
   }
 });
 
 test('상황마다 답도 다르고, 밴드마다 또 갈린다', () => {
   const seen = new Set<string>();
+  const sums = new Set<string>();
   for (const c of CONCERNS) {
     for (const o of c.options) {
-      for (const b of ['good', 'ok', 'hard'] as const) {
-        const { a } = todayAskOf(c.key, o.key, b);
-        assert.ok(!seen.has(a), `같은 답을 두 자리에서 써요: ${a}`);
-        seen.add(a);
-        assert.equal(a.split('\n').length, 2, `두 줄이 아니에요: ${a}`);
+      for (const b of BANDS3) {
+        for (const p of PICKS) {
+          const { head, sum } = todayAskOf(c.key, o.key, b, p);
+          assert.ok(!seen.has(head), `같은 결론을 두 자리에서 써요: ${head}`);
+          seen.add(head);
+          assert.ok(!sums.has(sum), `같은 까닭을 두 자리에서 써요: ${sum}`);
+          sums.add(sum);
+          assert.ok(head.trim().length > 0 && sum.trim().length > 0, `빈 칸이 있어요: ${head} / ${sum}`);
+        }
+        // 다섯 번째 날은 첫 벌로 돌아간다. 네 벌보다 많거나 적으면 여기서 갈린다.
+        assert.equal(todayAskOf(c.key, o.key, b, 4).head, todayAskOf(c.key, o.key, b, 0).head);
       }
     }
   }
-  // 고민 여섯 x 상황 넷 x 밴드 셋
-  assert.equal(seen.size, 72, `${seen.size}개만 있어요`);
+  // 고민 여섯 x 상황 넷 x 밴드 셋 x 네 벌
+  assert.equal(seen.size, 72 * PICKS.length, `${seen.size}개만 있어요`);
+});
+
+test('네 벌 모두 오늘 하나만 놓고 단언하고, 두 줄이 같은 말을 되풀이하지 않는다', () => {
+  // 화면 검사(오늘 하나만 놓고 바로 답한다)는 그날 걸린 벌만 본다. 표를 직접 돈다.
+  const gods = Object.values(TEN_GOD_KO);
+  // 종결어미를 떼고 네 글자씩 잘라 겹치는지 본다. concrete.test 의 맨 위 카드 검사와 같은 잣대.
+  const grams = (x: string) => {
+    const out = new Set<string>();
+    const t = x
+      .split(/(?<=[.!?])\s+/)
+      .map((one) => one.replace(/(는|은|을|를|이|가)?\s*(때|해|거|것)?(예요|에요|이에요|돼요|해요|나아요|남아요|와요|줘요|봐요|세요|어요|아요)\.?$/, ''))
+      .join('')
+      .replace(/[^가-힣]/g, '');
+    for (let i = 0; i + 4 <= t.length; i += 1) out.add(t.slice(i, i + 4));
+    return out;
+  };
+  const bad: string[] = [];
+  for (const c of CONCERNS) {
+    for (const o of c.options) {
+      for (const b of BANDS3) {
+        for (const p of PICKS) {
+          const { head, sum } = todayAskOf(c.key, o.key, b, p);
+          const at = `${c.key}/${o.key}/${b}/${p}`;
+          const both = `${head} ${sum}`;
+          if (both.includes('?')) bad.push(`${at} 또 묻고 있어요: ${both}`);
+          if (!head.includes('오늘')) bad.push(`${at} 오늘 얘기가 아니에요: ${head}`);
+          // 판정은 살리되 시키지 않는다. 'A 는 해도 좋아요. B 는 언제로 미뤄두는 게
+          // 나아요' 처럼 권하는 말로 끝내고, 하지 마세요 는 보증, 대출, 서명, 송금,
+          // 술처럼 한 번에 손해가 큰 일에만 남긴다.
+          if (!/(좋아요|나아요|돼요|괜찮아요|않아요|충분해요|보세요|봐요|두세요)\.$/.test(head)) bad.push(`${at} 권하는 말로 끝나지 않아요: ${head}`);
+          if (/마세요/.test(head) && !/보증|대출|서명|송금|술/.test(head)) bad.push(`${at} 막는 말이 남았어요: ${head}`);
+          if (!sum.endsWith('.')) bad.push(`${at} 마침표가 없어요: ${sum}`);
+          const god = gods.find((g) => both.includes(g));
+          if (god) bad.push(`${at} 십신 이름 [${god}]: ${both}`);
+          const shared = [...grams(head)].filter((g) => grams(sum).has(g));
+          if (shared.length) bad.push(`${at} 두 줄이 겹쳐요 [${shared.join(',')}]\n    ${head}\n    ${sum}`);
+          const endings = sum.split(/(?<=[.!?])\s+/).map((x) => x.trim().slice(-4)).filter(Boolean);
+          if (new Set(endings).size !== endings.length) bad.push(`${at} 밑 줄 종결 반복: ${sum}`);
+        }
+      }
+    }
+  }
+  assert.deepEqual(bad, []);
 });
 
 test('상황을 안 골라도 답이 나온다', () => {
   for (const c of CONCERNS) {
-    const r = todayAskOf(c.key, null, 'ok');
-    assert.ok(r.a.includes('\n'), `${c.key}: ${r.a}`);
-    // 없는 상황 키가 와도 터지지 않는다
-    assert.equal(todayAskOf(c.key, 'nope', 'ok').a, r.a);
+    for (const p of PICKS) {
+      const r = todayAskOf(c.key, null, 'ok', p);
+      assert.ok(r.head.length > 0 && r.sum.length > 0, `${c.key}: ${r.head}`);
+      // 없는 상황 키가 와도 터지지 않는다
+      assert.equal(todayAskOf(c.key, 'nope', 'ok', p).head, r.head);
+    }
   }
 });
 
@@ -263,9 +312,11 @@ test("'오늘 말고' 처럼 동사가 빠진 말을 안 쓴다", () => {
   // '이직 얘기는 오늘 하지 말고 미루세요' 가 맞다.
   for (const c of CONCERNS) {
     for (const o of c.options) {
-      for (const b of ['good', 'ok', 'hard'] as const) {
-        const { a } = todayAskOf(c.key, o.key, b);
-        assert.ok(!/오늘 말고/.test(a), `동사가 빠졌어요: ${a}`);
+      for (const b of BANDS3) {
+        for (const p of PICKS) {
+          const { head, sum } = todayAskOf(c.key, o.key, b, p);
+          assert.ok(!/오늘 말고/.test(`${head} ${sum}`), `동사가 빠졌어요: ${head}`);
+        }
       }
     }
   }

@@ -8,6 +8,8 @@ import {
   eventLog as tossEventLog,
   SafeAreaInsets,
   requestReview as tossRequestReview,
+  graniteEvent,
+  closeView,
 } from '@apps-in-toss/web-framework';
 
 /**
@@ -106,13 +108,27 @@ export async function getTrustedDateKey(fallback: () => string): Promise<string>
 }
 
 /**
- * 시스템 뒤로가기 구독. 현재 앱인토스 web SDK 표면에는 안정적으로 노출된
- * 하드웨어 back 이벤트 API가 없어 지금은 no-op(앱 내부 뒤로가기 버튼으로 처리).
- * goBack 로직은 App 에 준비돼 있어, 향후 공식 back 이벤트가 열리면 여기만 연결하면 된다.
+ * 토스 내비게이션 바·기기 뒤로가기 구독(graniteEvent 'backEvent').
+ *
+ * 전에는 'SDK 에 back 이벤트가 없다' 며 아무것도 안 했다. 그래서 첫 화면에서
+ * 뒤로가기를 눌러도 앱이 안 닫혀 검토에서 반려됐다. 구독하면 토스의 기본 동작
+ * (닫기)이 꺼지므로, 첫 화면에서는 handler 가 closeAppView 를 직접 불러야 한다.
  */
-export function subscribeBackEvent(_handler: () => void): () => void {
-  void _handler;
-  return () => {};
+export function subscribeBackEvent(handler: () => void): () => void {
+  try {
+    return graniteEvent.addEventListener('backEvent', { onEvent: handler, onError: () => {} });
+  } catch {
+    return () => {};
+  }
+}
+
+/** 미니앱을 닫는다. 토스 밖(브라우저)에서는 아무 일도 없다. */
+export function closeAppView(): void {
+  try {
+    void closeView().catch(() => {});
+  } catch {
+    /* 토스 밖 */
+  }
 }
 
 /**
@@ -172,7 +188,7 @@ export function reportError(where: string, error: unknown): void {
 // 운세 앱의 재방문은 '아침에 오는 알림'이 만든다(점신·포스텔러의 공통 장치).
 // 앱인토스는 콘솔에서 알림 템플릿을 등록하고, SDK 로 동의 UI 를 띄운 뒤
 // 콘솔에서 발송하는 구조다. 템플릿 코드를 아직 안 받았으면 기능 전체를 숨긴다.
-export const NOTI_TEMPLATE_CODE = 'REPLACE_NOTI_TEMPLATE';
+export const NOTI_TEMPLATE_CODE = 'todaymyheart-morning-note';
 
 /** 알림 동의를 요청할 수 있는 상태인가 (콘솔 템플릿 코드가 채워졌는가) */
 export function canAskNotification(): boolean {

@@ -34,9 +34,11 @@ function allSentences(r: DeepRead): { where: string; s: string }[] {
   push('결정 결론', r.decision.verdict);
   r.decision.dos.forEach((d) => push('지금 할 것', d));
   r.decision.donts.forEach((d) => push('지금 하지 말 것', d));
-  push('오늘 할 일', r.today.doIt);
-  push('오늘 피할 것', r.today.avoid);
-  push('오늘 미룰 것', r.today.hold);
+  // 맨 위 결론 카드. 전체 종합은 headline/sub 로 이미 위에서 넣었다.
+  push('오늘 할 것', r.todayDecision.do.action);
+  push('오늘 할 것의 까닭', r.todayDecision.do.why);
+  push('오늘 하지 말 것', r.todayDecision.dont.action);
+  push('오늘 하지 말 것의 까닭', r.todayDecision.dont.why);
   r.shape.rows.forEach((x) => push(`타고난 구조/${x.k}`, x.v));
   push('상황', r.now.situation);
   r.now.rows.forEach((x) => push(`지금 왜/${x.k}`, x.v));

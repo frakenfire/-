@@ -10,30 +10,19 @@ import { defineConfig } from '@apps-in-toss/web-framework/config';
 export default defineConfig({
   // 콘솔에 등록한 appName 과 글자 하나까지 같아야 한다.
   appName: 'todaymyheart',
-  web: {
-    host: 'localhost',
-    port: 5173,
-    // 기존 Vite 빌드를 그대로 사용한다. (rsbuild 강제 아님 — web.commands 로 지정)
-    commands: {
-      dev: 'vite',
-      build: 'tsc -b && vite build',
-    },
-  },
+
   // 네이티브 권한 미사용 — 위치·카메라·연락처 등 브릿지 권한을 쓰지 않는다.
   // (공유·클립보드는 표준 웹 API(navigator.share/clipboard)로 처리)
   permissions: [],
+
   // Vite 빌드 산출물 경로와 일치해야 한다.
-  outdir: 'dist',
+  webBundleDir: 'dist',
+
   brand: {
-    // 콘솔 '한국어 앱 이름' 과 글자 하나까지 같아야 한다.
-    // 등록 정보와 다르면 반려 1순위다.
-    displayName: '오늘의 마음 한장',
-    // TODO: 콘솔에 업로드한 아이콘 URL 로 교체 (static.toss.im/appsintoss/...)
-    icon: 'https://static.toss.im/appsintoss/placeholder-today-note.png',
-    primaryColor: '#3182f6',
+    primaryColor: '#3182f6'
   },
-  webViewProps: {
-    type: 'partner',
+
+  webView: {
     // 당겨서 새로고침을 끈다.
     //
     // 왜: 이 앱의 화면은 새로고침을 견디지 못한다. 결과는 뽑은 시점의 상태에
@@ -44,6 +33,6 @@ export default defineConfig({
     //
     // 설치된 SDK 의 타입 주석은 기본값을 true 라고 적고 있다. 기본값에
     // 기대지 않고 명시한다.
-    pullToRefreshEnabled: false,
-  },
+    pullToRefreshEnabled: false
+  }
 });

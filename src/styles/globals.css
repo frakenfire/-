@@ -20,6 +20,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   letter-spacing: -0.01em;
   word-break: keep-all; /* 한글 단어 단위 줄바꿈 — 어색한 끊김 방지 */
+  text-wrap: pretty; /* 마지막 줄에 '나요.' 한 단어만 남는 것 방지 */
 }
 /* 숫자 강조 공통 — 고정폭 숫자(tnum)로 카운트업/순위 떨림 방지 */
 .num {
@@ -68,26 +69,7 @@ a:focus-visible {
   padding-right: var(--space-4);
   flex-shrink: 0;
 }
-.app__nav-back {
-  width: 44px;
-  height: 44px;
-  margin-left: -6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
-  line-height: 31px;
-  color: var(--color-dark-gray);
-  border-radius: 999px;
-}
-.app__nav-title {
-  font-size: 17px;
-  line-height: 25.5px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: var(--gray-900);
-}
-/* 홈처럼 네비에 아무것도 없을 땐 높이를 줄여 본문이 위로 올라오게 */
+/* 자체 헤더는 없다(토스 내비게이션 바가 맡는다). 위 여백만 남겨 본문이 위로 올라오게 */
 .app__nav--empty {
   height: 24px;
 }
@@ -216,6 +198,45 @@ strong {
   background: var(--color-white);
   color: var(--color-dark-gray);
   border: 1px solid var(--color-border);
+}
+.btn--weak {
+  background: var(--gray-100);
+  color: var(--gray-700);
+}
+/* 쪽지를 열 때 누구 걸로 볼지 묻는 아래 시트 */
+.who-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+}
+.who-sheet__panel {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-6) var(--space-5)
+    calc(var(--space-5) + var(--sab, env(safe-area-inset-bottom, 0px)));
+  border-radius: 20px 20px 0 0;
+  background: var(--color-white);
+}
+.who-sheet__title {
+  margin: 0;
+  font-size: 20px;
+  line-height: 29px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.who-sheet__sub {
+  margin: 0 0 var(--space-3);
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-600);
 }
 .btn-stack {
   display: flex;
@@ -356,19 +377,6 @@ strong {
   border: 1px solid var(--color-border);
   border-radius: 999px;
   padding: 3px 9px;
-}
-.ad-banner {
-  height: 64px;
-  border-radius: var(--radius-md);
-  background: var(--color-white);
-  border: 1px dashed var(--color-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  line-height: 18px;
-  color: var(--color-text-secondary);
-  margin-top: var(--space-2);
 }
 /* ── 진행 표시 ── */
 /* 진행 표시는 칸을 나눈 점 네 개가 아니라 얇은 막대 하나가 채워지는 모양이다.
@@ -741,12 +749,6 @@ strong {
   }
 }
 /* ── 행운 세트 그리드 ── */
-.lucky-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-
-  gap: 0;
-  border-top: 1px solid var(--gray-100);}
 /* ── 오늘의 처방 브리핑 ── */
 /* 등급 스탬프 리빌 — 점수 카운트업이 끝날 즈음 등급 배지가 도장처럼 찍힌다 */
 @keyframes stamp-in {
@@ -786,11 +788,6 @@ strong {
 /* 왼쪽에만 두꺼운 색 테두리를 두른 인용 블록은 AI 가 만든 화면의 가장 흔한 표시다.
    반투명 흰 면까지 겹쳐 '카드 안의 카드'가 되어 있었다. 둘 다 걷고 그냥 글로 둔다. */
 /* 항목별 운세 순위 — 1위는 인사이트 카드로 압도, 2~4위는 상대 비교 리스트 */
-.cat-top {
-  padding: var(--space-4);
-  border-radius: var(--radius-md);
-  background: var(--gray-50);
-}
 /* 행운 세트 — 미션 + 세트 + 숫자 활용 */
 .lucky {
   display: flex;
@@ -829,10 +826,8 @@ strong {
   color: var(--gray-900);
 }
 .match__hint {
-  font-size: 12px;
   font-weight: 500;
   color: var(--gray-700);
-  line-height: 18px;
   word-break: keep-all;
 }
 /* 오늘의 부적 — 캡처하고 싶은 다크 카드 */
@@ -1814,13 +1809,6 @@ strong {
   font-weight: 700;
   color: var(--gray-700);
 }
-.drawn__lead {
-  margin-top: 3px;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--gray-800);
-  line-height: 19.5px;
-}
 .drawn__kw {
   font-weight: 700;
   color: var(--gray-800);
@@ -1833,6 +1821,20 @@ strong {
   text-align: left;
   color: var(--gray-700);
   font-weight: 500;}
+/* 쪽지 앞 광고 예고 — 회색 줄로 두면 지나친다. 옅은 바탕 한 칸으로 따로 세운다 */
+.pick-ad {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: var(--space-3) 0 var(--space-2);
+  padding: 10px 12px;
+  border-radius: var(--radius-md);
+  background: var(--gray-50);
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+}
 .pick-basis b {
   font-weight: 700;
 }
@@ -2000,10 +2002,16 @@ strong {
   background: none;
   padding: 0;
 }
-.score-hero 
-.score-hero .drawn__k,
-.score-hero .drawn__lead {
+.score-hero .drawn__k {
   color: var(--gray-700); /* 파란 틴트 위 AA */
+}
+/* 뽑은 쪽지가 오늘 무엇을 말하는지. 이름만 띄우면 쪽지를 왜 골랐는지 모른다. */
+.score-hero__msg {
+  margin: 6px 0 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-900);
 }
 
 /* ── 메인 카드 재설계: 글 왼쪽, 마스코트 오른쪽 크게, 버튼 한 줄 ── */
@@ -2070,6 +2078,12 @@ strong {
   border-radius: 14px;
   padding: 0 16px;
   text-align: center;
+}
+/* 오늘 이미 연 쪽지 다시 보기. 새로 뽑기보다 한 단계 낮게 보인다. */
+.today-hook .today-hook__cta.btn--weak {
+  margin-top: 8px;
+  background: var(--white);
+  color: var(--brand-strong);
 }
 
 /* ── 누르는 맛: 토스는 누르는 것마다 손끝에 반응이 온다 ── */
@@ -2541,11 +2555,6 @@ strong {
 .note-grid .note--opening { animation: none; transform: translateY(-6px) scale(1.06); border-color: var(--brand); }
 
 /* ── 결과: 뽑은 세 장, 운 설명, 풀이 ── */
-.drawn3 {
-  margin: 12px 0 0;
-  padding: 0;
-  list-style: none;
-}
 .cat4__row--rich {
   grid-template-areas: 'k bar v' 'why why why';
   row-gap: 4px;
@@ -2642,7 +2651,6 @@ strong {
   box-shadow: none;
 }
 .lucky4__grid--3 .lucky4__icon { color: var(--gray-700); }
-
 
 /* 내 사주 · 올해 아래 이번 달·다음 달 두 줄 */
 
@@ -2798,20 +2806,6 @@ strong {
   word-break: keep-all;
 }
 
-.when4 { list-style: none; margin: 0; padding: 0; }
-.when4__row {
-  display: grid;
-  grid-template-columns: 76px minmax(0, 1fr) auto;
-  align-items: baseline;
-  gap: 10px;
-  padding: 11px 0;
-  border-top: 1px solid var(--gray-100);
-}
-.when4__row:first-child { border-top: 0; padding-top: 2px; }
-.when4__k { font-size: 14px; line-height: 21px; font-weight: 500; color: var(--gray-700); }
-.when4__v { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--gray-900); word-break: keep-all; }
-.when4__b { font-size: 13px; line-height: 19.5px; font-weight: 600; color: var(--brand-strong); }
-
 /* 열두 달 막대 */
 .mflow {
   display: grid;
@@ -2821,15 +2815,6 @@ strong {
   margin: 0;
   padding: 0;
 }
-.mflow__col { flex-direction: column; }
-.mflow__bar {
-  width: 100%;
-  max-width: 16px;
-  border-radius: 6px;
-  background: var(--brand);
-}
-.mflow__col--ok .mflow__bar { background: #90c2ff; }
-.mflow__m { font-size: 13px; line-height: 19.5px; font-weight: 600; color: var(--gray-700); }
 .mflow__foot {
   margin: 12px 0 0;
   font-size: 13px;
@@ -2840,27 +2825,6 @@ strong {
 }
 
 /* 상담 결과 — 달 한 덩이 */
-
-.yline { list-style: none; margin: 0; padding: 0; }
-.yline__row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 6px 10px;
-  padding: 12px 0;
-  border-top: 1px solid var(--gray-100);
-}
-.yline__row:first-child { border-top: 0; padding-top: 2px; }
-.yline__k { font-size: 15px; line-height: 22.5px; font-weight: 500; color: var(--gray-700); }
-.yline__k b { font-weight: 700; color: var(--gray-900); }
-.yline__b { font-size: 13px; line-height: 19.5px; font-weight: 700; color: var(--brand-strong); text-align: right; }
-.yline__v {
-  grid-column: 1 / -1;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
 
 /* ── 이 답은 이렇게 나와요 ── */
 .how { margin-top: var(--space-6); }
@@ -2995,10 +2959,8 @@ strong {
 .score-ring { width: 96px; height: 96px; }
 .score-hero__top { gap: 14px; }
 
-
 /* 고리 안의 마스코트가 테두리를 넘지 않게 */
 .score-ring .score-hero__mascot svg { width: 60px; height: 60px; }
-
 
 /* '더 보기' 줄: 보러가기 글씨가 본문을 밀어 제목이 두 줄로 꺾였다 */
 
@@ -3008,40 +2970,19 @@ strong {
   align-items: stretch;
   height: auto;
 }
-.mflow__col {
-  display: grid;
-  gap: 4px;
-  align-items: end;
-  justify-items: center;
-  min-width: 0;
-}
-.mflow__barbox {
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-}
 
 /* 결과 카드 안 글자 크기를 한 벌로 맞춘다.
    제목 18, 본문 15, 곁말 13. 카드마다 다른 크기가 섞여 있었다. */
 .sec-card .cat4__head,
 .sec-card .sec__title,
-.sec-card .lucky4__head { font-size: 18px; line-height: 27px; font-weight: 700; }
-.sec-card .qa,
+.sec-card .lucky4__head { font-size: 17px; line-height: 25.5px; font-weight: 700; }.sec-card .qa,
 .sec-card .qa--sub,
 .sec-card .read6__v,
-.sec-card .yline__v,
 .sec-card .deep-situation { font-size: 15px; line-height: 22.5px; }
-.sec-card .mflow__foot { font-size: 13px; line-height: 19.5px; }
-.sec-card .read6__k,
-.sec-card .when4__k,
-.sec-card .yline__k { font-size: 14px; line-height: 21px; }
+.sec-card .mflow__foot { font-size: 13px; line-height: 19.5px; }.sec-card .read6__k { font-size: 14px; line-height: 21px; }
 
 /* '지금' 을 따로 한 줄 두면 첫 칸에만 꼬리표가 달려 왼쪽이 허전해진다.
    이번 달은 숫자에 색을 줘서 표시하고, 설명은 아래 한 줄이 맡는다. */
-.mflow__col { grid-template-rows: 64px 19.5px; }
-.mflow__m--now { color: var(--brand-strong); font-weight: 700; }
 
 /* ── 쪽지 고르기 화면 정리 ──
    기울기를 준 여섯 장이 격자 안에서는 줄이 안 맞는 것처럼 보였다.
@@ -3063,42 +3004,65 @@ strong {
 .note-fan__hint { font-size: 14px; line-height: 21px; }
 
 /* 달 카드의 좋아요·조심해요 — 뭘 하면 되고 뭘 피하면 되는지 두 줄로 끝낸다 */
-.slot__pts { list-style: none; margin: 16px 0 0; padding: 0; }
-.slot__pt {
-  display: grid;
-  grid-template-columns: 62px minmax(0, 1fr);
-  gap: 10px;
-  /* 달 풀이 칸이 위아래로 붙어 답답해 보였다. 줄 사이를 열어준다. */
-  padding: 14px 0;
-  border-top: 1px solid var(--gray-100);
-}
-.slot__pt-k {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  padding: 1px 0;
-}
-.slot__pt--good .slot__pt-k { color: var(--brand-strong); }
-.slot__pt--care .slot__pt-k { color: #9c5d00; }
-.slot__pt-v {
-  margin: 0;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
 
 /* 한 문장이 한 줄을 차지한다. 여러 문장을 한 덩이로 흘리면 다 흘려 읽는다. */
 .sent { display: block; }
 .sent + .sent { margin-top: 3px; }
 
+/* 마음 한 줄 + 오늘 사주 근거. 회색 상자 하나로 묶어 결론과 덩이를 나눈다. */
+.tdc__mind {
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: var(--gray-50);
+}
+.tdc__feeling {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 600;
+  color: var(--gray-900);
+}
+.tdc__basis {
+  margin: 4px 0 0;
+  font-size: 13px;
+  line-height: 19.5px;
+  color: var(--gray-700);
+}
+
+/* 오늘 결론. 카드 안 글자는 세 단계만 쓴다: 결론 20px, 본문 15px, 상자 안 13px.
+   할 것과 하지 말 것은 제목 색으로만 가른다. */
+.tdc__overall { margin-top: var(--space-5); }
+.tdc__headline {
+  margin: 0;
+  font-size: 20px;
+  line-height: 29px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+.tdc__summary {
+  margin: 8px 0 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
+.tdc__act { margin-top: var(--space-4); }
+.tdc__note {
+  margin: 12px 4px 0;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-600);
+  word-break: keep-all;
+}
+
 /* 내 일주 — 예순 가지 중 하나. 별명이 제일 크고, 그 밑에 두 줄 설명,
    그 밑에 잘 되는 자리와 발목 잡히는 데를 한 줄씩 */
 .dayp__nick {
   margin: 2px 0 0;
-  font-size: 19px;
-  line-height: 28px;
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--brand-strong);
@@ -3133,37 +3097,6 @@ strong {
   margin: 0;
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 600;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
-
-/* 오늘은 이렇게 — 할 것과 피할 것을 한 줄씩 못 박는다 */
-.today2 { list-style: none; margin: 0; padding: 0; }
-.today2__row {
-  display: grid;
-  grid-template-columns: 86px minmax(0, 1fr);
-  gap: 10px;
-  padding: 11px 0;
-  border-top: 1px solid var(--gray-100);
-}
-.today2__row:first-child { border-top: 0; padding-top: 0; }
-.today2__k {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  padding-top: 2px;
-}
-.today2__row--do .today2__k { color: var(--brand-strong); }
-.today2__row--dont .today2__k { color: #9c5d00; }
-.today2__row--hold .today2__k { color: var(--gray-600); }
-.today2__v {
-  min-width: 0;
-  margin: 0;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 600;
-  color: var(--gray-900);
   word-break: keep-all;
 }
 
@@ -3182,8 +3115,6 @@ strong {
   margin: 0 0 12px;
   font-size: 15px;
   line-height: 22.5px;
-  font-weight: 600;
-  color: var(--gray-900);
   word-break: keep-all;
 }
 .why-score { list-style: none; margin: 0; padding: 0; }
@@ -3196,6 +3127,17 @@ strong {
   border-top: 1px solid var(--gray-100);
 }
 .why-score__row:first-child { border-top: 0; }
+.why-score__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 64px 30px 34px;
+  gap: 8px;
+  padding: 0 0 6px;
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 600;
+  color: var(--gray-600);
+}
+.why-score__head span:nth-child(n+3) { text-align: right; }
 /* 줄마다 아래에 선을 긋는 목록은 마지막 줄 밑에도 선을 남긴다. 카드 안쪽
    여백만 남은 자리에 선이 하나 떠 있으면 '아래에 뭔가 더 있다가 잘린' 것처럼
    보인다. 위에 쓴 border-top + first-child 가 맞는 모양인데, 아래 목록들은
@@ -3299,56 +3241,11 @@ strong {
 }
 /* 열두 달이 해를 넘어간다. 축에 9 10 11 12 1 2 로만 적혀 있으면 1 이
    올해인지 내년인지 알 길이 없다. 해가 바뀌는 칸 왼쪽에 선을 긋는다. */
-.mflow__col--newyear { border-left: 1px solid var(--gray-200); }
-.mflow__col--on .mflow__bar { outline: 2px solid var(--brand-strong); outline-offset: 1px; }
-.mflow__col--on .mflow__m { color: var(--brand-strong); font-weight: 700; }
 
 /* 고른 달 한 덩이 */
-.mpick {
-  margin-top: 12px;
-  padding-top: 16px;
-  border-top: 1px solid var(--gray-100);
-}
-.mpick__head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0 0 10px;
-}
 /* 정확히 집어야 할 때 쓰는 좌우 버튼 — 손가락이 닿는 면을 44px 로 준다 */
-.mpick__step {
-  flex: none;
-  width: 44px;
-  height: 44px;
-  margin: -10px 0;
-  padding: 0;
-  border: 0;
-  border-radius: 12px;
-  background: var(--gray-50);
-  font-size: 18px;
-  line-height: 27px;
-  font-weight: 700;
-  color: var(--gray-800);
-  cursor: pointer;
-}
-.mpick__step:last-child { margin-left: auto; }
 /* 끝에 닿아도 상자는 그대로 둔다. 한쪽만 사라지면 같은 버튼 둘이
    서로 다른 물건으로 보인다. 글자만 한 단계 흐리게. */
-.mpick__step:disabled {
-  /* gray-50 상자 위라 gray-600 은 4.42:1 로 AA 미달이다 */
-  color: var(--gray-700);
-  cursor: default;
-}
-.mpick__label { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--gray-900); }
-.mpick__band { font-size: 13px; line-height: 19.5px; font-weight: 600; color: var(--gray-600); }
-.mpick__line {
-  margin: 0 0 14px;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
 
 /* 지금 왜 이 고민이 커졌나 — 십 년, 올해, 이번 달을 한 칸씩 쌓는다 */
 .nowlist { list-style: none; margin: 14px 0 0; padding: 0; }
@@ -3384,135 +3281,15 @@ strong {
 }
 
 /* 올해와 내년을 같은 줄에 맞대 놓는 표 */
-.ycmp {
-  width: 100%;
-  margin-top: 14px;
-  border-collapse: collapse;
-  table-layout: fixed;
-}
-.ycmp th,
-.ycmp td {
-  padding: 9px 6px;
-  border-top: 1px solid var(--gray-100);
-  text-align: left;
-  vertical-align: top;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
-.ycmp thead th {
-  border-top: 0;
-  padding-top: 0;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
-.ycmp tbody th {
-  width: 78px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-600);
-}
-.ycmp__gap {
-  margin: 14px 0 0;
-  padding-top: 12px;
-  border-top: 1px solid var(--gray-100);
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 600;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
+/* 꼬리표가 '올해 해보면 좋은 것' 로 길어서 옆 칸에 두면 62px 에 안 들어간다. 위아래로 쌓는다. */
 
 /* 지금 지나는 십 년을 자리별로 쪼갠 목록 */
-.dec__span {
-  margin: 0;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 500;
-  color: var(--gray-600);
-}
-.dec__head {
-  margin: 2px 0 12px;
-  font-size: 17px;
-  line-height: 25.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
 .dec { list-style: none; margin: 0; padding: 0; }
-.dec__row {
-  display: grid;
-  grid-template-columns: 78px minmax(0, 1fr);
-  gap: 10px;
-  padding: 10px 0;
-  border-top: 1px solid var(--gray-100);
-}
-.dec__row:first-child { border-top: 0; padding-top: 0; }
-.dec__k {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
-.dec__v {
-  margin: 0;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
 
 /* 시기 옆에 그때 뭘 할 것인가를 붙인다 - 날짜만 적어두면 적어두지 않은 것과 같다 */
-.when4__act {
-  grid-column: 2 / -1;
-  margin-top: 3px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-700);
-  word-break: keep-all;
-}
 
 /* 결정 카드 - 화면에서 제일 먼저 눈에 들어와야 하는 자리 */
-.sec-card--decide {
-  background: var(--brand-soft);
-}
-.decide__stance {
-  display: inline-block;
-  margin-bottom: 8px;
-  padding: 5px 10px;
-  border-radius: 999px;
-  background: var(--brand-strong);
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: #ffffff;
-}
-.decide__stance--hold,
-.decide__stance--keep {
-  background: var(--gray-700);
-}
-.decide__verdict {
-  margin: 0 0 16px;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 600;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
-.decide__sub {
-  margin: 0 0 6px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--gray-700);
-}
+/* 판정 한 덩이만 굵게. 뒤에 붙는 까닭까지 굵으면 여섯 줄이 한 무게로 읽힌다. */
 .decide__list {
   list-style: none;
   margin: 0 0 16px;
@@ -3533,11 +3310,11 @@ strong {
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: var(--brand-strong);
+  background: var(--gray-100);
   font-size: 12px;
   line-height: 18px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--gray-700); /* 칸 번호(파란 원)와 헷갈리지 않게 목록 번호는 회색 */
 }
 .decide__x {
   position: relative;
@@ -3560,12 +3337,22 @@ strong {
 .decide__x::before { transform: rotate(45deg); }
 .decide__x::after { transform: rotate(-45deg); }
 /* 파란 바탕 위에서는 흰 카드용 회색이 묻힌다. 한 단계 진하게 쓴다 */
-.sec-card--decide .mflow__foot { color: var(--gray-700); }
 .decide__v {
+  margin: 0;
   font-size: 15px;
   line-height: 22.5px;
   font-weight: 500;
   color: var(--gray-900);
+  word-break: keep-all;
+}
+.decide__body { display: grid; gap: 2px; min-width: 0; }
+.decide__list--do .decide__v { font-weight: 600; }
+.decide__why {
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 400;
+  color: var(--gray-700);
   word-break: keep-all;
 }
 
@@ -3584,60 +3371,6 @@ strong {
   text-decoration: underline;
   text-underline-offset: 3px;
   cursor: pointer;
-}
-
-/* 쪽지 카드 안의 결론 - 캡처해서 보내도 뜻이 통해야 하는 세 줄 */
-.drawn__verdict {
-  display: block;
-  margin-top: 10px;
-  font-size: 20px;
-  line-height: 29px;
-  font-weight: 700;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
-.score-hero .drawn__lead {
-  margin: 4px 0 0;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  word-break: keep-all;
-}
-.drawn__now {
-  display: block;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid var(--gray-200);
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
-.drawn__now b {
-  display: inline-block;
-  margin-right: 6px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: var(--brand-strong);
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: #ffffff;
-}
-/* 배지는 제 줄을 갖는다. 문장과 한 줄에 흘리면 문장이 배지 뒤에서 접혀
-   줄바꿈이 실수처럼 보인다. */
-.drawn__now .drawn__stance {
-  display: block;
-  width: fit-content;
-  margin: 0 0 8px;
-}
-.drawn__do {
-  display: block;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 600;
-  color: var(--gray-900);
 }
 
 /* 지우기 확인 - 되돌릴 수 없는 일이라 한 번 더 묻는다 */
@@ -3687,7 +3420,7 @@ strong {
      기운 이름이 옆 칸보다 17px 아래로 내려가 있었다. 명식은 네 기둥을 나란히
      놓고 보는 것이라 줄이 안 맞으면 보는 방식 자체가 깨진다.
      위 네 줄은 내용 높이로 고정하고, 남는 자리는 맨 아래 한 줄이 받는다. */
-  grid-template-rows: auto auto auto auto 1fr;
+  grid-template-rows: auto auto auto;
   min-width: 0;
   justify-items: center;
   gap: 2px;
@@ -3695,7 +3428,6 @@ strong {
   border-radius: 14px;
   background: var(--gray-50);
 }
-.chart8__step { align-self: start; }
 .chart8__col--me {
   background: var(--brand-soft);
 }
@@ -3719,15 +3451,6 @@ strong {
   color: var(--gray-700);
 }
 .chart8__col--me .chart8__stem { color: var(--brand-strong); }
-.chart8__god {
-  margin-top: 2px;
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 500;
-  color: var(--gray-700);
-  text-align: center;
-  word-break: keep-all;
-}
 
 /* 다섯 기운 비중 */
 .elbar { list-style: none; margin: 0; padding: 0; }
@@ -3768,27 +3491,11 @@ strong {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
+.read6__kk { display: block; }
 .read6--tight .read6__row {
   grid-template-columns: 92px minmax(0, 1fr);
   padding: 9px 0;
 }
-
-/* 명식 기둥 밑의 십이운성 한 단어 */
-.chart8__step {
-  margin-top: 3px;
-  padding: 2px 6px;
-  border-radius: 999px;
-  background: #ffffff;
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 600;
-  color: var(--gray-700);
-  /* nowrap 이면 '갈무리하는 자리'가 칸보다 넓어져 네 칸 전체를 밀어낸다.
-     줄이 접히더라도 칸 안에 들어와야 한다. */
-  word-break: keep-all;
-  text-align: center;
-}
-.chart8__col--me .chart8__step { color: var(--brand-strong); }
 
 /* 근거 줄의 작은 꼬리표 (어느 자리인지, 어떤 관계인지) */
 .read6__at {
@@ -3802,19 +3509,6 @@ strong {
 }
 
 /* 오늘 글자 */
-.meet__pillar {
-  margin: 0 0 8px;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-700);
-}
-.meet__pillar b {
-  font-size: 18px;
-  line-height: 27px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
 
 /* 이름 글자마다 실린 기운 */
 .nameel {
@@ -3981,23 +3675,12 @@ strong {
   font-weight: 700;
 }
 
-
 /* ── 밴드 칩 색 ──
    좋아요·무난해요·조심할 때가 전부 파랑이면 칩을 달아둔 뜻이 없다.
    빨강과 초록은 안 쓴다. 이 앱에서 빨강은 지우기 한 곳뿐이고,
    초록은 토스 팔레트에서 '완료'를 뜻한다. 파랑·회색·노랑 셋으로 가른다. */
-.when4__b--good,
-.yline__b--good,
-.mpick__band--good { color: var(--brand-strong); }
-.when4__b--ok,
-.yline__b--ok,
-.mpick__band--ok { color: var(--gray-700); }
-.when4__b--hard,
-.yline__b--hard,
-.mpick__band--hard { color: var(--score-low-text); }
 
 /* 열두 달 차트도 같은 셋으로. 조심할 달이 회색이면 '값이 없는 달'로 읽힌다. */
-.mflow__col--hard .mflow__bar { background: var(--score-low); }
 
 /* ── 다른 고민도 궁금하면 ──
    이 앱에서 광고가 붙는 유일한 자리. 결과를 끝까지 본 사람에게만 묻는다.
@@ -4087,28 +3770,6 @@ strong {
 /* ── 내일 한 줄 ──
    결과의 마지막에 읽는 줄. 카드로 세우면 또 하나의 섹션이 되어 화면이
    길어지고, 배너처럼 보이면 광고로 읽힌다. 바탕 위에 조용히 놓는다. */
-.nextday {
-  display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
-  align-items: start;
-  gap: 8px;
-  margin: var(--space-7) 4px 0;
-}
-.nextday__k {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 21px;
-  color: var(--gray-700);
-}
-.nextday__v {
-  margin: 0;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 600;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
 
 /* ── 내일 알림 받기 ──
    결과 맨 끝, '내일 한 줄' 바로 밑. 카드로 세우지 않는다 - 또 하나의
@@ -4143,18 +3804,6 @@ strong {
   color: var(--brand-strong);
 }
 
-/* 이번 달 기운 — 행동의 이유. 행동보다 작고 흐리게 둬서 무엇이 할 일인지가
-   먼저 읽히게 한다. */
-.drawn__why {
-  display: block;
-  margin: 0 0 2px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-700);
-  word-break: keep-all;
-}
-
 /* ── 상황 고르기: 고를 것을 남는 자리 가운데로 ──
    선택지가 네 개뿐인 화면은 아래가 40% 비었다. 이 화면의 일은 하나를
    고르는 것이므로 고를 것이 화면 한가운데 있어야 한다.
@@ -4175,36 +3824,6 @@ strong {
 }
 
 /* ── 오늘 어떻게 할까 ── */
-.today-ask__a {
-  margin: 8px 0 0;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
-.today-ask__when {
-  margin: 16px 0 0;
-  padding: 14px;
-  border-radius: 12px;
-  background: var(--gray-50);
-}
-.today-ask__when-k {
-  display: block;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 600;
-  /* gray-50 상자 위라 gray-600 은 4.42:1 로 AA 미달이다 (.mpick__step:disabled 와 같은 자리) */
-  color: var(--gray-700);
-}
-.today-ask__when-v {
-  margin: 4px 0 0;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 600;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
 
 /* ── 네 가지 나 ──
    점수 표(.why-score)와 같은 자로 잰다. 같은 다섯 칸을 다르게 묶어 보여주는
@@ -4256,10 +3875,7 @@ strong {
 }
 .selves__vs {
   margin-top: 4px;
-  font-size: 13px;
-  line-height: 19.5px;
   font-weight: 500;
-  color: var(--gray-600);
 }
 
 /* ── 큰 덩이 ──
@@ -4277,8 +3893,6 @@ strong {
 .chap:first-child { margin-top: 0; }
 .chap__title {
   margin: 0;
-  font-size: 20px;
-  line-height: 29px;
   font-weight: 700;
   color: var(--gray-900);
   word-break: keep-all;
@@ -4291,10 +3905,8 @@ strong {
   color: var(--gray-600);
   word-break: keep-all;
 }
-.chap__body { margin-top: 4px; }
 /* 덩이 안의 카드는 상자를 벗는다. 상자 안의 상자는 두 겹이 된다. */
 .chap__body .sec-card {
-  margin-top: 0;
   padding: 20px 0 0;
   border-radius: 0;
   background: none;
@@ -4302,3 +3914,57 @@ strong {
   border-top: 1px solid var(--gray-100);
 }
 .chap__body .sec-card:first-child { border-top: 0; }
+
+/* ── 결과 화면 글자 위계 (2026-10-08) ──
+   카드 제목 17 > 핵심 답 17 굵게(브랜드 색) > 본문 15 > 이름표 13~14. 접힌 덩이 제목만 20.
+   카드마다 제목 크기가 달라 어디가 제목인지 안 읽혔다(사장님 지적). */
+.chap__title { font-size: 20px; line-height: 29px; }
+.chap__body { margin-top: 8px; }
+.chap__body .sec-card { margin-top: 28px; padding-top: 28px; }
+.chap__body .sec-card:first-child { margin-top: 12px; padding-top: 12px; }
+.sec-card .cat4__head { margin-bottom: 10px; }
+.sec-card .cat4__head--sub { font-size: 16px; line-height: 24px; }
+
+/* 접힌 덩이. 답이 아니라 근거와 재미라 더 볼 사람만 연다 */
+.chap--fold > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; }
+.chap--fold > summary::-webkit-details-marker { display: none; }
+.chap--fold > summary::after { content: '›'; font-size: 24px; color: var(--gray-600); transform: rotate(90deg); transition: transform 0.15s; }
+.chap--fold[open] > summary::after { transform: rotate(-90deg); }
+
+/* 맨 위 세 카드 */
+.tdc__overall .tdc__headline { margin-top: 6px; }
+.tdc__mind { margin: 16px 0 0; }
+.tdc__act--do .cat4__head { color: var(--brand-strong); }
+.tdc__act--dont .cat4__head { color: var(--score-low-text); }
+.tdc__tmr {
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--gray-100);
+  font-size: 15px;
+  line-height: 22.5px;
+  color: var(--gray-800);
+  word-break: keep-all;
+}
+.tdc__tmr .sent:first-child { font-weight: 700; color: var(--gray-900); }
+
+/* 앞으로 기대해도 되는 것 / 조심하면 좋은 것 의 첫 줄은 답이다 */
+.ahead__lead {
+  margin: 0 0 12px;
+  font-size: 17px;
+  line-height: 25.5px;
+  font-weight: 700;
+  color: var(--brand-strong);
+  word-break: keep-all;
+}
+.ahead__lead--care { color: var(--score-low-text); }
+
+/* 점수 까닭: 첫 덩이만 굵게, 나머지는 설명 무게 */
+.why-score__lead { font-weight: 500; color: var(--gray-800); }
+.why-score__lead .sent:first-child { font-weight: 700; color: var(--gray-900); }
+
+/* 할 일이 담긴 곁말은 13 회색이면 안 읽힌다 */
+.selves__vs { font-size: 14px; line-height: 21px; color: var(--gray-700); }
+.match__hint { font-size: 13px; line-height: 19.5px; }
+.dayp__nick { font-size: 17px; line-height: 25.5px; }
+/* 일주 카드의 짝 칸 값은 설명이지 결론이 아니다 */
+.dayp__v { font-weight: 500; color: var(--gray-800); }

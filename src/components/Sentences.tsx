@@ -2,7 +2,8 @@ import { splitSentences } from '../lib/sentences.ts';
 
 type Props = { text: string; className?: string };
 
-// 한 문장에 한 줄. 두 문장 이상일 때만 쪼갠다.
+// 문장이 끝나면 줄을 바꾼다. 여러 문장을 한 덩이로 흘리면 답답해 보여서
+// 전부 흘려 읽는다(사장님). 한 문장이 한 줄이다.
 export function Sentences({ text, className }: Props) {
   const lines = splitSentences(text);
   if (lines.length <= 1) return <p className={className}>{text}</p>;

@@ -24,37 +24,17 @@ export type ShareBriefing = {
 export type ShareOutcome = 'shared' | 'copied' | 'cancelled' | 'failed';
 
 export function buildShareText(b: ShareBriefing): string {
-  // 고민을 골라 뽑았으면 전체 리포트가 아니라 맨 위 쪽지 한 장만 보낸다.
-  // 받는 사람이 읽을 건 '무슨 주제로 몇 점이고 언제가 좋은가' 까지다.
-  // 생년월일과 명식은 절대 넣지 않는다 - 단톡방에 던져지는 글이다.
-  if (b.topic) {
-    return [
-      `오늘의 마음 한장 · ${b.topic} ${b.score}점`,
-      ``,
-      `"${b.headline}"`,
-      ``,
-      ...(b.bestWhen ? [`좋은 때: ${b.bestWhen}`] : []),
-      ...(b.careWhen ? [`조심할 때: ${b.careWhen}`] : []),
-      ``,
-      `너는 몇 점 나오는지 봐봐`,
-    ].join('\n');
-  }
-  const head = b.brag
-    ? `오늘의 마음 한장 · ${b.title} · 오늘 점수 ${b.score}점 (${b.brag})`
-    : `오늘의 마음 한장 · ${b.title} (오늘 점수 ${b.score}점)`;
-  // 콕집기(콜드리딩)를 첫 인용으로 — 받는 사람이 '어떻게 알았지'를 먼저 느끼게.
-  const hook = b.pinpoint
-    ? [`"${b.pinpoint}"`, `읽고 좀 놀랐어. 나랑 진짜 비슷해`, ``]
-    : [`"${b.headline}"`, ``];
-  return [
-    head,
-    ``,
-    ...hook,
-    `오늘 할 것: ${b.doItem}`,
-    `오늘 하지 말 것: ${b.dontItem}`,
-    ``,
-    `너한테는 뭐라고 하는지 봐봐`,
-  ].join('\n');
+  // 친구에게 가는 글은 짧게 — 내 결과 한 줄과 '나도 보러가기' 뒤에 링크.
+  // 풀이를 길게 옮겨 적고 '너는 몇 점 나오는지 봐봐' 로 맺으면 앱 설명문 겸
+  // 남에게 시키는 말이 된다(실기기에서 받아본 사용자 지적). 생년월일과
+  // 명식은 절대 넣지 않는다 - 단톡방에 던져지는 글이다.
+  const head = b.topic
+    ? `[오늘의 마음 한장] ${b.topic} ${b.score}점`
+    : b.brag
+      ? `[오늘의 마음 한장] ${b.title}, 오늘 점수 ${b.score}점 (${b.brag})`
+      : `[오늘의 마음 한장] ${b.title}, 오늘 점수 ${b.score}점`;
+  const quote = !b.topic && b.pinpoint ? b.pinpoint : b.headline;
+  return [head, ``, `"${quote}"`, ``, `나도 보러가기`].join('\n');
 }
 
 function tossSupported(fn: unknown): fn is { isSupported?: () => boolean } {
@@ -62,7 +42,7 @@ function tossSupported(fn: unknown): fn is { isSupported?: () => boolean } {
 }
 
 // 앱인토스 딥링크 슬러그 — 콘솔 발급 앱 ID 와 반드시 같아야 링크가 열린다.
-// apply-console-values.mjs 가 granite.config.ts 의 appName 과 함께 교체하고,
+// apply-console-values.mjs 가 apps-in-toss.config.ts 의 appName 과 함께 교체하고,
 // check-release-ready 가 둘의 불일치를 잡는다.
 export const INTOSS_APP_SLUG = 'todaymyheart';
 

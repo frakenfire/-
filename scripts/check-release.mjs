@@ -15,15 +15,16 @@
 //   node scripts/check-release.mjs
 //   node scripts/check-release.mjs --release
 
+import { fileURLToPath } from 'node:url';
 import { readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
 // --dir 로 다른 폴더를 검사할 수 있다. 테스트가 '채운 상태'와 '안 채운 상태'를
 // 둘 다 확인하려면 필요하다. 전에는 테스트가 저장소의 현재 값에 기대고 있어서,
 // 형님이 콘솔 값을 채우는 순간 npm run verify 가 깨졌다 - 제출하려고 값을
 // 넣었더니 빌드가 빨개지는, 제일 나쁜 자리에서 터지는 실패였다.
 const dirArg = process.argv.find((a) => a.startsWith('--dir='));
-const root = dirArg ? dirArg.slice('--dir='.length).replace(/\/?$/, '/') : new URL('../', import.meta.url).pathname;
+const root = dirArg ? dirArg.slice('--dir='.length).replace(/\/?$/, '/') : fileURLToPath(new URL('../', import.meta.url)).replace(/\\/g, '/');
 const release = process.argv.includes('--release');
 
 // 제출 전에 반드시 콘솔 값으로 바뀌어야 하는 것들.
@@ -56,10 +57,10 @@ const TODOS = [
   {
     id: 'app-name',
     what: '앱 ID',
-    where: 'granite.config.ts 의 appName',
+    where: 'apps-in-toss.config.ts 의 appName',
     how: '개발자센터에서 앱 등록 시 발급',
     find: (s) => (/appName:\s*'today-note'/.test(s) ? ['today-note (임시 slug)'] : []),
-    files: ['granite.config.ts'],
+    files: ['apps-in-toss.config.ts'],
   },
   {
     // 스토어 목록에 보이는 아이콘은 이 값이 아니다. 그건 콘솔 2단계
@@ -76,10 +77,10 @@ const TODOS = [
     optional: '앱 안에서 이 주소를 쓰는 자리에 그림이 깨집니다. 스토어 목록 아이콘은 콘솔에 올린 앱 로고라 이것과 무관해요',
     id: 'icon',
     what: '앱 아이콘 URL (brand.icon)',
-    where: 'granite.config.ts 의 brand.icon',
+    where: 'apps-in-toss.config.ts 의 brand.icon',
     how: '콘솔에 올린 로고의 주소를 쓸 수 있으면 그것으로, 아니면 직접 올린 이미지 주소로',
     find: (s) => [...s.matchAll(/'(https:\/\/[^']*placeholder[^']*)'/g)].map((m) => m[1]),
-    files: ['granite.config.ts'],
+    files: ['apps-in-toss.config.ts'],
   },
 ];
 

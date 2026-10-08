@@ -40,7 +40,7 @@ export type DaeunSet = {
   next: DaeunPillar | null;
   /** 지금 대운이 끝나기까지 남은 해 */
   yearsToNext: number | null;
-  /** 만 나이 */
+  /** 세는 나이 */
   age: number;
 };
 
@@ -123,12 +123,9 @@ export function computeDaeun(
     });
   }
 
-  // 만 나이 — 생일이 지났는지로 가른다
-  const y = now.getFullYear();
-  const passed =
-    now.getMonth() + 1 > input.month ||
-    (now.getMonth() + 1 === input.month && now.getDate() >= input.day);
-  const age = Math.max(0, y - input.year - (passed ? 0 : 1));
+  // 세는 나이. 대운수(startAge)가 세는 나이라 같은 잣대로 재야 한다.
+  // 만 나이로 재면 서른한 살(만 서른)이 '21세부터 30세까지' 를 받았다(실사용자 제보).
+  const age = Math.max(1, now.getFullYear() - input.year + 1);
 
   const current = pillarsOut.find((p) => age >= p.startAge && age <= p.endAge) ?? null;
   const next = current ? pillarsOut[current.index + 1] ?? null : pillarsOut[0] ?? null;

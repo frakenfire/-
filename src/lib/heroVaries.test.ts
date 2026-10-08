@@ -39,16 +39,19 @@ test('맨 위 카드가 생일마다 다른 말을 한다', () => {
       const p = computeFourPillars(b);
       const t = computeTiming(b, p, 'female', c.key as ConcernKey, at);
       const r = buildDeepRead(p, t, c.key as ConcernKey, null, '2026-09-27');
-      seen.add(`${r.headline}|${r.sub}|${r.todayWhy}`);
+      // 전체 종합은 상황과 밴드에서, 할 것과 하지 말 것은 오늘 들어온 글자에서
+      // 나온다. 사주가 다르면 적어도 아래 두 칸은 달라야 한다.
+      const d = r.todayDecision;
+      seen.add(`${d.overall.headline}|${d.overall.summary}|${d.do.action}|${d.dont.action}`);
     }
     if (seen.size < 최소_가짓수) 모자란곳.push(`${c.label} ${seen.size}가지`);
   }
   assert.deepEqual(모자란곳, [], `마흔 명이 ${최소_가짓수}가지도 안 되는 말을 받아요`);
 });
 
-// 위 검사가 헛돌지 않는지. 세 번째 줄을 빼면 두 줄만 남고, 그러면 옛날처럼
-// 밴드 가짓수로 떨어진다. 그 상태를 여기서 직접 만들어 확인한다.
-test('세 번째 줄을 빼면 가짓수가 무너진다', () => {
+// 위 검사가 헛돌지 않는지. 할 것·하지 말 것을 빼고 전체 종합만 남기면
+// 옛날처럼 밴드 가짓수로 떨어진다. 그 상태를 여기서 직접 만들어 확인한다.
+test('할 것과 하지 말 것을 빼면 가짓수가 무너진다', () => {
   const at = new Date(Date.UTC(2026, 8, 27, 3));
   const p0 = CONCERNS[0].key as ConcernKey;
   const 두줄만 = new Set<string>();
