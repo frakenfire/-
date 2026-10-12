@@ -75,24 +75,22 @@ test('다섯 칸이 하나도 비어 있지 않다', () => {
   assert.deepEqual(bad, []);
 });
 
-// 시키는 말은 읽는 사람을 밀어낸다. 할 것은 권하는 말(해보세요, 해두면 좋아요)로,
-// 하지 말 것은 막는 말 대신 무엇을 대신 할지(미뤄두는 게 나아요, B 가 나아요)로
-// 끝낸다. 다만 보증, 대출, 서명, 송금, 술처럼 한 번에 손해가 큰 일은 그대로
-// 하지 마세요 라고 말한다. '조심하세요', '생각해보세요' 로 끝나면 무엇을 하라는
-// 건지 모른다.
-const SUGGEST = /(보세요|봐요|좋아요|두세요|나아요|충분해요)\.$/;
-const INSTEAD = /(나아요|좋아요|않아요|충분해요|둬요|두세요|돼요)\.$/;
-const COSTLY = /보증|대출|서명|송금|술/;
+// 사장님 본보기(2026-10-12): 할 것은 '~해보세요, ~하세요' 로 무엇을 할지 바로 말하고,
+// 하지 말 것은 '~하지 마세요' 로 분명하게 막는다. 대신 무엇을 할지는 아래 설명이 말한다.
+// 'A보다 B가 나아요' 로 돌려 말하면 무엇을 하지 말라는 건지 한 번 더 읽어야 했다.
+// '조심하세요', '생각해보세요' 로 끝나면 무엇을 하라는 건지 모른다.
+const DO_END = /요\.$/;
+const DONT_END = /마세요\.$/;
 function suggestShape(doAction: string, dontAction: string): string | null {
-  if (!SUGGEST.test(doAction) || /마세요/.test(doAction)) return `할 것이 권하는 말이 아니에요: ${doAction}`;
-  if (/마세요/.test(dontAction) ? !COSTLY.test(dontAction) : !INSTEAD.test(dontAction)) return `하지 말 것이 대안을 주지 않아요: ${dontAction}`;
+  if (!DO_END.test(doAction) || /마세요/.test(doAction)) return `할 것이 할 일로 끝나지 않아요: ${doAction}`;
+  if (!DONT_END.test(dontAction)) return `하지 말 것이 '~하지 마세요' 로 끝나지 않아요: ${dontAction}`;
   if (/^(조심하세요|생각해보세요|주의하세요)\.$/.test(doAction.replace(/^오늘은\s*/, ''))) return '목적어 없음';
   return null;
 }
 
 // 고민을 안 고르고 뽑은 일반 쪽지(dayVibe)는 다른 표라 여기서는 고민을 고른
 // 칸만 본다.
-test('할 것은 권하는 말로, 하지 말 것은 대안을 주는 말로 끝난다', () => {
+test('할 것은 할 일로, 하지 말 것은 하지 마세요로 끝난다', () => {
   const bad = new Set<string>();
   for (const { where, concern, d } of ALL) {
     if (!concern) continue;
@@ -102,27 +100,22 @@ test('할 것은 권하는 말로, 하지 말 것은 대안을 주는 말로 끝
   assert.deepEqual([...bad], []);
 });
 
-// 일반 쪽지(dayVibe) 열 칸도 같은 기준이다. 홈 맨 위 한 줄(head)도 시키지 않고
-// 권한다. 하지 말 것의 까닭은 그 일을 하고 싶어지는 마음부터 짚는다.
-test('일반 쪽지도 권하는 말과 대안을 주는 말로 끝난다', () => {
+// 일반 쪽지(dayVibe) 열 칸도 같은 기준이다.
+test('일반 쪽지도 할 일과 하지 마세요로 끝난다', () => {
   const bad: string[] = [];
   for (const { where, concern, d } of ALL) {
     if (concern) continue;
     const why = suggestShape(d.do.action, d.dont.action);
     if (why) bad.push(`${where} ${why}`);
-    const head = where.slice('일반/'.length);
-    if (/세요\.$/.test(head) && !/보세요\.$/.test(head)) bad.push(`${where} 머리말이 시키는 말이에요`);
-    if (/마세요/.test(d.overall.headline)) bad.push(`${where} 전체 종합이 막는 말이에요`);
-    if (!/(싶|마음|불안|미안|허전|핑계|섭섭)/.test(d.dont.why)) bad.push(`${where} 하지 말 것의 까닭에 마음이 없어요: ${d.dont.why}`);
   }
   assert.deepEqual(bad, []);
 });
 
-test('권하는 말을 보는 눈이 살아 있다', () => {
-  assert.equal(suggestShape('저녁 9시 전에 한 곳만 보내보세요.', '그만둔다는 말은 합격 연락을 받은 뒤로 미뤄두는 게 나아요.'), null);
-  assert.equal(suggestShape('공고 세 개를 골라두면 좋아요.', '친구 보증은 서지 마세요.'), null);
-  assert.ok(suggestShape('저녁 9시 전에 보내세요.', '미뤄두는 게 나아요.'));
-  assert.ok(suggestShape('저녁 9시 전에 보내보세요.', '오늘은 결제하지 마세요.'));
+test('할 일 모양을 보는 눈이 살아 있다', () => {
+  assert.equal(suggestShape('저녁 9시 전에 한 곳만 보내보세요.', '감정적으로 퇴사 이야기를 꺼내지 마세요.'), null);
+  assert.equal(suggestShape('관심 있는 채용 공고 두 개를 저장하세요.', '친구 보증은 서지 마세요.'), null);
+  assert.ok(suggestShape('저녁 9시 전에 보내보세요.', '미뤄두는 게 나아요.'));
+  assert.ok(suggestShape('오늘은 결제하지 마세요.', '오늘은 결제하지 마세요.'));
 });
 
 test('할 것과 하지 말 것은 서로 다른 말이고, 까닭도 서로 다르다', () => {

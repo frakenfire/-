@@ -29,12 +29,45 @@ test('스물네 상황 x 열 칸이 다 차 있고, 한 고민 안에서 같은 
   assert.equal(cells, 240);
 });
 
-test('까닭은 두 문장이다 - 오늘 왜 그런지, 그러면 무엇이 달라지는지', () => {
+// 사장님 본보기(2026-10-12): 할 것 제목은 '~해보세요, ~하세요' 로 오늘 할 일 한 문장,
+// 하지 말 것 제목은 '~하지 마세요' 한 문장이다. 'A보다 B가 나아요' 로 돌려 말하면
+// 무엇을 하지 말라는 건지 한 번 더 읽어야 했다.
+function titleShape(doIt: string, avoid: string): string | null {
+  if (!/세요\.$/.test(doIt) || /마세요/.test(doIt)) return `할 것이 '~세요.' 로 끝나는 할 일이 아니에요: ${doIt}`;
+  if (!/마세요\.$/.test(avoid)) return `하지 말 것이 '~하지 마세요.' 로 끝나지 않아요: ${avoid}`;
+  for (const t of [doIt, avoid]) {
+    if (t.length < 15 || t.length > 35) return `제목은 15~35자예요(${t.length}자): ${t}`;
+    if (t.split(/(?<=[.?!])\s+/).length !== 1) return `제목은 한 문장이에요: ${t}`;
+  }
+  return null;
+}
+
+test('할 것은 할 일 한 문장, 하지 말 것은 하지 마세요 한 문장이다', () => {
+  const bad: string[] = [];
+  for (const c of CONCERNS) for (const o of c.options) for (const g of GODS) {
+    const a = dayActOf(c.key, o.key, g);
+    const why = titleShape(a.doIt, a.avoid);
+    if (why) bad.push(`${c.key}/${o.key}/${g} ${why}`);
+  }
+  assert.deepEqual(bad, []);
+});
+
+test('제목 모양을 보는 눈이 살아 있다', () => {
+  assert.equal(titleShape('관심 있는 채용 공고 두 개를 저장하세요.', '감정적으로 퇴사 이야기를 꺼내지 마세요.'), null);
+  assert.ok(titleShape('퇴근 뒤 공고는 30분만 보는 게 나아요.', '감정적으로 퇴사 이야기를 꺼내지 마세요.'));
+  assert.ok(titleShape('관심 있는 채용 공고 두 개를 저장하세요.', '사직서는 옮길 곳이 정해진 뒤에 내는 게 나아요.'));
+  assert.ok(titleShape('저장하세요.', '감정적으로 퇴사 이야기를 꺼내지 마세요.'));
+});
+
+// 설명은 한두 문장이다. 첫 문장은 구체적으로 어떻게, 둘째 문장은 그러면 무엇이
+// 좋은지. 길면 화면에서 안 읽히고, 짧으면 어떻게 하라는 건지가 빠진다.
+test('설명은 한두 문장, 25~90자다', () => {
   const bad: string[] = [];
   for (const c of CONCERNS) for (const o of c.options) for (const g of GODS) {
     const a = dayActOf(c.key, o.key, g);
     for (const t of [a.doWhy, a.avoidWhy]) {
-      if (t.split(/(?<=[.?!])\s+/).length !== 2) bad.push(`${c.key}/${o.key}/${g} ${t}`);
+      const n = t.split(/(?<=[.?!])\s+/).length;
+      if (n < 1 || n > 2 || t.length < 25 || t.length > 90) bad.push(`${c.key}/${o.key}/${g} (${n}문장 ${t.length}자) ${t}`);
     }
   }
   assert.deepEqual(bad, []);

@@ -71,10 +71,15 @@ const LATER = /이번 주|다음 주|이번 달|다음 달|분기|올해|내년|
 const MARKS = /[·—–…'"()‘’]/;
 // 문장 끝 두 글자. 한 칸 세 줄이 같은 어미로 끝나면 같은 틀로 찍은 것처럼 읽힌다
 const ending = (s: string) => s.replace(/[.]$/, '').slice(-2);
+// 첫 낱말. 할 것과 하지 말 것은 끝맺음이 '~세요', '~지 마세요' 로 정해져 있으니
+// 같은 틀로 찍은 것처럼 안 읽히게 세 줄의 첫 낱말을 다르게 쓴다
+const head = (s: string) => s.split(' ')[0];
+const sentences = (s: string) => s.split(/(?<=[.!?])\s+/);
 
-// 목록 첫 줄은 다른 표에서 온 완성 문장이다. 나머지가 '~하기' 로 끝나면 한
-// 목록 안에서 꼴이 섞인다. 할 것과 미룰 것도 마침표로 끝나는 완성 문장으로 쓴다.
-test('할 것과 미룰 것은 오늘 할 수 있는 완성 문장이고, 한 칸 안에서 끝맺음이 다르다', () => {
+// 사장님이 준 본보기처럼 쓴다. 할 것 제목은 '~해보세요.' 나 '~하세요.' 로 끝나는
+// 오늘 할 일 한 문장, 하지 말 것 제목은 '~하지 마세요.' 로 끝나는 한 문장이다.
+// 읽자마자 무엇을 하라는지, 무엇을 하지 말라는지가 보여야 한다.
+test('할 것은 ~세요, 하지 말 것은 ~지 마세요로 끝나는 오늘 할 수 있는 한 문장이다', () => {
   const bad: string[] = [];
   for (const c of CONCERNS) {
     for (const o of c.options) {
@@ -82,23 +87,25 @@ test('할 것과 미룰 것은 오늘 할 수 있는 완성 문장이고, 한 �
       for (const [name, list] of [['dos', p.dos], ['donts', p.donts]] as const) {
         list.forEach((d, i) => {
           const at = `${c.key}.${o.key}.${name}[${i}]`;
-          if (!d.endsWith('.')) bad.push(`${at} 마침표로 끝나야 해요: ${d}`);
-          if (d.length < 15 || d.length > 35) bad.push(`${at} ${d.length}자: ${d}`);
-          if (/(?<!보)세요|지 마[라세]/.test(d)) bad.push(`${at} 시키는 말: ${d}`);
+          if (name === 'dos' && (!/세요\.$/.test(d) || /마세요\.$/.test(d))) bad.push(`${at} ~해보세요나 ~하세요로 끝나야 해요: ${d}`);
+          if (name === 'donts' && !/지 마세요\.$/.test(d)) bad.push(`${at} ~하지 마세요로 끝나야 해요: ${d}`);
+          if (sentences(d).length !== 1) bad.push(`${at} 한 문장으로: ${d}`);
+          if (d.length < 15 || d.length > 30) bad.push(`${at} ${d.length}자: ${d}`);
           if (LATER.test(d)) bad.push(`${at} 오늘 일이 아니에요: ${d}`);
           if (MARKS.test(d)) bad.push(`${at} 부호: ${d}`);
         });
-        if (new Set(list.map(ending)).size !== 3) bad.push(`${c.key}.${o.key}.${name} 끝맺음이 겹쳐요: ${list.map(ending).join(' / ')}`);
+        if (new Set(list.map(head)).size !== 3) bad.push(`${c.key}.${o.key}.${name} 첫 낱말이 겹쳐요: ${list.map(head).join(' / ')}`);
       }
     }
   }
   assert.deepEqual(bad, []);
 });
 
-// 까닭은 친구가 옆에서 말해주는 한 문장이다. 같은 칸에서 같은 문장이 두 번
-// 나오면 한쪽은 아무 말도 안 한 것이고, 까닭 칸에 '~하세요' 가 오면 지시다.
+// 설명은 한두 문장이다. 첫 문장은 어떻게(무엇을 보고 적고 말하는지), 둘째 문장은
+// 그러면 무엇이 좋은지. 하지 말 것의 설명에는 대신 무엇을 할지가 들어간다.
+// 같은 문장이 두 번 나오면 한쪽은 아무 말도 안 한 것이고,
 // '~할 것 같지만,' 을 칸마다 되풀이하던 때가 있었다. 만든 틀로 읽힌다.
-test('까닭(doWhys, dontWhys)은 한 문장이고, 겹치지 않고, 시키지 않는다', () => {
+test('설명(doWhys, dontWhys)은 짧은 한두 문장이고, 겹치지 않고, 하지 말 것엔 대신 할 일이 있다', () => {
   const seen = new Map<string, string>();
   const bad: string[] = [];
   for (const c of CONCERNS) {
@@ -109,9 +116,12 @@ test('까닭(doWhys, dontWhys)은 한 문장이고, 겹치지 않고, 시키지 
       for (const [name, list] of [['doWhys', p.doWhys], ['dontWhys', p.dontWhys]] as const) {
         list.forEach((w, i) => {
           const at = `${c.key}.${o.key}.${name}[${i}]`;
-          if (!w.endsWith('.') || /[.!?]\s/.test(w)) bad.push(`${at} 한 문장으로: ${w}`);
-          if (w.length < 20 || w.length > 45) bad.push(`${at} ${w.length}자: ${w}`);
-          if (/세요|십시오|지 마[라세]/.test(w)) bad.push(`${at} 시키는 말: ${w}`);
+          const ss = sentences(w);
+          if (!w.endsWith('.') || ss.length > 2) bad.push(`${at} 한두 문장으로: ${w}`);
+          if (w.length < 25 || w.length > 90) bad.push(`${at} ${w.length}자: ${w}`);
+          for (const s of ss) if (s.length > 50) bad.push(`${at} 한 문장이 ${s.length}자: ${s}`);
+          if (/십시오|지 마라/.test(w)) bad.push(`${at} 시키는 말: ${w}`);
+          if (name === 'dontWhys' && !/(?<!마)세요\./.test(w)) bad.push(`${at} 대신 무엇을 할지가 없어요: ${w}`);
           if (/것 같지만|피하는 게 나아요|하는 것은|에 있어/.test(w)) bad.push(`${at} 만든 틀: ${w}`);
           if (LATER.test(w)) bad.push(`${at} 먼 미래: ${w}`);
           if (MARKS.test(w)) bad.push(`${at} 부호: ${w}`);

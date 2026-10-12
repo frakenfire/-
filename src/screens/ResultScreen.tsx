@@ -67,11 +67,11 @@ function scoreWhyOf(read: DeepRead): { head: string; text: string } {
   if (!natal || !today) return { head, text: read.scoreLine.split(/(?<=[.])\s+/)[0] };
   const gap = today.score - natal.score;
   const day = gap >= 5
-    ? `오늘은 평소보다 ${gap}점 높은 날이에요.`
+    ? `오늘 점수는 ${today.score}점으로 평소보다 ${gap}점 높아요. 미뤄둔 일을 하나 끝내기 좋은 날이에요.`
     : gap <= -5
-      ? `오늘은 평소보다 ${-gap}점 낮은 날이라 무리하지 않는 게 좋아요.`
-      : '오늘은 평소와 비슷한 날이에요.';
-  return { head, text: `타고난 성향 ${natal.score}점에 올해와 이번 달, 오늘 ${today.score}점을 더해 ${total}점이 나왔어요. ${day}` };
+      ? `오늘 점수는 ${today.score}점으로 평소보다 ${-gap}점 낮아요. 새 일을 시작하기보다 하던 일을 마무리하세요.`
+      : `오늘 점수는 ${today.score}점으로 평소와 비슷해요. 하던 일을 하나씩 처리하면 돼요.`;
+  return { head, text: `${total}점은 타고난 성향 ${natal.score}점에 올해와 이번 달, 오늘 점수를 함께 더해 낸 점수예요. ${day}` };
 }
 
 export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onShareWeek, onBack }: Props) {
