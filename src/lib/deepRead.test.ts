@@ -167,7 +167,7 @@ test('근거에 내 명식이 그대로 펼쳐진다', () => {
   const sum = r.chart.elements.reduce((a, e) => a + e.pct, 0);
   assert.ok(Math.abs(sum - 100) <= 2, `오행 합이 ${sum}%`);
   assert.equal(r.chart.elements.filter((e) => e.mine).length, 1);
-  for (const k of ['dayMaster', 'strength', 'season', 'useful', 'focus', 'today'] as const) {
+  for (const k of ['dayMaster', 'strength', 'season', 'useful', 'focus'] as const) {
     assert.ok(r.chart[k].length > 15, `${k} 가 비었음`);
   }
 });
@@ -176,7 +176,7 @@ test('날이 바뀌면 오늘 줄이 바뀌고, 명식은 그대로다', () => {
   const t = computeTiming(INPUT, P, 'female', 'work', new Date('2026-09-17T12:00:00+09:00'));
   const a = buildDeepRead(P, t, 'work', null, '2026-09-17');
   const b = buildDeepRead(P, t, 'work', null, '2026-09-18');
-  assert.notEqual(a.chart.today, b.chart.today, '오늘 줄이 어제와 같으면 매일 볼 이유가 없다');
+  assert.notEqual(a.todayMeet.pillar, b.todayMeet.pillar, '오늘 글자가 어제와 같으면 매일 볼 이유가 없다');
   assert.notEqual(a.todayDecision.do.action, b.todayDecision.do.action, '오늘 할 것이 어제와 같으면 안 된다');
   assert.deepEqual(a.chart.pillars, b.chart.pillars, '명식은 날이 바뀌어도 그대로여야 한다');
   assert.deepEqual(a.chart.elements, b.chart.elements);

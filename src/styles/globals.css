@@ -3009,12 +3009,6 @@ strong {
 /* 오늘은 이렇게 카드의 한 줄 요약 밑 보조 문장 */
 
 /* 점수 근거 — 무엇이 몇 점이고 그게 총점의 몇 몫인지 한 줄에 다 보인다 */
-.why-score__lead {
-  margin: 0 0 12px;
-  font-size: 15px;
-  line-height: 22.5px;
-  word-break: keep-all;
-}
 .why-score { list-style: none; margin: 0; padding: 0; }
 .why-score__row {
   display: grid;
@@ -3668,8 +3662,6 @@ strong {
 /* 앞으로 기대해도 되는 것 / 조심하면 좋은 것 의 첫 줄은 답이다 */
 
 /* 점수 까닭: 첫 덩이만 굵게, 나머지는 설명 무게 */
-.why-score__lead { font-weight: 500; color: var(--gray-800); }
-.why-score__lead .sent:first-child { font-weight: 700; color: var(--gray-900); }
 
 /* 할 일이 담긴 곁말은 13 회색이면 안 읽힌다 */
 .match__hint { font-size: 13px; line-height: 19.5px; }

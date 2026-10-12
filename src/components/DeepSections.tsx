@@ -57,7 +57,6 @@ export function DeepSections({ concernKey, read, userName, compact = false }: Pr
       {/* 점수가 어디서 나왔는지 — '87점입니다' 하고 끝내면 아무도 안 믿는다. */}
       <div className="sec-card">
         <p className="cat4__head">점수 계산표</p>
-        <Sentences className="why-score__lead" text={read.scoreLine} />
         <ul className="why-score">
           <li className="why-score__head" aria-hidden>
             <span>항목</span>
@@ -68,8 +67,8 @@ export function DeepSections({ concernKey, read, userName, compact = false }: Pr
           {read.score.parts.map((p) => (
             <li key={p.k} className={`why-score__row why-score__row--${p.band}`}>
               <span className="why-score__k">
-                {p.k}
-                <i className="why-score__label">{p.label}</i>
+                {p.k === '타고난 성향' ? '타고난 사주' : p.k}
+                {p.label === '타고난 사주' ? null : <i className="why-score__label">{p.label}</i>}
               </span>
               <span className="why-score__bar" aria-hidden>
                 <i style={{ width: `${Math.max(0, Math.min(100, p.score))}%` }} />
@@ -81,7 +80,7 @@ export function DeepSections({ concernKey, read, userName, compact = false }: Pr
         </ul>
         <Sentences
           className="mflow__foot"
-          text={`다섯 칸을 정해진 비율대로 더하면 ${read.score.total}점이에요. 정해진 계산이라 같은 날에는 몇 번을 봐도 같은 숫자가 나와요.`}
+          text={`다섯 자리 점수에 오른쪽 비율을 곱해 더하면 ${read.score.total}점이에요. 정해진 계산이라 같은 날에는 몇 번을 봐도 같은 숫자가 나와요.`}
         />
       </div>
 
@@ -218,7 +217,6 @@ export function DeepSections({ concernKey, read, userName, compact = false }: Pr
       {/* 오늘 글자와 내 글자가 만나는 자리. 매일 바뀌므로 다시 볼 이유가 된다. */}
       <div className="sec-card">
         <p className="cat4__head">오늘과 내 사주가 만나는 곳</p>
-        <Sentences className="qa qa--sub" text={read.chart.today} />
         <ul className="read6 read6--tight">
           <li className="read6__row">
             <span className="read6__k">오늘 내 상태</span>

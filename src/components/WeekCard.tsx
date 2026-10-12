@@ -1,5 +1,6 @@
 import { computeWeekAhead, buildWeekShareText, type WeekDay } from '../lib/weekAhead.ts';
 import { todayKey } from '../lib/dateSeed.ts';
+import { REL_GLOSS } from '../lib/saju.ts';
 import type { Zodiac } from '../data/zodiac.ts';
 
 type Props = {
@@ -45,7 +46,8 @@ export function WeekCard({ zodiac, onShare }: Props) {
                 {d.isToday ? <i>오늘</i> : null}
               </span>
               <span className="week-row__date">{d.short}</span>
-              <span className="week-row__rel">{d.relationGloss}</span>
+              {/* 관계가 없는 날은 '무난한 날' 옆에 '좋아요' 가 붙어 앞뒤가 안 맞았다. 그날 등급만 둔다 */}
+              <span className="week-row__rel">{d.relationGloss === REL_GLOSS.none ? '' : d.relationGloss}</span>
               <span className="week-row__tone">{d.toneWord}</span>
             </li>
           ))}

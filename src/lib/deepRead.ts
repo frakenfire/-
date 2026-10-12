@@ -5,6 +5,7 @@ import { bandLabel, monthsAway, type Band, type TimingRead, type TimingSlot } fr
 import { REFRESH_NOTE } from '../data/concernReadings.ts';
 import { godLineOf } from '../data/concernGodOverride.ts';
 import { FAVOR_WORD } from '../data/concernFocus.ts';
+import { CONCERN_TODAY } from '../data/scoreWhyCopy.ts';
 import { computeConcernScore, scoreVerdictLine, type ConcernScore } from './concernScore.ts';
 import { withJosa } from './josa.ts';
 import { NATAL_SHAPE, SHAPE_LABELS, type ShapeRow } from '../data/natalShape.ts';
@@ -77,8 +78,6 @@ export type DeepRead = {
     usefulEl: string;
     /** 이 주제에서 실제로 본 자리 */
     focus: string;
-    /** 오늘 일진 한 줄 — 여기가 날마다 바뀐다 */
-    today: string;
     /** 타고난 별 — 조견표로 대조한 것만 */
     sinsal: { k: string; at: string; v: string }[];
     /** 비어 있는 두 글자 */
@@ -525,11 +524,6 @@ export function buildDeepRead(
       ? `${withJosa(concern.label, '은는')} ${withJosa(favorNames, '을를')} 중심으로 봐요. 내 사주에도 이런 특징이 ${focusCount >= 3 ? '여러 곳에서' : '조금'} 보여요.`
         : `${withJosa(concern.label, '은는')} ${withJosa(favorNames, '을를')} 중심으로 봐요. 타고난 사주에는 이런 특징이 없어서, 올해나 이번 달에 그런 일이 생기면 더 크게 느껴져요.`;
 
-  // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
-  // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
-  // '오늘 글자를 내 사주와 맞춰보면 드러내는 힘으로 봐요' 는 기운 이름을 한 번
-  // 더 말할 뿐이라 뺐다. 그래서 오늘 무슨 일이 있는지만 남긴다.
-  const chartToday = G(todayGod).line;
 
   // 조견표로 대조만 하는 것들. 해석을 고르지 않으니 누가 계산해도 같다.
   const stars = sinsalOf(pillars).map((x) => ({
@@ -542,7 +536,7 @@ export function buildDeepRead(
   // 읽는 사람은 그게 언제 오는 해인지 알 길이 없다. 지지 차례와 띠 차례가
   // 같으니 띠 이름으로 적는다. 달은 뺐다 - 띠로는 달을 가리킬 수 없다.
   const gongmangZodiac = (b: number) => findZodiac(BRANCHES[b].animal)?.label ?? BRANCHES[b].kor;
-  const gongmang = `${gongmangZodiac(g1)} 해와 ${gongmangZodiac(g2)} 해에는 내 사주에 힘이 덜 실려요. 그 두 해에는 큰돈이 드는 계약 전에 석 달쯤 지켜보고 정해도 늦지 않아요.`;
+  const gongmang = `${gongmangZodiac(g1)} 해와 ${gongmangZodiac(g2)} 해에는 내 사주에 힘이 덜 실려요. 그런 해에는 큰돈이 드는 계약을 서두르지 말고 충분히 지켜본 뒤 정해도 늦지 않아요.`;
 
   const chart = {
     pillars: chartPillars,
@@ -550,7 +544,7 @@ export function buildDeepRead(
     elements,
     strength:
       prof.strength === 'strong'
-        ? '내가 주도하려는 성향이 강해요. 그래서 일정과 순서를 직접 정할 때 편하고, 단체방에서 의견이 열 개씩 오가면 오히려 답답해져요.'
+        ? '내가 주도하려는 성향이 강해요. 그래서 일정과 순서를 직접 정할 때 편하고, 단체방에서 의견이 너무 많이 오가면 오히려 답답해져요.'
         : '주변의 도움을 받을 때 강점을 더 잘 써요. 혼자 밀어붙이기보다 배우고 도움받을 때 결과가 좋아요.',
     season: prof.hasSeasonalSupport
       ? '태어난 계절이 내 성향과 잘 맞아서 기본적으로 버티는 힘이 있는 편이에요.'
@@ -559,7 +553,6 @@ export function buildDeepRead(
     usefulEl: ELEMENT_KO[prof.usefulElement],
     useful: `내 사주에는 다섯 요소 중 ${withJosa(ELEMENT_KO[prof.usefulElement], '이가')} 모자라요. ${withJosa(ELEMENT_KO[prof.usefulElement], '이가')} 들어오는 해와 달에는 일이 덜 막히는 편이에요.`,
     focus,
-    today: chartToday,
     sinsal: stars,
     gongmang,
     dayPillar: (() => {
@@ -590,7 +583,7 @@ export function buildDeepRead(
         } else if (smooth) {
           verdict = `이름 소리는 자연스럽게 이어져요. 다만 사주에서 부족한 ${need} 요소가 이름에는 없어서 부족한 부분을 보완해주지는 못해요.`;
         } else {
-          verdict = `이름에는 ${ELEMENT_KO[sound.lead]} 요소의 소리가 가장 많아요. 사주에 부족한 ${need} 요소와는 달라요. 그래서 이름을 바꾸기보다 이사나 계약 날짜를 언제로 잡을지가 더 중요해요.`;
+          verdict = `이름에는 ${ELEMENT_KO[sound.lead]} 요소의 소리가 가장 많아요. 사주에 부족한 ${need} 요소와는 달라요. 그래서 이름보다 언제 무엇을 하느냐가 더 중요해요.`;
         }
         return {
           letters: sound.letters.map((l) => ({ ch: l.ch, el: ELEMENT_KO[l.el] })),
@@ -646,7 +639,9 @@ export function buildDeepRead(
       ? '내일도 오늘과 비슷한 하루예요. 내일 쪽지에서 오늘과 무엇이 달라지는지 알려드릴게요.'
       : tomorrowGod === todayGod
         ? `내일은 오늘과 비슷하지만 다른 일이 생기기 쉬운 날이에요. 내일 쪽지에서 무엇이 달라지는지 알려드릴게요.`
-        : `내일은 ${G(tomorrowGod).pull} 날이에요. 그날 해보면 좋은 일은 내일 쪽지에서 알려드릴게요.`;
+        : GOD_GROUP_OF[tomorrowGod] === GOD_GROUP_OF[todayGod]
+          ? `${CONCERN_TODAY[concernKey][GOD_GROUP_OF[tomorrowGod]].head.replace(/^오늘은/, '내일도')} 내일 쪽지에서 오늘과 무엇이 달라지는지 알려드릴게요.`
+          : `${CONCERN_TODAY[concernKey][GOD_GROUP_OF[tomorrowGod]].head.replace(/^오늘은/, '내일은')} 그날 해보면 좋은 일은 내일 쪽지에서 알려드릴게요.`;
 
   const todayStep = unseongOf(pillars.dayStem, todayPillar.branch);
   // 네 가지 나. 다섯 칸을 사람이 자기를 생각하는 말로 다시 묶는다.

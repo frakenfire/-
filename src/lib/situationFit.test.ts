@@ -4,6 +4,8 @@ import { computeFourPillars } from './fourPillars.ts';
 import { computeTiming } from './timing.ts';
 import { buildDeepRead } from './deepRead.ts';
 import { CONCERNS, findConcern } from '../data/concerns.ts';
+import { scoreWhyOf } from './scoreWhy.ts';
+import { todayIntroOf } from '../data/todayIntro.ts';
 
 // 고른 상황과 부딪히는 말이 화면 어디에도 없어야 한다.
 //
@@ -65,7 +67,9 @@ test('고른 상황과 부딪히는 말이 화면 어디에도 없다', () => {
           if (!re) continue;
           const t = computeTiming(input, p, gender, c.key, at);
           const r = buildDeepRead(p, t, c.key, o.key, dateKey, '김한별');
-          for (const [path, s] of flat(r)) {
+          // 맨 위 점수 이유 카드와 할 것·미룰 것 머리말도 같은 화면이다.
+          const shown = [...flat(r), ...flat(scoreWhyOf(r, c.key, label), 'why'), ...flat(todayIntroOf(c.key, r.todayGroup), 'intro')];
+          for (const [path, s] of shown) {
             // 십 년 카드는 일·돈·사람·몸 네 영역을 한꺼번에 보여준다.
             // 사람 관계를 물어도 그 안의 '일' 줄은 회사 얘기를 하는 게 맞다.
             // 고른 상황과 부딪히는지는 그 고민을 말하는 자리에서만 본다.

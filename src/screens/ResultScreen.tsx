@@ -87,7 +87,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, deep = nul
           { k: '시간', v: luckyWhen(luck.time, clock.at).label },
           { k: '방향', v: luck.direction },
         ],
-        why: `오늘 나한테 힘이 되는 건 ${boost.ko} 요소예요. 그래서 ${boost.ko}에 드는 빛깔과 음식, 음악을 골랐고, 친구는 오늘 나와 잘 맞는 띠예요.`,
+        why: `오늘 나한테 힘이 되는 요소는 ${boost.ko}예요. 그래서 ${boost.ko}에 해당하는 빛깔과 음식, 음악을 골랐어요. 친구는 오늘 나와 잘 맞는 띠로 골랐어요.`,
       }
     : undefined;
   const avoids = boost && press
@@ -98,7 +98,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, deep = nul
           { k: '음악', v: press.music[0] },
           { k: '조심할 띠', v: match.caution.label },
         ],
-        why: `${withJosa(press.ko, '은는')} 오늘 힘이 되는 ${withJosa(boost.ko, '을를')} 누르는 요소라, 여기에 드는 것들은 오늘 조금 멀리해두면 좋아요. ${withJosa(match.caution.label, '과와')}는 오늘 말이 엇갈리기 쉬우니 중요한 얘기는 다음으로 미뤄도 괜찮아요.`,
+        why: `${withJosa(press.ko, '은는')} 오늘 힘이 되는 ${withJosa(boost.ko, '을를')} 누르는 요소예요. 그래서 ${press.ko}에 해당하는 빛깔과 음식, 음악은 오늘 조금 멀리해 두면 좋아요. ${match.caution.label} 친구와는 말이 엇갈리기 쉬우니 중요한 얘기는 다음으로 미뤄도 괜찮아요.`,
       }
     : undefined;
   const headScore = deep ? deep.read.score.total : luck.total;

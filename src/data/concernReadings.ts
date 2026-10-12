@@ -132,4 +132,4 @@ export const CONCERN_GOD: Record<ConcernKey, Record<TenGod, GodLine>> = {
 
 /** 이 답이 언제 다시 계산되는지 */
 export const REFRESH_NOTE =
-  '이 답은 달이 넘어가면 다시 계산돼요. 사주 여덟 글자는 평생 그대로지만, 거기에 닿는 해와 달의 글자가 매번 바뀌어서예요.';
+  '이 풀이는 날마다 다시 계산돼요. 사주 여덟 글자는 평생 그대로지만, 거기에 닿는 그날의 글자가 매일 바뀌어서예요.';

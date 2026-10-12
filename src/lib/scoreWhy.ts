@@ -3,7 +3,7 @@ import type { Band } from './timing.ts';
 import type { IconName } from '../components/Icon.tsx';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { withJosa } from './josa.ts';
-import { CONCERN_SUB, CONCERN_TODAY, ELEMENT_TODAY, LUCK_BAND, LUCK_NAME, NAME_TODAY, NATAL_TODAY } from '../data/scoreWhyCopy.ts';
+import { CONCERN_SUB, CONCERN_TODAY, ELEMENT_TODAY, BAND_WORD, LUCK_NAME, LUCK_TODAY, NAME_TODAY, NATAL_TODAY } from '../data/scoreWhyCopy.ts';
 
 /** 항목 아래 작은 칩. 이름 글자(김 · 나무)나 다섯 요소(불 38%) */
 export type Chip = { t: string; v: string; mark?: string };
@@ -34,8 +34,8 @@ export function scoreWhyOf(read: DeepRead, concernKey: ConcernKey, concernLabel:
   const g = read.todayGroup;
 
   const band = read.todayAsk.band;
-  const lb = LUCK_BAND[band];
-  const luck = { title: `오늘의 ${LUCK_NAME[concernKey]}`, score: total, band, label: lb.label, head: lb.head, act: lb.act };
+  const lb = LUCK_TODAY[concernKey][band];
+  const luck = { title: `오늘의 ${LUCK_NAME[concernKey]}`, score: total, band, label: BAND_WORD[band], head: lb.head, act: lb.act };
 
   const top = parts.reduce((a, b) => (b.score > a.score ? b : a));
   const low = parts.reduce((a, b) => (b.score < a.score ? b : a));
@@ -46,7 +46,7 @@ export function scoreWhyOf(read: DeepRead, concernKey: ConcernKey, concernLabel:
       ? '오늘 하루가 가장 든든해서, 다른 날보다 오늘 움직이는 편이 나아요.'
       : order(top.k) > order(low.k)
         ? `${top.k}의 좋은 점수가 ${low.k}의 낮은 점수를 받쳐주고 있어요.`
-        : `바탕이 되는 ${top.k} 점수가 높아서, ${low.k} 점수가 낮아도 크게 흔들리지는 않아요.`,
+        : `${top.k} 점수가 넉넉해서 ${low.k} 점수가 낮아도 크게 흔들리지는 않아요.`,
   ].join(' ');
 
   const rows: NonNullable<ScoreWhy['rows']> = [];
@@ -87,7 +87,7 @@ function elementRow(read: DeepRead, concernKey: ConcernKey): NonNullable<ScoreWh
   let help = true;
   if (today === need) {
     head = `오늘은 내게 ${lack} 요소가 채워지는 날이에요.`;
-    meet = `오늘 날이 바로 ${need}에 속해서, ${lack} 부분을 오늘 하루가 채워 줘요.`;
+    meet = `오늘 날이 바로 ${need}에 속해서, 평소 아쉽던 쪽에 힘이 붙어요.`;
   } else if (GEN[today] === need) {
     head = `오늘은 내게 ${lack} 요소를 오늘 날이 도와주는 날이에요.`;
     meet = `오늘 날은 ${today}에 속하고, ${withJosa(today, '은는')} ${withJosa(need, '을를')} 살려주는 요소예요.`;
@@ -101,7 +101,7 @@ function elementRow(read: DeepRead, concernKey: ConcernKey): NonNullable<ScoreWh
     meet = `오늘 날도 ${today}에 속해서, 원래 강한 쪽으로 한 번 더 기울기 쉬워요.`;
   } else {
     head = '오늘은 내 사주와 크게 부딪히지 않는 날이에요.';
-    meet = `오늘 날은 ${today}에 속하고, 내 사주의 많은 쪽과도 모자란 쪽과도 크게 부딪히지 않아요.`;
+    meet = `오늘 날은 ${today}에 속해요. ${withJosa(today, '은는')} 내 사주에서 넘치는 쪽도 모자란 쪽도 아니라서, 하루를 내 속도대로 보내기 편해요.`;
   }
   const t = ELEMENT_TODAY[concernKey][help ? 'help' : 'care'];
   const chips: Chip[] = [...els]

@@ -7,7 +7,10 @@ import { TODAY_TABLE } from './todayVerdict.ts';
 import { NOTE_TODAY } from './noteToday/index.ts';
 import { feelingOf } from './feeling.ts';
 import { todayVibe } from '../lib/dayVibe.ts';
-import { CONCERN_TODAY, ELEMENT_TODAY, LUCK_BAND, NATAL_TODAY, NAME_TODAY } from './scoreWhyCopy.ts';
+import { CONCERN_TODAY, ELEMENT_TODAY, LUCK_TODAY, NATAL_TODAY, NAME_TODAY } from './scoreWhyCopy.ts';
+import { UNSEONG_KO, RELATION_KO, SINSAL_KO } from '../lib/sinsal.ts';
+import { DAY_PILLAR } from './dayPillar.ts';
+import { NATAL_SHAPE } from './natalShape.ts';
 
 // 결과 화면에 실제로 뜨는 글의 공통 기준(2026-10-12 사장님 작업 지시).
 //
@@ -47,10 +50,16 @@ function blocks(): Block[] {
     for (const [k, t] of Object.entries(byConcern)) out.push({ where: `쪽지 ${id}/${k}`, text: t });
   }
   // 점수 이유 글감. 실제 화면에서 한 덩이로 붙는 단위로 묶는다.
-  for (const [b, x] of Object.entries(LUCK_BAND)) out.push({ where: `점수 ${b}`, text: `${x.head} ${x.act}` });
+  for (const [c, byBand] of Object.entries(LUCK_TODAY)) for (const [b, x] of Object.entries(byBand)) out.push({ where: `점수 ${c}/${b}`, text: `${x.head} ${x.act}` });
   for (const [g, x] of Object.entries(NATAL_TODAY)) out.push({ where: `타고난 ${g}`, text: `${x.head} ${x.turn} ${x.act} ${NAME_TODAY[g as keyof typeof NAME_TODAY]}` });
   for (const [c, byState] of Object.entries(ELEMENT_TODAY)) for (const [st, x] of Object.entries(byState)) out.push({ where: `요소 ${c}/${st}`, text: `${x.link} ${x.act}` });
   for (const [c, byGroup] of Object.entries(CONCERN_TODAY)) for (const [g, x] of Object.entries(byGroup)) out.push({ where: `고민 ${c}/${g}`, text: `${x.head} ${x.scene} ${x.act}` });
+  // 접어 둔 내 사주 자세히 보기도 같은 화면이다. 여기에 '30분', '두 배', '세 개씩' 이 남아 있었다.
+  for (const [k, x] of Object.entries(UNSEONG_KO)) out.push({ where: `오늘 내 상태 ${k}`, text: x.line });
+  for (const [k, x] of Object.entries(RELATION_KO)) out.push({ where: `만나는 곳 ${k}`, text: x.line });
+  for (const [k, x] of Object.entries(SINSAL_KO)) out.push({ where: `타고난 특징 ${k}`, text: x.line });
+  for (const [k, x] of Object.entries(DAY_PILLAR)) out.push({ where: `일주 ${k}`, text: `${x.nick}. ${x.line} ${x.strong} ${x.watch}` });
+  for (const [c, byG] of Object.entries(NATAL_SHAPE)) for (const [g, x] of Object.entries(byG)) for (const [f, v] of Object.entries(x)) out.push({ where: `성향 ${c}/${g}/${f}`, text: String(v) });
   const seen = new Set<string>();
   for (let d = 0; d < 60; d += 1) {
     const day = new Date(Date.UTC(2026, 9, 1 + d)).toISOString().slice(0, 10);
