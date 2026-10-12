@@ -14,7 +14,6 @@ import type { FortuneResult, Note } from '../types/fortune.ts';
 import { CATEGORY_INTERP, band } from '../data/detailContent.ts';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { DeepSections } from '../components/DeepSections.tsx';
-import { Chapter } from '../components/Chapter.tsx';
 import type { Zodiac } from '../data/zodiac.ts';
 import { partPassed } from '../lib/dayPart.ts';
 import { useDayPart } from '../lib/useDayPart.ts';
@@ -193,7 +192,6 @@ export function ResultScreen({ result, note, busy, onShare, userName, deep = nul
       {/* 재미로 하나 더 - 미뤄두면 좋은 것 바로 아래에 펼쳐 둔다. 접어 두니 아무도 안 열었고,
           매일 보는 재미는 이쪽에 있다(사장님 2026-10-12). 이번 주 운세는 뺐고, 띠와 MBTI 에는
           왜 그렇게 골랐는지 한두 줄을 붙인다. */}
-      <Chapter title="재미로 하나 더">
       {deep ? null : (
       <div className="cat4 sec-card">
         <p className="cat4__head">{isMonth ? '이번 달 네 가지 운' : '오늘 네 가지 운'}</p>
@@ -213,8 +211,9 @@ export function ResultScreen({ result, note, busy, onShare, userName, deep = nul
       </div>
       )}
 
-      <div className="cat4 sec-card">
-        <p className="cat4__head">오늘 잘 맞는 띠</p>
+      <div className="sec-card fun">
+        <p className="cat4__head">재미로 하나 더</p>
+        <p className="tdc__score-k fun__k">오늘 잘 맞는 띠</p>
         <div className="match">
           <div className="match__cell">
             <span className="match__badge">잘 맞아요</span>
@@ -230,11 +229,9 @@ export function ResultScreen({ result, note, busy, onShare, userName, deep = nul
           </div>
         </div>
         <Sentences className="match__why" text={zodiacWhy} />
-      </div>
-
       {mbti ? (
-        <div className="cat4 sec-card">
-          <p className="cat4__head">오늘 잘 맞는 MBTI</p>
+        <>
+          <p className="tdc__score-k fun__k fun__k--next">오늘 잘 맞는 MBTI</p>
           <div className="match">
             <div className="match__cell">
               <span className="match__badge">잘 맞아요</span>
@@ -250,9 +247,9 @@ export function ResultScreen({ result, note, busy, onShare, userName, deep = nul
             </div>
           </div>
           <Sentences className="match__why" text={mbti.why} />
-        </div>
+        </>
       ) : null}
-      </Chapter>
+      </div>
 
       {/* 내일 또 뽑을 이유. 오늘 쪽지를 다 본 자리에서 내일 무엇이 달라지는지 한 줄,
           그리고 내일 다시 오게 하는 버튼 하나. '내일 대박' 같은 미끼는 안 쓴다.
