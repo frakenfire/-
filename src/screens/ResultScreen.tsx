@@ -5,7 +5,8 @@ import { AppLayout } from '../components/AppLayout.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
 import { GRADE_KO } from '../lib/luck.ts';
 import { todayKey } from '../lib/dateSeed.ts';
-import { TodayDecisionCard, type ScoreWhy } from '../components/TodayDecisionCard.tsx';
+import { TodayDecisionCard } from '../components/TodayDecisionCard.tsx';
+import { scoreWhyOf } from '../lib/scoreWhy.ts';
 import { todayVibe } from '../lib/dayVibe.ts';
 import { Sentences } from '../components/Sentences.tsx';
 import { luckyWhen } from '../lib/luckyWhen.ts';
@@ -57,86 +58,6 @@ type Props = {
   onAskNoti?: () => void;
   onBack: () => void;
 };
-
-// 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
-// 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-// 맨 위 점수가 왜 그 점수인지 두 문장. 다섯 칸 표는 접힌 근거에 있다.
-// 오늘의 쪽지라 오늘이 평소(타고난 점수)보다 높은지 낮은지를 같이 말한다.
-// '81점은 타고난 성향 81점에 ... 더해 낸 점수예요' 는 계산식을 읊을 뿐이라 무슨 말인지
-// 모르겠다는 지적을 받았다(2026-10-12). 점수를 사주로 풀어 말한다: 무엇이 받쳐주고 있고,
-// 오늘은 내 사주로 어떤 날이라 점수가 이렇게 나왔는지.
-function scoreWhyOf(read: DeepRead, concernLabel: string): ScoreWhy {
-  const part = (k: string) => read.score.parts.find((p) => p.k === k);
-  const natal = part('타고난 성향');
-  const today = part('오늘');
-  const total = read.score.total;
-  const head = `${total}점은 이렇게 나왔어요`;
-  if (!natal || !today) return { head, text: read.scoreLine.split(/(?<=[.])\s+/)[0] };
-  const NAME: Record<string, string> = { '타고난 성향': '타고난 사주', '지금 지나는 십 년': '지금 지나는 십 년', '올해': '올해', '이번 달': '이번 달' };
-  const best = read.score.parts
-    .filter((p) => p.k !== '오늘' && NAME[p.k])
-    .reduce((a, b) => (b.score > a.score ? b : a));
-  const pull = (read.selves[0]?.line ?? '').replace(/\s*날이에요\.$/, '');
-  const gap = today.score - natal.score;
-  const todayLine = !pull
-    ? ''
-    : gap >= 5
-      ? `오늘은 ${pull} 날이라 ${today.score}점으로 평소 내 점수보다 ${gap}점 높아요. 미뤄두던 일을 꺼내보기 좋은 날이에요.`
-      : gap <= -5
-        ? `오늘은 ${pull} 날이라 ${today.score}점으로 평소 내 점수보다 ${-gap}점 낮아요. 새 일을 크게 시작하기보다 하던 일을 마무리하는 편이 좋겠어요.`
-        : `오늘은 ${pull} 날이라 ${today.score}점으로 평소 내 점수와 비슷해요. 하던 대로 차분히 이어가면 되는 날이에요.`;
-  // 줄글 한 덩이로는 허접해 보인다는 지적(2026-10-12). 점수를 이루는 다섯 자리를 숫자로 먼저
-  // 보여주고, 사주를 어디서 어떻게 봤는지를 항목별로 나눠 말한다: 타고난 사주, 다섯 요소,
-  // 이름, 이 고민에서 본 부분, 오늘.
-  const label = (k: string) => (k === '타고난 성향' ? '타고난 사주' : k);
-  // 다섯 자리는 줄글이 아니라 막대로 보여준다(날짜가 붙은 표가 읽기 쉬웠다는 사장님 말).
-  const parts = read.score.parts.map((p) => ({ k: label(p.k), sub: p.label, score: p.score, band: p.band }));
-  const dp = read.chart.dayPillar;
-  const rows: { k: string; v: string }[] = [
-    { k: '타고난 사주', v: [dp ? `${dp.nick}이에요.` : '', read.chart.strength].filter(Boolean).join(' ') },
-    { k: '다섯 요소', v: ohaengLines(read).join(' ') },
-    ...(read.name
-      ? [{
-          k: '이름',
-          v: `${read.name.letters.map((l) => `${withJosa(l.ch, '은는')} ${l.el}`).join(', ')} 소리예요. ${read.name.verdict}`,
-        }]
-      : []),
-    { k: `${concernLabel}에서 본 것`, v: read.chart.focus },
-  ].filter((r) => r.v);
-  return {
-    head: `${total}점은 이렇게 나왔어요`,
-    text: [
-      todayLine,
-      `다섯 자리를 정해진 비율로 더했고, 그중 ${withJosa(NAME[best.k], '이가')} ${best.score}점으로 가장 든든하게 받쳐주고 있어요.`,
-    ].filter(Boolean).join(' '),
-    parts,
-    rows,
-  };
-}
-
-// 다섯 요소(나무, 불, 흙, 쇠, 물)로 본 점수 이유. 내 사주에 무엇이 많고 모자란지, 오늘 날이
-// 어느 요소라 나와 어떻게 만나는지를 말한다. '아 이렇구나' 가 나와야 아래 할 것과 미룰 것이 믿긴다.
-const GEN: Record<string, string> = { 나무: '불', 불: '흙', 흙: '쇠', 쇠: '물', 물: '나무' };
-const CTRL: Record<string, string> = { 나무: '흙', 흙: '물', 물: '불', 불: '쇠', 쇠: '나무' };
-function ohaengLines(read: DeepRead): string[] {
-  const els = read.chart.elements;
-  if (!els.length) return [];
-  const most = els.reduce((a, b) => (b.pct > a.pct ? b : a));
-  const least = els.reduce((a, b) => (b.pct < a.pct ? b : a));
-  const today = read.chart.todayEl;
-  const need = read.chart.usefulEl;
-  const first = `내 사주를 다섯 요소로 나눠 보면 ${withJosa(most.el, '이가')} ${most.pct}%로 가장 많고 ${withJosa(least.el, '이가')} ${least.pct}%로 가장 적어요.`;
-  const meet = today === need
-    ? `오늘 날은 ${today}에 속해서 내게 모자란 ${withJosa(need, '을를')} 채워주는 날이에요.`
-    : GEN[today] === need
-      ? `오늘 날은 ${today}에 속하는데, ${withJosa(today, '은는')} 내게 모자란 ${withJosa(need, '을를')} 살려주는 요소라 도움을 받기 쉬운 날이에요.`
-      : today === most.el
-        ? `오늘 날은 ${today}에 속해서 이미 많은 ${withJosa(today, '이가')} 더해지는 날이라, 한쪽으로 치우치지 않게 속도를 조절하는 편이 좋아요.`
-        : CTRL[today] === need
-          ? `오늘 날은 ${today}에 속하는데, ${withJosa(today, '은는')} 내게 모자란 ${withJosa(need, '을를')} 누르는 요소라 무리하면 쉽게 지칠 수 있어요.`
-          : `오늘 날은 ${today}에 속해서 내 사주와 크게 부딪히지 않는 날이에요.`;
-  return [first, meet];
-}
 
 export function ResultScreen({ result, note, busy, onShare, userName, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onShareWeek, onBack }: Props) {
   const { luck } = result;
@@ -257,7 +178,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, deep = nul
           고민을 골라 뽑았든 그냥 뽑았든 같은 카드로 그린다. */}
       <TodayDecisionCard
         decision={deep ? deep.read.todayDecision : todayVibe(todayKey()).decision}
-        scoreWhy={deep ? scoreWhyOf(deep.read, findConcern(deep.concernKey).label) : undefined}
+        scoreWhy={deep ? scoreWhyOf(deep.read, deep.concernKey, findConcern(deep.concernKey).label) : undefined}
         date={dateLabel(todayKey())}
         intro={deep ? todayIntroOf(deep.concernKey, deep.read.todayGroup) : undefined}
         goods={goods}

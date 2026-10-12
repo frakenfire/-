@@ -1,16 +1,8 @@
 import type { TodayDecision } from '../types/fortune.ts';
 import { Sentences } from './Sentences.tsx';
+import type { ScoreWhy } from '../lib/scoreWhy.ts';
 
 export type Tile = { k: string; v: string; swatch?: string };
-
-export type ScoreWhy = {
-  head: string;
-  text: string;
-  /** 점수를 이루는 다섯 자리. 막대로 그린다 */
-  parts?: { k: string; sub: string; score: number; band: string }[];
-  /** 타고난 사주, 다섯 요소, 이름, 고민에서 본 것 */
-  rows?: { k: string; v: string }[];
-};
 
 type Props = {
   decision: TodayDecision;
@@ -50,10 +42,15 @@ export function TodayDecisionCard({ decision, scoreWhy, date, intro, goods, avoi
         </div>
         <p className="tdc__headline">{head}</p>
         <Sentences className="tdc__summary" text={summary} />
+        {scoreWhy?.luck ? (
+          <div className="tdc__score">
+            <p className="tdc__score-k">{scoreWhy.luck.head}</p>
+            <Sentences className="tdc__body" text={scoreWhy.luck.text} />
+          </div>
+        ) : null}
         {scoreWhy ? (
           <div className="tdc__score">
             <p className="tdc__score-k">{scoreWhy.head}</p>
-            <Sentences className="tdc__body" text={scoreWhy.text} />
             {scoreWhy.parts?.length ? (
               <ul className="tdc__parts">
                 {scoreWhy.parts.map((p) => (
@@ -70,17 +67,21 @@ export function TodayDecisionCard({ decision, scoreWhy, date, intro, goods, avoi
                 ))}
               </ul>
             ) : null}
-            {scoreWhy.rows?.length ? (
-              <ul className="tdc__rows">
-                {scoreWhy.rows.map((r) => (
-                  <li key={r.k} className="tdc__row">
-                    <p className="tdc__row-k">{r.k}</p>
-                    <Sentences className="tdc__body" text={r.v} />
-                  </li>
-                ))}
-              </ul>
-            ) : null}
+            <Sentences className="tdc__body tdc__parts-why" text={scoreWhy.text} />
           </div>
+        ) : null}
+        {scoreWhy?.rows?.length ? (
+          <ul className="tdc__rows">
+            {scoreWhy.rows.map((r) => (
+              <li key={r.k} className="tdc__row">
+                <p className="tdc__score-k">
+                  {r.k}
+                  <span className="tdc__row-sub"> · {r.sub}</span>
+                </p>
+                <Sentences className="tdc__body" text={r.v} />
+              </li>
+            ))}
+          </ul>
         ) : decision.basis ? (
           <p className="tdc__basis">{decision.basis}</p>
         ) : null}
