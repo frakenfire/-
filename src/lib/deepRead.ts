@@ -741,10 +741,11 @@ export function buildDeepRead(
   // 오늘 하나만 놓고 답하는 줄. 오늘 점수 밴드로 고른다.
   // 고른 상황까지 보고 묻는다. '쉬는 중' 인 사람에게 '이직 얘기를 꺼내도
   // 될까요' 라고 물으면 꺼낼 자리가 없는 사람에게 묻는 말이 된다.
-  // 날짜 순번. 전체 종합 여러 벌을 날마다 돌려 고른다.
-  const dayNo = Math.floor(Date.UTC(cy, cm - 1, cd) / 86400000);
-  const todayAsk = todayAskOf(concernKey, optionKey, todayPart.band, dayNo);
-  const todayBranchGod = tenGodOf(pillars.dayStem, mainHiddenStem(todayPillar.branch)) as TenGod;
+  // 오늘 풀이는 오늘 십신 무리로 고른다. 날짜 순번으로 고르면 그날 사주와 상관없는
+  // 글이 나왔다(도움이 들어오는 날에 헤드헌터 전화 얘기). 할 것과 미룰 것도 같은
+  // 십신에서 뽑아, 한 화면이 한 가지 주제를 말하게 한다.
+  const todayGroup = GOD_GROUP_OF[score.dayGod];
+  const todayAsk = todayAskOf(concernKey, optionKey, todayPart.band, todayGroup);
 
   // 결과 맨 위 결론. 조립은 todayDecision.ts 한 곳에서만 한다.
   // 맨 위 결론이 매일 바뀌어도, 왜 오늘 이렇게 나왔는지가 안 보이면 사주를 본
@@ -754,7 +755,7 @@ export function buildDeepRead(
   // 누구나 아는 말). 그 날이 나에게 무슨 날인지만 말하고, 그 앞에 지금 마음을 읽어준다.
   const feeling = feelingOf(concernKey, optionKey ?? '');
   const todayDecision = {
-    ...composeTodayDecision(concernKey, optionKey, todayPart.band, score.dayGod, todayBranchGod, dayNo),
+    ...composeTodayDecision(concernKey, optionKey, todayPart.band, score.dayGod, score.dayGod, todayGroup),
     ...(feeling ? { feeling } : {}),
     basis: `오늘 ${cm}월 ${cd}일은 내 사주로 보면 ${G(score.dayGod).pull} 날이에요.`,
   };

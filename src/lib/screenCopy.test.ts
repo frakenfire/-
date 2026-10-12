@@ -215,7 +215,7 @@ test('오늘 답이 밴드마다 갈린다', () => {
 
 // 전체 종합은 칸마다 네 벌을 두고 날짜로 돌려 고른다(pick). 아래 검사는 네 벌을
 // 전부 본다. 첫 벌만 보면 나머지 세 벌은 한 번도 안 읽고 통과시킨다.
-const PICKS = [0, 1, 2, 3];
+const PICKS = [0, 1, 2, 3, 4];
 const BANDS3 = ['good', 'ok', 'hard'] as const;
 
 test('오늘 답이 고른 상황마다 다르다', () => {
@@ -245,7 +245,7 @@ test('상황마다 답도 다르고, 밴드마다 또 갈린다', () => {
           assert.ok(head.trim().length > 0 && sum.trim().length > 0, `빈 칸이 있어요: ${head} / ${sum}`);
         }
         // 다섯 번째 날은 첫 벌로 돌아간다. 네 벌보다 많거나 적으면 여기서 갈린다.
-        assert.equal(todayAskOf(c.key, o.key, b, 4).head, todayAskOf(c.key, o.key, b, 0).head);
+        assert.equal(todayAskOf(c.key, o.key, b, 5).head, todayAskOf(c.key, o.key, b, 0).head);
       }
     }
   }

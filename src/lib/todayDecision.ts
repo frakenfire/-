@@ -1,7 +1,7 @@
 import type { ConcernKey } from '../data/concerns.ts';
 import type { TodayDecision } from '../types/fortune.ts';
 import type { Band } from './timing.ts';
-import type { TenGod } from './tenGods.ts';
+import type { TenGod, GodGroup } from './tenGods.ts';
 import { todayAskOf } from '../data/todayVerdict.ts';
 import { dayActOf } from '../data/optionDay/index.ts';
 
@@ -22,7 +22,7 @@ export function composeTodayDecision(
   // 하지 말 것은 오늘 아래 글자(지지)에서 따로 고른다. 위 글자 하나로 둘 다
   // 고르면 열흘마다 같은 두 줄이 그대로 돌아왔다. 둘을 나누면 육십 일에 한 번이다.
   avoidGod: TenGod = god,
-  pick = 0,
+  pick: number | GodGroup = 0,
 ): TodayDecision {
   const overall = todayAskOf(concern, option, band, pick);
   const act = dayActOf(concern, option, god);

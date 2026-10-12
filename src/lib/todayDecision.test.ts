@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { CONCERNS, type ConcernKey } from '../data/concerns.ts';
-import { TEN_GOD_KO, type TenGod } from './tenGods.ts';
+import { TEN_GOD_KO, GOD_GROUP_OF, type TenGod } from './tenGods.ts';
 import { composeTodayDecision } from './todayDecision.ts';
 import { todayVibe } from './dayVibe.ts';
 import type { TodayDecision } from '../types/fortune.ts';
@@ -13,12 +13,10 @@ import type { Band } from './timing.ts';
 // 카드를 만든 뜻이 없다.
 //
 // 샘플 생년월일 몇 개로만 보면 그 사람들에게 걸린 칸만 본다. 그래서 조합을
-// 전부 조립한다. 고민 여섯 x 상황 넷 x 밴드 셋 x 위 글자 열 x 아래 글자 열 = 칠천이백 개.
-// 전체 종합은 칸마다 네 벌을 날짜로 돌려 고른다(pick). 한 벌만 보면 나머지 세 벌이
-// 할 것과 반대로 말해도 모른다. 그래서 네 벌을 다 곱해 이만 팔천팔백 개.
+// 전부 조립한다. 오늘 풀이, 할 것, 미룰 것은 모두 오늘 십신 하나에서 나온다
+// (2026-10-12, 한 화면이 한 주제를 말하게). 고민 여섯 x 상황 넷 x 밴드 셋 x 십신 열 = 칠백스물 개.
 
 const BANDS: Band[] = ['good', 'ok', 'hard'];
-const PICKS = [0, 1, 2, 3];
 const GODS = Object.keys(TEN_GOD_KO) as TenGod[];
 
 type Case = { where: string; concern: ConcernKey | null; option: string | null; d: TodayDecision };
@@ -28,13 +26,8 @@ const ALL: Case[] = (() => {
   for (const c of CONCERNS) {
     for (const o of c.options) {
       for (const b of BANDS) {
-        for (const p of PICKS) {
-          for (const g of GODS) {
-            // 할 것은 위 글자, 하지 말 것은 아래 글자에서 따로 고른다. 두 글자 조합을 전부 본다.
-            for (const g2 of GODS) {
-              out.push({ where: `${c.key}/${o.key}/${b}/${p}/${g}+${g2}`, concern: c.key, option: o.key, d: composeTodayDecision(c.key, o.key, b, g, g2, p) });
-            }
-          }
+        for (const g of GODS) {
+          out.push({ where: `${c.key}/${o.key}/${b}/${g}`, concern: c.key, option: o.key, d: composeTodayDecision(c.key, o.key, b, g, g, GOD_GROUP_OF[g]) });
         }
       }
     }
@@ -63,7 +56,7 @@ const fields = (d: TodayDecision) => [
 ] as const;
 
 test('조합을 빠짐없이 돌았다', () => {
-  assert.equal(ALL.filter((x) => x.concern).length, 7200 * PICKS.length);
+  assert.equal(ALL.filter((x) => x.concern).length, 720);
   assert.equal(ALL.filter((x) => !x.concern).length, 10, '일반 쪽지 열 칸이 다 안 모였어요');
 });
 
@@ -75,22 +68,20 @@ test('다섯 칸이 하나도 비어 있지 않다', () => {
   assert.deepEqual(bad, []);
 });
 
-// 사장님 본보기(2026-10-12): 할 것은 '~해보세요, ~하세요' 로 무엇을 할지 바로 말하고,
-// 하지 말 것은 '~하지 마세요' 로 분명하게 막는다. 대신 무엇을 할지는 아래 설명이 말한다.
-// 'A보다 B가 나아요' 로 돌려 말하면 무엇을 하지 말라는 건지 한 번 더 읽어야 했다.
-// '조심하세요', '생각해보세요' 로 끝나면 무엇을 하라는 건지 모른다.
-const DO_END = /요\.$/;
-const DONT_END = /마세요\.$/;
+// 할 것과 미룰 것은 무엇을 하는지가 보이는 한 문장으로 끝난다. 끝맺음은 정하지 않는다.
+// '~하세요' 와 '~하지 마세요' 만 늘어놓은 글이 AI 가 쓴 명령문처럼 읽힌다는 지적을
+// 받았다(2026-10-12). 명령이 몇 번 나오는지는 src/data/copyQuality.test.ts 가 본다.
+// '조심하세요', '생각해보세요' 처럼 무엇을 하라는지 없는 말은 여전히 안 된다.
 function suggestShape(doAction: string, dontAction: string): string | null {
-  if (!DO_END.test(doAction) || /마세요/.test(doAction)) return `할 것이 할 일로 끝나지 않아요: ${doAction}`;
-  if (!DONT_END.test(dontAction)) return `하지 말 것이 '~하지 마세요' 로 끝나지 않아요: ${dontAction}`;
+  if (!/요\.$/.test(doAction)) return `할 것이 말로 끝나지 않아요: ${doAction}`;
+  if (!/요\.$/.test(dontAction)) return `미룰 것이 말로 끝나지 않아요: ${dontAction}`;
   if (/^(조심하세요|생각해보세요|주의하세요)\.$/.test(doAction.replace(/^오늘은\s*/, ''))) return '목적어 없음';
   return null;
 }
 
 // 고민을 안 고르고 뽑은 일반 쪽지(dayVibe)는 다른 표라 여기서는 고민을 고른
 // 칸만 본다.
-test('할 것은 할 일로, 하지 말 것은 하지 마세요로 끝난다', () => {
+test('할 것과 미룰 것이 말로 끝난다', () => {
   const bad = new Set<string>();
   for (const { where, concern, d } of ALL) {
     if (!concern) continue;
@@ -112,10 +103,9 @@ test('일반 쪽지도 할 일과 하지 마세요로 끝난다', () => {
 });
 
 test('할 일 모양을 보는 눈이 살아 있다', () => {
-  assert.equal(suggestShape('저녁 9시 전에 한 곳만 보내보세요.', '감정적으로 퇴사 이야기를 꺼내지 마세요.'), null);
-  assert.equal(suggestShape('관심 있는 채용 공고 두 개를 저장하세요.', '친구 보증은 서지 마세요.'), null);
-  assert.ok(suggestShape('저녁 9시 전에 보내보세요.', '미뤄두는 게 나아요.'));
-  assert.ok(suggestShape('오늘은 결제하지 마세요.', '오늘은 결제하지 마세요.'));
+  assert.equal(suggestShape('믿을 만한 사람에게 의견을 구해보세요.', '곧바로 부탁부터 꺼내는 건 피하는 편이 좋겠어요.'), null);
+  assert.ok(suggestShape('의견 구하기', '곧바로 부탁부터 꺼내는 건 피하는 편이 좋겠어요.'));
+  assert.ok(suggestShape('조심하세요.', '부탁은 미뤄두는 게 좋겠어요.'));
 });
 
 test('할 것과 하지 말 것은 서로 다른 말이고, 까닭도 서로 다르다', () => {

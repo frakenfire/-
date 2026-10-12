@@ -172,10 +172,6 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           고민을 골라 뽑았든 그냥 뽑았든 같은 카드로 그린다. */}
       <TodayDecisionCard
         decision={deep ? deep.read.todayDecision : todayVibe(todayKey()).decision}
-        more={deep ? {
-          dos: deep.read.decision.dos.map((d, i) => ({ v: d, why: deep.read.decision.doWhys[i] })),
-          donts: deep.read.decision.donts.map((d, i) => ({ v: d, why: deep.read.decision.dontWhys[i] })),
-        } : undefined}
         scoreWhy={deep ? scoreWhyOf(deep.read) : undefined}
       />
 

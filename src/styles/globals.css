@@ -3250,71 +3250,7 @@ strong {
 
 /* 결정 카드 - 화면에서 제일 먼저 눈에 들어와야 하는 자리 */
 /* 판정 한 덩이만 굵게. 뒤에 붙는 까닭까지 굵으면 여섯 줄이 한 무게로 읽힌다. */
-.decide__list {
-  list-style: none;
-  margin: 0 0 16px;
-  padding: 0;
-}
-.decide__list:last-of-type { margin-bottom: 12px; }
-.decide__row {
-  display: grid;
-  grid-template-columns: 20px minmax(0, 1fr);
-  gap: 8px;
-  align-items: start;
-  padding: 6px 0;
-}
-.decide__no {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--gray-100);
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--gray-700); /* 칸 번호(파란 원)와 헷갈리지 않게 목록 번호는 회색 */
-}
-.decide__x {
-  position: relative;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: var(--gray-200);
-}
-.decide__x::before,
-.decide__x::after {
-  content: '';
-  position: absolute;
-  left: 5px;
-  top: 9px;
-  width: 10px;
-  height: 2px;
-  border-radius: 1px;
-  background: var(--gray-600);
-}
-.decide__x::before { transform: rotate(45deg); }
-.decide__x::after { transform: rotate(-45deg); }
 /* 파란 바탕 위에서는 흰 카드용 회색이 묻힌다. 한 단계 진하게 쓴다 */
-.decide__v {
-  margin: 0;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
-.decide__body { display: grid; gap: 2px; min-width: 0; }
-.decide__list--do .decide__v { font-weight: 600; }
-.decide__why {
-  margin: 4px 0 0;
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 400;
-  color: var(--gray-700);
-  word-break: keep-all;
-}
 
 /* 내 정보 관리로 가는 한 줄. 카드가 아니라 글자다 */
 .data-link {
@@ -3837,3 +3773,6 @@ strong {
 .dayp__nick { font-size: 17px; line-height: 25.5px; }
 /* 일주 카드의 짝 칸 값은 설명이지 결론이 아니다 */
 .dayp__v { font-weight: 500; color: var(--gray-800); }
+/* 오늘 해보면 좋은 것 / 미뤄두면 좋은 것: 한 가지를 한 문단으로. 첫 문장만 굵게 */
+.tdc__act-v { margin: 0; font-size: 16px; line-height: 24px; font-weight: 700; color: var(--gray-900); word-break: keep-all; }
+.tdc__act-why { margin: 6px 0 0; font-size: 15px; line-height: 22.5px; font-weight: 500; color: var(--gray-700); word-break: keep-all; }

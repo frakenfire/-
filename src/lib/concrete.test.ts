@@ -1,4 +1,5 @@
 import { todayAskOf } from '../data/todayVerdict.ts';
+import { GOD_GROUP_OF } from './tenGods.ts';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { computeFourPillars } from './fourPillars.ts';
@@ -220,9 +221,9 @@ test('맨 위 카드의 두 줄이 같은 층에서 나온다', () => {
       const r2 = buildDeepRead(P, t2, c.key, opt.key, '2026-12-21', '김한별');
       // 칸마다 여러 벌을 두고 날짜로 돌려 고른다. 그래서 날이 다르면 밴드가 같아도
       // 글은 다를 수 있다. 같은 층인지는 두 줄이 그날 고른 한 벌에서 함께 나오는지로 본다.
-      for (const [rr, day] of [[r, '2026-09-21'], [r2, '2026-12-21']] as const) {
-        const [y, m, d] = day.split('-').map(Number);
-        const ask = todayAskOf(c.key, opt.key, rr.todayAsk.band, Math.floor(Date.UTC(y, m - 1, d) / 86400000));
+      // 이제는 날짜가 아니라 그날 십신 무리로 고른다(2026-10-12).
+      for (const rr of [r, r2]) {
+        const ask = todayAskOf(c.key, opt.key, rr.todayAsk.band, GOD_GROUP_OF[rr.score.dayGod]);
         assert.equal(rr.headline, ask.head, `${c.key}: 큰 글씨가 그날 벌과 달라요`);
         assert.equal(rr.sub, ask.sum, `${c.key}: 밑 줄이 그날 벌과 달라요`);
       }
