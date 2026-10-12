@@ -14,7 +14,6 @@ import type { FortuneResult, Note } from '../types/fortune.ts';
 import { CATEGORY_INTERP, band } from '../data/detailContent.ts';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { DeepSections } from '../components/DeepSections.tsx';
-import { WeekCard } from '../components/WeekCard.tsx';
 import { Chapter } from '../components/Chapter.tsx';
 import type { Zodiac } from '../data/zodiac.ts';
 import { partPassed } from '../lib/dayPart.ts';
@@ -24,6 +23,7 @@ import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { withJosa } from '../lib/josa.ts';
 import { OHAENG } from '../data/ohaeng.ts';
 import { todayIntroOf } from '../data/todayIntro.ts';
+import { mbtiTodayOf } from '../data/mbtiToday.ts';
 import type { Element } from '../lib/saju.ts';
 
 // 힘이 되는 요소를 누르는 요소(쇠는 나무를, 물은 불을, 나무는 흙을, 불은 쇠를, 흙은 물을 누른다)
@@ -45,7 +45,6 @@ type Props = {
   /** 고민을 고르고 들어왔으면 그 답을 결과 안에 같이 낸다 */
   deep?: { concernKey: ConcernKey; read: DeepRead; timing: TimingRead } | null;
   zodiac: Zodiac | null;
-  onShareWeek: (text: string) => void;
   /** 명식에서 계산된 네 가지 운 점수. 생년월일이 없으면 null */
   chartScores?: Record<'love' | 'money' | 'work' | 'health', number> | null;
   /** 오늘 광고로 열어둔 고민들 */
@@ -59,7 +58,7 @@ type Props = {
   onBack: () => void;
 };
 
-export function ResultScreen({ result, note, busy, onShare, userName, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onShareWeek, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, userName, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onBack }: Props) {
   const { luck } = result;
   const isMonth = result.reading.scale === 'month';
   // 지금이 하루의 어느 토막인지. 지나간 토막은 오늘의 풀이에서 접는다.
@@ -101,6 +100,12 @@ export function ResultScreen({ result, note, busy, onShare, userName, deep = nul
         why: `${withJosa(press.ko, '은는')} 오늘 힘이 되는 ${withJosa(boost.ko, '을를')} 누르는 요소예요. 그래서 ${press.ko}에 해당하는 빛깔과 음식, 음악은 오늘 조금 멀리해 두면 좋아요. ${match.caution.label} 친구와는 말이 엇갈리기 쉬우니 중요한 얘기는 다음으로 미뤄도 괜찮아요.`,
       }
     : undefined;
+  // 띠는 내 띠와 사주 지지 관계(삼합, 육합 / 충, 해, 형)로 고른다(detail.ts). 그 까닭을 한 줄로.
+  const zodiacWhy = zodiac
+    ? `내 띠인 ${withJosa(zodiac.label, '과와')} ${withJosa(match.good.label, '은는')} 서로 힘을 보태는 띠예요. ${withJosa(match.caution.label, '은는')} 부딪히기 쉬운 띠라, 오늘 만날 일이 있다면 말을 한 번 더 고르면 좋아요.`
+    : '오늘 날짜로 고른 띠예요. 생년월일을 넣으면 내 띠를 기준으로 골라 드려요.';
+  // MBTI 는 오늘 힘이 되는 요소에서 고른다. 생년월일이 없어 요소를 모르면 안 그린다.
+  const mbti = luck.boost && boost ? mbtiTodayOf(luck.boost, boost.ko, Math.floor(Date.parse(todayKey()) / 86400000)) : null;
   const headScore = deep ? deep.read.score.total : luck.total;
   const headGrade = deep ? BAND_LABEL[deep.read.score.band] : (GRADE_KO[luck.grade] ?? luck.grade);
 
@@ -184,6 +189,70 @@ export function ResultScreen({ result, note, busy, onShare, userName, deep = nul
         goods={goods}
         avoids={avoids}
       />
+
+      {/* 재미로 하나 더 - 미뤄두면 좋은 것 바로 아래에 펼쳐 둔다. 접어 두니 아무도 안 열었고,
+          매일 보는 재미는 이쪽에 있다(사장님 2026-10-12). 이번 주 운세는 뺐고, 띠와 MBTI 에는
+          왜 그렇게 골랐는지 한두 줄을 붙인다. */}
+      <Chapter title="재미로 하나 더">
+      {deep ? null : (
+      <div className="cat4 sec-card">
+        <p className="cat4__head">{isMonth ? '이번 달 네 가지 운' : '오늘 네 가지 운'}</p>
+        <ul className="cat4__list">
+          {luck.categories.map((c0) => {
+            const c = chartScores ? { ...c0, score: chartScores[c0.key as keyof typeof chartScores] ?? c0.score } : c0;
+            return (
+            <li key={c.key} className="cat4__row cat4__row--rich">
+              <span className="cat4__k">{c.label}</span>
+              <span className="cat4__bar"><i style={{ width: `${c.score}%` }} /></span>
+              <span className="cat4__v num">{c.score}</span>
+              <span className="cat4__why"><Sentences text={CATEGORY_INTERP[c.key]?.[band(c.score)] ?? ''} /></span>
+            </li>
+            );
+          })}
+        </ul>
+      </div>
+      )}
+
+      <div className="cat4 sec-card">
+        <p className="cat4__head">오늘 잘 맞는 띠</p>
+        <div className="match">
+          <div className="match__cell">
+            <span className="match__badge">잘 맞아요</span>
+            <ZodiacBadge zodiac={match.good} size={44} tone="brand" />
+            <span className="match__label">{match.good.label}</span>
+            <span className="match__hint">{match.goodReason}</span>
+          </div>
+          <div className="match__cell">
+            <span className="match__badge match__badge--bad">살짝 조심</span>
+            <ZodiacBadge zodiac={match.caution} size={44} />
+            <span className="match__label">{match.caution.label}</span>
+            <span className="match__hint">{match.cautionReason}</span>
+          </div>
+        </div>
+        <Sentences className="match__why" text={zodiacWhy} />
+      </div>
+
+      {mbti ? (
+        <div className="cat4 sec-card">
+          <p className="cat4__head">오늘 잘 맞는 MBTI</p>
+          <div className="match">
+            <div className="match__cell">
+              <span className="match__badge">잘 맞아요</span>
+              <span className="match__type">{mbti.good.type}</span>
+              <span className="match__label">{mbti.good.nick}</span>
+              <span className="match__hint">{mbti.good.hint}</span>
+            </div>
+            <div className="match__cell">
+              <span className="match__badge match__badge--bad">살짝 조심</span>
+              <span className="match__type match__type--care">{mbti.caution.type}</span>
+              <span className="match__label">{mbti.caution.nick}</span>
+              <span className="match__hint">{mbti.caution.hint}</span>
+            </div>
+          </div>
+          <Sentences className="match__why" text={mbti.why} />
+        </div>
+      ) : null}
+      </Chapter>
 
       {/* 내일 또 뽑을 이유. 오늘 쪽지를 다 본 자리에서 내일 무엇이 달라지는지 한 줄,
           그리고 내일 다시 오게 하는 버튼 하나. '내일 대박' 같은 미끼는 안 쓴다.
@@ -282,63 +351,6 @@ export function ResultScreen({ result, note, busy, onShare, userName, deep = nul
         </>
       )}
 
-      {/* 6. 공유 */}
-      {/* 내 사주 · 오늘 나에게 · 이번 주 — 전부 생년월일을 넣어야 의미가 있는 것들.
-          그래서 홈이 아니라 결과를 받은 이 자리에 둔다. */}
-      {/* 재미로 하나 더 — 여기부터는 사주 계산이 아니다. 본 풀이 사이에 끼우면
-          색깔과 음식이 분석 행세를 하게 되므로 아래로 내려 따로 묶는다. */}
-      {/* 여기부터는 고민과 상관없는 것들이다. 행운 여섯 칸도, 잘 맞는 띠도,
-          이번 주 흐름도 '돈을 물어본 사람' 한테 하는 말이 아니라 누구에게나
-          같은 말이다. 돈 화면 348줄 중 돈을 말하는 줄이 52줄뿐이었고, 그중
-          69줄짜리 한 덩이가 통째로 여기였다.
-          버리지는 않는다 - 매일 보는 재미는 이쪽에 있다. 대신 접는다.
-          답을 받으러 온 사람에게는 답까지만 보이고, 더 볼 사람만 연다. */}
-      <Chapter title="재미로 하나 더" fold>
-      {/* 2. 네 가지 운 — 사랑·돈·일·건강 점수.
-          고민을 골라 들어왔으면 안 그린다. 돈을 물어본 사람에게 사랑운·일운·
-          건강운을 같이 내밀면 화면이 물어본 것 말고 딴 얘기로 채워진다.
-          게다가 돈운 점수는 화면 맨 위가 이미 '돈 76점' 이라고 말한 그 값이다.
-          같은 숫자를 두 번 말하면서 안 물어본 것 셋을 끼워 넣는 카드였다. */}
-      {deep ? null : (
-      <div className="cat4 sec-card">
-        <p className="cat4__head">{isMonth ? '이번 달 네 가지 운' : '오늘 네 가지 운'}</p>
-        <ul className="cat4__list">
-          {luck.categories.map((c0) => {
-            const c = chartScores ? { ...c0, score: chartScores[c0.key as keyof typeof chartScores] ?? c0.score } : c0;
-            return (
-            <li key={c.key} className="cat4__row cat4__row--rich">
-              <span className="cat4__k">{c.label}</span>
-              <span className="cat4__bar"><i style={{ width: `${c.score}%` }} /></span>
-              <span className="cat4__v num">{c.score}</span>
-              <span className="cat4__why"><Sentences text={CATEGORY_INTERP[c.key]?.[band(c.score)] ?? ''} /></span>
-            </li>
-            );
-          })}
-        </ul>
-      </div>
-      )}
-
-      {/* 5. 오늘 잘 맞는 띠 */}
-      <div className="cat4 sec-card">
-        <p className="cat4__head">오늘 잘 맞는 띠</p>
-        <div className="match">
-          <div className="match__cell">
-            <span className="match__badge">잘 맞아요</span>
-            <ZodiacBadge zodiac={result.detail.match.good} size={44} tone="brand" />
-            <span className="match__label">{result.detail.match.good.label}</span>
-            <span className="match__hint">{result.detail.match.goodReason}</span>
-          </div>
-          <div className="match__cell">
-            <span className="match__badge match__badge--bad">살짝 조심</span>
-            <ZodiacBadge zodiac={result.detail.match.caution} size={44} />
-            <span className="match__label">{result.detail.match.caution.label}</span>
-            <span className="match__hint">{result.detail.match.cautionReason}</span>
-          </div>
-        </div>
-      </div>
-
-      <WeekCard zodiac={zodiac} onShare={onShareWeek} />
-      </Chapter>
 
       <Disclaimer />
 

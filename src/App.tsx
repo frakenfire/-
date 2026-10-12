@@ -711,7 +711,6 @@ export default function App() {
           onUnlockConcern={handleUnlockConcern}
           onOpenConcern={openConcern}
           onAskNoti={canAskNotification() && !notiAsked ? handleAskNoti : undefined}
-          onShareWeek={handleShareWeek}
           onBack={() => goBack()}
         />
       )}

@@ -1371,112 +1371,8 @@ strong {
 /* 인트로 티저 — 오늘 운 좋은 띠 (궁금증 유발) */
 /* ── 이번 주 운세 캘린더 ── 스트릭 보상(3일 연속) 또는 광고로 열리는 7일 미리보기.
    좋은 날을 미리 알려 "그날 다시 오게" 만드는 리텐션 장치라 서열 카드 위에 둔다. */
-.week-card {
-  padding: 0;
-}
-.week-card__headline {
-  margin: 0 0 var(--space-3);
-  font-size: 14px;
-  line-height: 21px;
-  font-weight: 700;
-  color: var(--brand-strong);
-  background: var(--brand-soft);
-  border-radius: 10px;
-  padding: 9px 12px;
-}
-.week-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.week-row {
-  display: grid;
-  grid-template-columns: 8px 46px 40px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 8px;
-  min-height: 38px;
-  padding: 7px 10px;
-  border-radius: 10px;
-  background: var(--gray-50);
-}
 /* 요일 왼쪽 점 하나로 그날의 기운을 표시한다 — 줄 전체를 읽지 않아도 눈에 들어온다 */
-.week-row__dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--gray-300);
-}
-.week-row--great .week-row__dot {
-  background: var(--score-high);
-}
-.week-row--good .week-row__dot {
-  background: var(--score-mid);
-}
-.week-row--steady .week-row__dot {
-  background: var(--gray-400);
-}
-.week-row--caution .week-row__dot {
-  background: var(--score-low);
-}
-.week-row--today {
-  background: var(--brand-soft);
-}
 /* 가장 좋은 날 하나만 테두리로 집어준다 — "이번 주 언제 움직일까"의 답 */
-.week-row--best {
-  box-shadow: inset 0 0 0 1.5px var(--score-high);
-}
-.week-row__day {
-  display: flex;
-  align-items: baseline;
-  gap: 3px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.week-row__day i {
-  font-style: normal;
-  font-size: 11px;
-  line-height: 16.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
-.week-row__date {
-  font-family: var(--font-num);
-  font-variant-numeric: tabular-nums;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--gray-700);
-}
-.week-row__rel {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 500;
-  color: var(--gray-700);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.week-row__tone {
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 700;
-  color: var(--gray-800);
-  white-space: nowrap;
-}
-.week-row--great .week-row__tone {
-  color: var(--score-high-text);
-}
-.week-row--good .week-row__tone {
-  color: var(--score-mid-text);
-}
-.week-row--caution .week-row__tone {
-  color: var(--score-low-text);
-}
 /* 잠금 상태 — 무엇이 열리는지 먼저 보여주고(요일 프리뷰), 조건을 숫자로 말한다.
    "3일만 더" 처럼 남은 개수를 보여줘야 스트릭이 목표가 된다. */
 /* ── 오늘의 띠 서열 ── 리더보드. 매일 갈리는 12띠 랭킹(사주 일진 기반) */
@@ -2847,7 +2743,6 @@ strong {
    같은 물건을 두 벌의 숫자로 그리면 반드시 이렇게 갈린다. 카드는 .sec-card
    한 벌만 쓴다. */
 .sec-card .sec__head { margin-bottom: 10px; }
-.sec-card .week-card { margin-top: 0; }
 
 /* 카드 안에 들어간 하루 한 줄 */
 
@@ -2999,12 +2894,6 @@ strong {
 }
 
 /* 이번 주 — 좋은 날과 조심할 날을 목록 밑에 한 줄씩 못 박는다 */
-.week2 { list-style: none; margin: 14px 0 0; padding: 14px 0 0; border-top: 1px solid var(--gray-100); }
-.week2__row { display: grid; grid-template-columns: 70px minmax(0, 1fr); gap: 10px; padding: 6px 0; }
-.week2__k { font-size: 13px; line-height: 19.5px; font-weight: 700; }
-.week2__row--good .week2__k { color: var(--brand-strong); }
-.week2__row--care .week2__k { color: #9c5d00; }
-.week2__v { font-size: 15px; line-height: 22.5px; font-weight: 600; color: var(--gray-900); word-break: keep-all; }
 
 /* 오늘은 이렇게 카드의 한 줄 요약 밑 보조 문장 */
 
@@ -3771,3 +3660,7 @@ strong {
 .tdc__chip em { font-style: normal; font-size: 12px; line-height: 18px; font-weight: 700; color: var(--brand-strong); }
 .tdc__chip--on { background: var(--brand-soft); }
 .tdc__row .tdc__body { margin-top: 10px; }
+/* 재미 칸: MBTI 네 글자와 고른 까닭 */
+.match__type { font-size: 30px; line-height: 40px; font-weight: 700; color: var(--brand-strong); letter-spacing: 0.5px; }
+.match__type--care { color: var(--gray-700); }
+.match__why { margin: 12px 0 0; padding-top: 12px; border-top: 1px solid var(--gray-100); font-size: 14px; line-height: 21px; font-weight: 500; color: var(--gray-700); word-break: keep-all; }
