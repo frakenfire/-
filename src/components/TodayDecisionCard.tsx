@@ -1,6 +1,7 @@
 import type { TodayDecision } from '../types/fortune.ts';
 import { Sentences } from './Sentences.tsx';
 import type { ScoreWhy } from '../lib/scoreWhy.ts';
+import { Icon } from './Icon.tsx';
 
 export type Tile = { k: string; v: string; swatch?: string };
 
@@ -42,15 +43,22 @@ export function TodayDecisionCard({ decision, scoreWhy, date, intro, goods, avoi
         </div>
         <p className="tdc__headline">{head}</p>
         <Sentences className="tdc__summary" text={summary} />
-        {scoreWhy?.luck ? (
-          <div className="tdc__score">
-            <p className="tdc__score-k">{scoreWhy.luck.head}</p>
-            <Sentences className="tdc__body" text={scoreWhy.luck.text} />
-          </div>
-        ) : null}
+        {/* 큰 점수 → 날짜 붙은 막대 → 한두 줄 풀이 → 해볼 것 상자. 사실은 숫자와 막대로 보여주고
+            글은 줄인다(글만 많다는 사장님 말, 2026-10-12). */}
         {scoreWhy ? (
           <div className="tdc__score">
-            <p className="tdc__score-k">{scoreWhy.head}</p>
+            {scoreWhy.luck ? (
+              <>
+                <p className="tdc__score-k">{scoreWhy.luck.title}</p>
+                <p className="tdc__big">
+                  <strong className="num">{scoreWhy.luck.score}</strong>점
+                  <span className={`tdc__pill tdc__pill--${scoreWhy.luck.band}`}>{scoreWhy.luck.label}</span>
+                </p>
+                <p className="tdc__lead">{scoreWhy.luck.head}</p>
+              </>
+            ) : (
+              <p className="tdc__score-k">{scoreWhy.head}</p>
+            )}
             {scoreWhy.parts?.length ? (
               <ul className="tdc__parts">
                 {scoreWhy.parts.map((p) => (
@@ -68,17 +76,40 @@ export function TodayDecisionCard({ decision, scoreWhy, date, intro, goods, avoi
               </ul>
             ) : null}
             <Sentences className="tdc__body tdc__parts-why" text={scoreWhy.text} />
+            {scoreWhy.luck ? <Tip text={scoreWhy.luck.act} /> : null}
           </div>
         ) : null}
         {scoreWhy?.rows?.length ? (
           <ul className="tdc__rows">
             {scoreWhy.rows.map((r) => (
               <li key={r.k} className="tdc__row">
-                <p className="tdc__score-k">
-                  {r.k}
-                  <span className="tdc__row-sub"> · {r.sub}</span>
-                </p>
-                <Sentences className="tdc__body" text={r.v} />
+                <div className="tdc__row-top">
+                  <span className="tdc__row-icon" aria-hidden><Icon name={r.icon} size={20} /></span>
+                  <span className="tdc__row-name">
+                    <span className="tdc__row-k">{r.k}</span>
+                    <span className="tdc__row-sub">{r.sub}</span>
+                  </span>
+                </div>
+                <p className="tdc__lead">{r.head}</p>
+                {r.tag ? (
+                  <p className="tdc__tag">
+                    <span className="tdc__tag-k">{r.tag.k}</span>
+                    {r.tag.v}
+                  </p>
+                ) : null}
+                {r.chips?.length ? (
+                  <ul className="tdc__chips">
+                    {r.chips.map((c) => (
+                      <li key={c.t} className={`tdc__chip${c.mark ? ' tdc__chip--on' : ''}`}>
+                        <strong>{c.t}</strong>
+                        <span>{c.v}</span>
+                        {c.mark ? <em>{c.mark}</em> : null}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+                <Sentences className="tdc__body" text={r.body} />
+                {r.act ? <Tip text={r.act} /> : null}
               </li>
             ))}
           </ul>
@@ -145,5 +176,15 @@ function Tiles({ title, tiles, why }: { title: string; tiles: Tile[]; why: strin
       </ul>
       <Sentences className="tdc__tiles-why" text={why} />
     </div>
+  );
+}
+
+// 오늘 해볼 행동 하나. 글 사이에 묻히지 않게 상자에 담는다.
+function Tip({ text }: { text: string }) {
+  return (
+    <p className="tdc__tip">
+      <span className="tdc__tip-icon" aria-hidden><Icon name="bulb" size={18} /></span>
+      <span>{text}</span>
+    </p>
   );
 }

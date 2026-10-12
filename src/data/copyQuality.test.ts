@@ -47,7 +47,7 @@ function blocks(): Block[] {
     for (const [k, t] of Object.entries(byConcern)) out.push({ where: `쪽지 ${id}/${k}`, text: t });
   }
   // 점수 이유 글감. 실제 화면에서 한 덩이로 붙는 단위로 묶는다.
-  for (const [b, x] of Object.entries(LUCK_BAND)) out.push({ where: `점수 ${b}`, text: `${x.head} ${x.care} ${x.act}` });
+  for (const [b, x] of Object.entries(LUCK_BAND)) out.push({ where: `점수 ${b}`, text: `${x.head} ${x.act}` });
   for (const [g, x] of Object.entries(NATAL_TODAY)) out.push({ where: `타고난 ${g}`, text: `${x.head} ${x.turn} ${x.act} ${NAME_TODAY[g as keyof typeof NAME_TODAY]}` });
   for (const [c, byState] of Object.entries(ELEMENT_TODAY)) for (const [st, x] of Object.entries(byState)) out.push({ where: `요소 ${c}/${st}`, text: `${x.link} ${x.act}` });
   for (const [c, byGroup] of Object.entries(CONCERN_TODAY)) for (const [g, x] of Object.entries(byGroup)) out.push({ where: `고민 ${c}/${g}`, text: `${x.head} ${x.scene} ${x.act}` });

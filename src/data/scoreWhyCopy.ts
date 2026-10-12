@@ -22,20 +22,20 @@ export const LUCK_NAME: Record<ConcernKey, string> = {
 };
 
 /** 점수 덩이의 첫 줄과 맺는 두 줄. 오늘 점수가 좋은지 나쁜지에 따라 */
-export const LUCK_BAND: Record<Band, { head: string; care: string; act: string }> = {
+export const LUCK_BAND: Record<Band, { label: string; head: string; act: string }> = {
   good: {
+    label: '해볼 만해요',
     head: '오늘은 미뤄두던 일을 하나 꺼내 움직여 봐도 괜찮은 날이에요.',
-    care: '그렇다고 모든 일이 저절로 잘되는 날은 아니에요.',
     act: '움직일 일을 하나만 골라 오늘 안에 시작해 보세요.',
   },
   ok: {
+    label: '무난해요',
     head: '오늘은 크게 바꾸기보다 하던 대로 차분히 이어가면 되는 날이에요.',
-    care: '점수만 보면 무난하지만, 마음먹기에 따라 하루가 꽤 달라질 수 있어요.',
     act: '오늘 할 일 가운데 가장 중요한 것 하나부터 끝내 보세요.',
   },
   hard: {
+    label: '조심할 때예요',
     head: '오늘은 무리하게 움직이기보다 지금 가진 것을 지키는 데 마음을 쓸 날이에요.',
-    care: '그렇다고 오늘 하는 선택이 모두 나쁘게 끝나는 건 아니에요.',
     act: '큰 결정을 서두르기보다 작은 것부터 정리해 보세요.',
   },
 };

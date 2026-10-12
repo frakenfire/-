@@ -3753,7 +3753,29 @@ strong {
 .tdc__part--good .tdc__part-bar i { background: var(--score-high); }
 .tdc__part--hard .tdc__part-bar i { background: var(--score-low); }
 .tdc__part-v { text-align: right; font-size: 15px; line-height: 22.5px; font-weight: 700; color: var(--gray-900); }
-.tdc__rows { list-style: none; margin: 0; padding: 0; }
-.tdc__row { margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--gray-100); }
-.tdc__row-sub { font-weight: 600; color: var(--gray-600); }
 .tdc__parts-why { margin-top: 14px; }
+/* 점수 덩이: 큰 숫자와 등급, 해볼 것 상자, 항목마다 아이콘 */
+.tdc__big { display: flex; align-items: baseline; gap: 2px; margin: 2px 0 0; font-size: 17px; line-height: 25.5px; font-weight: 700; color: var(--gray-900); }
+.tdc__big strong { font-size: 30px; line-height: 40px; font-weight: 700; }
+.tdc__pill { align-self: center; margin-left: 6px; padding: 2px 8px; border-radius: 999px; font-size: 12px; line-height: 18px; font-weight: 600; background: var(--brand-soft); color: var(--brand-strong); }
+.tdc__pill--hard { background: var(--gray-100); color: var(--score-low-text); }
+.tdc__pill--ok { background: var(--gray-100); color: var(--gray-700); }
+.tdc__lead { margin: 8px 0 0; font-size: 16px; line-height: 24px; font-weight: 600; color: var(--gray-900); word-break: keep-all; }
+.tdc__tip { display: flex; gap: 8px; align-items: flex-start; margin: 14px 0 0; padding: 12px 14px; border-radius: 12px; background: var(--brand-soft); font-size: 15px; line-height: 22.5px; font-weight: 600; color: var(--gray-900); word-break: keep-all; }
+.tdc__tip-icon { flex: none; display: flex; padding-top: 2px; color: var(--brand-strong); }
+.tdc__rows { list-style: none; margin: 0; padding: 0; }
+.tdc__row { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--gray-100); }
+.tdc__row-top { display: flex; align-items: center; gap: 12px; }
+.tdc__row-icon { flex: none; display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: var(--brand-soft); color: var(--brand-strong); }
+.tdc__row-name { display: flex; flex-direction: column; min-width: 0; }
+.tdc__row-k { font-size: 16px; line-height: 24px; font-weight: 700; color: var(--gray-900); }
+.tdc__row-sub { font-size: 13px; line-height: 19.5px; font-weight: 500; color: var(--gray-600); }
+.tdc__row .tdc__lead { margin-top: 12px; }
+.tdc__tag { margin: 10px 0 0; padding: 10px 12px; border-radius: 12px; background: var(--gray-50); font-size: 14px; line-height: 21px; font-weight: 600; color: var(--gray-800); word-break: keep-all; }
+.tdc__tag-k { display: block; font-size: 12px; line-height: 18px; font-weight: 500; color: var(--gray-600); }
+.tdc__chips { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; padding: 0; }
+.tdc__chip { display: flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 999px; background: var(--gray-50); font-size: 13px; line-height: 19.5px; color: var(--gray-700); }
+.tdc__chip strong { font-weight: 700; color: var(--gray-900); }
+.tdc__chip em { font-style: normal; font-size: 12px; line-height: 18px; font-weight: 700; color: var(--brand-strong); }
+.tdc__chip--on { background: var(--brand-soft); }
+.tdc__row .tdc__body { margin-top: 10px; }
