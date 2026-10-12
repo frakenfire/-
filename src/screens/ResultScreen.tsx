@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Mascot } from '../components/Mascot.tsx';
-import { Icon } from '../components/Icon.tsx';
 import { MoreConcerns } from '../components/MoreConcerns.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
@@ -11,7 +10,6 @@ import { todayVibe } from '../lib/dayVibe.ts';
 import { Sentences } from '../components/Sentences.tsx';
 import { luckyWhen } from '../lib/luckyWhen.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
-import { LUCKY_HEADS } from '../data/copy.ts';
 import { CATEGORY_INTERP, band } from '../data/detailContent.ts';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { DeepSections } from '../components/DeepSections.tsx';
@@ -23,7 +21,12 @@ import { useDayPart } from '../lib/useDayPart.ts';
 import { noteTodayOf } from '../data/noteToday/index.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { withJosa } from '../lib/josa.ts';
-import { ohaengWhy } from '../data/ohaeng.ts';
+import { OHAENG } from '../data/ohaeng.ts';
+import { todayIntroOf } from '../data/todayIntro.ts';
+import type { Element } from '../lib/saju.ts';
+
+// 힘이 되는 요소를 누르는 요소(쇠는 나무를, 물은 불을, 나무는 흙을, 불은 쇠를, 흙은 물을 누른다)
+const PRESS_OF: Record<Element, Element> = { wood: 'metal', fire: 'water', earth: 'wood', metal: 'fire', water: 'earth' };
 import type { Band } from '../lib/timing.ts';
 
 // 고민 점수의 등급말 - 숫자 옆에 한 단어가 있어야 '이게 높은 건가' 가 안 생긴다
@@ -84,11 +87,40 @@ function scoreWhyOf(read: DeepRead, concernLabel: string): { head: string; text:
         : `오늘은 ${pull} 날이라 ${today.score}점으로 평소 내 점수와 비슷해요. 하던 대로 차분히 이어가면 되는 날이에요.`;
   return {
     head,
-    text: `${concernLabel} 운은 타고난 사주와 지금 시기, 오늘을 함께 보고 ${total}점이 나왔어요. 그중 ${withJosa(NAME[best.k], '이가')} ${best.score}점으로 가장 든든하게 받쳐주고 있어요. ${todayLine}`.trim(),
+    text: [
+      `${concernLabel} 운은 타고난 사주와 지금 시기, 오늘을 함께 보고 ${total}점이 나왔어요.`,
+      `그중 ${withJosa(NAME[best.k], '이가')} ${best.score}점으로 가장 든든하게 받쳐주고 있어요.`,
+      ...ohaengLines(read),
+      todayLine,
+    ].filter(Boolean).join(' '),
   };
 }
 
-export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onShareWeek, onBack }: Props) {
+// 다섯 요소(나무, 불, 흙, 쇠, 물)로 본 점수 이유. 내 사주에 무엇이 많고 모자란지, 오늘 날이
+// 어느 요소라 나와 어떻게 만나는지를 말한다. '아 이렇구나' 가 나와야 아래 할 것과 미룰 것이 믿긴다.
+const GEN: Record<string, string> = { 나무: '불', 불: '흙', 흙: '쇠', 쇠: '물', 물: '나무' };
+const CTRL: Record<string, string> = { 나무: '흙', 흙: '물', 물: '불', 불: '쇠', 쇠: '나무' };
+function ohaengLines(read: DeepRead): string[] {
+  const els = read.chart.elements;
+  if (!els.length) return [];
+  const most = els.reduce((a, b) => (b.pct > a.pct ? b : a));
+  const least = els.reduce((a, b) => (b.pct < a.pct ? b : a));
+  const today = read.chart.todayEl;
+  const need = read.chart.usefulEl;
+  const first = `내 사주를 다섯 요소로 나눠 보면 ${withJosa(most.el, '이가')} ${most.pct}%로 가장 많고 ${withJosa(least.el, '이가')} ${least.pct}%로 가장 적어요.`;
+  const meet = today === need
+    ? `오늘 날은 ${today}에 속해서 내게 모자란 ${withJosa(need, '을를')} 채워주는 날이에요.`
+    : GEN[today] === need
+      ? `오늘 날은 ${today}에 속하는데, ${withJosa(today, '은는')} 내게 모자란 ${withJosa(need, '을를')} 살려주는 요소라 도움을 받기 쉬운 날이에요.`
+      : today === most.el
+        ? `오늘 날은 ${today}에 속해서 이미 많은 ${withJosa(today, '이가')} 더해지는 날이라, 한쪽으로 치우치지 않게 속도를 조절하는 편이 좋아요.`
+        : CTRL[today] === need
+          ? `오늘 날은 ${today}에 속하는데, ${withJosa(today, '은는')} 내게 모자란 ${withJosa(need, '을를')} 누르는 요소라 무리하면 쉽게 지칠 수 있어요.`
+          : `오늘 날은 ${today}에 속해서 내 사주와 크게 부딪히지 않는 날이에요.`;
+  return [first, meet];
+}
+
+export function ResultScreen({ result, note, busy, onShare, userName, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onShareWeek, onBack }: Props) {
   const { luck } = result;
   const isMonth = result.reading.scale === 'month';
   // 지금이 하루의 어느 토막인지. 지나간 토막은 오늘의 풀이에서 접는다.
@@ -100,12 +132,36 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
   // 고민을 골라 들어왔으면 맨 위 점수는 그 고민의 점수다. 명식에서 계산된 값이라
   // 오늘 점수(날짜 seed 기반)보다 이 화면이 하는 말과 더 붙는다.
   const concernLabel = deep ? findConcern(deep.concernKey).label : null;
-  // 여섯 칸을 푸는 문단. 고민을 골라 들어왔으면 그 고민의 말로 쓴다 - 돈을 물은
-  // 사람에게 '중요한 건 늦은 오후에' 라고만 하면, 위에서는 촘촘히 돈 얘기를
-  // 하다가 아래로 갈수록 아무 고민에나 붙는 말로 바뀐다.
-  const luckyWhy = luck.boost
-    ? ohaengWhy(luck.boost, luck.color.name, deep ? findConcern(deep.concernKey) : undefined)
-    : null;
+  // 할 것 아래 '오늘 곁에 두면 좋은 것', 미룰 것 아래 '오늘 멀리하면 좋은 것'. 바로 실천할 수 있게
+  // 빛깔, 음식, 음악, 친구를 붙인다(사장님 2026-10-12). 오늘 나한테 힘이 되는 요소(boost)에 드는 것과,
+  // 그 요소를 누르는 요소에 드는 것이다. 생년월일이 없어 근거가 없으면 안 그린다.
+  const boost = luck.boost ? OHAENG[luck.boost] : null;
+  const press = luck.boost ? OHAENG[PRESS_OF[luck.boost]] : null;
+  const match = result.detail.match;
+  const goods = boost
+    ? {
+        tiles: [
+          { k: '빛깔', v: luck.color.name, swatch: luck.color.hex },
+          { k: '음식', v: luck.food.name },
+          { k: '음악', v: boost.music[luck.number % boost.music.length] },
+          { k: '친구', v: `${match.good.label} 친구` },
+          { k: '시간', v: luckyWhen(luck.time, clock.at).label },
+          { k: '방향', v: luck.direction },
+        ],
+        why: `오늘 나한테 힘이 되는 건 ${boost.ko} 요소예요. 그래서 ${boost.ko}에 드는 빛깔과 음식, 음악을 골랐고, 친구는 오늘 나와 잘 맞는 띠예요.`,
+      }
+    : undefined;
+  const avoids = boost && press
+    ? {
+        tiles: [
+          { k: '빛깔', v: press.colors[0] },
+          { k: '음식', v: `${press.taste}이 강한 음식` },
+          { k: '음악', v: press.music[0] },
+          { k: '조심할 띠', v: match.caution.label },
+        ],
+        why: `${withJosa(press.ko, '은는')} 오늘 힘이 되는 ${withJosa(boost.ko, '을를')} 누르는 요소라, 여기에 드는 것들은 오늘 조금 멀리해두면 좋아요. ${withJosa(match.caution.label, '과와')}는 오늘 말이 엇갈리기 쉬우니 중요한 얘기는 다음으로 미뤄도 괜찮아요.`,
+      }
+    : undefined;
   const headScore = deep ? deep.read.score.total : luck.total;
   const headGrade = deep ? BAND_LABEL[deep.read.score.band] : (GRADE_KO[luck.grade] ?? luck.grade);
 
@@ -129,9 +185,6 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
   const noteMsg = noteTodayOf(note.id, deep ? deep.concernKey : null, deep ? deep.read.optionKey : null);
 
   const RING = 2 * Math.PI * 54;
-  // 이미 지나간 때를 오늘의 행운이라고 띄우지 않는다.
-  // 시계를 구독해서, 켜둔 채 그 시각을 넘겨도 따라간다.
-  const when = luckyWhen(luck.time, clock.at);
 
   return (
     <AppLayout
@@ -187,6 +240,9 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
       <TodayDecisionCard
         decision={deep ? deep.read.todayDecision : todayVibe(todayKey()).decision}
         scoreWhy={deep ? scoreWhyOf(deep.read, findConcern(deep.concernKey).label) : undefined}
+        intro={deep ? todayIntroOf(deep.concernKey, deep.read.todayGroup) : undefined}
+        goods={goods}
+        avoids={avoids}
       />
 
       {/* 내일 또 뽑을 이유. 오늘 쪽지를 다 본 자리에서 내일 무엇이 달라지는지 한 줄,
@@ -321,58 +377,6 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
         </ul>
       </div>
       )}
-
-      {/* 3. 오늘의 행운 여섯 칸 — 색깔·숫자·방향·시간·음식·물건.
-          여섯 칸에 파랑·노랑·주황 세 가지 바탕색을 아무 규칙 없이 흩뿌려
-          놨었다. 색이 뜻하는 게 없으면 색은 소음이다. 바탕은 하나로 두고
-          유일하게 뜻이 있는 색(행운 색)만 동그라미로 보여준다.
-          숫자 칸은 큰 숫자를 아이콘 자리에 놓고 값으로 또 한 번 써서
-          '8 / 숫자 / 8' 로 읽혔다. 다른 다섯 칸과 같은 아이콘 자리로 맞춘다. */}
-      <div className="lucky4 sec-card">
-        <p className="lucky4__head">{isMonth ? '이번 달의 행운' : LUCKY_HEADS[spin % LUCKY_HEADS.length]}</p>
-        <div className="lucky4__grid lucky4__grid--3">
-          <div className="lucky4__tile">
-            <span className="lucky4__swatch" style={{ background: luck.color.hex }} aria-hidden />
-            <span className="lucky4__k">색깔</span>
-            <strong className="lucky4__v">{luck.color.name}</strong>
-          </div>
-          <div className="lucky4__tile">
-            <span className="lucky4__icon" aria-hidden><Icon name="hash" size={26} /></span>
-            <span className="lucky4__k">숫자</span>
-            <strong className="lucky4__v">{luck.number}</strong>
-          </div>
-          <div className="lucky4__tile">
-            <span className="lucky4__icon" aria-hidden><Icon name="compass" size={26} /></span>
-            <span className="lucky4__k">방향</span>
-            <strong className="lucky4__v">{luck.direction}</strong>
-          </div>
-          <div className="lucky4__tile">
-            <span className="lucky4__icon" aria-hidden><Icon name="clock" size={26} /></span>
-            <span className="lucky4__k">시간</span>
-            <strong className="lucky4__v">{when.label}</strong>
-          </div>
-          <div className="lucky4__tile">
-            <span className="lucky4__icon" aria-hidden><Icon name="bowl" size={26} /></span>
-            <span className="lucky4__k">음식</span>
-            <strong className="lucky4__v">{luck.food.name}</strong>
-          </div>
-          <div className="lucky4__tile">
-            <span className="lucky4__icon" aria-hidden><Icon name="gift" size={26} /></span>
-            <span className="lucky4__k">물건</span>
-            <strong className="lucky4__v">{luck.item}</strong>
-          </div>
-        </div>
-        {/* 여섯 칸 밑에 '왜 이렇게 나왔나' 한 문단.
-            전에는 여기가 '오늘의 기운 | 정리' 한 줄이었다. 이름표와 낱말 하나.
-            그 낱말은 날짜 해시로 열 개 중 하나를 뽑은 제비였고, 왜 그 낱말인지는
-            화면 어디에도 없었다. 칸 여섯 개 중 다섯도 같은 방식이었다.
-            지금은 방향도 숫자도 시각도 음식도 물건도 '오늘 나한테 힘이 되는
-            기운' 하나에서 계산으로 떨어진다. 그 계산을 그대로 풀어 적는다.
-            칸마다 한 줄씩 붙이면 여섯 줄이 각자 떠들어서 답이 안 읽힌다.
-            생년월일이 없어 근거가 없을 때는 이 문단을 아예 안 그린다 -
-            없는 근거를 있는 척 적는 게 제일 나쁘다. */}
-        {luckyWhy ? <Sentences className="lucky4__why" text={luckyWhy} /> : null}
-      </div>
 
       {/* 5. 오늘 잘 맞는 띠 */}
       <div className="cat4 sec-card">

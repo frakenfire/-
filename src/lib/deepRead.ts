@@ -22,7 +22,7 @@ import { dayPillarOf, dayPillarKey } from '../data/dayPillar.ts';
 import type { TodayDecision } from '../types/fortune.ts';
 import { NEEDED_MONTH } from '../data/tenGodDay.ts';
 import { needFit } from './dailySaju.ts';
-import { GOD_GROUP_OF, analyzeSaju, tenGodOf, mainHiddenStem, type TenGod } from './tenGods.ts';
+import { GOD_GROUP_OF, analyzeSaju, tenGodOf, mainHiddenStem, hiddenStemsOf, type TenGod, type GodGroup } from './tenGods.ts';
 import { ELEMENT_KO, STEMS, BRANCHES, type Element } from './saju.ts';
 import {
   unseongOf, UNSEONG_KO, branchRelations, RELATION_KO, sinsalOf, SINSAL_KO, gongmangOf,
@@ -50,6 +50,8 @@ export type DeepRead = {
   /** 오늘 하루의 행동. 고른 주제에 일진을 대어 뽑는다 */
   /** 결과 맨 위 결론 - 오늘 전체 종합, 오늘 할 것과 까닭, 하지 말 것과 까닭 */
   todayDecision: TodayDecision;
+  /** 오늘 십신 무리. 할 것과 미룰 것 위 설명을 고른다 */
+  todayGroup: GodGroup;
   /** 결정 카드 — 지금 어느 상태이고, 뭘 하고 뭘 하지 말 것인가 */
   decision: { stance: Stance; stanceWord: string; verdict: string; dos: string[]; doWhys: string[]; donts: string[]; dontWhys: string[] };
   /** 왜 지금 이 고민이 커졌는지 — 십 년, 올해, 이번 달을 겹쳐 본다 */
@@ -69,6 +71,10 @@ export type DeepRead = {
     strength: string;
     season: string;
     useful: string;
+    /** 오늘 날이 속한 다섯 요소(나무, 불, 흙, 쇠, 물) */
+    todayEl: string;
+    /** 내 사주에 가장 모자란 요소 */
+    usefulEl: string;
     /** 이 주제에서 실제로 본 자리 */
     focus: string;
     /** 오늘 일진 한 줄 — 여기가 날마다 바뀐다 */
@@ -295,6 +301,20 @@ export function stanceLead(stance: Stance, timing: TimingRead, move: string): st
         // 이번 달이 열두 달 중 가장 높은데 '다음 달 점수를 보고' 라고 하면 앞뒤가 안 맞는다
         : `이번 달은 ${m.score}점으로 앞으로 열두 달 중 가장 높아요. 다만 ${withJosa(move, '은는')} 한 번에 정하기보다 아래 할 일을 먼저 해두고 이번 달 말에 정해도 늦지 않아요.`;
   }
+}
+
+/**
+ * 오늘 해보면 좋은 것과 미뤄두면 좋은 것을 뽑을 십신 다섯. 모두 오늘 날의 사주에서 나온다.
+ * 오늘 천간 십신 → 같은 무리의 짝 → 오늘 지지 속 글자들의 십신(무거운 것부터) → 그 짝.
+ * 다섯이 안 되면 나머지 십신으로 채운다(하루가 같은 무리에 몰린 날).
+ * 하나씩만 두니 너무 적다는 말을 들었다(2026-10-12, 사장님: 다섯 개씩).
+ */
+function todayGodsOf(myDayStem: number, dayGod: TenGod, branch: number): TenGod[] {
+  const all = Object.keys(GOD_GROUP_OF) as TenGod[];
+  const mate = (g: TenGod) => all.filter((x) => x !== g && GOD_GROUP_OF[x] === GOD_GROUP_OF[g]);
+  const hidden = [...hiddenStemsOf(branch)].sort((x, y) => y.weight - x.weight).map((h) => tenGodOf(myDayStem, h.stem) as TenGod);
+  const order = [dayGod, ...mate(dayGod), ...hidden, ...hidden.flatMap(mate), ...all];
+  return [...new Set(order)].slice(0, 5);
 }
 
 export function buildDeepRead(
@@ -535,6 +555,8 @@ export function buildDeepRead(
     season: prof.hasSeasonalSupport
       ? '태어난 계절이 내 성향과 잘 맞아서 기본적으로 버티는 힘이 있는 편이에요.'
       : '태어난 계절이 나를 직접 돕지는 않아요. 그래서 무엇을 하느냐만큼 이사나 계약 날짜를 언제로 잡느냐도 중요하게 봐요.',
+    todayEl: ELEMENT_KO[STEMS[todayPillar.stem].el],
+    usefulEl: ELEMENT_KO[prof.usefulElement],
     useful: `내 사주에는 다섯 요소 중 ${withJosa(ELEMENT_KO[prof.usefulElement], '이가')} 모자라요. ${withJosa(ELEMENT_KO[prof.usefulElement], '이가')} 들어오는 해와 달에는 일이 덜 막히는 편이에요.`,
     focus,
     today: chartToday,
@@ -755,10 +777,7 @@ export function buildDeepRead(
   // 누구나 아는 말). 그 날이 나에게 무슨 날인지만 말하고, 그 앞에 지금 마음을 읽어준다.
   const feeling = feelingOf(concernKey, optionKey ?? '');
   const todayDecision = {
-    ...composeTodayDecision(concernKey, optionKey, todayPart.band, score.dayGod, score.dayGod, todayGroup, [
-      ...(Object.keys(GOD_GROUP_OF) as TenGod[]).filter((g) => GOD_GROUP_OF[g] === todayGroup && g !== score.dayGod),
-      tenGodOf(pillars.dayStem, mainHiddenStem(todayPillar.branch)) as TenGod,
-    ]),
+    ...composeTodayDecision(concernKey, optionKey, todayPart.band, score.dayGod, score.dayGod, todayGroup, todayGodsOf(pillars.dayStem, score.dayGod, todayPillar.branch).slice(1, 5)),
     ...(feeling ? { feeling } : {}),
     basis: `오늘 ${cm}월 ${cd}일은 내 사주로 보면 ${G(score.dayGod).pull} 날이에요.`,
   };
@@ -941,6 +960,7 @@ export function buildDeepRead(
     },
     optionKey,
     todayDecision,
+    todayGroup,
     slots,
     monthSlots,
     yearLines,

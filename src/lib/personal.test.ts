@@ -57,7 +57,7 @@ test('생년월일이 다른 다섯 사람이 같은 풀이를 받지 않는다'
       // 누구나 같다. 다른 것은 어느 달에 어느 문장이 붙느냐다. 그건 아래에서 따로 잰다.
       // 오늘 할 것과 미룰 것(decision 의 목록과 까닭)은 고른 상황에서 나온다. 같은 상황이면 누구나 같은
       // 할 일을 받는 게 맞다. 사람마다 달라야 하는 건 사주에서 나오는 문장이므로 그것만 센다.
-      return sentencesOf({ ...r, decision: { ...r.decision, dos: [], doWhys: [], donts: [], dontWhys: [] }, monthSlots: r.monthSlots.map((m) => ({ ...m, good: '', care: '' })) });
+      return sentencesOf({ ...r, todayDecision: { ...r.todayDecision, more: undefined }, decision: { ...r.decision, dos: [], doWhys: [], donts: [], dontWhys: [] }, monthSlots: r.monthSlots.map((m) => ({ ...m, good: '', care: '' })) });
     });
     let common = new Set(sets[0]);
     for (const s of sets.slice(1)) common = new Set([...common].filter((x) => s.has(x)));

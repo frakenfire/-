@@ -13,7 +13,7 @@ import {
   Feather, TrendingUp, DoorOpen, Wallet, ClipboardCheck, MessageCircle, Clock, Compass,
   Link, Target, Cloud, Sticker, Lightbulb, Flame, Clover, Headphones, Gift,
   Soup, Users, MessageCircleHeart, HeartHandshake, House, Flower2,
-  Smile, Hash,
+  Smile,
 } from 'lucide-react';
 
 export type IconName =
@@ -22,7 +22,7 @@ export type IconName =
   | 'blade' | 'gem' | 'wave' | 'drop' | 'feather' | 'trendUp' | 'door' | 'wallet'
   | 'checklist' | 'chat' | 'clock' | 'compass' | 'link' | 'target' | 'balloon'
   | 'sparkle' | 'bulb' | 'flame' | 'clover' | 'headphone' | 'gift' | 'bowl' | 'users'
-  | 'heartSpark' | 'heartPair' | 'home' | 'flower' | 'faceGood' | 'hash';
+  | 'heartSpark' | 'heartPair' | 'home' | 'flower' | 'faceGood';
 
 const ICONS: Record<IconName, LucideIcon> = {
   heart: Heart, moon: Moon, bell: Bell, lock: Lock, sunrise: Sunrise,
@@ -37,7 +37,7 @@ const ICONS: Record<IconName, LucideIcon> = {
   headphone: Headphones, gift: Gift,
   // 음식 · 관계 · 기분
   bowl: Soup, users: Users, heartSpark: MessageCircleHeart, heartPair: HeartHandshake,
-  home: House, flower: Flower2, faceGood: Smile, hash: Hash,
+  home: House, flower: Flower2, faceGood: Smile,
 };
 
 type Props = { name: IconName; size?: number };

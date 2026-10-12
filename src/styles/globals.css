@@ -2159,68 +2159,13 @@ strong {
   box-shadow: 0 0 0 2px var(--brand);
 }
 
-/* ── 입체감: 주인공 카드에만 얇은 그림자 ── */
-.today-hook,
+/* ── 입체감: 주인공 카드에만 얇은 그림자 ── */.today-hook,
 .score-hero,
-.lucky4__tile,
 .compat-pick {
   box-shadow: 0 6px 20px rgba(0, 23, 51, 0.06);
 }
 
 /* ── 오늘의 행운 네 칸: 색·노래·행동·음식 ── */
-.lucky4 {
-  margin-top: var(--space-5);
-}
-.lucky4__head {
-  margin: 0 0 var(--space-3);
-  font-size: 20px;
-  line-height: 29px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.lucky4__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-3);
-}
-.lucky4__tile {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-height: 150px;
-  padding: 16px;
-  border-radius: 18px;
-  background: var(--white);
-  border: 1px solid var(--gray-100);
-}
-.lucky4__swatch {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  margin-bottom: 8px;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-}
-.lucky4__icon {
-  display: flex;
-  align-items: center;
-  width: 40px;
-  height: 40px;
-  margin-bottom: 8px;
-  color: var(--brand-strong);
-}
-.lucky4__k {
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-700); /* 파스텔 면 위 AA */
-}
-.lucky4__v {
-  font-size: 18px;
-  line-height: 27px;
-  font-weight: 700;
-  color: var(--gray-900);
-  word-break: keep-all;
-}
 
 /* ── 생동감: 여백은 줄이고, 색은 늘리고, 들어올 때 살짝 움직인다 ── */
 .note-stage {
@@ -2490,11 +2435,6 @@ strong {
 .cat4 .match { margin-top: 4px; }
 
 /* 행운 여섯 칸: 3열, 칸은 작고 값은 크게 */
-.lucky4__grid--3 { grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-.lucky4__grid--3 .lucky4__tile { padding: 14px 12px; gap: 0; }
-.lucky4__grid--3 .lucky4__swatch,
-.lucky4__grid--3 .lucky4__icon { width: 32px; height: 32px; margin-bottom: 10px; }
-.lucky4__grid--3 .lucky4__icon svg { width: 26px; height: 26px; }
 
 /* 쪽지 부채꼴: 덜 겹치게. 옆 장이 3분의 2는 보여야 뭘 고르는지 안다 */
 .note-fan { height: 236px; }
@@ -2638,19 +2578,12 @@ strong {
   box-shadow: 0 6px 20px rgba(0, 23, 51, 0.06);
 }
 .cat4.sec-card { margin-top: var(--space-7); }
-.lucky4.sec-card { margin-top: var(--space-7); }
 /* 카드 제목은 한 벌이다. 여기서 .cat4__head 를 17px 로 적어두고 아래에서 다시
    18px 로 덮어써서, 이 줄의 절반은 처음부터 아무 일도 안 하고 있었다.
    행운 카드만 혼자 17px 로 남아 있었고, 이번 주 카드는 .sec--card 를 떼면서
    .sec__title 바탕값 20px 로 커졌다. 한 화면에 제목 크기가 셋이었다. */
 /* 여섯 칸의 바탕은 하나다. 색을 뜻 없이 나누면 눈이 먼저 색을 읽고
    글자는 나중에 읽는다. 뜻이 있는 색은 행운 색 동그라미 하나뿐이다. */
-.lucky4__grid--3 .lucky4__tile {
-  background: var(--gray-50);
-  border-color: var(--gray-50);
-  box-shadow: none;
-}
-.lucky4__grid--3 .lucky4__icon { color: var(--gray-700); }
 
 /* 내 사주 · 올해 아래 이번 달·다음 달 두 줄 */
 
@@ -2920,32 +2853,8 @@ strong {
 
 /* 행동 칸이 세 줄로 터지면서 줄 전체 높이를 끌어올렸다.
    값은 두 줄까지만 쓰고, 길면 글자를 한 단계 줄인다. */
-.lucky4__grid--3 .lucky4__tile {
-  justify-content: flex-start;
-  min-height: 132px;
-}
-.lucky4__grid--3 .lucky4__v {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  font-size: 16px;
-  line-height: 24px;
-}
 
 /* 여섯 칸이 왜 그렇게 나왔는지. 칸들과 한 덩이로 읽히되 답보다는 뒤로 물러난다. */
-.lucky4__why {
-  /* 다섯 줄을 한 덩이로 붙여두면 벽이 된다. 문장마다 줄을 나눠 적는다. */
-  white-space: pre-line;
-  margin: var(--space-4) 0 0;
-  padding-top: var(--space-4);
-  border-top: 1px solid var(--gray-100);
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-700);
-  word-break: keep-all;
-}
 
 /* 점수 카드: 고리를 조금 줄이고 숫자 쪽으로 무게를 옮긴다 */
 .score-ring { width: 96px; height: 96px; }
@@ -2964,10 +2873,8 @@ strong {
 }
 
 /* 결과 카드 안 글자 크기를 한 벌로 맞춘다.
-   제목 18, 본문 15, 곁말 13. 카드마다 다른 크기가 섞여 있었다. */
-.sec-card .cat4__head,
-.sec-card .sec__title,
-.sec-card .lucky4__head { font-size: 17px; line-height: 25.5px; font-weight: 700; }.sec-card .qa,
+   제목 18, 본문 15, 곁말 13. 카드마다 다른 크기가 섞여 있었다. */.sec-card .cat4__head,
+.sec-card .sec__title { font-size: 17px; line-height: 25.5px; font-weight: 700; }.sec-card .qa,
 .sec-card .qa--sub,
 .sec-card .read6__v { font-size: 15px; line-height: 22.5px; }
 .sec-card .mflow__foot { font-size: 13px; line-height: 19.5px; }.sec-card .read6__k { font-size: 14px; line-height: 21px; }
@@ -3755,9 +3662,6 @@ strong {
 .tdc__mind { margin: 16px 0 0; }
 .tdc__act--do .cat4__head { color: var(--brand-strong); }
 .tdc__act--dont .cat4__head { color: var(--score-low-text); }
-.tdc__why { margin: 16px 0 0; padding-top: 14px; border-top: 1px solid var(--gray-100); }
-.tdc__why-k { margin: 0 0 4px; font-size: 13px; line-height: 19.5px; font-weight: 700; color: var(--gray-700); }
-.tdc__why-v { margin: 0; font-size: 15px; line-height: 22.5px; color: var(--gray-800); word-break: keep-all; }
 /* 내일 또 뽑을 이유 카드 */
 .tmr__v { margin: 0; font-size: 15px; line-height: 22.5px; color: var(--gray-800); word-break: keep-all; }
 .tmr__btn { width: 100%; margin-top: 16px; }
@@ -3822,3 +3726,15 @@ strong {
 .decide__x::before { transform: rotate(45deg); }
 .decide__x::after { transform: rotate(-45deg); }
 .decide__body { display: grid; gap: 2px; min-width: 0; }
+/* 점수 이유, 할 것/미룰 것 위 설명: 카드 본문 크기 하나로 */
+.tdc__body { margin: 0; font-size: 15px; line-height: 22.5px; font-weight: 500; color: var(--gray-800); word-break: keep-all; }
+.tdc__intro { margin-bottom: 8px; padding-bottom: 12px; border-bottom: 1px solid var(--gray-100); }
+/* 오늘 곁에 두면 좋은 것 / 멀리하면 좋은 것 */
+.tdc__tiles { margin-top: 16px; padding: 16px; border-radius: 14px; background: var(--gray-50); }
+.tdc__tiles-k { margin: 0 0 10px; font-size: 15px; line-height: 22.5px; font-weight: 700; color: var(--gray-900); }
+.tdc__grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.tdc__tile { display: grid; gap: 2px; padding: 10px 12px; border-radius: 10px; background: var(--white); min-width: 0; }
+.tdc__tile-k { display: flex; align-items: center; gap: 6px; font-size: 13px; line-height: 19.5px; font-weight: 600; color: var(--gray-700); }
+.tdc__tile-v { font-size: 15px; line-height: 22.5px; font-weight: 700; color: var(--gray-900); word-break: keep-all; }
+.tdc__swatch { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--gray-200); }
+.tdc__tiles-why { margin: 10px 0 0; font-size: 14px; line-height: 21px; color: var(--gray-700); word-break: keep-all; }
