@@ -3,10 +3,21 @@ import { Sentences } from './Sentences.tsx';
 
 export type Tile = { k: string; v: string; swatch?: string };
 
+export type ScoreWhy = {
+  head: string;
+  text: string;
+  /** 점수를 이루는 다섯 자리. 막대로 그린다 */
+  parts?: { k: string; sub: string; score: number; band: string }[];
+  /** 타고난 사주, 다섯 요소, 이름, 고민에서 본 것 */
+  rows?: { k: string; v: string }[];
+};
+
 type Props = {
   decision: TodayDecision;
-  /** 맨 위 점수가 왜 그 점수인지. 오늘 풀이 다음 카드로 */
-  scoreWhy?: { head: string; text: string; rows?: { k: string; v: string }[] };
+  /** 맨 위 점수가 왜 그 점수인지. 오늘 풀이 카드 안에 이어 붙인다 */
+  scoreWhy?: ScoreWhy;
+  /** 오늘 날짜. '10월 12일 월요일' */
+  date?: string;
   /** 할 것과 미룰 것 목록 위에 붙는 '왜 오늘 이게 맞는지' 두세 줄 */
   intro?: { do: string; dont: string };
   /** 할 것 아래 '오늘 곁에 두면 좋은 것'(빛깔, 음식, 음악, 친구 등)과 미룰 것 아래 '오늘 멀리하면 좋은 것' */
@@ -21,7 +32,7 @@ type Item = { action: string; why: string };
 // 할 것과 미룰 것은 다섯 개씩, 모두 오늘 사주에서 나온다(오늘 십신, 같은 무리의 짝,
 // 오늘 지지 속 글자들의 십신). 목록 위에는 왜 오늘 이게 맞는지 두세 줄, 목록 아래에는
 // 바로 실천할 수 있게 빛깔, 음식, 음악, 친구를 붙인다(사장님 2026-10-12).
-export function TodayDecisionCard({ decision, scoreWhy, intro, goods, avoids }: Props) {
+export function TodayDecisionCard({ decision, scoreWhy, date, intro, goods, avoids }: Props) {
   // 결론 줄이 두 문장일 수 있다. 첫 문장만 크게, 나머지는 아래 설명 앞에 붙인다.
   const [head, ...rest] = decision.overall.headline.split(/(?<=[.!?])\s+/);
   const summary = [...rest, decision.overall.summary].join(' ');
@@ -29,35 +40,56 @@ export function TodayDecisionCard({ decision, scoreWhy, intro, goods, avoids }: 
   const donts: Item[] = [decision.dont, ...(decision.more?.donts ?? [])];
   return (
     <section className="tdc" aria-label="오늘 결론">
+      {/* 오늘 풀이와 점수 이유를 한 장에. 토스 앱처럼 위에서 아래로: 날짜 → 큰 결론 → 설명 →
+          점수가 어떻게 나왔는지(막대) → 사주를 어디서 봤는지(항목) → 마음 한 줄.
+          두 장으로 나눠 두니 같은 얘기를 두 번 읽는 느낌이었다(사장님 2026-10-12). */}
       <div className="sec-card tdc__overall">
-        <p className="cat4__head">오늘 풀이</p>
+        <div className="tdc__top">
+          <p className="cat4__head">오늘 풀이</p>
+          {date ? <span className="tdc__date">{date}</span> : null}
+        </div>
         <p className="tdc__headline">{head}</p>
         <Sentences className="tdc__summary" text={summary} />
+        {scoreWhy ? (
+          <div className="tdc__score">
+            <p className="tdc__score-k">{scoreWhy.head}</p>
+            <Sentences className="tdc__body" text={scoreWhy.text} />
+            {scoreWhy.parts?.length ? (
+              <ul className="tdc__parts">
+                {scoreWhy.parts.map((p) => (
+                  <li key={p.k} className={`tdc__part tdc__part--${p.band}`}>
+                    <span className="tdc__part-k">
+                      {p.k}
+                      {p.sub && p.sub !== p.k ? <i className="tdc__part-sub">{p.sub}</i> : null}
+                    </span>
+                    <span className="tdc__part-bar" aria-hidden>
+                      <i style={{ width: `${Math.max(0, Math.min(100, p.score))}%` }} />
+                    </span>
+                    <span className="tdc__part-v num">{p.score}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+            {scoreWhy.rows?.length ? (
+              <ul className="tdc__rows">
+                {scoreWhy.rows.map((r) => (
+                  <li key={r.k} className="tdc__row">
+                    <p className="tdc__row-k">{r.k}</p>
+                    <Sentences className="tdc__body" text={r.v} />
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+        ) : decision.basis ? (
+          <p className="tdc__basis">{decision.basis}</p>
+        ) : null}
         {decision.feeling ? (
           <div className="tdc__mind">
             <p className="tdc__feeling">{decision.feeling}</p>
           </div>
-        ) : decision.basis && !scoreWhy ? (
-          <p className="tdc__basis">{decision.basis}</p>
         ) : null}
       </div>
-      {/* 점수 이유는 따로 한 장. 오늘 풀이 안에 작은 글씨로 끼우니 글자 크기가 섞여 보였다 */}
-      {scoreWhy ? (
-        <div className="sec-card">
-          <p className="cat4__head">{scoreWhy.head}</p>
-          <Sentences className="tdc__body" text={scoreWhy.text} />
-          {scoreWhy.rows?.length ? (
-            <ul className="read6 read6--tight tdc__why-rows">
-              {scoreWhy.rows.map((r) => (
-                <li key={r.k} className="read6__row">
-                  <span className="read6__k">{r.k}</span>
-                  <Sentences className="read6__v" text={r.v} />
-                </li>
-              ))}
-            </ul>
-          ) : null}
-        </div>
-      ) : null}
       <div className="sec-card tdc__act tdc__act--do">
         <p className="cat4__head">오늘 해보면 좋은 것</p>
         {intro ? <Sentences className="tdc__body tdc__intro" text={intro.do} /> : null}

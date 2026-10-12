@@ -5,7 +5,7 @@ import { AppLayout } from '../components/AppLayout.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
 import { GRADE_KO } from '../lib/luck.ts';
 import { todayKey } from '../lib/dateSeed.ts';
-import { TodayDecisionCard } from '../components/TodayDecisionCard.tsx';
+import { TodayDecisionCard, type ScoreWhy } from '../components/TodayDecisionCard.tsx';
 import { todayVibe } from '../lib/dayVibe.ts';
 import { Sentences } from '../components/Sentences.tsx';
 import { luckyWhen } from '../lib/luckyWhen.ts';
@@ -65,12 +65,12 @@ type Props = {
 // '81점은 타고난 성향 81점에 ... 더해 낸 점수예요' 는 계산식을 읊을 뿐이라 무슨 말인지
 // 모르겠다는 지적을 받았다(2026-10-12). 점수를 사주로 풀어 말한다: 무엇이 받쳐주고 있고,
 // 오늘은 내 사주로 어떤 날이라 점수가 이렇게 나왔는지.
-function scoreWhyOf(read: DeepRead, concernLabel: string): { head: string; text: string; rows?: { k: string; v: string }[] } {
+function scoreWhyOf(read: DeepRead, concernLabel: string): ScoreWhy {
   const part = (k: string) => read.score.parts.find((p) => p.k === k);
   const natal = part('타고난 성향');
   const today = part('오늘');
   const total = read.score.total;
-  const head = `${total}점이 나온 이유`;
+  const head = `${total}점은 이렇게 나왔어요`;
   if (!natal || !today) return { head, text: read.scoreLine.split(/(?<=[.])\s+/)[0] };
   const NAME: Record<string, string> = { '타고난 성향': '타고난 사주', '지금 지나는 십 년': '지금 지나는 십 년', '올해': '올해', '이번 달': '이번 달' };
   const best = read.score.parts
@@ -89,7 +89,8 @@ function scoreWhyOf(read: DeepRead, concernLabel: string): { head: string; text:
   // 보여주고, 사주를 어디서 어떻게 봤는지를 항목별로 나눠 말한다: 타고난 사주, 다섯 요소,
   // 이름, 이 고민에서 본 부분, 오늘.
   const label = (k: string) => (k === '타고난 성향' ? '타고난 사주' : k);
-  const parts = read.score.parts.map((p) => `${label(p.k)} ${p.score}점`).join(', ');
+  // 다섯 자리는 줄글이 아니라 막대로 보여준다(날짜가 붙은 표가 읽기 쉬웠다는 사장님 말).
+  const parts = read.score.parts.map((p) => ({ k: label(p.k), sub: p.label, score: p.score, band: p.band }));
   const dp = read.chart.dayPillar;
   const rows: { k: string; v: string }[] = [
     { k: '타고난 사주', v: [dp ? `${dp.nick}이에요.` : '', read.chart.strength].filter(Boolean).join(' ') },
@@ -101,14 +102,14 @@ function scoreWhyOf(read: DeepRead, concernLabel: string): { head: string; text:
         }]
       : []),
     { k: `${concernLabel}에서 본 것`, v: read.chart.focus },
-    ...(todayLine ? [{ k: '오늘', v: todayLine }] : []),
   ].filter((r) => r.v);
   return {
-    head,
+    head: `${total}점은 이렇게 나왔어요`,
     text: [
-      `${concernLabel} 운은 ${total}점이에요. ${parts}을 정해진 비율로 더한 점수예요.`,
-      `그중 ${withJosa(NAME[best.k], '이가')} ${best.score}점으로 가장 든든하게 받쳐주고 있어요.`,
-    ].join(' '),
+      todayLine,
+      `다섯 자리를 정해진 비율로 더했고, 그중 ${withJosa(NAME[best.k], '이가')} ${best.score}점으로 가장 든든하게 받쳐주고 있어요.`,
+    ].filter(Boolean).join(' '),
+    parts,
     rows,
   };
 }
@@ -257,6 +258,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, deep = nul
       <TodayDecisionCard
         decision={deep ? deep.read.todayDecision : todayVibe(todayKey()).decision}
         scoreWhy={deep ? scoreWhyOf(deep.read, findConcern(deep.concernKey).label) : undefined}
+        date={dateLabel(todayKey())}
         intro={deep ? todayIntroOf(deep.concernKey, deep.read.todayGroup) : undefined}
         goods={goods}
         avoids={avoids}
@@ -421,4 +423,11 @@ export function ResultScreen({ result, note, busy, onShare, userName, deep = nul
 
     </AppLayout>
   );
+}
+
+// '2026-10-12' → '10월 12일 월요일'
+function dateLabel(key: string): string {
+  const [y, m, d] = key.split('-').map(Number);
+  const day = ['일', '월', '화', '수', '목', '금', '토'][new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
+  return `${m}월 ${d}일 ${day}요일`;
 }
