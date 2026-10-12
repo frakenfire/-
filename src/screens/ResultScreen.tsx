@@ -100,7 +100,7 @@ function scoreWhyOf(read: DeepRead, concernLabel: string): { head: string; text:
           v: `${read.name.letters.map((l) => `${withJosa(l.ch, '은는')} ${l.el}`).join(', ')} 소리예요. ${read.name.verdict}`,
         }]
       : []),
-    { k: '이 고민에서 본 것', v: read.chart.focus },
+    { k: `${concernLabel}에서 본 것`, v: read.chart.focus },
     ...(todayLine ? [{ k: '오늘', v: todayLine }] : []),
   ].filter((r) => r.v);
   return {
