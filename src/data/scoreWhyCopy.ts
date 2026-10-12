@@ -99,7 +99,7 @@ export const ELEMENT_TODAY: Record<ConcernKey, Record<'help' | 'care', { link: s
 
 /** 이름 · 오늘 내 이름이 전하는 말의 맺는 줄. 오늘 날이 건드리는 자리에 따라 */
 export const NAME_TODAY: Record<GodGroup, string> = {
-  self: '오늘의 선택은 남의 말이 아니라 내 마음에서 시작하는 게 좋아요.',
+  self: '오늘 누가 내 이름을 부르며 의견을 물으면, 망설이지 말고 내 생각을 말해도 괜찮아요.',
   output: '오늘은 내 이름을 걸고 꺼낸 말과 결과물이 사람들 기억에 남기 쉬워요.',
   wealth: '오늘은 내 이름으로 하는 약속과 계산을 꼼꼼히 챙기는 게 좋아요.',
   authority: '오늘은 내 이름이 걸린 일을 끝까지 맡아 내는 모습이 믿음을 줘요.',
