@@ -14,10 +14,11 @@
 //
 //   node scripts/check-plain.mjs
 
+import { fileURLToPath } from 'node:url';
 import { readdirSync, readFileSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
-const root = new URL('../src/', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../src/', import.meta.url)).replace(/\\/g, '/');
 
 const RULES = [
   { id: '장면이 안 그려지는 낱말',

@@ -41,12 +41,16 @@ test('비유로 설명하지 않는다', () => {
   assert.deepEqual(bad.map((x) => `${x.at} ${x.t}`), []);
 });
 
-test('숙제 줄은 명사로 끝내지 않고 무엇을 하라고 말한다', () => {
+/** 시키지 않고 권하는 끝맺음. 토스 라이팅 원칙의 '강요 대신 제안' */
+const SUGGEST = /(보세요|두세요|좋아요|나아요|봐요|늦지 않아요)\.$/;
+
+test('숙제 줄은 명사로 끝내지 않고 무엇을 하면 좋은지 권한다', () => {
   // '나눌 몫을 먼저 정하는 힘이에요' 는 힘을 기르라는 건지 뭘 하라는 건지
-  // 안 나온다. '누가 얼마나 할지 시작 전에 말로 정해두세요' 가 맞다.
+  // 안 나온다. 그렇다고 '정하세요' 로 시키면 강요가 된다.
+  // '누가 얼마나 할지는 시작 전에 말로 정해두는 게 나아요' 가 맞다.
   for (const [god, a] of Object.entries(DECADE_AREAS)) {
     assert.ok(!NOMINAL.test(a.task), `${god}: 명사로 끝나요 - ${a.task}`);
-    assert.ok(/세요\.$/.test(a.task), `${god}: 뭘 하라는지 없어요 - ${a.task}`);
+    assert.ok(SUGGEST.test(a.task), `${god}: 무엇을 하면 좋은지 권하는 말로 끝나지 않아요 - ${a.task}`);
   }
 });
 
@@ -59,7 +63,7 @@ test('머리줄은 십 년에 무슨 일이 생기는지를 말한다', () => {
   for (const [god, a] of Object.entries(DECADE_AREAS)) {
     assert.ok(a.head.endsWith('십 년이에요.'), `${god}: ${a.head}`);
     // 무엇이 어떻게 되는지가 들어 있어야 한다. 이름만 붙인 머리줄을 막는다.
-    assert.ok(/(늘어나|넓어지|올라가|답답해지|찾아오|게 되|오는|열어주|값을 하)/.test(a.head),
+    assert.ok(/(늘어나|넓어지|올라가|답답해지|찾아오|게 되|오는|열어주|값을 하|인정받)/.test(a.head),
       `${god}: 무슨 일이 생기는지 없어요 - ${a.head}`);
   }
 });

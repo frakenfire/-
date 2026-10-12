@@ -1,7 +1,7 @@
 // dist/ 를 한 파일 HTML 로 말아 넣는다 — 아티팩트는 외부 파일을 못 불러오므로
 // CSS·JS 는 인라인, 폰트(woff2)는 data URI 로 바꿔 넣는다.
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
 const DIST = 'dist';
 // 출력 경로는 반드시 받는다. 기본값(artifact.html) 을 두었더니 실제로

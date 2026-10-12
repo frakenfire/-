@@ -52,7 +52,12 @@ test('생년월일이 다른 다섯 사람이 같은 풀이를 받지 않는다'
     const sets = BIRTHS.map((b) => {
       const p = computeFourPillars(b);
       const t = computeTiming(b, p, 'female', c.key as ConcernKey, at);
-      return sentencesOf(buildDeepRead(p, t, c.key as ConcernKey, null, '2026-09-26'));
+      const r = buildDeepRead(p, t, c.key as ConcernKey, null, '2026-09-26');
+      // 열두 달 표의 잘 되는 것/조심할 것은 그 달 기운에 붙는 문장이라 문장 목록은
+      // 누구나 같다. 다른 것은 어느 달에 어느 문장이 붙느냐다. 그건 아래에서 따로 잰다.
+      // 오늘 할 것과 미룰 것(decision 의 목록과 까닭)은 고른 상황에서 나온다. 같은 상황이면 누구나 같은
+      // 할 일을 받는 게 맞다. 사람마다 달라야 하는 건 사주에서 나오는 문장이므로 그것만 센다.
+      return sentencesOf({ ...r, todayDecision: { ...r.todayDecision, more: undefined }, decision: { ...r.decision, dos: [], doWhys: [], donts: [], dontWhys: [] }, monthSlots: r.monthSlots.map((m) => ({ ...m, good: '', care: '' })) });
     });
     let common = new Set(sets[0]);
     for (const s of sets.slice(1)) common = new Set([...common].filter((x) => s.has(x)));
@@ -61,4 +66,18 @@ test('생년월일이 다른 다섯 사람이 같은 풀이를 받지 않는다'
     if (share > 겹침_한계) worst.push(`${c.label} ${share}% (${common.size}/${Math.round(avg)})`);
   }
   assert.deepEqual(worst, [], `다섯 사람이 ${겹침_한계}% 넘게 같은 문장을 받아요: ${worst.join(' · ')}`);
+});
+
+test('같은 달이라도 사람마다 잘 되는 것과 조심할 것이 다르다', () => {
+  const at = new Date(Date.UTC(2026, 8, 26, 3));
+  const reads = BIRTHS.map((b) => {
+    const p = computeFourPillars(b);
+    const t = computeTiming(b, p, 'female', 'money', at);
+    return buildDeepRead(p, t, 'money', null, '2026-09-26');
+  });
+  let same = 0;
+  reads[0].monthSlots.forEach((m, i) => {
+    if (reads.every((r) => r.monthSlots[i]?.good === m.good && r.monthSlots[i]?.care === m.care)) same += 1;
+  });
+  assert.ok(same <= 2, `열두 달 중 ${same}달은 다섯 사람이 글자 하나까지 같아요`);
 });

@@ -1,29 +1,36 @@
 import { useEffect, useState } from 'react';
 import { Mascot } from '../components/Mascot.tsx';
-import { Icon } from '../components/Icon.tsx';
 import { MoreConcerns } from '../components/MoreConcerns.tsx';
 import { AppLayout } from '../components/AppLayout.tsx';
 import { Disclaimer } from '../components/Disclaimer.tsx';
 import { GRADE_KO } from '../lib/luck.ts';
-import { softBreak } from '../lib/softBreak.ts';
+import { todayKey } from '../lib/dateSeed.ts';
+import { TodayDecisionCard } from '../components/TodayDecisionCard.tsx';
+import { scoreWhyOf } from '../lib/scoreWhy.ts';
+import { todayVibe } from '../lib/dayVibe.ts';
 import { Sentences } from '../components/Sentences.tsx';
 import { luckyWhen } from '../lib/luckyWhen.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
-import { LUCKY_HEADS } from '../data/copy.ts';
 import { CATEGORY_INTERP, band } from '../data/detailContent.ts';
 import { ZodiacBadge } from '../components/ZodiacBadge.tsx';
 import { DeepSections } from '../components/DeepSections.tsx';
-import { WeekCard } from '../components/WeekCard.tsx';
-import { Chapter } from '../components/Chapter.tsx';
 import type { Zodiac } from '../data/zodiac.ts';
 import { partPassed } from '../lib/dayPart.ts';
 import { useDayPart } from '../lib/useDayPart.ts';
+import { noteTodayOf } from '../data/noteToday/index.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
-import { ohaengWhy } from '../data/ohaeng.ts';
+import { withJosa } from '../lib/josa.ts';
+import { OHAENG } from '../data/ohaeng.ts';
+import { todayIntroOf } from '../data/todayIntro.ts';
+import { mbtiTodayOf } from '../data/mbtiToday.ts';
+import type { Element } from '../lib/saju.ts';
+
+// 힘이 되는 요소를 누르는 요소(쇠는 나무를, 물은 불을, 나무는 흙을, 불은 쇠를, 흙은 물을 누른다)
+const PRESS_OF: Record<Element, Element> = { wood: 'metal', fire: 'water', earth: 'wood', metal: 'fire', water: 'earth' };
 import type { Band } from '../lib/timing.ts';
 
 // 고민 점수의 등급말 - 숫자 옆에 한 단어가 있어야 '이게 높은 건가' 가 안 생긴다
-const BAND_LABEL: Record<Band, string> = { good: '열려 있어요', ok: '무난해요', hard: '지킬 때예요' };
+const BAND_LABEL: Record<Band, string> = { good: '해볼 만해요', ok: '무난해요', hard: '조심할 때예요' };
 import type { DeepRead } from '../lib/deepRead.ts';
 import type { TimingRead } from '../lib/timing.ts';
 
@@ -37,7 +44,6 @@ type Props = {
   /** 고민을 고르고 들어왔으면 그 답을 결과 안에 같이 낸다 */
   deep?: { concernKey: ConcernKey; read: DeepRead; timing: TimingRead } | null;
   zodiac: Zodiac | null;
-  onShareWeek: (text: string) => void;
   /** 명식에서 계산된 네 가지 운 점수. 생년월일이 없으면 null */
   chartScores?: Record<'love' | 'money' | 'work' | 'health', number> | null;
   /** 오늘 광고로 열어둔 고민들 */
@@ -51,9 +57,7 @@ type Props = {
   onBack: () => void;
 };
 
-// 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
-// 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onShareWeek, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, userName, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onBack }: Props) {
   const { luck } = result;
   const isMonth = result.reading.scale === 'month';
   // 지금이 하루의 어느 토막인지. 지나간 토막은 오늘의 풀이에서 접는다.
@@ -65,12 +69,42 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
   // 고민을 골라 들어왔으면 맨 위 점수는 그 고민의 점수다. 명식에서 계산된 값이라
   // 오늘 점수(날짜 seed 기반)보다 이 화면이 하는 말과 더 붙는다.
   const concernLabel = deep ? findConcern(deep.concernKey).label : null;
-  // 여섯 칸을 푸는 문단. 고민을 골라 들어왔으면 그 고민의 말로 쓴다 - 돈을 물은
-  // 사람에게 '중요한 건 늦은 오후에' 라고만 하면, 위에서는 촘촘히 돈 얘기를
-  // 하다가 아래로 갈수록 아무 고민에나 붙는 말로 바뀐다.
-  const luckyWhy = luck.boost
-    ? ohaengWhy(luck.boost, luck.color.name, deep ? findConcern(deep.concernKey) : undefined)
-    : null;
+  // 할 것 아래 '오늘 곁에 두면 좋은 것', 미룰 것 아래 '오늘 멀리하면 좋은 것'. 바로 실천할 수 있게
+  // 빛깔, 음식, 음악, 친구를 붙인다(사장님 2026-10-12). 오늘 나한테 힘이 되는 요소(boost)에 드는 것과,
+  // 그 요소를 누르는 요소에 드는 것이다. 생년월일이 없어 근거가 없으면 안 그린다.
+  const boost = luck.boost ? OHAENG[luck.boost] : null;
+  const press = luck.boost ? OHAENG[PRESS_OF[luck.boost]] : null;
+  const match = result.detail.match;
+  const goods = boost
+    ? {
+        tiles: [
+          { k: '빛깔', v: luck.color.name, swatch: luck.color.hex },
+          { k: '음식', v: luck.food.name },
+          { k: '음악', v: boost.music[luck.number % boost.music.length] },
+          { k: '친구', v: `${match.good.label} 친구` },
+          { k: '시간', v: luckyWhen(luck.time, clock.at).label },
+          { k: '방향', v: luck.direction },
+        ],
+        why: `오늘 나한테 힘이 되는 요소는 ${boost.ko}예요. 그래서 ${boost.ko}에 해당하는 빛깔과 음식, 음악을 골랐어요. 친구는 오늘 나와 잘 맞는 띠로 골랐어요.`,
+      }
+    : undefined;
+  const avoids = boost && press
+    ? {
+        tiles: [
+          { k: '빛깔', v: press.colors[0] },
+          { k: '음식', v: `${press.taste}이 강한 음식` },
+          { k: '음악', v: press.music[0] },
+          { k: '조심할 띠', v: match.caution.label },
+        ],
+        why: `${withJosa(press.ko, '은는')} 오늘 힘이 되는 ${withJosa(boost.ko, '을를')} 누르는 요소예요. 그래서 ${press.ko}에 해당하는 빛깔과 음식, 음악은 오늘 조금 멀리해 두면 좋아요. ${match.caution.label} 친구와는 말이 엇갈리기 쉬우니 중요한 얘기는 다음으로 미뤄도 괜찮아요.`,
+      }
+    : undefined;
+  // 띠는 내 띠와 사주 지지 관계(삼합, 육합 / 충, 해, 형)로 고른다(detail.ts). 그 까닭을 한 줄로.
+  const zodiacWhy = zodiac
+    ? `내 띠인 ${withJosa(zodiac.label, '과와')} ${withJosa(match.good.label, '은는')} 서로 힘을 보태는 띠예요. ${withJosa(match.caution.label, '은는')} 부딪히기 쉬운 띠라, 오늘 만날 일이 있다면 말을 한 번 더 고르면 좋아요.`
+    : '오늘 날짜로 고른 띠예요. 생년월일을 넣으면 내 띠를 기준으로 골라 드려요.';
+  // MBTI 는 오늘 힘이 되는 요소에서 고른다. 생년월일이 없어 요소를 모르면 안 그린다.
+  const mbti = luck.boost && boost ? mbtiTodayOf(luck.boost, boost.ko, Math.floor(Date.parse(todayKey()) / 86400000)) : null;
   const headScore = deep ? deep.read.score.total : luck.total;
   const headGrade = deep ? BAND_LABEL[deep.read.score.band] : (GRADE_KO[luck.grade] ?? luck.grade);
 
@@ -90,10 +124,10 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
     return () => cancelAnimationFrame(raf);
   }, [headScore]);
 
+  // 뽑은 쪽지가 오늘 하는 말. 고민을 골라 들어왔으면 그 고민의 말로.
+  const noteMsg = noteTodayOf(note.id, deep ? deep.concernKey : null, deep ? deep.read.optionKey : null);
+
   const RING = 2 * Math.PI * 54;
-  // 이미 지나간 때를 오늘의 행운이라고 띄우지 않는다.
-  // 시계를 구독해서, 켜둔 채 그 시각을 넘겨도 따라간다.
-  const when = luckyWhen(luck.time, clock.at);
 
   return (
     <AppLayout
@@ -132,35 +166,121 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
             <span className="score-hero__grade">{headGrade}</span>
           </div>
         </div>
-        {/* 캡처해서 친구에게 보내도 뜻이 통해야 하는 자리. 결론과 지금 할 일까지
-            여기서 끝낸다. 아래 상세를 안 읽어도 무엇을 할지는 알 수 있어야 한다. */}
+        {/* 뽑은 쪽지 이름은 한 줄로 끝낸다. 결론은 바로 아래 카드가 맡는다.
+            예전엔 여기 결론 한 줄과 까닭 한 줄을 크게 두고, 할 일과 피할 일은
+            한참 아래에 까닭 없이 따로 뒀다. '그래서 오늘 뭘 하라는 거지' 가
+            남는다는 말을 들었다. 점수와 쪽지는 여기, 결론은 그 바로 밑이다. */}
         <div className="score-hero__note">
-          {/* 뽑은 쪽지 이름은 한 줄로 끝낸다. 18px 굵은 글씨로 따로 세우면
-              바로 밑 결론(20px)과 굵기가 같아져 무엇이 제목인지 안 읽힌다. */}
           <span className="drawn__k">
-            내가 뽑은 쪽지 · <span className="drawn__kw">{note.name}</span>
+            오늘 나의 쪽지 · <span className="drawn__kw">{note.name}</span>
           </span>
-          {deep ? (
-            <>
-              <strong className="drawn__verdict">{softBreak(deep.read.headline, 16)}</strong>
-              <Sentences className="drawn__lead" text={deep.read.sub} />
-              {/* 배지와 문장을 한 줄에 흘리면 문장이 배지 뒤에서 접혀
-                  줄바꿈이 사고처럼 보인다. 배지는 제 줄을 갖는다. */}
-              {/* 예전엔 여기에 판정 배지와 할 일 첫 줄도 같이 뒀다. 그런데 아래
-                  '지금 할 것과 하지 말 것' 카드가 같은 배지와 같은 첫 줄을
-                  다시 그린다. 한 화면을 통째로 뽑아 세어보니 '하던 대로
-                  이어가기' 가 열여섯 화면에서 두 번씩 나오고 있었다.
-                  같은 말을 두 번 읽히면 두 번째는 안 읽힌다. 여기는 이유만
-                  두고, 배지와 할 일은 아래 카드 한 곳에서만 그린다. */}
-              <span className="drawn__now">
-                <span className="drawn__why">{deep.read.todayWhy}</span>
-              </span>
-            </>
-          ) : (
-            <span className="drawn__lead">{result.summaryLines[0]}</span>
-          )}
+          {noteMsg ? <Sentences className="score-hero__msg" text={noteMsg} /> : null}
         </div>
       </div>
+
+      {/* 오늘 전체 종합 → 오늘 할 것과 까닭 → 오늘 하지 말아야 할 것과 까닭.
+          고민을 골라 뽑았든 그냥 뽑았든 같은 카드로 그린다. */}
+      <TodayDecisionCard
+        decision={deep ? deep.read.todayDecision : todayVibe(todayKey()).decision}
+        scoreWhy={deep ? scoreWhyOf(deep.read, deep.concernKey, findConcern(deep.concernKey).label) : undefined}
+        date={dateLabel(todayKey())}
+        intro={deep ? todayIntroOf(deep.concernKey, deep.read.todayGroup) : undefined}
+        goods={goods}
+        avoids={avoids}
+      />
+
+      {/* 재미로 하나 더 - 미뤄두면 좋은 것 바로 아래에 펼쳐 둔다. 접어 두니 아무도 안 열었고,
+          매일 보는 재미는 이쪽에 있다(사장님 2026-10-12). 이번 주 운세는 뺐고, 띠와 MBTI 에는
+          왜 그렇게 골랐는지 한두 줄을 붙인다. */}
+      {deep ? null : (
+      <div className="cat4 sec-card">
+        <p className="cat4__head">{isMonth ? '이번 달 네 가지 운' : '오늘 네 가지 운'}</p>
+        <ul className="cat4__list">
+          {luck.categories.map((c0) => {
+            const c = chartScores ? { ...c0, score: chartScores[c0.key as keyof typeof chartScores] ?? c0.score } : c0;
+            return (
+            <li key={c.key} className="cat4__row cat4__row--rich">
+              <span className="cat4__k">{c.label}</span>
+              <span className="cat4__bar"><i style={{ width: `${c.score}%` }} /></span>
+              <span className="cat4__v num">{c.score}</span>
+              <span className="cat4__why"><Sentences text={CATEGORY_INTERP[c.key]?.[band(c.score)] ?? ''} /></span>
+            </li>
+            );
+          })}
+        </ul>
+      </div>
+      )}
+
+      <div className="sec-card fun">
+        <p className="cat4__head">재미로 하나 더</p>
+        <p className="tdc__score-k fun__k">오늘 잘 맞는 띠</p>
+        <div className="match">
+          <div className="match__cell">
+            <span className="match__badge">잘 맞아요</span>
+            <ZodiacBadge zodiac={match.good} size={44} tone="brand" />
+            <span className="match__label">{match.good.label}</span>
+            <span className="match__hint">{match.goodReason}</span>
+          </div>
+          <div className="match__cell">
+            <span className="match__badge match__badge--bad">살짝 조심</span>
+            <ZodiacBadge zodiac={match.caution} size={44} />
+            <span className="match__label">{match.caution.label}</span>
+            <span className="match__hint">{match.cautionReason}</span>
+          </div>
+        </div>
+        <Sentences className="match__why" text={zodiacWhy} />
+      {mbti ? (
+        <>
+          <p className="tdc__score-k fun__k fun__k--next">오늘 잘 맞는 MBTI</p>
+          <div className="match">
+            <div className="match__cell">
+              <span className="match__badge">잘 맞아요</span>
+              <span className="match__type">{mbti.good.type}</span>
+              <span className="match__label">{mbti.good.nick}</span>
+              <span className="match__hint">{mbti.good.hint}</span>
+            </div>
+            <div className="match__cell">
+              <span className="match__badge match__badge--bad">살짝 조심</span>
+              <span className="match__type match__type--care">{mbti.caution.type}</span>
+              <span className="match__label">{mbti.caution.nick}</span>
+              <span className="match__hint">{mbti.caution.hint}</span>
+            </div>
+          </div>
+          <Sentences className="match__why" text={mbti.why} />
+        </>
+      ) : null}
+      </div>
+
+      {/* 내일 또 뽑을 이유. 오늘 쪽지를 다 본 자리에서 내일 무엇이 달라지는지 한 줄,
+          그리고 내일 다시 오게 하는 버튼 하나. '내일 대박' 같은 미끼는 안 쓴다.
+          알림은 먼저 띄우지 않는다. 결과를 다 본 사람이 누를 때만 동의 창이 뜬다. */}
+      <div className="sec-card tmr">
+        <p className="cat4__head">내일은 어떤 쪽지가 나올까요</p>
+        <Sentences
+          className="tmr__v"
+          text={deep ? deep.read.todayMeet.nextDay : '쪽지는 날마다 새로 뽑아요. 내일은 오늘과 다른 쪽지가 기다리고 있어요.'}
+        />
+        {onAskNoti ? (
+          <button type="button" className="btn btn--primary tmr__btn" onClick={onAskNoti}>
+            매일 오전 10시, 새 쪽지 알림 받기
+          </button>
+        ) : (
+          <button type="button" className="btn btn--weak tmr__btn" disabled={busy} onClick={onShare}>
+            친구한테 알려주고 내일 같이 뽑기
+          </button>
+        )}
+      </div>
+
+      {/* 광고는 여기 한 자리뿐이다. 결과를 끝까지 본 사람에게만, 더 볼 것을
+          열겠냐고 묻는다. 본문 중간이나 결과 앞에는 두지 않는다. */}
+      {deep && onUnlockConcern && onOpenConcern ? (
+        <MoreConcerns
+          current={deep.concernKey}
+          unlocked={unlockedConcerns}
+          onUnlock={onUnlockConcern}
+          onOpen={onOpenConcern}
+        />
+      ) : null}
 
       {/* 고민 답 — 뽑은 쪽지와 오늘 할 일 다음에 온다 */}
       {deep ? (
@@ -220,7 +340,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           {!isMonth && allPartsPassed ? (
             <Sentences
               className="mflow__foot"
-              text="오늘 시간대 풀이는 다 지나갔어요. 내일 아침에 새 쪽지를 뽑아보세요."
+              text="오늘 시간대별 풀이는 모두 지나갔어요. 내일 아침에 새 쪽지를 뽑아보세요."
             />
           ) : null}
         </div>
@@ -228,152 +348,16 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
         </>
       )}
 
-      {/* 6. 공유 */}
-      {/* 내 사주 · 오늘 나에게 · 이번 주 — 전부 생년월일을 넣어야 의미가 있는 것들.
-          그래서 홈이 아니라 결과를 받은 이 자리에 둔다. */}
-      {/* 재미로 하나 더 — 여기부터는 사주 계산이 아니다. 본 풀이 사이에 끼우면
-          색깔과 음식이 분석 행세를 하게 되므로 아래로 내려 따로 묶는다. */}
-      {/* 여기부터는 고민과 상관없는 것들이다. 행운 여섯 칸도, 잘 맞는 띠도,
-          이번 주 흐름도 '돈을 물어본 사람' 한테 하는 말이 아니라 누구에게나
-          같은 말이다. 돈 화면 348줄 중 돈을 말하는 줄이 52줄뿐이었고, 그중
-          69줄짜리 한 덩이가 통째로 여기였다.
-          버리지는 않는다 - 매일 보는 재미는 이쪽에 있다. 대신 접는다.
-          답을 받으러 온 사람에게는 답까지만 보이고, 더 볼 사람만 연다. */}
-      <Chapter title="재미로 하나 더" hint="행운 여섯 가지, 오늘 잘 맞는 띠, 이번 주 운세">
-      {/* 2. 네 가지 운 — 사랑·돈·일·건강 점수.
-          고민을 골라 들어왔으면 안 그린다. 돈을 물어본 사람에게 사랑운·일운·
-          건강운을 같이 내밀면 화면이 물어본 것 말고 딴 얘기로 채워진다.
-          게다가 돈운 점수는 화면 맨 위가 이미 '돈 76점' 이라고 말한 그 값이다.
-          같은 숫자를 두 번 말하면서 안 물어본 것 셋을 끼워 넣는 카드였다. */}
-      {deep ? null : (
-      <div className="cat4 sec-card">
-        <p className="cat4__head">{isMonth ? '이번 달 네 가지 운' : '오늘 네 가지 운'}</p>
-        <ul className="cat4__list">
-          {luck.categories.map((c0) => {
-            const c = chartScores ? { ...c0, score: chartScores[c0.key as keyof typeof chartScores] ?? c0.score } : c0;
-            return (
-            <li key={c.key} className="cat4__row cat4__row--rich">
-              <span className="cat4__k">{c.label}</span>
-              <span className="cat4__bar"><i style={{ width: `${c.score}%` }} /></span>
-              <span className="cat4__v num">{c.score}</span>
-              <span className="cat4__why"><Sentences text={CATEGORY_INTERP[c.key]?.[band(c.score)] ?? ''} /></span>
-            </li>
-            );
-          })}
-        </ul>
-      </div>
-      )}
-
-      {/* 3. 오늘의 행운 여섯 칸 — 색깔·숫자·방향·시간·음식·물건.
-          여섯 칸에 파랑·노랑·주황 세 가지 바탕색을 아무 규칙 없이 흩뿌려
-          놨었다. 색이 뜻하는 게 없으면 색은 소음이다. 바탕은 하나로 두고
-          유일하게 뜻이 있는 색(행운 색)만 동그라미로 보여준다.
-          숫자 칸은 큰 숫자를 아이콘 자리에 놓고 값으로 또 한 번 써서
-          '8 / 숫자 / 8' 로 읽혔다. 다른 다섯 칸과 같은 아이콘 자리로 맞춘다. */}
-      <div className="lucky4 sec-card">
-        <p className="lucky4__head">{isMonth ? '이번 달의 행운' : LUCKY_HEADS[spin % LUCKY_HEADS.length]}</p>
-        <div className="lucky4__grid lucky4__grid--3">
-          <div className="lucky4__tile">
-            <span className="lucky4__swatch" style={{ background: luck.color.hex }} aria-hidden />
-            <span className="lucky4__k">색깔</span>
-            <strong className="lucky4__v">{luck.color.name}</strong>
-          </div>
-          <div className="lucky4__tile">
-            <span className="lucky4__icon" aria-hidden><Icon name="hash" size={26} /></span>
-            <span className="lucky4__k">숫자</span>
-            <strong className="lucky4__v">{luck.number}</strong>
-          </div>
-          <div className="lucky4__tile">
-            <span className="lucky4__icon" aria-hidden><Icon name="compass" size={26} /></span>
-            <span className="lucky4__k">방향</span>
-            <strong className="lucky4__v">{luck.direction}</strong>
-          </div>
-          <div className="lucky4__tile">
-            <span className="lucky4__icon" aria-hidden><Icon name="clock" size={26} /></span>
-            <span className="lucky4__k">시간</span>
-            <strong className="lucky4__v">{when.label}</strong>
-          </div>
-          <div className="lucky4__tile">
-            <span className="lucky4__icon" aria-hidden><Icon name="bowl" size={26} /></span>
-            <span className="lucky4__k">음식</span>
-            <strong className="lucky4__v">{luck.food.name}</strong>
-          </div>
-          <div className="lucky4__tile">
-            <span className="lucky4__icon" aria-hidden><Icon name="gift" size={26} /></span>
-            <span className="lucky4__k">물건</span>
-            <strong className="lucky4__v">{luck.item}</strong>
-          </div>
-        </div>
-        {/* 여섯 칸 밑에 '왜 이렇게 나왔나' 한 문단.
-            전에는 여기가 '오늘의 기운 | 정리' 한 줄이었다. 이름표와 낱말 하나.
-            그 낱말은 날짜 해시로 열 개 중 하나를 뽑은 제비였고, 왜 그 낱말인지는
-            화면 어디에도 없었다. 칸 여섯 개 중 다섯도 같은 방식이었다.
-            지금은 방향도 숫자도 시각도 음식도 물건도 '오늘 나한테 힘이 되는
-            기운' 하나에서 계산으로 떨어진다. 그 계산을 그대로 풀어 적는다.
-            칸마다 한 줄씩 붙이면 여섯 줄이 각자 떠들어서 답이 안 읽힌다.
-            생년월일이 없어 근거가 없을 때는 이 문단을 아예 안 그린다 -
-            없는 근거를 있는 척 적는 게 제일 나쁘다. */}
-        {luckyWhy ? <Sentences className="lucky4__why" text={luckyWhy} /> : null}
-      </div>
-
-      {/* 5. 오늘 잘 맞는 띠 */}
-      <div className="cat4 sec-card">
-        <p className="cat4__head">오늘 잘 맞는 띠</p>
-        <div className="match">
-          <div className="match__cell">
-            <span className="match__badge">잘 맞아요</span>
-            <ZodiacBadge zodiac={result.detail.match.good} size={44} tone="brand" />
-            <span className="match__label">{result.detail.match.good.label}</span>
-            <span className="match__hint">{result.detail.match.goodReason}</span>
-          </div>
-          <div className="match__cell">
-            <span className="match__badge match__badge--bad">살짝 조심</span>
-            <ZodiacBadge zodiac={result.detail.match.caution} size={44} />
-            <span className="match__label">{result.detail.match.caution.label}</span>
-            <span className="match__hint">{result.detail.match.cautionReason}</span>
-          </div>
-        </div>
-      </div>
-
-      <WeekCard zodiac={zodiac} onShare={onShareWeek} />
-      </Chapter>
-
-      {/* 광고는 여기 한 자리뿐이다. 결과를 끝까지 본 사람에게만, 더 볼 것을
-          열겠냐고 묻는다. 본문 중간이나 결과 앞에는 두지 않는다. */}
-      {deep && onUnlockConcern && onOpenConcern ? (
-        <MoreConcerns
-          current={deep.concernKey}
-          unlocked={unlockedConcerns}
-          onUnlock={onUnlockConcern}
-          onOpen={onOpenConcern}
-        />
-      ) : null}
-
-      {/* 마지막에 읽는 한 줄. 다시 올 이유를 만드는 자리다.
-          '내일 대박' 같은 미끼는 안 쓴다 — 지어낸 기대를 걸면 다음 날 한 번
-          속고 다시는 안 온다. 내일 일진을 실제로 계산해서 무엇이 달라지는지만
-          적는다. 접힌 묶음 안에 넣지 않는다. 안 펴면 아무도 못 본다. */}
-      {deep ? (
-        <p className="nextday">
-          <span className="nextday__k" aria-hidden>
-            <Icon name="clock" size={16} />
-          </span>
-          <Sentences className="nextday__v" text={deep.read.todayMeet.nextDay} />
-        </p>
-      ) : null}
-
-      {/* 알림은 먼저 띄우지 않는다. 결과를 다 본 사람이 '내일도 본다' 고
-          누를 때만 동의 UI 가 뜬다. 시스템 팝업이 불쑥 뜨는 앱이 되면
-          그 자리에서 나간다. 콘솔 템플릿이 없으면 줄 자체가 안 나온다. */}
-      {deep && onAskNoti ? (
-        <button type="button" className="notiask" onClick={onAskNoti}>
-          <span className="notiask__k">내일 쪽지가 바뀌면 알려드릴까요</span>
-          <span className="notiask__c" aria-hidden>›</span>
-        </button>
-      ) : null}
 
       <Disclaimer />
 
     </AppLayout>
   );
+}
+
+// '2026-10-12' → '10월 12일 월요일'
+function dateLabel(key: string): string {
+  const [y, m, d] = key.split('-').map(Number);
+  const day = ['일', '월', '화', '수', '목', '금', '토'][new Date(Date.UTC(y, m - 1, d)).getUTCDay()];
+  return `${m}월 ${d}일 ${day}요일`;
 }

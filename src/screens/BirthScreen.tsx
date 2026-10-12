@@ -199,7 +199,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
             });
           }}
         >
-          {ctaLabel ?? (inFlow ? '쪽지 열어보기' : '내 사주 보기')}
+          {ctaLabel ?? (inFlow ? '쪽지 열기' : '내 사주 보기')}
         </button>
       )}
     >
@@ -231,7 +231,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
           </span>
         ) : (
           <span className="field__hint" id="birth-name-hint">
-            이름 소리를 다섯 갈래로 갈라 사주와 같이 봐요.
+            이름 소리를 다섯 가지로 나눠 사주와 함께 봐요.
           </span>
         )}
       </label>
@@ -266,11 +266,11 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
         {genderWarn ? (
           <span className="field__warn" id="birth-gender-hint" role="alert">
             <span className="field__warn__mark" aria-hidden>!</span>
-            성별을 골라주세요. 십 년 단위를 앞으로 세는지 뒤로 세는지가 여기서 갈려요.
+            성별을 골라주세요. 십 년 운을 어느 방향으로 계산할지가 여기서 정해져요.
           </span>
         ) : (
           <span className="field__hint" id="birth-gender-hint">
-            십 년 단위를 세는 방향이 성별로 갈려요.
+            십 년 운의 계산 방향은 성별에 따라 달라져요.
           </span>
         )}
       </div>
@@ -352,7 +352,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
           {/* '30분만 달라도…' 같은 설득 문장은 넣지 않는다. 몰라요를 켰을 때만,
               무엇이 빠지는지 한 문장. */}
           {unknownTime ? (
-            <p className="birth-hint">시각 없이 세 기둥으로 봐요.</p>
+            <p className="birth-hint">태어난 시각을 모르면 세 기둥만으로 봐요.</p>
           ) : (
             <div className="wheel-row">
               <WheelPicker

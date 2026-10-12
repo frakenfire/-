@@ -1,5 +1,4 @@
 import type { Element } from '../lib/saju.ts';
-import { withRo } from '../lib/josa.ts';
 
 // 다섯 갈래마다 정해진 것들 — 방위, 숫자, 시각, 맛, 빛깔.
 //
@@ -54,115 +53,86 @@ export type OhaengFacts = {
   items: string[];
   /** 빛깔을 한마디로 */
   colorWhy: string;
+  /** 이 요소에 드는 빛깔 이름. 피할 요소로 쓰일 때 '오늘 멀리하면 좋은 빛깔' 이 된다 */
+  colors: string[];
+  /** 이 요소에 어울리는 음악 */
+  music: string[];
 };
 
 export const OHAENG: Record<Element, OhaengFacts> = {
   wood: {
     ko: '나무',
     direction: '동쪽',
-    directionWhy: '나무는 해가 뜨는 쪽에서 제일 잘 자라요.',
+    directionWhy: '나무는 해가 뜨는 동쪽에서 잘 자라요.',
     numbers: [3, 8],
     time: '이른 아침',
     timeEnd: 7,
-    timeWhy: '나무는 새벽에서 아침으로 넘어갈 때 제일 힘을 써요.',
+    timeWhy: '사주에서는 나무를 이른 아침으로 봐요.',
     taste: '신맛',
     foods: ['푸른 잎채소', '오이', '레몬을 띄운 물', '사과'],
     items: ['작은 화분', '나무 연필', '천가방'],
     colorWhy: '어린잎 빛깔이에요.',
+    colors: ['초록', '연두'],
+    music: ['어쿠스틱 기타 곡', '산뜻한 팝'],
   },
   fire: {
     ko: '불',
     direction: '남쪽',
-    directionWhy: '불은 해가 가장 높이 뜨는 쪽에 모여요.',
+    directionWhy: '불은 해가 가장 높이 뜨는 남쪽을 뜻해요.',
     numbers: [2, 7],
     time: '점심 무렵',
     timeEnd: 13,
-    timeWhy: '불은 해가 제일 높을 때 같이 세져요.',
+    timeWhy: '사주에서는 불을 해가 높은 점심 무렵으로 봐요.',
     taste: '쓴맛',
     foods: ['쌉쌀한 나물', '따뜻한 커피', '구운 채소', '토마토'],
     items: ['빨간 펜', '따뜻한 컵', '작은 조명'],
     colorWhy: '불빛 빛깔이에요.',
+    colors: ['빨강', '주황'],
+    music: ['신나는 댄스곡', '밝고 빠른 노래'],
   },
   earth: {
     ko: '흙',
     direction: '가운데',
-    directionWhy: '흙은 어느 쪽에도 기울지 않고 가운데에 있어요.',
+    directionWhy: '흙은 어느 쪽으로도 치우치지 않은 가운데를 뜻해요.',
     numbers: [5, 10],
     time: '이른 오후',
     timeEnd: 15,
-    timeWhy: '흙은 해가 기울기 시작할 때 제일 따뜻해요.',
+    timeWhy: '사주에서는 흙을 이른 오후로 봐요.',
     taste: '단맛',
     foods: ['호박죽', '고구마', '누룽지', '단호박 샐러드'],
     items: ['도자기 컵', '작은 수첩', '손수건'],
     colorWhy: '잘 마른 흙 빛깔이에요.',
+    colors: ['노랑', '베이지'],
+    music: ['잔잔한 발라드', '포근한 포크송'],
   },
   metal: {
     ko: '쇠',
     direction: '서쪽',
-    directionWhy: '쇠는 해가 지면서 하루를 거두는 쪽이에요.',
+    directionWhy: '쇠는 해가 지는 서쪽을 뜻해요.',
     numbers: [4, 9],
     time: '늦은 오후',
     timeEnd: 19,
-    timeWhy: '쇠는 해가 넘어가기 직전에 제일 힘을 써요.',
+    timeWhy: '사주에서는 쇠를 해가 기우는 늦은 오후로 봐요.',
     taste: '매운맛',
     foods: ['무국', '마늘을 넣은 요리', '배', '생강차'],
     items: ['열쇠고리', '금속 텀블러', '작은 가위'],
     colorWhy: '깨끗하게 닦인 쇠 빛깔이에요.',
+    colors: ['흰색', '은색'],
+    music: ['피아노 연주곡', '깔끔한 클래식'],
   },
   water: {
     ko: '물',
     direction: '북쪽',
-    directionWhy: '물은 해가 닿지 않는 쪽에 고여요.',
+    directionWhy: '물은 햇빛이 적게 드는 북쪽을 뜻해요.',
     numbers: [1, 6],
     time: '밤',
     timeEnd: 24,
-    timeWhy: '물은 해가 다 진 뒤에 제일 힘을 써요.',
+    timeWhy: '사주에서는 물을 해가 진 밤으로 봐요.',
     taste: '짠맛',
     foods: ['미역국', '검은콩', '김', '따뜻한 두부'],
     items: ['보온병', '검은 노트', '작은 우산'],
     colorWhy: '깊은 물 빛깔이에요.',
+    colors: ['남색', '검정'],
+    music: ['느린 재즈', '차분한 연주 음악'],
   },
 };
-
-/**
- * 여섯 칸이 왜 그렇게 나왔는지 풀어 쓴다.
- *
- * 칸에는 답만 적고, 이유는 여기 한 덩이로 모은다. 칸마다 한 줄씩 붙이면
- * 여섯 줄이 각자 떠들어서 정작 답이 안 읽힌다.
- *
- * 줄바꿈을 직접 넣는다. 다섯 문장을 한 덩이로 붙여두면 벽이 되어서,
- * 눈이 어디서 끊어 읽을지를 못 찾는다.
- *
- * where/when 은 고른 고민의 말이다. 돈을 물은 사람에게 '중요한 건 늦은 오후에'
- * 라고만 하면, 위에서 촘촘히 돈 얘기를 하다가 아래로 갈수록 아무 고민에나
- * 똑같이 붙는 말로 바뀐다. 고민을 골랐으면 끝까지 그 고민의 말로 말한다.
- */
-export function ohaengWhy(
-  boost: Element,
-  colorName: string,
-  concern?: { luckyWhere: string; luckyWhen: string },
-): string {
-  const f = OHAENG[boost];
-  const hasBatchim = (w: string) => /[가-힣]$/.test(w)
-    && (w.charCodeAt(w.length - 1) - 0xac00) % 28 !== 0;
-  // 숫자는 소리로 읽어서 받침을 본다. 2(이)·4(사)·5(오)·9(구)는 받침이 없어
-  // '와', 1(일)·3(삼)·6(육)·7(칠)·8(팔)·10(십)은 '과'. '2과 7' 이라고 적으면
-  // 계산이 맞아도 읽는 사람은 대충 만든 글로 본다.
-  const numJosa = [2, 4, 5, 9].includes(f.numbers[0]) ? '와' : '과';
-  const dirLine = concern
-    ? `${f.directionWhy} 그래서 ${f.direction}이 ${concern.luckyWhere}이에요.`
-    : `${f.directionWhy} 그래서 ${f.direction}${hasBatchim(f.direction) ? '이' : '가'} 오늘 내 자리예요.`;
-  const timeLine = concern
-    ? `${f.timeWhy} 그래서 ${concern.luckyWhen} ${withRo(f.time)} 잡으면 수월해요.`
-    : `${f.timeWhy} 그래서 중요한 건 ${withRo(f.time)} 잡으면 수월해요.`;
-  // 기운 이름은 첫 문장에서 한 번만 부른다. 문장마다 '쇠 기운' 을 되풀이하면
-  // 다섯 줄이 같은 말을 네 번 하는 것처럼 읽힌다.
-  return [
-    `오늘 나한테 힘이 되는 건 ${f.ko} 쪽이에요.`,
-    dirLine,
-    timeLine,
-    `붙는 숫자는 ${f.numbers[0]}${numJosa} ${f.numbers[1]}, 빛깔은 ${colorName}이에요. 먹는 건 ${f.taste}이 드는 쪽이 좋아요.`,
-    // 여섯 칸이 어제와 같은 이유를 먼저 말해준다. 안 말하면 '왜 안 바뀌지' 가 남는다.
-    '이건 내 여덟 글자에서 제일 모자란 쪽이라 날마다 바뀌지 않아요. 오늘 바뀐 건 빛깔이에요.',
-  ].join('\n');
-}

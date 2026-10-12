@@ -4,7 +4,7 @@
 // 하지만 읽는 사람 대부분에게 '壬 큰 물' 은 앞 글자가 그냥 장벽이다.
 // 그래서 주석·내부 데이터에는 두되, JSX 로 그려지는 문자열에는 못 들어가게 막는다.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
 const HANJA = /[㐀-䶿一-鿿]/;
 // 계산·데이터용으로 한자를 들고 있어도 되는 파일 (화면에 직접 그리지 않는다)

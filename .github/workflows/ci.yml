@@ -19,6 +19,8 @@ jobs:
         run: npm run typecheck
       - name: Unit tests (보상 무결성 등)
         run: npm test
+      - name: Korean copy guards
+        run: npm run check:copy && npm run check:plain && npm run check:fortunespeak && npm run check:vague
       - name: Web build
         run: npm run build:web
       # 운영 번들에 mock 광고 코드가 섞이면 '광고 안 봐도 보상이 열리는' 앱이 나간다.

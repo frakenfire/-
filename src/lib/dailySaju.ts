@@ -77,9 +77,9 @@ function personalToneOf(score: number): SajuTone {
 
 const TONE_WORD: Record<SajuTone, string> = {
   great: '아주 좋아요',
-  good: '순해요',
-  steady: '잔잔해요',
-  caution: '조심스러워요',
+  good: '좋아요',
+  steady: '무난해요',
+  caution: '조심하면 좋아요',
 };
 
 /** 신강이면 덜어내는 쪽(식상·재성·관성)이, 신약이면 채우는 쪽(인성·비겁)이 약이다. */

@@ -8,7 +8,7 @@
 // 십성·밴드에 걸린 문장만 나온다. 나머지 수백 개는 안 뜬다. 그래서 소스를
 // 직접 훑는다. 주석은 뺀다 - 이 규칙을 설명하는 주석에도 그 단어가 나온다.
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
 const BANNED = [
   ['구간', "'이 달'·'이번 달'·'올해' 처럼 실제 단위로. 아니면 그 고민의 명사로"],

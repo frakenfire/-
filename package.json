@@ -10,12 +10,14 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "ait build",
+    "dev:toss": "node scripts/dev-toss.mjs",
+    "doctor": "node scripts/doctor.mjs",
+    "build": "tsc -b && vite build && ait build",
     "build:web": "tsc -b && vite build",
     "deploy": "ait deploy",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
-    "test": "node --experimental-strip-types --test 'src/**/*.test.ts'",
+    "test": "node --experimental-strip-types --test \"src/**/*.test.ts\"",
     "check:release": "node scripts/check-release.mjs",
     "verify": "npm run typecheck && npm run test && npm run build:web && npm run check:no-mock && npm run check:policy && npm run check:palette && npm run check:emoji && npm run check:type && npm run check:weight && npm run check:hanja && npm run check:uiemoji && npm run check:copy && npm run check:appname && npm run check:plain && npm run check:fortunespeak && npm run check:vague && npm run check:dead && npm run check:deadcss && npm run check:shadow && npm run check:safearea && npm run check:granite && npm run check:release",
     "audit": "node scripts/audit.mjs",
@@ -42,13 +44,16 @@
     "check:vacuity": "node scripts/check-vacuity.mjs"
   },
   "dependencies": {
-    "@apps-in-toss/web-framework": "^2.10.5",
+    "@apps-in-toss/web-framework": "^3.7.0",
     "lucide-react": "^1.43.0",
     "pretendard": "^1.3.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
+    "@apps-in-toss/devtools": "^3.7.0",
+    "@toss/tds-colors": "^0.1.0",
+    "@toss/tds-typography": "^0.0.3",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",

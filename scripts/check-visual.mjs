@@ -24,6 +24,7 @@
 // 이 앱은 날짜 seed 로 문구를 고르고 FAQ 가 돌아가므로, 글자 길이를 타는 값
 // (width/height/transform)은 처음부터 비교에서 뺀다.
 
+import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -53,7 +54,7 @@ const PROPS = [
 
 function startPreview() {
   return spawn('npx', ['vite', 'preview', '--port', String(PORT)], {
-    cwd: new URL('..', import.meta.url).pathname, stdio: 'ignore',
+    cwd: fileURLToPath(new URL('..', import.meta.url)).replace(/\\/g, '/'), stdio: 'ignore',
   });
 }
 

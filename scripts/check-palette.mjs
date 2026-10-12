@@ -10,10 +10,11 @@
 //
 //   node scripts/check-palette.mjs
 
+import { fileURLToPath } from 'node:url';
 import { readFileSync, readdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
-const root = new URL('../', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../', import.meta.url)).replace(/\\/g, '/');
 
 // ── 1. 토스가 실제로 쓰는 색 전부 (설치된 TDS 패키지가 유일한 출처) ──
 const tdsCss = readFileSync(join(root, 'node_modules/@toss/tds-colors/colors.light.css'), 'utf8');
@@ -56,7 +57,7 @@ function walk(dir, out = []) {
 
 const offenders = [];
 for (const file of walk(join(root, 'src'))) {
-  const rel = file.replace(root, '');
+  const rel = file.replace(root, '').replaceAll('\\', '/');
   if (CONTENT_FILES.has(rel)) continue;
   const text = readFileSync(file, 'utf8');
   text.split('\n').forEach((line, i) => {

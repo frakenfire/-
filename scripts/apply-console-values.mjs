@@ -55,7 +55,7 @@ if (args['app-name']) {
   if (!/^[a-z0-9][a-z0-9-]*$/.test(args['app-name'])) {
     errors.push(`app-name 형식이 이상해요: "${args['app-name']}" (영문 소문자·숫자·하이픈)`);
   } else {
-    edit('granite.config.ts', [
+    edit('apps-in-toss.config.ts', [
       [`appName: 'today-note'`, `appName: '${args['app-name']}'`, `appName → ${args['app-name']}`],
     ]);
     // 공유 딥링크 슬러그는 appName 과 반드시 동일해야 링크가 열린다
@@ -70,7 +70,7 @@ if (args.icon) {
   if (!/^https:\/\//.test(args.icon)) {
     errors.push(`icon 은 https:// 로 시작해야 해요: "${args.icon}"`);
   } else {
-    edit('granite.config.ts', [
+    edit('apps-in-toss.config.ts', [
       [
         `icon: 'https://static.toss.im/appsintoss/placeholder-today-note.png'`,
         `icon: '${args.icon}'`,

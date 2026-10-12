@@ -12,12 +12,13 @@
 //
 //   npm run check:shadow
 
+import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const postcss = require('postcss');
-const file = new URL('../src/styles/globals.css', import.meta.url).pathname;
+const file = fileURLToPath(new URL('../src/styles/globals.css', import.meta.url)).replace(/\\/g, '/');
 const root = postcss.parse(readFileSync(file, 'utf8'));
 
 // @media 안과 밖은 서로 다른 자리다. 조상 at-rule 까지 키에 넣는다.

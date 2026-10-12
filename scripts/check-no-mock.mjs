@@ -7,11 +7,12 @@
 //
 //   node scripts/check-no-mock.mjs        # dist/ 검사 (없으면 안내 후 종료)
 
+import { fileURLToPath } from 'node:url';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
 const DIST = new URL('../dist/', import.meta.url);
-const distPath = DIST.pathname;
+const distPath = fileURLToPath(DIST).replace(/\\/g, '/');
 
 if (!existsSync(distPath)) {
   console.error('❌ dist/ 가 없어요. 먼저 `npm run build:web` 을 실행하세요.');

@@ -10,7 +10,7 @@
 //
 //   node scripts/check-appname.mjs
 import { readFileSync, readdirSync, statSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
 const NAME = '오늘의 마음 한장';
 // 화면·공유 글에 쓰이는 옛 이름들. 'today-note' 는 npm 꾸러미 이름이라 여기 없다.
@@ -27,7 +27,7 @@ function walk(dir) {
 }
 
 // 검사 파일 자신과 다른 검사기는 안 본다. 규칙을 설명하려면 그 글자를 써야 한다.
-const files = [...walk('src'), 'index.html', 'granite.config.ts'];
+const files = [...walk('src'), 'index.html', 'apps-in-toss.config.ts'];
 const bad = [];
 for (const file of files) {
   const src = readFileSync(file, 'utf8');
@@ -43,11 +43,7 @@ for (const file of files) {
   });
 }
 
-// 콘솔에 올린 이름과 코드가 같은지 직접 본다
-const granite = readFileSync('granite.config.ts', 'utf8');
-if (!granite.includes(`displayName: '${NAME}'`)) {
-  bad.push(`granite.config.ts  displayName 이 '${NAME}' 이 아니에요`);
-}
+// SDK 3.x 부터 앱 이름(displayName)은 설정 파일이 아니라 콘솔에서만 정한다.
 if (!readFileSync('index.html', 'utf8').includes(`<title>${NAME}</title>`)) {
   bad.push(`index.html  <title> 가 '${NAME}' 이 아니에요`);
 }

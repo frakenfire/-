@@ -24,14 +24,19 @@ export type { AdResult } from './adResult.ts';
 // 부르는 곳은 셋뿐이라(detail·saveImage·retry 는 '예비'로 남아 있었다),
 // 쓰지도 않을 광고 자리 셋을 콘솔에서 더 만들라고 시키고 있었다.
 // 카드 저장은 무료로 둔다 - 저장하고 공유해서 들어오는 길에 마찰을 안 넣는다.
+// 세 자리 모두 전면 광고(이미지·짧은 영상, 몇 초 뒤 닫기) 그룹 하나를 같이 쓴다.
+// 보상형은 30초 영상을 끝까지 봐야 해서 너무 길다는 사용자 판단(2026-10-06).
+// 보상형 그룹(쪽지·궁합·고민) 셋은 콘솔에 그대로 있으니 되돌릴 때 여기만 바꾸면 된다.
+//   note    ait.v2.live.6735b1fea3ce40de
+//   compat  ait.v2.live.26a13f971a204709
+//   concern ait.v2.live.6d5d7c31970f4dc7
 export const AD_GROUPS = {
-  // 쪽지를 누른 뒤 결과 전에 한 번. 오늘 첫 장부터 붙는다 — 규칙은
+  // 쪽지를 누른 뒤 결과 전에 한 번. 오늘 첫 장부터 붙는다 - 규칙은
   // adPolicy.ts 의 shouldShowNoteAd 에 있고 테스트가 못 박는다.
-  note: 'REPLACE_REWARD_NOTE',
-  compat: 'REPLACE_REWARD_COMPAT',
-  // 결과를 다 본 뒤 '다른 고민도' 를 여는 자리. 본문은 전부 무료이고
-  // 여기만 광고를 낀다 — 이미 값을 받은 사람에게만 더 받겠다고 묻는다.
-  concern: 'REPLACE_REWARD_CONCERN',
+  note: 'ait.v2.live.ce62bd8747d24d40',
+  compat: 'ait.v2.live.ce62bd8747d24d40',
+  // 결과를 다 본 뒤 '다른 고민도' 를 여는 자리.
+  concern: 'ait.v2.live.ce62bd8747d24d40',
 } as const;
 
 export type AdPlacement = keyof typeof AD_GROUPS;
@@ -46,7 +51,7 @@ export type AdPlacement = keyof typeof AD_GROUPS;
 //
 // 제출을 막는 건 scripts/check-release.mjs 다 - REPLACE_ 가 남아 있으면
 // npm run check:release -- --release 가 실패한다.
-const AD_TEST_GROUP = 'ait-ad-test-rewarded-id';
+const AD_TEST_GROUP = 'ait-ad-test-interstitial-id';
 
 const AD_TIMEOUT_MS = 20_000;
 // 미리 불러오는 데 쓰는 시간. show 를 누른 뒤 이만큼은 기다려 준다.
@@ -154,9 +159,9 @@ function realRewardAd(placement: AdPlacement, adGroupId: string): Promise<AdResu
       unregister = showFullScreenAd({
         options: { adGroupId },
         onEvent: (event) => {
-          // 보상은 'userEarnedReward' 가 왔을 때만이다. 'dismissed' 만으로
-          // 주면 안 된다 - 문서에 못 박혀 있고, 이 앱의 첫 번째 원칙이다.
-          if (event.type === 'userEarnedReward') {
+          // 광고가 실제로 화면에 떴을 때만 연다. 전면 광고에는 'userEarnedReward' 가
+          // 없어서 'impression'(노출) 이 그 자리다. 안 뜨고 닫힌 것('dismissed' 만)은 열지 않는다.
+          if (event.type === 'userEarnedReward' || event.type === 'impression') {
             earned = true;
           } else if (event.type === 'dismissed') {
             done(earned ? { status: 'rewarded' } : { status: 'dismissed' });

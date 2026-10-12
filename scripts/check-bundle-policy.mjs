@@ -8,10 +8,11 @@
 //
 //   node scripts/check-bundle-policy.mjs      # dist/ 검사
 
+import { fileURLToPath } from 'node:url';
 import { readdirSync, readFileSync, existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { join } from 'node:path/posix';
 
-const distPath = new URL('../dist/', import.meta.url).pathname;
+const distPath = fileURLToPath(new URL('../dist/', import.meta.url)).replace(/\\/g, '/');
 if (!existsSync(distPath)) {
   console.error('❌ dist/ 가 없어요. 먼저 `npm run build:web` 을 실행하세요.');
   process.exit(1);

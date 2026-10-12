@@ -7,33 +7,36 @@ import type { FortuneType } from '../types/fortune.ts';
 // 단계별 멘트가 기대감(두근두근)을 만들고, 결과 타율을 높여 보이게 한다.
 
 const COMMON_STEPS = [
-  '쪽지들을 살살 뒤섞고 있어요',
-  '오늘 어떤 날인지 조심조심 읽는 중',
+  '쪽지를 섞고 있어요',
+  '오늘 풀이를 정리하는 중',
 ];
 
 const TYPE_STEP: Record<FortuneType, string> = {
   tomorrow: '오늘의 나를 살펴보는 중',
-  month: '이번 달을 쭉 펼쳐보는 중',
-  love: '사랑운을 살짝 들여다보는 중',
-  money: '돈운을 살짝 들여다보는 중',
-  work: '일운을 차곡차곡 살피는 중',
-  caution: '조심할 순간을 콕 짚어보는 중',
-  luck: '행운 세트를 예쁘게 담는 중',
+  month: '이번 달 풀이를 정리하는 중',
+  love: '사랑운을 살펴보는 중',
+  money: '돈운을 살펴보는 중',
+  work: '일운을 살펴보는 중',
+  caution: '조심할 점을 살펴보는 중',
+  luck: '행운 정보를 정리하는 중',
 };
 
 const LAST_STEP = '거의 다 됐어요';
-const SPECIAL_STEP = '앗, 이건 조금 특별한 쪽지예요';
+const SPECIAL_STEP = '오늘은 자주 안 나오는 쪽지예요';
 
 type Props = {
   fortuneType: FortuneType;
   special?: boolean;
+  /** 이 로딩 뒤에 광고가 나오는지. 단계 문구는 광고 전에 끝까지 못 가므로 따로 처음부터 띄운다 */
+  adNext?: boolean;
 };
 
-export function RevealScreen({ fortuneType, special }: Props) {
+export function RevealScreen({ fortuneType, special, adNext = false }: Props) {
+  // 광고가 이어지면 마지막 멘트가 그 예고다. App 은 이 멘트가 보일 만큼 기다렸다 광고를 띄운다.
   const steps = [
     ...COMMON_STEPS,
     TYPE_STEP[fortuneType],
-    special ? SPECIAL_STEP : LAST_STEP,
+    adNext ? '광고 뒤에 결과가 열려요' : special ? SPECIAL_STEP : LAST_STEP,
   ];
   const [idx, setIdx] = useState(0);
 
@@ -65,6 +68,7 @@ export function RevealScreen({ fortuneType, special }: Props) {
             />
           ))}
         </div>
+        {adNext ? <p className="note-fan__hint">결과 전에 짧은 광고가 하나 나와요</p> : null}
       </div>
     </AppLayout>
   );

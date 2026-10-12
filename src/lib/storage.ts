@@ -40,7 +40,11 @@ function safeSet(key: string, value: string): boolean {
 // 지난 기록·이번 달 등급 수집을 로컬스토리지에 쌓아왔는데, 저장이 오래 버티지 못한다.
 // 아이폰은 이레 동안 안 들어오면 웹 저장소를 통째로 지우고, 토스 SDK 가 올라가면
 // 서빙 주소가 바뀌어 예전 값에 닿지 못한다. 못 지킬 약속은 애초에 하지 않는 게 낫다.
-// 오늘 뽑은 결과도 저장하지 않는다. 화면을 벗어나면 그걸로 끝이다.
+// 오늘 뽑은 결과는 결과 글이 아니라 '무엇을 뽑았는지' 만 그날 하루 남긴다.
+// 결과는 같은 입력이면 글자 하나까지 같게 다시 계산되므로 글을 저장할 필요가 없다.
+// 남기는 이유: 결과 화면을 나가면 다시 볼 길이 새로 뽑기뿐이라, 이미 광고를 보고
+// 연 결과를 보려고 광고를 또 봐야 했다. 앱인토스 노출 가이드가 감점하는 모양이다
+// ('광고를 한 번 본 뒤에는 결과를 바로 보여주세요'). 날짜가 바뀌면 버린다.
 
 // 내 띠 (12개 중 선택 — 선택형 값)
 const ZODIAC_KEY = 'tomorrowNoteZodiac';
@@ -347,4 +351,31 @@ export function hasAskedNoti(): boolean {
 
 export function markNotiAsked(): boolean {
   return safeSet(NOTI_ASK_KEY, '1');
+}
+
+const TODAY_DRAW_KEY = 'tomorrowNoteTodayDraw';
+
+export type TodayDraw = {
+  date: string;
+  noteId: string;
+  fortuneType: string;
+  mood: string;
+  concernKey: string | null;
+  option: string | null;
+};
+
+export function saveTodayDraw(d: TodayDraw): boolean {
+  return safeSet(TODAY_DRAW_KEY, JSON.stringify(d));
+}
+
+/** 오늘 뽑은 쪽지. 날짜가 다르거나 모양이 깨졌으면 없는 것으로 본다 */
+export function loadTodayDraw(date: string): TodayDraw | null {
+  const raw = safeGet(TODAY_DRAW_KEY);
+  if (!raw) return null;
+  try {
+    const d = JSON.parse(raw) as TodayDraw;
+    return d && d.date === date && typeof d.noteId === 'string' ? d : null;
+  } catch {
+    return null;
+  }
 }

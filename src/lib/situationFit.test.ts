@@ -4,6 +4,8 @@ import { computeFourPillars } from './fourPillars.ts';
 import { computeTiming } from './timing.ts';
 import { buildDeepRead } from './deepRead.ts';
 import { CONCERNS, findConcern } from '../data/concerns.ts';
+import { scoreWhyOf } from './scoreWhy.ts';
+import { todayIntroOf } from '../data/todayIntro.ts';
 
 // 고른 상황과 부딪히는 말이 화면 어디에도 없어야 한다.
 //
@@ -18,10 +20,10 @@ const FORBIDDEN: Record<string, RegExp> = {
   'work/rest': /맡은 범위|동료|같은 팀|사내|출근|승진|지금 회사|개업|사업자|손님|매출/,
   'work/start': /승진|경력을|재직|이직|지금 회사|개업|사업자|손님|매출/,
   'work/own': /지원(?!금)|채용|이력서|면접|입사|취업|합격|승진|이직|연봉/,
-  'love/alone': /상대|사귀는|연인|우리 사이|만나면/,
+  'love/alone': /상대|사귀는|연인|우리 사이|만나면|결혼과|동거|프러포즈/,
   'love/some': /연인|우리 사이|헤어진/,
   'love/couple': /소개받|새 사람|헤어진/,
-  'love/past': /사귀자|만나면|소개받/,
+  'love/past': /사귀자|만나면|소개받|결혼|동거|프러포즈/,
   'people/work': /가족/,
   'people/friend': /가족|동료/,
   'people/family': /동료|회사/,
@@ -65,7 +67,9 @@ test('고른 상황과 부딪히는 말이 화면 어디에도 없다', () => {
           if (!re) continue;
           const t = computeTiming(input, p, gender, c.key, at);
           const r = buildDeepRead(p, t, c.key, o.key, dateKey, '김한별');
-          for (const [path, s] of flat(r)) {
+          // 맨 위 점수 이유 카드와 할 것·미룰 것 머리말도 같은 화면이다.
+          const shown = [...flat(r), ...flat(scoreWhyOf(r, c.key, label), 'why'), ...flat(todayIntroOf(c.key, r.todayGroup), 'intro')];
+          for (const [path, s] of shown) {
             // 십 년 카드는 일·돈·사람·몸 네 영역을 한꺼번에 보여준다.
             // 사람 관계를 물어도 그 안의 '일' 줄은 회사 얘기를 하는 게 맞다.
             // 고른 상황과 부딪히는지는 그 고민을 말하는 자리에서만 본다.

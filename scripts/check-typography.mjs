@@ -6,13 +6,14 @@
 // 12.5px 같은 소수점 크기는 디자인 시스템에서 나올 수 없는 값이라,
 // 그 자체로 '손으로 눈대중해 만든 화면' 이라는 표시가 된다. 실제로 64곳 있었다.
 
+import { fileURLToPath } from 'node:url';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 const { fixedTypographySizeMap: MAP } = require('@toss/tds-typography');
 
-const root = new URL('../', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../', import.meta.url)).replace(/\\/g, '/');
 const css = readFileSync(`${root}src/styles/globals.css`, 'utf8');
 
 const problems = [];
