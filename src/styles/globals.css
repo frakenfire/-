@@ -2798,13 +2798,6 @@ strong {
 .deep-hero--wait { background: var(--gray-50); }
 .deep-hero--wait .deep-hero__tag { color: var(--gray-700); }
 .deep-hero--wait .deep-hero__badge { background: var(--gray-700); }
-.deep-situation {
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
 
 /* 열두 달 막대 */
 .mflow {
@@ -2913,7 +2906,6 @@ strong {
   padding-right: 0;
 }
 .deep-hero__badge { margin-top: 10px; }
-.deep-situation { margin: 0; }
 
 /* 구역은 전부 같은 흰 카드 위에 선다. 어떤 건 카드, 어떤 건 맨바닥이면
    같은 무게의 내용이 다른 급으로 읽힌다. */
@@ -2977,8 +2969,7 @@ strong {
 .sec-card .sec__title,
 .sec-card .lucky4__head { font-size: 17px; line-height: 25.5px; font-weight: 700; }.sec-card .qa,
 .sec-card .qa--sub,
-.sec-card .read6__v,
-.sec-card .deep-situation { font-size: 15px; line-height: 22.5px; }
+.sec-card .read6__v { font-size: 15px; line-height: 22.5px; }
 .sec-card .mflow__foot { font-size: 13px; line-height: 19.5px; }.sec-card .read6__k { font-size: 14px; line-height: 21px; }
 
 /* '지금' 을 따로 한 줄 두면 첫 칸에만 꼬리표가 달려 왼쪽이 허전해진다.
@@ -3248,37 +3239,6 @@ strong {
    서로 다른 물건으로 보인다. 글자만 한 단계 흐리게. */
 
 /* 지금 왜 이 고민이 커졌나 — 십 년, 올해, 이번 달을 한 칸씩 쌓는다 */
-.nowlist { list-style: none; margin: 14px 0 0; padding: 0; }
-.nowlist__row {
-  padding: 11px 0;
-  border-top: 1px solid var(--gray-100);
-}
-.nowlist__row:first-child { border-top: 0; padding-top: 0; }
-.nowlist__k {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  margin-bottom: 3px;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
-.nowlist__label {
-  font-style: normal;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 500;
-  color: var(--gray-600);
-}
-.nowlist__v {
-  margin: 0;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
 
 /* 올해와 내년을 같은 줄에 맞대 놓는 표 */
 /* 꼬리표가 '올해 해보면 좋은 것' 로 길어서 옆 칸에 두면 62px 에 안 들어간다. 위아래로 쌓는다. */
@@ -3774,35 +3734,6 @@ strong {
 /* ── 내일 알림 받기 ──
    결과 맨 끝, '내일 한 줄' 바로 밑. 카드로 세우지 않는다 - 또 하나의
    섹션이 되면 결과가 끝난 줄 모른다. 바탕 위에 놓인 한 줄짜리 제안이다. */
-.notiask {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  width: 100%;
-  min-height: 52px;
-  margin: var(--space-4) 0 0;
-  padding: 14px 16px;
-  border: 0;
-  border-radius: 14px;
-  background: var(--brand-soft);
-  text-align: left;
-  cursor: pointer;
-}
-.notiask__k {
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 600;
-  color: var(--brand-strong);
-  word-break: keep-all;
-}
-.notiask__c {
-  flex: 0 0 auto;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 700;
-  color: var(--brand-strong);
-}
 
 /* ── 상황 고르기: 고를 것을 남는 자리 가운데로 ──
    선택지가 네 개뿐인 화면은 아래가 40% 비었다. 이 화면의 일은 하나를
@@ -3829,54 +3760,6 @@ strong {
    점수 표(.why-score)와 같은 자로 잰다. 같은 다섯 칸을 다르게 묶어 보여주는
    자리라, 둘이 다르게 생기면 읽는 사람은 다른 계산으로 본다. */
 .selves { list-style: none; margin: 12px 0 0; padding: 0; }
-.selves__row {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 34px;
-  align-items: baseline;
-  column-gap: 10px;
-  padding: 16px 0;
-  border-top: 1px solid var(--gray-100);
-}
-.selves__row:first-child { border-top: 0; padding-top: 4px; }
-.selves__k {
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.selves__label {
-  display: block;
-  font-style: normal;
-  font-size: 13px;
-  line-height: 19.5px;
-  font-weight: 500;
-  color: var(--gray-600);
-}
-.selves__v {
-  grid-column: 2;
-  grid-row: 1;
-  text-align: right;
-  font-size: 17px;
-  line-height: 25.5px;
-  font-weight: 700;
-  color: var(--gray-900);
-}
-.selves__line,
-.selves__vs {
-  grid-column: 1 / -1;
-  word-break: keep-all;
-}
-.selves__line {
-  margin: 8px 0 0;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 500;
-  color: var(--gray-800);
-}
-.selves__vs {
-  margin-top: 4px;
-  font-weight: 500;
-}
 
 /* ── 큰 덩이 ──
    제목만 카드 밖에 떠 있고 안쪽만 흰 상자였다. 제목은 공중에, 내용은
@@ -3936,34 +3819,20 @@ strong {
 .tdc__mind { margin: 16px 0 0; }
 .tdc__act--do .cat4__head { color: var(--brand-strong); }
 .tdc__act--dont .cat4__head { color: var(--score-low-text); }
-.tdc__tmr {
-  margin: 16px 0 0;
-  padding-top: 14px;
-  border-top: 1px solid var(--gray-100);
-  font-size: 15px;
-  line-height: 22.5px;
-  color: var(--gray-800);
-  word-break: keep-all;
-}
-.tdc__tmr .sent:first-child { font-weight: 700; color: var(--gray-900); }
+.tdc__why { margin: 16px 0 0; padding-top: 14px; border-top: 1px solid var(--gray-100); }
+.tdc__why-k { margin: 0 0 4px; font-size: 13px; line-height: 19.5px; font-weight: 700; color: var(--gray-700); }
+.tdc__why-v { margin: 0; font-size: 15px; line-height: 22.5px; color: var(--gray-800); word-break: keep-all; }
+/* 내일 또 뽑을 이유 카드 */
+.tmr__v { margin: 0; font-size: 15px; line-height: 22.5px; color: var(--gray-800); word-break: keep-all; }
+.tmr__btn { width: 100%; margin-top: 16px; }
 
 /* 앞으로 기대해도 되는 것 / 조심하면 좋은 것 의 첫 줄은 답이다 */
-.ahead__lead {
-  margin: 0 0 12px;
-  font-size: 17px;
-  line-height: 25.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-  word-break: keep-all;
-}
-.ahead__lead--care { color: var(--score-low-text); }
 
 /* 점수 까닭: 첫 덩이만 굵게, 나머지는 설명 무게 */
 .why-score__lead { font-weight: 500; color: var(--gray-800); }
 .why-score__lead .sent:first-child { font-weight: 700; color: var(--gray-900); }
 
 /* 할 일이 담긴 곁말은 13 회색이면 안 읽힌다 */
-.selves__vs { font-size: 14px; line-height: 21px; color: var(--gray-700); }
 .match__hint { font-size: 13px; line-height: 19.5px; }
 .dayp__nick { font-size: 17px; line-height: 25.5px; }
 /* 일주 카드의 짝 칸 값은 설명이지 결론이 아니다 */

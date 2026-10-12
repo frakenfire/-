@@ -621,10 +621,10 @@ export function buildDeepRead(
   );
   const nextDay =
     tomorrowGod === todayGod && tomorrowRels.length === meetRows.length
-      ? '내일도 오늘과 같은 날이에요. 오늘 정한 할 일을 내일까지 그대로 가져가도 돼요.'
+      ? '내일도 오늘과 비슷한 하루예요. 내일 쪽지에서 오늘과 무엇이 달라지는지 알려드릴게요.'
       : tomorrowGod === todayGod
-        ? `내일도 오늘과 같은 종류의 날이지만 내 사주와 만나는 자리가 달라요. 오늘 정한 일은 오늘 안에 끝내두면 좋아요.`
-        : `내일은 ${G(tomorrowGod).pull} 날이에요. 오늘 할 일은 내일로 넘기지 않는 게 좋아요.`;
+        ? `내일은 오늘과 비슷하지만 다른 일이 생기기 쉬운 날이에요. 내일 쪽지에서 무엇이 달라지는지 알려드릴게요.`
+        : `내일은 ${G(tomorrowGod).pull} 날이에요. 그날 해보면 좋은 일은 내일 쪽지에서 알려드릴게요.`;
 
   const todayStep = unseongOf(pillars.dayStem, todayPillar.branch);
   // 네 가지 나. 다섯 칸을 사람이 자기를 생각하는 말로 다시 묶는다.

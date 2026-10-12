@@ -7,8 +7,8 @@ type Props = {
   decision: TodayDecision;
   /** 고른 상황의 할 일과 미룰 일. 오늘 한 가지 뒤에 이어 붙는다 */
   more?: { dos: TodoItem[]; donts: TodoItem[] };
-  /** 내일은 무엇이 달라지는가. 오늘 풀이 끝에 붙는다 */
-  tomorrow?: string;
+  /** 맨 위 점수가 왜 그 점수인지 두 문장. 오늘 풀이 안에 짧게 */
+  scoreWhy?: { head: string; text: string };
 };
 
 // 결과 맨 위 세 카드. 오늘 풀이, 오늘 해보면 좋은 것(여러 개와 까닭), 오늘은
@@ -18,7 +18,7 @@ type Props = {
 // 전에는 할 것 하나, 미룰 것 하나만 두고 나머지는 '이번 달 계획' 이라는 이름으로
 // 한참 아래에 따로 뒀다. 오늘의 쪽지를 뽑았는데 오늘 얘기가 없다는 말을 들었다.
 // 할 일은 전부 여기로 모은다.
-export function TodayDecisionCard({ decision, more, tomorrow }: Props) {
+export function TodayDecisionCard({ decision, more, scoreWhy }: Props) {
   // 결론 줄이 '해도 좋아요. 대신 ~가 나아요.' 두 문장이다. 둘 다 20px 굵게 두면 네 줄짜리
   // 덩어리가 된다. 첫 문장만 크게, 나머지는 아래 설명 앞에 붙인다.
   const [head, ...rest] = decision.overall.headline.split(/(?<=[.!?])\s+/);
@@ -38,8 +38,11 @@ export function TodayDecisionCard({ decision, more, tomorrow }: Props) {
             {decision.basis ? <p className="tdc__basis">{decision.basis}</p> : null}
           </div>
         ) : null}
-        {tomorrow ? (
-          <Sentences className="tdc__tmr" text={tomorrow} />
+        {scoreWhy ? (
+          <div className="tdc__why">
+            <p className="tdc__why-k">{scoreWhy.head}</p>
+            <Sentences className="tdc__why-v" text={scoreWhy.text} />
+          </div>
         ) : null}
       </div>
       <div className="sec-card tdc__act tdc__act--do">

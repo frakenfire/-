@@ -48,17 +48,16 @@ test('알림 줄은 템플릿이 채워져야 뜬다', () => {
 
   const screen = readFileSync(new URL('../screens/ResultScreen.tsx', import.meta.url), 'utf8');
   // 줄을 그리는 조건이 onAskNoti 에 달려 있어야 한다 (App 이 canAskNotification 으로 준다)
-  assert.match(screen, /\{deep && onAskNoti \? \(/);
-  assert.match(screen, /className="notiask"/);
+  assert.match(screen, /\{onAskNoti \? \(/);
   // 무엇을 묻는지 문구로 분명해야 한다. 그냥 '알림 받기' 면 왜 받는지가 없다.
   assert.match(screen, /매일 오전 10시, 새 쪽지 알림 받기/);
 });
 
-test('알림 줄이 결과를 다 본 자리에 있다', () => {
+test('알림 버튼이 오늘 할 일을 다 본 자리(내일 쪽지 카드)에 있다', () => {
   const screen = readFileSync(new URL('../screens/ResultScreen.tsx', import.meta.url), 'utf8');
-  const noti = screen.indexOf('className="notiask"');
-  const more = screen.indexOf('MoreConcerns');
+  const noti = screen.indexOf('매일 오전 10시, 새 쪽지 알림 받기');
+  const today = screen.indexOf('<TodayDecisionCard');
   const disc = screen.indexOf('<Disclaimer');
-  assert.ok(noti > more, '알림은 결과를 다 본 뒤에 묻는다');
+  assert.ok(noti > today, '알림은 오늘 할 일을 다 본 뒤에 묻는다');
   assert.ok(noti < disc, '면책 문구가 화면을 닫는다');
 });

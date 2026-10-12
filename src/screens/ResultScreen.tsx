@@ -8,7 +8,6 @@ import { GRADE_KO } from '../lib/luck.ts';
 import { todayKey } from '../lib/dateSeed.ts';
 import { TodayDecisionCard } from '../components/TodayDecisionCard.tsx';
 import { todayVibe } from '../lib/dayVibe.ts';
-import { asDo, asDont } from '../lib/polite.ts';
 import { Sentences } from '../components/Sentences.tsx';
 import { luckyWhen } from '../lib/luckyWhen.ts';
 import type { FortuneResult, Note } from '../types/fortune.ts';
@@ -57,6 +56,24 @@ type Props = {
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
+// 맨 위 점수가 왜 그 점수인지 두 문장. 다섯 칸 표는 접힌 근거에 있다.
+// 오늘의 쪽지라 오늘이 평소(타고난 점수)보다 높은지 낮은지를 같이 말한다.
+function scoreWhyOf(read: DeepRead): { head: string; text: string } {
+  const part = (k: string) => read.score.parts.find((p) => p.k === k);
+  const natal = part('타고난 성향');
+  const today = part('오늘');
+  const total = read.score.total;
+  const head = `${total}점이 나온 이유`;
+  if (!natal || !today) return { head, text: read.scoreLine.split(/(?<=[.])\s+/)[0] };
+  const gap = today.score - natal.score;
+  const day = gap >= 5
+    ? `오늘은 평소보다 ${gap}점 높은 날이에요.`
+    : gap <= -5
+      ? `오늘은 평소보다 ${-gap}점 낮은 날이라 무리하지 않는 게 좋아요.`
+      : '오늘은 평소와 비슷한 날이에요.';
+  return { head, text: `타고난 성향 ${natal.score}점에 올해와 이번 달, 오늘 ${today.score}점을 더해 ${total}점이 나왔어요. ${day}` };
+}
+
 export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onShareWeek, onBack }: Props) {
   const { luck } = result;
   const isMonth = result.reading.scale === 'month';
@@ -156,11 +173,42 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
       <TodayDecisionCard
         decision={deep ? deep.read.todayDecision : todayVibe(todayKey()).decision}
         more={deep ? {
-          dos: deep.read.decision.dos.map((d, i) => ({ v: asDo(d), why: deep.read.decision.doWhys[i] })),
-          donts: deep.read.decision.donts.map((d, i) => ({ v: asDont(d), why: deep.read.decision.dontWhys[i] })),
+          dos: deep.read.decision.dos.map((d, i) => ({ v: d, why: deep.read.decision.doWhys[i] })),
+          donts: deep.read.decision.donts.map((d, i) => ({ v: d, why: deep.read.decision.dontWhys[i] })),
         } : undefined}
-        tomorrow={deep ? deep.read.todayMeet.nextDay : undefined}
+        scoreWhy={deep ? scoreWhyOf(deep.read) : undefined}
       />
+
+      {/* 내일 또 뽑을 이유. 오늘 쪽지를 다 본 자리에서 내일 무엇이 달라지는지 한 줄,
+          그리고 내일 다시 오게 하는 버튼 하나. '내일 대박' 같은 미끼는 안 쓴다.
+          알림은 먼저 띄우지 않는다. 결과를 다 본 사람이 누를 때만 동의 창이 뜬다. */}
+      <div className="sec-card tmr">
+        <p className="cat4__head">내일은 어떤 쪽지가 나올까요</p>
+        <Sentences
+          className="tmr__v"
+          text={deep ? deep.read.todayMeet.nextDay : '쪽지는 날마다 새로 뽑아요. 내일은 오늘과 다른 쪽지가 기다리고 있어요.'}
+        />
+        {onAskNoti ? (
+          <button type="button" className="btn btn--primary tmr__btn" onClick={onAskNoti}>
+            매일 오전 10시, 새 쪽지 알림 받기
+          </button>
+        ) : (
+          <button type="button" className="btn btn--weak tmr__btn" disabled={busy} onClick={onShare}>
+            친구한테 알려주고 내일 같이 뽑기
+          </button>
+        )}
+      </div>
+
+      {/* 광고는 여기 한 자리뿐이다. 결과를 끝까지 본 사람에게만, 더 볼 것을
+          열겠냐고 묻는다. 본문 중간이나 결과 앞에는 두지 않는다. */}
+      {deep && onUnlockConcern && onOpenConcern ? (
+        <MoreConcerns
+          current={deep.concernKey}
+          unlocked={unlockedConcerns}
+          onUnlock={onUnlockConcern}
+          onOpen={onOpenConcern}
+        />
+      ) : null}
 
       {/* 고민 답 — 뽑은 쪽지와 오늘 할 일 다음에 온다 */}
       {deep ? (
@@ -337,27 +385,6 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
 
       <WeekCard zodiac={zodiac} onShare={onShareWeek} />
       </Chapter>
-
-      {/* 광고는 여기 한 자리뿐이다. 결과를 끝까지 본 사람에게만, 더 볼 것을
-          열겠냐고 묻는다. 본문 중간이나 결과 앞에는 두지 않는다. */}
-      {deep && onUnlockConcern && onOpenConcern ? (
-        <MoreConcerns
-          current={deep.concernKey}
-          unlocked={unlockedConcerns}
-          onUnlock={onUnlockConcern}
-          onOpen={onOpenConcern}
-        />
-      ) : null}
-
-      {/* 알림은 먼저 띄우지 않는다. 결과를 다 본 사람이 '내일도 본다' 고
-          누를 때만 동의 UI 가 뜬다. 시스템 팝업이 불쑥 뜨는 앱이 되면
-          그 자리에서 나간다. 콘솔 템플릿이 없으면 줄 자체가 안 나온다. */}
-      {deep && onAskNoti ? (
-        <button type="button" className="notiask" onClick={onAskNoti}>
-          <span className="notiask__k">매일 오전 10시, 새 쪽지 알림 받기</span>
-          <span className="notiask__c" aria-hidden>›</span>
-        </button>
-      ) : null}
 
       <Disclaimer />
 

@@ -914,13 +914,13 @@ async function run(browser) {
       // ── 다시 올 이유 ──
       // 이 앱의 답은 실제로 매일 바뀌는데 그 사실을 아무 데서도 말하지 않으면
       // 한 번 보고 끝내는 화면이 된다. 단, 지어낸 기대는 걸지 않는다.
-      const nd = await page.locator('.tdc__tmr-v').innerText().catch(() => '');
+      const nd = await page.locator('.tmr__v').innerText().catch(() => '');
       check(nd.includes('내일'), '[재방문] 내일 무엇이 달라지는지 적혀 있다', nd.slice(0, 30));
       check(!/대박|최고의 날|놓치면|서둘러|무조건|반드시/.test(nd),
         '[재방문] 미끼 표현을 안 쓴다', nd.slice(0, 30));
       // 접힌 묶음 안에 넣으면 안 펴는 사람은 못 본다
       const ndOpen = await page.evaluate(() => {
-        const el = document.querySelector('.tdc__tmr');
+        const el = document.querySelector('.tmr');
         if (!el) return false;
         let cur = el.parentElement;
         while (cur) {
@@ -938,47 +938,14 @@ async function run(browser) {
       // 같은 병으로 깨졌던 것과 같다. 지금 어느 상태인지 읽고 그에 맞게 잰다.
       const notiFilled = !/NOTI_TEMPLATE_CODE = 'REPLACE_/.test(
         readFileSync(new URL('../src/lib/toss.ts', import.meta.url), 'utf8'));
-      const notiRows = await page.locator('.notiask').count();
+      const notiRows = await page.locator('.tmr__btn.btn--primary').count();
       check(notiRows === (notiFilled ? 1 : 0),
         notiFilled ? '[알림] 템플릿을 채우면 줄이 하나 나온다' : '[알림] 템플릿이 비면 줄이 안 나온다',
         `${notiRows}줄`);
       const popped = await page.evaluate(() => document.body.innerText.includes('알림 동의'));
       check(!popped, '[알림] 화면 진입에 동의 창을 띄우지 않는다');
 
-      // 그런데 템플릿을 채우면 이 줄이 화면에 뜬다. 즉 형님이 콘솔 값을 넣은
-      // 순간 처음 나타나는 UI 인데, 여기까지 어떤 검사도 그걸 본 적이 없었다.
-      // 빌드를 한 번 더 돌리지 않고도 보려면, 실제 화면에 그 마크업을 심어
-      // CSS 가 내는 값을 잰다. 다른 줄들과 같은 자로 재는 게 핵심이다.
-      const noti = await page.evaluate(() => {
-        const host = document.querySelector('.nextday')?.parentElement ?? document.body;
-        const el = document.createElement('button');
-        el.type = 'button';
-        el.className = 'notiask';
-        el.innerHTML = '<span class="notiask__k">내일 쪽지가 바뀌면 알려드릴까요</span>'
-          + '<span class="notiask__c" aria-hidden>\u203a</span>';
-        host.appendChild(el);
-        const r = el.getBoundingClientRect();
-        const k = getComputedStyle(el.querySelector('.notiask__k'));
-        const box = getComputedStyle(el);
-        const out = {
-          h: Math.round(r.height),
-          w: Math.round(r.width),
-          size: k.fontSize,
-          line: k.lineHeight,
-          color: k.color,
-          bg: box.backgroundColor,
-        };
-        el.remove();
-        return out;
-      });
-      // 터치로 누르는 줄이다. 44px 미만이면 손가락이 빗나간다.
-      check(noti.h >= 44, '[알림] 줄 높이가 44px 이상', `${noti.h}px`);
-      // 글자 크기를 안 주면 버튼의 브라우저 기본값(13.33px)이 나온다.
-      check(noti.size === '15px' && noti.line === '22.5px',
-        '[알림] 글자가 앱의 자를 따른다', `${noti.size}/${noti.line}`);
-      // 브랜드 색이어야 '누를 수 있는 것' 으로 읽힌다. 기본 검정이면 안 된다.
-      check(noti.color !== 'rgb(0, 0, 0)' && noti.bg !== 'rgba(0, 0, 0, 0)',
-        '[알림] 색이 기본값이 아님', `${noti.color} / ${noti.bg}`);
+      // 알림 버튼은 앱 공통 버튼(.btn)을 쓰므로 크기와 색을 따로 재지 않는다.
 
       // ── 한 단어는 한 뜻만 ──
       // 밴드 칩이 '좋아요 92' 로 점수를 말하는데 같은 화면의 줄 이름도
@@ -1604,7 +1571,7 @@ async function run(browser) {
     const page = await newPage(browser);
     await drawTo(page);
     const t = await bodyText(page);
-    const HAVE = ['오늘 풀이', '오늘 해보면 좋은 것', '오늘은 미뤄두면 좋은 것', '앞으로 기대해도 되는 것', '앞으로 조심하면 좋은 것', '네 가지 나'];
+    const HAVE = ['오늘 풀이', '점이 나온 이유', '오늘 해보면 좋은 것', '오늘은 미뤄두면 좋은 것', '내일은 어떤 쪽지가 나올까요'];
     const miss = HAVE.filter((x) => !t.includes(x));
     check(miss.length === 0, '[결과] 네 덩이가 순서대로 있다', miss.join(', ') || '다 있음');
     // 오늘 하나만 놓고 묻고 답하는가
