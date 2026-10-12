@@ -3738,3 +3738,4 @@ strong {
 .tdc__tile-v { font-size: 15px; line-height: 22.5px; font-weight: 700; color: var(--gray-900); word-break: keep-all; }
 .tdc__swatch { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 1px solid var(--gray-200); }
 .tdc__tiles-why { margin: 10px 0 0; font-size: 14px; line-height: 21px; color: var(--gray-700); word-break: keep-all; }
+.tdc__why-rows { margin-top: 12px; }

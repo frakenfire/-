@@ -6,7 +6,7 @@ export type Tile = { k: string; v: string; swatch?: string };
 type Props = {
   decision: TodayDecision;
   /** 맨 위 점수가 왜 그 점수인지. 오늘 풀이 다음 카드로 */
-  scoreWhy?: { head: string; text: string };
+  scoreWhy?: { head: string; text: string; rows?: { k: string; v: string }[] };
   /** 할 것과 미룰 것 목록 위에 붙는 '왜 오늘 이게 맞는지' 두세 줄 */
   intro?: { do: string; dont: string };
   /** 할 것 아래 '오늘 곁에 두면 좋은 것'(빛깔, 음식, 음악, 친구 등)과 미룰 것 아래 '오늘 멀리하면 좋은 것' */
@@ -46,6 +46,16 @@ export function TodayDecisionCard({ decision, scoreWhy, intro, goods, avoids }: 
         <div className="sec-card">
           <p className="cat4__head">{scoreWhy.head}</p>
           <Sentences className="tdc__body" text={scoreWhy.text} />
+          {scoreWhy.rows?.length ? (
+            <ul className="read6 read6--tight tdc__why-rows">
+              {scoreWhy.rows.map((r) => (
+                <li key={r.k} className="read6__row">
+                  <span className="read6__k">{r.k}</span>
+                  <Sentences className="read6__v" text={r.v} />
+                </li>
+              ))}
+            </ul>
+          ) : null}
         </div>
       ) : null}
       <div className="sec-card tdc__act tdc__act--do">

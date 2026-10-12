@@ -65,7 +65,7 @@ type Props = {
 // '81점은 타고난 성향 81점에 ... 더해 낸 점수예요' 는 계산식을 읊을 뿐이라 무슨 말인지
 // 모르겠다는 지적을 받았다(2026-10-12). 점수를 사주로 풀어 말한다: 무엇이 받쳐주고 있고,
 // 오늘은 내 사주로 어떤 날이라 점수가 이렇게 나왔는지.
-function scoreWhyOf(read: DeepRead, concernLabel: string): { head: string; text: string } {
+function scoreWhyOf(read: DeepRead, concernLabel: string): { head: string; text: string; rows?: { k: string; v: string }[] } {
   const part = (k: string) => read.score.parts.find((p) => p.k === k);
   const natal = part('타고난 성향');
   const today = part('오늘');
@@ -85,14 +85,31 @@ function scoreWhyOf(read: DeepRead, concernLabel: string): { head: string; text:
       : gap <= -5
         ? `오늘은 ${pull} 날이라 ${today.score}점으로 평소 내 점수보다 ${-gap}점 낮아요. 새 일을 크게 시작하기보다 하던 일을 마무리하는 편이 좋겠어요.`
         : `오늘은 ${pull} 날이라 ${today.score}점으로 평소 내 점수와 비슷해요. 하던 대로 차분히 이어가면 되는 날이에요.`;
+  // 줄글 한 덩이로는 허접해 보인다는 지적(2026-10-12). 점수를 이루는 다섯 자리를 숫자로 먼저
+  // 보여주고, 사주를 어디서 어떻게 봤는지를 항목별로 나눠 말한다: 타고난 사주, 다섯 요소,
+  // 이름, 이 고민에서 본 부분, 오늘.
+  const label = (k: string) => (k === '타고난 성향' ? '타고난 사주' : k);
+  const parts = read.score.parts.map((p) => `${label(p.k)} ${p.score}점`).join(', ');
+  const dp = read.chart.dayPillar;
+  const rows: { k: string; v: string }[] = [
+    { k: '타고난 사주', v: [dp ? `${dp.nick}이에요.` : '', read.chart.strength].filter(Boolean).join(' ') },
+    { k: '다섯 요소', v: ohaengLines(read).join(' ') },
+    ...(read.name
+      ? [{
+          k: '이름',
+          v: `${read.name.letters.map((l) => `${withJosa(l.ch, '은는')} ${l.el}`).join(', ')} 소리예요. ${read.name.verdict}`,
+        }]
+      : []),
+    { k: '이 고민에서 본 것', v: read.chart.focus },
+    ...(todayLine ? [{ k: '오늘', v: todayLine }] : []),
+  ].filter((r) => r.v);
   return {
     head,
     text: [
-      `${concernLabel} 운은 타고난 사주와 지금 시기, 오늘을 함께 보고 ${total}점이 나왔어요.`,
+      `${concernLabel} 운은 ${total}점이에요. ${parts}을 정해진 비율로 더한 점수예요.`,
       `그중 ${withJosa(NAME[best.k], '이가')} ${best.score}점으로 가장 든든하게 받쳐주고 있어요.`,
-      ...ohaengLines(read),
-      todayLine,
-    ].filter(Boolean).join(' '),
+    ].join(' '),
+    rows,
   };
 }
 

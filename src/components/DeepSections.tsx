@@ -56,7 +56,7 @@ export function DeepSections({ concernKey, read, userName, compact = false }: Pr
       <Chapter title="내 사주 자세히 보기" fold>
       {/* 점수가 어디서 나왔는지 — '87점입니다' 하고 끝내면 아무도 안 믿는다. */}
       <div className="sec-card">
-        <p className="cat4__head">{read.score.total}점이 나온 이유</p>
+        <p className="cat4__head">점수 계산표</p>
         <Sentences className="why-score__lead" text={read.scoreLine} />
         <ul className="why-score">
           <li className="why-score__head" aria-hidden>
