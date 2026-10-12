@@ -99,6 +99,8 @@ export type TodayDecision = {
   overall: { headline: string; summary: string };
   do: { action: string; why: string };
   dont: { action: string; why: string };
+  /** 같은 날 사주의 다른 자리(같은 무리의 짝 십신, 지지 십신)에서 나온 할 것과 미룰 것. 첫 항목 뒤에 이어 붙는다 */
+  more?: { dos: { action: string; why: string }[]; donts: { action: string; why: string }[] };
   /** 오늘 날의 글자가 내 사주와 만나 어떤 날이 됐는지. 매일 사주를 본다는 근거 줄 */
   basis?: string;
   /** 고른 상황에서 들 법한 마음 한 줄. 근거 줄보다 먼저, 본문 크기로 */

@@ -23,10 +23,14 @@ export function composeTodayDecision(
   // 고르면 열흘마다 같은 두 줄이 그대로 돌아왔다. 둘을 나누면 육십 일에 한 번이다.
   avoidGod: TenGod = god,
   pick: number | GodGroup = 0,
+  moreGods: TenGod[] = [],
 ): TodayDecision {
   const overall = todayAskOf(concern, option, band, pick);
   const act = dayActOf(concern, option, god);
   const avoid = dayActOf(concern, option, avoidGod);
+  // 오늘 해보면 좋은 것과 미뤄두면 좋은 것을 하나씩만 두니 너무 적다는 말을 들었다(2026-10-12).
+  // 같은 날 사주의 다른 자리(같은 무리의 짝 십신, 지지 십신)에서 하나씩 더 뽑는다. 모두 오늘 사주에서 나온다.
+  const extra = [...new Set(moreGods)].filter((g) => g !== god).map((g) => dayActOf(concern, option, g));
   const note =
     concern === 'health'
       ? '몸이 아프거나 불편하면 운세와 상관없이 의료진에게 확인하세요.'
@@ -37,6 +41,10 @@ export function composeTodayDecision(
     overall: { headline: overall.head, summary: overall.sum },
     do: { action: act.doIt, why: act.doWhy },
     dont: { action: avoid.avoid, why: avoid.avoidWhy },
+    ...(extra.length ? { more: {
+      dos: extra.map((a) => ({ action: a.doIt, why: a.doWhy })),
+      donts: extra.map((a) => ({ action: a.avoid, why: a.avoidWhy })),
+    } } : {}),
     ...(note ? { note } : {}),
   };
 }

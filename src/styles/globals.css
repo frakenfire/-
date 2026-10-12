@@ -3776,3 +3776,49 @@ strong {
 /* 오늘 해보면 좋은 것 / 미뤄두면 좋은 것: 한 가지를 한 문단으로. 첫 문장만 굵게 */
 .tdc__act-v { margin: 0; font-size: 16px; line-height: 24px; font-weight: 700; color: var(--gray-900); word-break: keep-all; }
 .tdc__act-why { margin: 6px 0 0; font-size: 15px; line-height: 22.5px; font-weight: 500; color: var(--gray-700); word-break: keep-all; }
+/* 오늘 해보면 좋은 것 / 미뤄두면 좋은 것 목록. 항목마다 굵은 한 줄과 설명 */
+.decide__list { list-style: none; margin: 0; padding: 0; }
+.decide__row {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 10px 0;
+}
+.decide__row + .decide__row { border-top: 1px solid var(--gray-100); }
+.decide__no {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  border-radius: 50%;
+  background: var(--gray-100);
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 700;
+  color: var(--brand-strong);
+}
+.decide__x {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  border-radius: 50%;
+  background: var(--gray-200);
+}
+.decide__x::before,
+.decide__x::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 9px;
+  width: 10px;
+  height: 2px;
+  border-radius: 1px;
+  background: var(--gray-600);
+}
+.decide__x::before { transform: rotate(45deg); }
+.decide__x::after { transform: rotate(-45deg); }
+.decide__body { display: grid; gap: 2px; min-width: 0; }

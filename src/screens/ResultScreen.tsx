@@ -22,6 +22,7 @@ import { partPassed } from '../lib/dayPart.ts';
 import { useDayPart } from '../lib/useDayPart.ts';
 import { noteTodayOf } from '../data/noteToday/index.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
+import { withJosa } from '../lib/josa.ts';
 import { ohaengWhy } from '../data/ohaeng.ts';
 import type { Band } from '../lib/timing.ts';
 
@@ -58,20 +59,33 @@ type Props = {
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
 // 맨 위 점수가 왜 그 점수인지 두 문장. 다섯 칸 표는 접힌 근거에 있다.
 // 오늘의 쪽지라 오늘이 평소(타고난 점수)보다 높은지 낮은지를 같이 말한다.
-function scoreWhyOf(read: DeepRead): { head: string; text: string } {
+// '81점은 타고난 성향 81점에 ... 더해 낸 점수예요' 는 계산식을 읊을 뿐이라 무슨 말인지
+// 모르겠다는 지적을 받았다(2026-10-12). 점수를 사주로 풀어 말한다: 무엇이 받쳐주고 있고,
+// 오늘은 내 사주로 어떤 날이라 점수가 이렇게 나왔는지.
+function scoreWhyOf(read: DeepRead, concernLabel: string): { head: string; text: string } {
   const part = (k: string) => read.score.parts.find((p) => p.k === k);
   const natal = part('타고난 성향');
   const today = part('오늘');
   const total = read.score.total;
   const head = `${total}점이 나온 이유`;
   if (!natal || !today) return { head, text: read.scoreLine.split(/(?<=[.])\s+/)[0] };
+  const NAME: Record<string, string> = { '타고난 성향': '타고난 사주', '지금 지나는 십 년': '지금 지나는 십 년', '올해': '올해', '이번 달': '이번 달' };
+  const best = read.score.parts
+    .filter((p) => p.k !== '오늘' && NAME[p.k])
+    .reduce((a, b) => (b.score > a.score ? b : a));
+  const pull = (read.selves[0]?.line ?? '').replace(/\s*날이에요\.$/, '');
   const gap = today.score - natal.score;
-  const day = gap >= 5
-    ? `오늘 점수는 ${today.score}점으로 평소보다 ${gap}점 높아요. 미뤄둔 일을 하나 끝내기 좋은 날이에요.`
-    : gap <= -5
-      ? `오늘 점수는 ${today.score}점으로 평소보다 ${-gap}점 낮아요. 새 일을 시작하기보다 하던 일을 마무리하세요.`
-      : `오늘 점수는 ${today.score}점으로 평소와 비슷해요. 하던 일을 하나씩 처리하면 돼요.`;
-  return { head, text: `${total}점은 타고난 성향 ${natal.score}점에 올해와 이번 달, 오늘 점수를 함께 더해 낸 점수예요. ${day}` };
+  const todayLine = !pull
+    ? ''
+    : gap >= 5
+      ? `오늘은 ${pull} 날이라 ${today.score}점으로 평소 내 점수보다 ${gap}점 높아요. 미뤄두던 일을 꺼내보기 좋은 날이에요.`
+      : gap <= -5
+        ? `오늘은 ${pull} 날이라 ${today.score}점으로 평소 내 점수보다 ${-gap}점 낮아요. 새 일을 크게 시작하기보다 하던 일을 마무리하는 편이 좋겠어요.`
+        : `오늘은 ${pull} 날이라 ${today.score}점으로 평소 내 점수와 비슷해요. 하던 대로 차분히 이어가면 되는 날이에요.`;
+  return {
+    head,
+    text: `${concernLabel} 운은 타고난 사주와 지금 시기, 오늘을 함께 보고 ${total}점이 나왔어요. 그중 ${withJosa(NAME[best.k], '이가')} ${best.score}점으로 가장 든든하게 받쳐주고 있어요. ${todayLine}`.trim(),
+  };
 }
 
 export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onShareWeek, onBack }: Props) {
@@ -172,7 +186,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           고민을 골라 뽑았든 그냥 뽑았든 같은 카드로 그린다. */}
       <TodayDecisionCard
         decision={deep ? deep.read.todayDecision : todayVibe(todayKey()).decision}
-        scoreWhy={deep ? scoreWhyOf(deep.read) : undefined}
+        scoreWhy={deep ? scoreWhyOf(deep.read, findConcern(deep.concernKey).label) : undefined}
       />
 
       {/* 내일 또 뽑을 이유. 오늘 쪽지를 다 본 자리에서 내일 무엇이 달라지는지 한 줄,

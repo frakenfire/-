@@ -755,7 +755,10 @@ export function buildDeepRead(
   // 누구나 아는 말). 그 날이 나에게 무슨 날인지만 말하고, 그 앞에 지금 마음을 읽어준다.
   const feeling = feelingOf(concernKey, optionKey ?? '');
   const todayDecision = {
-    ...composeTodayDecision(concernKey, optionKey, todayPart.band, score.dayGod, score.dayGod, todayGroup),
+    ...composeTodayDecision(concernKey, optionKey, todayPart.band, score.dayGod, score.dayGod, todayGroup, [
+      ...(Object.keys(GOD_GROUP_OF) as TenGod[]).filter((g) => GOD_GROUP_OF[g] === todayGroup && g !== score.dayGod),
+      tenGodOf(pillars.dayStem, mainHiddenStem(todayPillar.branch)) as TenGod,
+    ]),
     ...(feeling ? { feeling } : {}),
     basis: `오늘 ${cm}월 ${cd}일은 내 사주로 보면 ${G(score.dayGod).pull} 날이에요.`,
   };
