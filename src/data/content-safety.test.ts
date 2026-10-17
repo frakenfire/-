@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
+import { TODAY_TABLE } from './todayVerdict.ts';
 
 // 콘텐츠 안전 회귀 테스트 — 오락용 운세 앱에 부적절한 단정/의료/투자보장 표현이
 // 템플릿에 새로 섞여 들어오는 것을 CI 단계에서 막는다. (앱인토스 보안·운영 검수 대비)
@@ -40,4 +41,16 @@ test('콘텐츠·로직 문구에 금칙 표현이 없다', () => {
     }
   }
   assert.equal(hits.length, 0, `금칙 표현 발견:\n${hits.join('\n')}`);
+});
+
+test('오늘 점수로 진료를 미루거나 투자를 허락하지 않는다', () => {
+  for (const row of Object.values(TODAY_TABLE.health)) {
+    for (const text of Object.values(row.a)) {
+      assert.doesNotMatch(text, /진료는 오늘 받지|병원에 가지 마|쉬면 바로 회복|잘 쉬는 게 치료/);
+    }
+  }
+  for (const text of Object.values(TODAY_TABLE.money.invest.a)) {
+    assert.doesNotMatch(text, /투자를? 넣어도 돼|원금을? 넣어도 돼|내일.*팔게 돼/);
+    assert.match(text, /위험|조건/);
+  }
 });

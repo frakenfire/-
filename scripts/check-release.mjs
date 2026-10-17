@@ -15,6 +15,7 @@
 //   node scripts/check-release.mjs
 //   node scripts/check-release.mjs --release
 
+import { fileURLToPath } from 'node:url';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -23,7 +24,7 @@ import { join } from 'node:path';
 // 형님이 콘솔 값을 채우는 순간 npm run verify 가 깨졌다 - 제출하려고 값을
 // 넣었더니 빌드가 빨개지는, 제일 나쁜 자리에서 터지는 실패였다.
 const dirArg = process.argv.find((a) => a.startsWith('--dir='));
-const root = dirArg ? dirArg.slice('--dir='.length).replace(/\/?$/, '/') : new URL('../', import.meta.url).pathname;
+const root = dirArg ? dirArg.slice('--dir='.length).replace(/\/?$/, '/') : fileURLToPath(new URL('../', import.meta.url));
 const release = process.argv.includes('--release');
 
 // 제출 전에 반드시 콘솔 값으로 바뀌어야 하는 것들.

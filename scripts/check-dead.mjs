@@ -11,10 +11,11 @@
 //
 //   node scripts/check-dead.mjs
 
+import { fileURLToPath } from 'node:url';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
-const root = new URL('../src/', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../src/', import.meta.url));
 
 // 앱이 안 쓰지만 남겨두는 것. 무엇을 위해 남기는지 적는다.
 const ALLOW = new Map([
@@ -94,7 +95,7 @@ const isTest = (f) => /\.test\.tsx?$/.test(f);
 
 const dead = [];
 for (const f of files.filter((x) => !isTest(x))) {
-  const rel = f.replace(root, '');
+  const rel = f.replace(root, '').replaceAll('\\', '/');
   const s = text.get(f);
   const names = new Set();
   for (const m of s.matchAll(/^export (?:async )?function (\w+)/gm)) names.add(m[1]);
@@ -120,7 +121,7 @@ for (const f of files.filter((x) => !isTest(x))) {
 // `calendar?: 'solar'` 나 fortune.ts 의 `persona` 가 걸려서 죽은 아이콘이
 // 살아 있는 것처럼 보였다. 아이콘으로 쓰는 꼴만 센다.
 {
-  const iconFile = files.find((f) => f.endsWith('components/Icon.tsx'));
+  const iconFile = files.find((f) => f.replaceAll('\\', '/').endsWith('components/Icon.tsx'));
   if (!iconFile) {
     console.error('\n❌ components/Icon.tsx 를 못 찾아 아이콘 검사를 못 했습니다.\n');
     process.exit(1);
@@ -150,7 +151,7 @@ for (const f of files.filter((x) => !isTest(x))) {
 // 콘솔에서 더 만들라고 시키는 셈이다. 실제로 여섯 개가 적혀 있고 부르는
 // 곳은 셋뿐이었다.
 {
-  const adsFile = files.find((f) => f.endsWith('lib/ads.ts'));
+  const adsFile = files.find((f) => f.replaceAll('\\', '/').endsWith('lib/ads.ts'));
   if (!adsFile) {
     console.error('\n❌ lib/ads.ts 를 못 찾아 광고 그룹 검사를 못 했습니다.\n');
     process.exit(1);
@@ -181,7 +182,7 @@ for (const f of files.filter((x) => !isTest(x))) {
 // 안 열린다. 실제로 topic 과 mood 두 화면이 그렇게 176줄을 들고 남아 있었고,
 // 그중 하나(MoodScreen)에서 화면 이모지 규칙이 새어 나갔다. 안 도는 코드도
 // 번들에는 들어가고 규칙은 그대로 어긴다.
-const appFile = files.find((f) => f.endsWith('/App.tsx'));
+const appFile = files.find((f) => f.replaceAll('\\', '/').endsWith('/App.tsx'));
 const appSrc = appFile ? text.get(appFile) : '';
 if (!appSrc) {
   console.error('\n❌ App.tsx 를 못 찾아 화면 도달 검사를 못 했습니다.\n');

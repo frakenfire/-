@@ -21,25 +21,19 @@ export type TenGod =
   | 'pyeonin' // 편인 — 치우친 배움
   | 'jeongin'; // 정인 — 나를 먹이는 배움
 
-// 명식 표처럼 칸이 좁은 자리에 쓰는 짧은 이름.
-//
-// '튀는 기운' 과 '엉뚱한 기운' 은 뜻을 안 실어주면서 나쁜 쪽 인상만 줬다.
-// 상관은 틀을 깨고 드러내는 힘이고, 편인은 남들과 다른 방식으로 익히는 힘이다.
-//
-// 문장에서는 이 이름을 안 쓴다. 아무리 풀어 써도 결국 기운 얘기라, 돈을
-// 물어본 사람에게는 남는 게 없다. 문장은 concernReadings 의 고민별 말을
-// 쓴다 - '들어올 돈의 폭이 넓어지는' 처럼 무슨 일이 일어나는지로 적힌다.
+// 명식 표에는 십성의 실제 이름을 쓴다. '잡아채는 힘' 같은 별명으로 바꾸면
+// 오히려 뜻을 알기 어렵다. 본문에서는 고민별 설명을 함께 보여준다.
 export const TEN_GOD_KO: Record<TenGod, string> = {
-  bijian: '버티는 힘',
-  geopjae: '겨루는 힘',
-  siksin: '만드는 힘',
-  sanggwan: '드러내는 힘',
-  pyeonjae: '잡아채는 힘',
-  jeongjae: '쌓는 힘',
-  pyeongwan: '밀어붙이는 힘',
-  jeonggwan: '지키는 힘',
-  pyeonin: '달리 배우는 힘',
-  jeongin: '배우는 힘',
+  bijian: '비견',
+  geopjae: '겁재',
+  siksin: '식신',
+  sanggwan: '상관',
+  pyeonjae: '편재',
+  jeongjae: '정재',
+  pyeongwan: '편관',
+  jeonggwan: '정관',
+  pyeonin: '편인',
+  jeongin: '정인',
 };
 
 /** 십신을 성격 축으로 묶은 다섯 무리 — 화면에서는 이 단위로 말하는 게 알아듣기 쉽다. */

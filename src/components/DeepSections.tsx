@@ -33,7 +33,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
   // '네, 오늘 꺼내도 돼요' 바로 밑에 '가장 좋은 때는 4달 뒤' 가 붙으면 두 줄이
   // 서로 싸우는 것처럼 읽힌다. 층이 달라서 그런 건데 읽는 사람이 알 리 없다.
   const whenAsk = read.todayAsk.band === 'good'
-    ? '오늘도 되고, 크게 움직인다면'
+    ? '오늘 할 일과 앞으로의 계획을 나눠볼게요'
     : read.todayAsk.band === 'hard'
       ? '오늘 말고 언제가 좋아요?'
       : '그럼 언제가 좋아요?';
@@ -82,7 +82,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           오늘 답 두 줄은 위 쪽지 카드의 큰 글씨가 맡는다. 여기서 또 그리면
           한 화면에 같은 문장이 두 번 나온다. 여기는 오늘 할 일과, 언제가
           좋은지만 맡는다. */}
-      <Chapter title="지금 어떻게 하면 될까요" hint="오늘 할 일과, 언제가 좋은지">
+      <Chapter title="지금 어떻게 하면 될까요" hint="오늘의 조언과 앞으로의 좋은 시기">
       {/* 오늘 하면 좋은 것 / 피할 것 — 오늘 답 바로 밑이 제자리다. */}
       <div className="sec-card">
         <p className="cat4__head">오늘은 이렇게</p>
@@ -112,7 +112,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         <Sentences className="today-ask__a" text={read.whenVerdict.sub} />
         {bestWhen ? (
           <p className="today-ask__when">
-            <span className="today-ask__when-k">크게 움직인다면</span>
+            <span className="today-ask__when-k">큰 결정을 앞두고 있다면</span>
             <Sentences className="today-ask__when-v" text={bestWhen} />
           </p>
         ) : null}
@@ -142,14 +142,14 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <p className="mflow__foot">맨 위 하나가 오늘 바로 할 수 있는 것이에요.</p>
+        <p className="mflow__foot">첫 번째 항목부터 오늘 하나씩 해보세요.</p>
       </div>
 
       </Chapter>
 
       {/* '이 고민' 은 앱이 아는 것을 일부러 안 말하는 것이다. 돈을 물었으면
           돈이라고 적는다. */}
-      <Chapter title="왜 그렇게 해야 할까요" hint={`점수가 나온 자리와, 지금 ${concern.shortName} 생각이 커진 이유`}>
+      <Chapter title="왜 그렇게 해야 할까요" hint={`점수의 근거와 요즘 ${concern.shortName}에 관한 풀이`}>
       {/* 점수가 어디서 나왔는지 — '87점입니다' 하고 끝내면 아무도 안 믿는다.
           바탕 30, 십 년 20, 올해 20, 이번 달 20, 오늘 10 을 그대로 펼쳐 보여준다. */}
       <div className="sec-card">
@@ -176,7 +176,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </ul>
         <Sentences
           className="mflow__foot"
-          text={`다섯 칸을 정해진 비율대로 더하면 ${read.score.total}점이에요. 모델이 아니라 계산이라, 같은 날 몇 번을 봐도 같은 숫자가 나와요.`}
+          text={`다섯 항목의 점수에 정해진 비율을 곱해 더한 값이 ${read.score.total}점이에요. 같은 날 같은 정보로 보면 점수도 같아요.`}
         />
       </div>
 
@@ -191,7 +191,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <Sentences className="mflow__foot" text="이 다섯 줄은 태어난 여덟 글자에서만 나와요. 해가 바뀌어도 안 바뀌는 자리예요." />
+        <Sentences className="mflow__foot" text="생년월일시를 바탕으로 본 성향이에요. 날짜에 따라 달라지는 오늘의 운세와는 구분해서 읽어주세요." />
       </div>
 
       {/* 왜 지금 이 고민이 커졌나 — 타고난 구조가 '원래 어떤 사람이냐' 라면
@@ -210,7 +210,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <Sentences className="mflow__foot" text="십 년은 배경, 올해는 방향, 이번 달은 눈앞의 일이에요. 셋이 겹쳐서 지금 이 생각이 커졌어요." />
+        <Sentences className="mflow__foot" text="10년 단위의 대운, 올해의 운, 이번 달의 운을 함께 살펴본 풀이예요." />
       </div>
 
       </Chapter>
@@ -300,7 +300,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
               <Sentences className="slot__pt-v" text={picked.good} />
             </li>
             <li className="slot__pt slot__pt--care">
-              <span className="slot__pt-k">탈 나는 것</span>
+              <span className="slot__pt-k">주의할 점</span>
               <Sentences className="slot__pt-v" text={picked.care} />
             </li>
           </ul>
@@ -366,7 +366,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       </Chapter>
 
-      <Chapter title="다양한 관점에서 본 나의 사주" hint="내 일주, 네 가지 나, 명식 여덟 글자, 오늘 글자">
+      <Chapter title="다양한 관점에서 본 나의 사주" hint="태어난 날로 본 성향, 시기별 운세, 사주 구성과 오늘의 일진">
       {/* 내 일주 — 사주에서 사람을 가리키는 제일 작은 단위. 진짜 사주를 보러
           온 사람이 제일 먼저 찾는 자리라 이 덩이 맨 위에 둔다. 일간 열 가지만
           읽던 때는 열 명 중 한 명이 같은 말을 받았는데, 이제 예순 명 중 하나다. */}
@@ -377,11 +377,11 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           <Sentences className="dayp__line" text={read.chart.dayPillar.line} />
           <ul className="dayp">
             <li className="dayp__row">
-              <span className="dayp__k">잘 되는 자리</span>
+              <span className="dayp__k">강점</span>
               <Sentences className="dayp__v" text={read.chart.dayPillar.strong} />
             </li>
             <li className="dayp__row">
-              <span className="dayp__k">발목 잡히는 데</span>
+              <span className="dayp__k">주의할 점</span>
               <Sentences className="dayp__v" text={read.chart.dayPillar.watch} />
             </li>
           </ul>
@@ -395,7 +395,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
       {/* 네 가지 나 — 여러 각도에서 본 요약이라 이 덩이 머리에 둔다.
           오늘이 맨 위다. 매일 새로 뽑는 건 그 줄뿐이다. */}
       <div className="sec-card">
-        <p className="cat4__head">네 가지 나</p>
+        <p className="cat4__head">시기별로 살펴본 나</p>
         <ul className="selves">
           {read.selves.map((x) => (
             <li key={x.k} className="selves__row">
@@ -411,7 +411,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
         </ul>
         <Sentences
           className="mflow__foot"
-          text={'오늘이 맨 위예요. 쪽지는 날마다 새로 뽑으니까요.\n가까운 미래는 올해와 이번 달을 반씩 섞은 값이에요.\n타고난 나는 평생 그대로고, 나머지 셋은 때가 지나면 바뀌어요.'}
+          text={'오늘의 운세부터 보여드려요. 가까운 미래의 점수는 올해와 이번 달 점수의 평균이에요. 타고난 성향을 기준으로 시기별 차이를 비교해보세요.'}
         />
       </div>
 
@@ -425,7 +425,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           무엇을 보고 읽었는지 한 줄(basis)은 아래 '이 주제에서 본 자리' 가 맡는다. */}
       {/* 명식을 그대로 펼친다. 근거를 안 보여주면 '아무 말이나 하는 앱' 이 된다. */}
       <div className="sec-card">
-        <p className="cat4__head">내 명식 여덟 글자</p>
+        <p className="cat4__head">내 사주 구성</p>
         <ul className="chart8">
           {read.chart.pillars.map((c) => (
             <li key={c.k} className={`chart8__col${c.me ? ' chart8__col--me' : ''}`}>
@@ -443,7 +443,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             <Sentences className="read6__v" text={read.chart.dayMaster} />
           </li>
           <li className="read6__row">
-            <span className="read6__k">내 힘이 얼마나 있나</span>
+            <span className="read6__k">일간의 강약</span>
             <Sentences className="read6__v" text={read.chart.strength} />
           </li>
           <li className="read6__row">
@@ -451,12 +451,12 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             <Sentences className="read6__v" text={read.chart.season} />
           </li>
           <li className="read6__row">
-            <span className="read6__k">채워주면 좋은 쪽</span>
+            <span className="read6__k">보완하면 좋은 오행</span>
             <Sentences className="read6__v" text={read.chart.useful} />
           </li>
         </ul>
 
-        <p className="cat4__head cat4__head--sub">다섯 갈래가 차지하는 비율</p>
+        <p className="cat4__head cat4__head--sub">오행의 비율</p>
         <ul className="elbar">
           {read.chart.elements.map((e) => (
             <li key={e.el} className={`elbar__row${e.mine ? ' elbar__row--me' : ''}`}>
@@ -466,11 +466,11 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <Sentences className="mflow__foot" text="별표가 붙은 줄이 나를 뜻하는 갈래예요. 지지는 속에 든 글자까지 풀어서 셌어요." />
+        <Sentences className="mflow__foot" text="별표는 일간과 같은 오행에 붙였어요. 지지에 포함된 오행도 함께 계산했어요. 비견·정재는 일간과 다른 글자의 관계를 뜻하는 십성이에요. 장생·제왕은 활동 단계를 뜻하는 십이운성의 이름이에요." />
 
         {read.chart.sinsal.length > 0 ? (
           <>
-            <p className="cat4__head cat4__head--sub">타고난 별</p>
+            <p className="cat4__head cat4__head--sub">사주에 나타난 특징</p>
             <ul className="read6 read6--tight">
               {read.chart.sinsal.map((x) => (
                 <li key={x.k} className="read6__row">
@@ -498,24 +498,24 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
               ))}
             </ul>
             <Sentences className="qa qa--sub" text={read.name.verdict} />
-            <Sentences className="mflow__foot" text="한글 소리를 다섯 갈래로 갈라서 봐요. 한자는 안 받으니 획수는 세지 않아요." />
+            <Sentences className="mflow__foot" text="한글 이름의 소리를 목·화·토·금·수로 나눠 풀이해요. 한자의 획수는 사용하지 않아요." />
           </>
         ) : null}
 
-        <p className="cat4__head cat4__head--sub">이 주제에서 본 자리</p>
+        <p className="cat4__head cat4__head--sub">이 주제의 풀이 기준</p>
         <Sentences className="qa qa--sub" text={read.chart.focus} />
       </div>
 
       {/* 오늘 글자와 내 글자가 만나는 자리. 매일 바뀌므로 다시 볼 이유가 된다. */}
       <div className="sec-card">
-        <p className="cat4__head">오늘 글자와 내 글자</p>
+        <p className="cat4__head">오늘 일진과 내 사주의 관계</p>
         <p className="meet__pillar">
-          오늘은 <b>{read.todayMeet.pillar}</b> 날이에요
+          <b>{read.todayMeet.pillar}</b>
         </p>
         <Sentences className="qa qa--sub" text={read.chart.today} />
         <ul className="read6 read6--tight">
           <li className="read6__row">
-            <span className="read6__k">오늘 내 단계</span>
+            <span className="read6__k">오늘의 십이운성(활동 단계)</span>
             <Sentences className="read6__v" text={`${read.todayMeet.step}. ${read.todayMeet.stepLine}`} />
           </li>
           {read.todayMeet.rows.map((r, i) => (

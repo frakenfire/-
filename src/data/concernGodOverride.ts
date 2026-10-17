@@ -67,7 +67,7 @@ const OVERRIDE: Partial<Record<ConcernKey, Record<string, Override>>> = {
       },
       jeonggwan: {
         line: '자리가 정해지는 때예요. 계약과 등록이 붙는 자리예요.',
-        act: '계약서를 이 달 안에 써요',
+        act: '계약서를 이번 달 안에 써요',
         good: '계약을 맺고 범위를 정하는 것',
         month: '규칙대로 해둔 일이 인정으로 돌아오는 달이라 계약과 등록에 유리해요.',
         year: '자리가 정해지기 좋은 해라 계약과 등록이 붙어요.',

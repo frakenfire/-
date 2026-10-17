@@ -51,7 +51,7 @@ export function buildShareText(b: ShareBriefing): string {
     ``,
     ...hook,
     `오늘 할 것: ${b.doItem}`,
-    `오늘 하지 말 것: ${b.dontItem}`,
+    `오늘 주의할 일: ${b.dontItem}`,
     ``,
     `너한테는 뭐라고 하는지 봐봐`,
   ].join('\n');
@@ -174,7 +174,7 @@ export function buildRankingShareText(args: {
 }): string {
   // 메달 이모지 대신 숫자 — 토스는 이모지를 나란히 붙이지 않고, 순위는 숫자가 더 정확하다.
   const lines = [
-    `오늘의 띠 서열 · ${args.dateLabel}`,
+    `오늘의 띠별 운세 순위 · ${args.dateLabel}`,
     ``,
     ...args.top3.map((r, i) => `${i + 1}위 ${r.emoji}${r.label} · ${r.toneWord}`),
     `12위 ${args.last.emoji}${args.last.label} · ${args.last.toneWord}`,

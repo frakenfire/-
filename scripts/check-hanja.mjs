@@ -38,7 +38,7 @@ for (const file of walk('src')) {
   stripped.split('\n').forEach((code, i) => {
     // 계산용 파일에서도 한자를 들고 있어도 되는 건 hanja 필드 하나뿐이다.
     // 그 외의 문자열(예: ELEMENT_KO 의 '목(木)')은 그대로 화면에 나간다.
-    if (DATA_FILES.has(file) && /\bhanja:/.test(code)) return;
+    if (DATA_FILES.has(file.replaceAll('\\', '/')) && /\bhanja:/.test(code)) return;
     if (HANJA.test(code)) bad.push(`${file}:${i + 1}  ${lines[i].trim().slice(0, 90)}`);
   });
 }

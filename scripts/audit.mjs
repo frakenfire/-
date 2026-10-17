@@ -10,6 +10,7 @@
 // 미리보기 서버는 이 스크립트가 직접 띄우고 내린다.
 // Playwright 는 devDependency 가 아니라 필요할 때만 쓴다(설치 안 돼 있으면 안내 후 종료).
 
+import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { createRequire } from 'node:module';
@@ -53,13 +54,16 @@ try {
 // ── 결과 집계 ───────────────────────────────────────────────
 const results = [];
 const ok = (name, detail = '') => results.push({ pass: true, name, detail });
-const bad = (name, detail = '') => results.push({ pass: false, name, detail });
+const bad = (name, detail = '') => {
+  results.push({ pass: false, name, detail });
+  console.error(`❌ ${name}${detail ? ` — ${detail}` : ''}`);
+};
 const check = (cond, name, detail = '') => (cond ? ok(name, detail) : bad(name, detail));
 
 // ── 미리보기 서버 ───────────────────────────────────────────
 function startPreview() {
-  const p = spawn('npx', ['vite', 'preview', '--port', String(PORT)], {
-    cwd: new URL('..', import.meta.url).pathname,
+  const p = spawn(process.execPath, [fileURLToPath(new URL('../node_modules/vite/bin/vite.js', import.meta.url)), 'preview', '--port', String(PORT)], {
+    cwd: fileURLToPath(new URL('..', import.meta.url)),
     stdio: 'ignore',
     detached: false,
   });
@@ -341,7 +345,7 @@ async function run(browser) {
     await wait(page, 800);
     const t = await bodyText(page);
     check(/오늘은 \S+일/.test(t), '[홈] 일진 카드 노출');
-    check(t.includes('오늘의 띠 서열'), '[홈] 띠 서열 노출');
+    check(t.includes('오늘의 띠별 운세 순위'), '[홈] 띠 서열 노출');
     check(t.includes('오늘 쪽지 열어보기'), '[홈] 시작 CTA 노출');
     // 앱인토스 반려 사유: 진입 직후 바텀시트/모달이 자동으로 뜨면 안 된다.
     // role="dialog" 나 bottom-sheet 같은 이름으로 찾으면, 이 앱에는 그런 마크업이
@@ -431,8 +435,8 @@ async function run(browser) {
       check(weekReach.hit && weekReach.veil === '',
         '[주간] 마지막 날 칸까지 덮개 없이 바로 눌린다',
         `${weekReach.hit ? '' : '위에 덮인 것이 있음 '}${weekReach.veil}`);
-      check(/이번 주는 .+(트여요|순해요|잔잔해요)/.test(open), '[주간] 헤드라인 노출',
-        (open.match(/이번 주는 [^\n]*/) || [''])[0]);
+      check(/이번 주(에는|는) .+(가장 좋은 날이에요|편안하게 보내기 좋아요|무난해요)/.test(open), '[주간] 헤드라인 노출',
+        (open.match(/이번 주(?:에는|는) [^\n]*/) || [''])[0]);
 
       const rows = await page.locator('.week-row').count();
       check(rows === 7, '[주간] 7일이 모두 표시', `${rows}행`);
@@ -592,7 +596,7 @@ async function run(browser) {
       const moved = Math.abs((toggleAfter ?? 0) - (toggleBefore ?? 0));
       check(toggleBefore !== null && toggleAfter !== null && moved <= 2,
         '[사주입력] 켜는 순간 체크가 손가락 밑에서 안 움직인다', `${moved}px`);
-      check((await bodyText(page)).includes('세 기둥'), '[사주입력] 시각 없이도 되는 이유 설명');
+      check((await bodyText(page)).includes('해·달·날을 기준으로 풀이해요'), '[사주입력] 시각 없이도 되는 이유 설명');
       await page.getByText('태어난 시각을 몰라요', { exact: false }).first().click();
       await wait(page, 400);
       check((await page.locator('.wheel').count()) === 6, '[사주입력] 다시 끄면 시각 휠이 돌아온다');
@@ -684,8 +688,7 @@ async function run(browser) {
       // 새로고침해도 사주가 남고, 홈은 쪽지 뽑기만 남아 있어야 한다
       await page.goto(URL_BASE, { waitUntil: 'networkidle' });
       await wait(page, 800);
-      const homeQuiet = await bodyText(page);
-      check(!homeQuiet.includes('내 사주') && !homeQuiet.includes('오늘 나에게') && !homeQuiet.includes('이번 주 내 운세'),
+      check((await page.locator('.chart8, .drawn, .week-card').count()) === 0,
         '[홈] 사주·운세는 정보를 넣은 뒤에만 나온다');
       // 홈의 첫 CTA 는 언제나 쪽지 뽑기여야 한다 (사주가 주인공을 뺏으면 안 된다)
       const firstCta = await page.locator('.today-hook__cta').first().innerText();
@@ -1303,7 +1306,7 @@ async function run(browser) {
     check(new Set(chipSubs).size === 12, '[궁합] 칸마다 실마리가 다름', chipSubs.slice(0, 3).join(' / '));
     check(chipSubs.every((t) => /^\d\d( · \d\d)+$/.test(t)), '[궁합] 띠 칸은 두 자리 생년', chipSubs[0]);
     // 띠가 바뀌는 자리는 1월 1일이 아니라 입춘이라, 연도가 어긋나는 구간을 적어둬야 한다.
-    check((await bodyText(page)).includes('앞 띠일 수 있어요'), '[궁합] 입춘 경계를 알려줌');
+    check((await bodyText(page)).includes('전년도 띠일 수 있어요'), '[궁합] 입춘 경계를 알려줌');
 
     // 생년월일을 넣고 온 사람은 '나' 가 이미 정해져 있어 피커가 닫혀 있다. 슬롯을 눌러 연다.
     const pickZ = async (label) => {
@@ -1348,6 +1351,10 @@ async function run(browser) {
     // 같은 일을 하는 버튼을 둘 세우지 않는다
     check((await page.getByRole('button', { name: '친구한테 보내기' }).count()) === 1,
       '[궁합] 친구한테 보내는 버튼이 정확히 하나');
+    // headless 브라우저에서는 운영체제 공유창을 닫을 수 없다. 이 문구 검사는
+    // 공유창 대신 실제 클립보드 복사 경로를 사용한다. 성공 응답을 꾸미지 않는다.
+    await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.evaluate(() => Object.defineProperty(navigator, 'share', { value: undefined, configurable: true }));
     for (const [label, expect] of [['친구한테 보내기', '궁합'], ['궁합 카드 이미지로 저장하기', '저장']]) {
       await page.getByText(label, { exact: true }).first().click();
       let toast = '(없음)';
@@ -1357,6 +1364,10 @@ async function run(browser) {
         await page.locator('.toast').first().waitFor({ state: 'detached', timeout: 8000 }).catch(() => {});
       } catch { /* 토스트 없음 */ }
       check(toast.includes(expect), `[궁합] ${label}`, toast);
+      if (label === '친구한테 보내기') {
+        const copied = await page.evaluate(() => navigator.clipboard.readText());
+        check(copied.includes('오늘의 마음 한장') && copied.includes('궁합'), '[궁합] 공유 문구가 실제로 복사된다');
+      }
     }
     await page.locator('.save-person__chip', { hasText: '썸' }).first().click();
     await wait(page, 1400);
@@ -1575,12 +1586,12 @@ async function run(browser) {
     await page.context().close();
   }
 
-  // 12.8 마지막에 오늘 결론과 '네 가지 나' 가 한자리에 있는가
+  // 12.8 마지막에 오늘 결론과 '시기별로 살펴본 나' 가 한자리에 있는가
   {
     const page = await newPage(browser);
     await drawTo(page);
     const t = await bodyText(page);
-    const HAVE = ['지금 어떻게 하면 될까요', '왜 그렇게 해야 할까요', '네 가지 나', '오늘의 나', '가까운 미래의 나', '먼 미래의 나', '타고난 나'];
+    const HAVE = ['지금 어떻게 하면 될까요', '왜 그렇게 해야 할까요', '시기별로 살펴본 나', '오늘의 나', '가까운 미래의 나', '먼 미래의 나', '타고난 나'];
     const miss = HAVE.filter((x) => !t.includes(x));
     check(miss.length === 0, '[결과] 네 덩이가 순서대로 있다', miss.join(', ') || '다 있음');
     // 오늘 하나만 놓고 묻고 답하는가
@@ -1636,7 +1647,7 @@ async function run(browser) {
   // 13. 화면별 뒤로가기
   {
     const BACKS = [
-      ['생년월일', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); }, '오늘의 띠 서열'],
+      ['생년월일', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); }, '오늘의 띠별 운세 순위'],
       // 뒤로가기는 홈이 아니라 '한 단계 앞' 으로 가야 한다
       ['고민 고르기', async (p) => { await p.goto(URL_BASE, { waitUntil: 'networkidle' }); await wait(p, 400); await p.getByText('오늘 쪽지 열어보기').first().click(); await wait(p, 500); await fillName(p); await p.getByRole('button', { name: '다음' }).first().click(); }, '언제 태어났어요'],
       ['결과', async (p) => { await drawTo(p); }, '이렇게 뽑혀요'],
@@ -1644,7 +1655,7 @@ async function run(browser) {
       // 전에는 '점수' 라는 말이 있는지만 봤는데, 그 말은 홈의 원리 설명
       // 여섯째 줄("그 규칙으로 점수를 매겨요")에 들어 있었다. 그 글을 접자마자
       // 검사가 빨개졌다 - 뒤로가기가 아니라 설명 문단을 보고 있었던 셈이다.
-      ['궁합', async (p) => { await goCompat(p); }, '오늘의 띠 서열'],
+      ['궁합', async (p) => { await goCompat(p); }, '오늘의 띠별 운세 순위'],
     ];
     for (const [name, prep, expect] of BACKS) {
       const page = await newPage(browser);

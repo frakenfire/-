@@ -10,7 +10,9 @@
 - **AI API 호출 없음** — 결과는 `fortuneType + note + dateSeed + mood` 조합 (`src/lib/generateFortune.ts`)
 - **서버/DB/로그인 없음** — 상태는 React state, 기록은 `localStorage`(선택형 값만)
 - **개인정보/자유입력 저장 없음** (`src/lib/storage.ts`) — 띠도 생년월일 없이 선택형 값만
-- **가볍고 희망적인 톤, 해요체** — 의료/금융/법률 조언 및 단정·불안 표현 금지
+- **자연스러운 한국어, 해요체** — 실제로 말할 법한 문장으로 쓴다. 사주 용어는 필요하면 짧게 설명하고, 뜻이 모호한 별명으로 바꾸지 않는다.
+  감정을 짐작해 단정하거나 단어만 바꿔 끼우는 문장은 피한다. 일상적인 말과 비유를 무조건 금지하지 않는다.
+  운세 점수로 진료를 미루게 하거나 투자·큰 지출을 허락하지 않는다.
 - **광고는 앱인토스 실 SDK** — `showFullScreenAd` (`src/lib/ads.ts`).
   `userEarnedReward` 이벤트가 왔을 때만 보상하고, 중도 닫기·실패·미지원은 절대 보상으로 위장하지 않음.
   로컬 `npm run dev` 에서만 mock 이고, 운영 번들에 섞이지 않았는지는 `npm run check:no-mock` 이 검사

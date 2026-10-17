@@ -23,7 +23,7 @@ import { ohaengWhy } from '../data/ohaeng.ts';
 import type { Band } from '../lib/timing.ts';
 
 // 고민 점수의 등급말 - 숫자 옆에 한 단어가 있어야 '이게 높은 건가' 가 안 생긴다
-const BAND_LABEL: Record<Band, string> = { good: '열려 있어요', ok: '무난해요', hard: '지킬 때예요' };
+const BAND_LABEL: Record<Band, string> = { good: '좋은 편이에요', ok: '무난해요', hard: '신중하게 보세요' };
 import type { DeepRead } from '../lib/deepRead.ts';
 import type { TimingRead } from '../lib/timing.ts';
 
@@ -220,7 +220,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           {!isMonth && allPartsPassed ? (
             <Sentences
               className="mflow__foot"
-              text="오늘 시간대 풀이는 다 지나갔어요. 내일 아침에 새 쪽지를 뽑아보세요."
+              text="오늘의 시간대별 풀이를 모두 보셨네요. 내일 아침에 새 운세를 확인해보세요."
             />
           ) : null}
         </div>

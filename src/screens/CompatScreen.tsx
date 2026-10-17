@@ -132,7 +132,7 @@ export function CompatScreen({
     setSavedPeople(list);
     if (duplicate) onToast('이미 저장돼 있어요');
     else if (saved) onToast('내 사람으로 저장했어요 다음엔 바로 확인할 수 있어요');
-    else onToast('앗, 저장 공간이 부족해 저장을 못 했어요');
+    else onToast('저장했어요. 다음에는 바로 궁합을 볼 수 있어요');
   }
 
   function forgetPerson(id: string) {
@@ -169,7 +169,7 @@ export function CompatScreen({
     try {
       const ok = await onAdUnlock();
       if (ok) setUnlocked(true);
-      else onToast('광고를 끝까지 봐야 열려요');
+      else onToast('저장하지 못했어요. 기기의 저장 설정을 확인해주세요');
     } catch {
       onToast('앗, 광고를 불러오지 못했어요');
     } finally {
@@ -185,7 +185,7 @@ export function CompatScreen({
       const ok = await onShare(invite);
       if (ok) {
         setUnlocked(true);
-        onToast('공유했어요! 결과를 열었어요');
+        onToast('공유하고 궁합 결과를 열었어요');
       }
       // 취소/실패 시엔 잠금 유지 (보상 위장 금지) — 별도 안내 없이 조용히.
     } catch {
@@ -207,7 +207,7 @@ export function CompatScreen({
     const text = bragText();
     if (!text) return;
     const ok = await onShare(text);
-    onToast(ok ? '궁합 자랑 완료!' : '앗, 공유를 못 했어요');
+    onToast(ok ? '궁합을 공유했어요' : '앗, 공유를 못 했어요');
   }
 
   // 스토리에 올리는 바이럴 카드 — 광고 없이(확산 우선) 바로 이미지 저장.
@@ -216,7 +216,7 @@ export function CompatScreen({
     setBusy(true);
     try {
       const ok = await saveCompatCard({ modeLabel, me: myLabel, friend: friendLabel, result });
-      onToast(ok ?'궁합 카드 저장 완료!  스토리에 올려봐요' : '앗, 저장을 못 했어요');
+      onToast(ok ?'궁합 카드를 저장했어요' : '앗, 저장을 못 했어요');
     } catch {
       onToast('앗, 저장 중 문제가 생겼어요');
     } finally {
@@ -279,7 +279,7 @@ export function CompatScreen({
         {/* 띠가 바뀌는 자리는 1월 1일이 아니라 입춘이다. 연도는 고르는 데
             쓰는 실마리지 판정이 아니라서, 어긋나는 구간을 적어둔다. */}
         {mode === 'zodiac' ? (
-          <p className="pick-foot pick-foot--note">1~2월 초에 태어났으면 앞 띠일 수 있어요</p>
+          <p className="pick-foot pick-foot--note">1월이나 2월 초에 태어났다면 전년도 띠일 수 있어요</p>
         ) : null}
       </AppLayout>
     );
@@ -327,7 +327,7 @@ export function CompatScreen({
 
       {savedRanked.length > 0 ? (
         <div className="saved-people">
-          <p className="saved-people__title">내 사람들 · 오늘의 랭킹</p>
+          <p className="saved-people__title">저장한 사람들의 오늘 궁합 순위</p>
           {savedRanked.map(({ person, label, score }) => {
             const rel = relationMeta(person.relation);
             return (
@@ -364,7 +364,7 @@ export function CompatScreen({
           <div className="compat-lock__score">?</div>
           <p className="compat-lock__title">오늘 우리 궁합, 몇 점일까요?</p>
           <p className="compat-lock__teaser">
-            잘 맞는 정도, 대화, 안 싸우기 점수부터 오늘 두 사람 유형, 잘 맞는 점과 조언까지 한 번에 나와요
+            두 사람의 궁합 점수와 잘 맞는 점, 대화할 때 주의할 점을 알려드려요
           </p>
           <div className="btn-stack">
             <button type="button" className="btn btn--primary" disabled={busy} onClick={unlockByShare}>
@@ -410,7 +410,7 @@ export function CompatScreen({
                 '상극' 이 모순처럼 읽히지 않게 한다 */}
             {result.elements ? (
               <div className="compat-ohaeng">
-                <span className="compat-ohaeng__label">속 성질</span>
+                <span className="compat-ohaeng__label">두 사람의 오행 관계</span>
                 <span className="compat-ohaeng__pair">
                   {/* 앞에 오행 이모지를 붙이던 자리다. 이모지를 다 걷어내면서
                       빈 문자열 다섯 개짜리 맵만 남았고, 화면에는 글자 앞에
@@ -471,8 +471,8 @@ export function CompatScreen({
           </section>
 
           <div className="save-person">
-            <p className="save-person__title">이 사람, 내 사람으로 저장할까요?</p>
-            <p className="save-person__desc">관계만 골라두면, 올 때마다 이 사람과의 오늘 궁합이 자동으로 떠요 (로그인 없이 이 폰에만 저장)</p>
+            <p className="save-person__title">이 사람을 저장할까요?</p>
+            <p className="save-person__desc">관계를 골라 저장하면 다음에도 오늘의 궁합을 바로 볼 수 있어요. 로그인 없이 이 기기에만 저장해요.</p>
             <div className="save-person__chips">
               {RELATIONS.map((r) => (
                 <button

@@ -15,6 +15,11 @@ const GRAMMAR_OK = [
   '고 싶어지는',
   '는 편이 나',
   '편이 나아요',
+  '정리해보세요', // 구체적인 목적어는 별도 문장에서 확인한다
+  '확인해보세요',
+  '될 수 있어',
+  '하기 쉬워요',
+  '도 괜찮아요',
 ];
 
 function phrases(s: string, n: number): Set<string> {

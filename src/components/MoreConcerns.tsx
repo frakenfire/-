@@ -56,7 +56,7 @@ export function MoreConcerns({ current, unlocked, onUnlock, onOpen }: Props) {
       <p className="cat4__head">다른 고민도 궁금하면</p>
       <Sentences
         className="more__lead"
-        text="같은 명식으로 답만 다시 계산해요. 지금 보신 내용은 그대로 있어요."
+        text="입력한 생년월일시로 다른 주제의 운세를 볼 수 있어요."
       />
       <ul className="more">
         {rest.map((c) => {

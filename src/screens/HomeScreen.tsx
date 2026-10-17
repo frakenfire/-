@@ -145,7 +145,7 @@ export function HomeScreen({
           볼 수 있는 유일한 콘텐츠라 '내 띠' 를 아는 척하지 않는다. 순위만 보여준다. */}
       <section className="sec">
         <div className="sec__head">
-          <h2 className="sec__title">오늘의 띠 서열</h2>
+          <h2 className="sec__title">오늘의 띠별 운세 순위</h2>
           {/* 서열표를 만드는 코드는 있었는데 누르는 자리가 없었다.
               주간 카드와 같은 자리, 같은 모양으로 붙인다. */}
           {onShareRanking && ranking.length >= 12 ? (

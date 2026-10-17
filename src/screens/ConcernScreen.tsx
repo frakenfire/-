@@ -23,7 +23,7 @@ export function ConcernScreen({ userName, onSelect, onBack, inFlow = false }: Pr
         </span>
         <div className="ask-hero__text">
           <h2 className="h2">{userName ? `${userName}님, 요즘 뭐가 고민이에요?` : '요즘 뭐가 고민이에요?'}</h2>
-          <p className="lead">하나만 골라주면 그 얘기만 깊게 풀어드려요.</p>
+          <p className="lead">궁금한 주제를 고르면 자세히 풀이해드려요.</p>
         </div>
       </div>
 
@@ -44,7 +44,7 @@ export function ConcernScreen({ userName, onSelect, onBack, inFlow = false }: Pr
         ))}
       </div>
 
-      <Sentences className="ask-foot" text="고른 고민에 맞는 시기를 사주로 계산해요. 답은 이 기기에서만 만들어져요." />
+      <Sentences className="ask-foot" text="고른 주제에 맞춰 사주와 시기별 운세를 살펴봐요. 계산은 이 기기에서 이뤄져요." />
     </AppLayout>
   );
 }

@@ -1,5 +1,5 @@
 import type { Element } from '../lib/saju.ts';
-import { withRo } from '../lib/josa.ts';
+import { withJosa } from '../lib/josa.ts';
 
 // 다섯 갈래마다 정해진 것들 — 방위, 숫자, 시각, 맛, 빛깔.
 //
@@ -60,11 +60,11 @@ export const OHAENG: Record<Element, OhaengFacts> = {
   wood: {
     ko: '나무',
     direction: '동쪽',
-    directionWhy: '나무는 해가 뜨는 쪽에서 제일 잘 자라요.',
+    directionWhy: '오행에서 나무는 동쪽과 연결해요.',
     numbers: [3, 8],
     time: '이른 아침',
     timeEnd: 7,
-    timeWhy: '나무는 새벽에서 아침으로 넘어갈 때 제일 힘을 써요.',
+    timeWhy: '나무와 연결하는 시간은 이른 아침이에요.',
     taste: '신맛',
     foods: ['푸른 잎채소', '오이', '레몬을 띄운 물', '사과'],
     items: ['작은 화분', '나무 연필', '천가방'],
@@ -73,24 +73,24 @@ export const OHAENG: Record<Element, OhaengFacts> = {
   fire: {
     ko: '불',
     direction: '남쪽',
-    directionWhy: '불은 해가 가장 높이 뜨는 쪽에 모여요.',
+    directionWhy: '오행에서 불은 남쪽과 연결해요.',
     numbers: [2, 7],
     time: '점심 무렵',
     timeEnd: 13,
-    timeWhy: '불은 해가 제일 높을 때 같이 세져요.',
+    timeWhy: '불과 연결하는 시간은 점심 무렵이에요.',
     taste: '쓴맛',
     foods: ['쌉쌀한 나물', '따뜻한 커피', '구운 채소', '토마토'],
     items: ['빨간 펜', '따뜻한 컵', '작은 조명'],
-    colorWhy: '불빛 빛깔이에요.',
+    colorWhy: '불꽃을 떠올리는 색이에요.',
   },
   earth: {
     ko: '흙',
     direction: '가운데',
-    directionWhy: '흙은 어느 쪽에도 기울지 않고 가운데에 있어요.',
+    directionWhy: '오행에서 흙은 가운데와 연결해요.',
     numbers: [5, 10],
     time: '이른 오후',
     timeEnd: 15,
-    timeWhy: '흙은 해가 기울기 시작할 때 제일 따뜻해요.',
+    timeWhy: '흙과 연결하는 시간은 이른 오후예요.',
     taste: '단맛',
     foods: ['호박죽', '고구마', '누룽지', '단호박 샐러드'],
     items: ['도자기 컵', '작은 수첩', '손수건'],
@@ -99,11 +99,11 @@ export const OHAENG: Record<Element, OhaengFacts> = {
   metal: {
     ko: '쇠',
     direction: '서쪽',
-    directionWhy: '쇠는 해가 지면서 하루를 거두는 쪽이에요.',
+    directionWhy: '오행에서 쇠는 서쪽과 연결해요.',
     numbers: [4, 9],
     time: '늦은 오후',
     timeEnd: 19,
-    timeWhy: '쇠는 해가 넘어가기 직전에 제일 힘을 써요.',
+    timeWhy: '쇠와 연결하는 시간은 늦은 오후예요.',
     taste: '매운맛',
     foods: ['무국', '마늘을 넣은 요리', '배', '생강차'],
     items: ['열쇠고리', '금속 텀블러', '작은 가위'],
@@ -112,11 +112,11 @@ export const OHAENG: Record<Element, OhaengFacts> = {
   water: {
     ko: '물',
     direction: '북쪽',
-    directionWhy: '물은 해가 닿지 않는 쪽에 고여요.',
+    directionWhy: '오행에서 물은 북쪽과 연결해요.',
     numbers: [1, 6],
     time: '밤',
     timeEnd: 24,
-    timeWhy: '물은 해가 다 진 뒤에 제일 힘을 써요.',
+    timeWhy: '물과 연결하는 시간은 밤이에요.',
     taste: '짠맛',
     foods: ['미역국', '검은콩', '김', '따뜻한 두부'],
     items: ['보온병', '검은 노트', '작은 우산'],
@@ -143,26 +143,24 @@ export function ohaengWhy(
   concern?: { luckyWhere: string; luckyWhen: string },
 ): string {
   const f = OHAENG[boost];
-  const hasBatchim = (w: string) => /[가-힣]$/.test(w)
-    && (w.charCodeAt(w.length - 1) - 0xac00) % 28 !== 0;
   // 숫자는 소리로 읽어서 받침을 본다. 2(이)·4(사)·5(오)·9(구)는 받침이 없어
   // '와', 1(일)·3(삼)·6(육)·7(칠)·8(팔)·10(십)은 '과'. '2과 7' 이라고 적으면
   // 계산이 맞아도 읽는 사람은 대충 만든 글로 본다.
   const numJosa = [2, 4, 5, 9].includes(f.numbers[0]) ? '와' : '과';
   const dirLine = concern
-    ? `${f.directionWhy} 그래서 ${f.direction}이 ${concern.luckyWhere}이에요.`
-    : `${f.directionWhy} 그래서 ${f.direction}${hasBatchim(f.direction) ? '이' : '가'} 오늘 내 자리예요.`;
+    ? `${f.directionWhy} ${withJosa(f.direction, '을를')} ${concern.luckyWhere}으로 참고해보세요.`
+    : `${f.directionWhy} 행운의 방향으로 ${withJosa(f.direction, '을를')} 골랐어요.`;
   const timeLine = concern
-    ? `${f.timeWhy} 그래서 ${concern.luckyWhen} ${withRo(f.time)} 잡으면 수월해요.`
-    : `${f.timeWhy} 그래서 중요한 건 ${withRo(f.time)} 잡으면 수월해요.`;
+    ? `${f.timeWhy} ${concern.luckyWhen} 이 시간대를 참고해보세요.`
+    : `${f.timeWhy} 중요한 약속을 잡을 때 참고해보세요.`;
   // 기운 이름은 첫 문장에서 한 번만 부른다. 문장마다 '쇠 기운' 을 되풀이하면
   // 다섯 줄이 같은 말을 네 번 하는 것처럼 읽힌다.
   return [
-    `오늘 나한테 힘이 되는 건 ${f.ko} 쪽이에요.`,
+    `아래 행운 정보는 오행 중 ${withJosa(f.ko, '을를')} 기준으로 골랐어요.`,
     dirLine,
     timeLine,
-    `붙는 숫자는 ${f.numbers[0]}${numJosa} ${f.numbers[1]}, 빛깔은 ${colorName}이에요. 먹는 건 ${f.taste}이 드는 쪽이 좋아요.`,
+    `행운의 숫자는 ${f.numbers[0]}${numJosa} ${f.numbers[1]}, 색은 ${colorName}이에요. 음식은 ${f.taste}이 나는 것으로 골라봤어요.`,
     // 여섯 칸이 어제와 같은 이유를 먼저 말해준다. 안 말하면 '왜 안 바뀌지' 가 남는다.
-    '이건 내 여덟 글자에서 제일 모자란 쪽이라 날마다 바뀌지 않아요. 오늘 바뀐 건 빛깔이에요.',
+    '사주에서 보완할 오행을 기준으로 골라서 날짜마다 바뀌지는 않아요. 색은 그 안에서 날마다 다르게 골라드려요.',
   ].join('\n');
 }

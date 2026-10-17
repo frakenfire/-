@@ -316,11 +316,11 @@ test('주간 캘린더 — best 는 실제로 가장 좋은 날이고 동점이�
 test('주간 캘린더 헤드라인이 best 톤과 모순되지 않는다', () => {
   for (const z of ZODIACS) {
     const w = computeWeekAhead('2026-08-14', z);
-    if (w.best.tone === 'great') assert.ok(w.headline.includes('크게'), w.headline);
-    else if (w.best.tone === 'good') assert.ok(w.headline.includes('순해요'), w.headline);
-    else assert.ok(w.headline.includes('잔잔'), w.headline);
+    if (w.best.tone === 'great') assert.ok(w.headline.includes('가장 좋은'), w.headline);
+    else if (w.best.tone === 'good') assert.ok(w.headline.includes('편안하게'), w.headline);
+    else assert.ok(w.headline.includes('무난'), w.headline);
     // 오늘이 최고일 땐 "오늘", 아니면 요일이 찍혀야 어느 날인지 알 수 있다
-    if (w.best.isToday) assert.ok(w.headline.includes('오늘') || w.headline.includes('잔잔'));
+    if (w.best.isToday) assert.ok(w.headline.includes('오늘') || w.headline.includes('무난'));
   }
 });
 

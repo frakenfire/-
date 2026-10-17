@@ -4,7 +4,7 @@ import type { FortuneType, Mood } from '../types/fortune.ts';
 // 운세 종류(무엇이 궁금한지) × 상태(지금 기분)로 내용을 결정한다.
 //  · 운세 종류 → 주제와 시간 척도 (이번 달 = 초반/중순/월말, 나머지 = 아침/낮/저녁)
 //  · 상태(up/flat/down) → 톤 (좋음=그라운딩·나눔 / 보통=작은 실행 / 힘듦=회복·안정)
-// 톤: 토스 라이팅 원칙 — 해요체, 공감 먼저, 긍정형, 잡초 없이, 어미 다양화.
+// 문체: 자연스러운 해요체. 감정을 단정하거나 추상적인 낱말을 틀에 끼우지 않고, 구체적인 상황과 행동을 적는다.
 
 export type MoodGroup = 'up' | 'flat' | 'down';
 
@@ -673,7 +673,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '설렘을 재기만 하다 놓치는 것',
       },
       {
-        headline: '사랑운이 좋은 날엔 솔직함이 제일 잘 통해요.',
+        headline: '연애운이 좋은 날엔 솔직함이 제일 잘 통해요.',
         vibe: '돌려 말하기보다 담백하게가 정답이에요.',
         steps: [
           { when: '아침', text: '하고 싶었던 말을 한 줄로 정리해봐요.' },
@@ -716,7 +716,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
       },
       {
         headline: '지금은 확인보다 편안함을 먼저 나눠요.',
-        vibe: '조급함을 내려놓으면 공기가 부드러워지는 날이에요.',
+        vibe: '서로 서두르지 않으면 조금 더 편하게 대화할 수 있어요.',
         steps: [
           { when: '아침', text: '답장 속도에 마음 졸이지 말아요.' },
           { when: '낮', text: '다정한 한마디를 툭 건네봐요.' },
@@ -931,7 +931,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '계획 세우는 데만 힘을 쏟고 실행을 미루는 것',
       },
       {
-        headline: '돈운 좋은 날엔 흥정이 잘 먹혀요.',
+        headline: '금전운 좋은 날엔 흥정이 잘 먹혀요.',
         vibe: '가격 얘기를 꺼내기 좋은 타이밍이에요.',
         steps: [
           { when: '아침', text: '오늘 사야 할 것의 시세를 미리 확인해요.' },
@@ -1013,7 +1013,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '숫자를 확인하고 필요 이상으로 불안해하는 것',
       },
       {
-        headline: '큰 변화 없는 돈운, 지금 습관을 지키면 충분해요.',
+        headline: '큰 변화 없는 금전운, 지금 습관을 지키면 충분해요.',
         vibe: '평소 하던 관리만 유지해도 무난한 날이에요.',
         steps: [
           { when: '아침', text: '평소처럼 필요한 것만 계산해요.' },
@@ -1033,7 +1033,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '스트레스를 장바구니로 푸는 것',
       },
       {
-        headline: '무난한 돈운엔 습관 하나가 자산이 돼요.',
+        headline: '무난한 금전운엔 습관 하나가 자산이 돼요.',
         vibe: '자동으로 굴러가게 만들면 이겨요.',
         steps: [
           { when: '아침', text: '소액 자동이체 하나를 걸어둬요.' },
@@ -1281,7 +1281,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '더 다듬는다는 핑계로 보여주기를 미루는 것',
       },
       {
-        headline: '오늘은 무난하게 흘러가는 일운이에요.',
+        headline: '오늘은 무난하게 흘러가는 직장운이에요.',
         vibe: '특별한 일 없이 하던 대로만 해도 괜찮은 날이에요.',
         steps: [
           { when: '아침', text: '평소 하던 순서대로 하루를 시작해요.' },
@@ -1691,7 +1691,7 @@ export const PLANS: Record<FortuneType, Record<MoodGroup, MoodPlan[]>> = {
         holdOff: '빨리 끝내버리자며 서명부터 하는 것',
       },
       {
-        headline: '마음이 가라앉는 날엔 가는 자리도 가려서 가요.',
+        headline: '마음이 가라앉는 날엔 편하게 머물 수 있는 곳을 골라보세요.',
         vibe: '같이 있으면 지치는 자리는 피해도 돼요.',
         steps: [
           { when: '아침', text: '오늘 약속 중 부담스러운 걸 조정해요.' },

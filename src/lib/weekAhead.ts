@@ -72,10 +72,10 @@ export function computeWeekAhead(todayKey: string, zodiac: ZodiacId): WeekAhead 
   const bestLabel = best.isToday ? '오늘' : `${best.weekday}요일(${best.short})`;
   const headline =
     TONE_RANK[best.tone] >= 3
-      ? `이번 주는 ${bestLabel}이 크게 트여요`
+      ? `이번 주에는 ${bestLabel}이 가장 좋은 날이에요`
       : TONE_RANK[best.tone] === 2
-        ? `이번 주는 ${bestLabel}이 가장 순해요`
-        : `이번 주는 큰 굴곡 없이 잔잔해요`;
+        ? `이번 주에는 ${bestLabel}을 편안하게 보내기 좋아요`
+        : `이번 주는 큰 변화 없이 무난해요`;
 
   return { days, best, caution, headline };
 }

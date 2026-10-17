@@ -231,7 +231,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
           </span>
         ) : (
           <span className="field__hint" id="birth-name-hint">
-            이름 소리를 다섯 갈래로 갈라 사주와 같이 봐요.
+            이름 소리를 목·화·토·금·수로 나눠 사주와 함께 풀이해요.
           </span>
         )}
       </label>
@@ -266,11 +266,11 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
         {genderWarn ? (
           <span className="field__warn" id="birth-gender-hint" role="alert">
             <span className="field__warn__mark" aria-hidden>!</span>
-            성별을 골라주세요. 십 년 단위를 앞으로 세는지 뒤로 세는지가 여기서 갈려요.
+            성별을 골라주세요. 10년 단위의 운인 대운을 계산할 때 사용해요.
           </span>
         ) : (
           <span className="field__hint" id="birth-gender-hint">
-            십 년 단위를 세는 방향이 성별로 갈려요.
+            성별은 10년 단위의 운인 대운을 계산할 때 사용해요.
           </span>
         )}
       </div>
@@ -352,7 +352,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
           {/* '30분만 달라도…' 같은 설득 문장은 넣지 않는다. 몰라요를 켰을 때만,
               무엇이 빠지는지 한 문장. */}
           {unknownTime ? (
-            <p className="birth-hint">시각 없이 세 기둥으로 봐요.</p>
+            <p className="birth-hint">태어난 시각을 제외하고 해·달·날을 기준으로 풀이해요.</p>
           ) : (
             <div className="wheel-row">
               <WheelPicker
@@ -415,7 +415,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
           ) : null}
           <Sentences
             className="field__hint"
-            text="해가 뜨는 시각이 지역마다 달라요. 목록에 없으면 가까운 곳으로 골라주세요."
+            text="태어난 지역의 경도를 시각 보정에 사용해요. 목록에 없으면 가까운 곳을 골라주세요."
           />
         </div>
 
@@ -440,7 +440,7 @@ export function BirthScreen({ initial, onSave, onClear, onBack, inFlow = false, 
           </div>
         ) : (
           <button type="button" className="data-link" onClick={() => setConfirmClear(true)}>
-            넣어둔 정보 지우기
+            저장한 내 정보 지우기
           </button>
         )
       ) : null}

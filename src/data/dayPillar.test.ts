@@ -51,7 +51,7 @@ test('예순 사람이 서로 다른 말을 받는다', () => {
 // 말해야 한다. '쉬워요' 로 끝나는지로 본다.
 test('예순 칸 모두 발목 잡히는 데를 말한다', () => {
   const 안된것 = Object.entries(DAY_PILLAR)
-    .filter(([, v]) => !/쉬워요[.]$/.test(v.watch))
+    .filter(([, v]) => !/(쉬워요|수 있어요)[.]$/.test(v.watch))
     .map(([k]) => k);
   assert.deepEqual(안된것, []);
 });

@@ -79,7 +79,7 @@ const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     id: 'jeong', hanja: '丁', kor: '정화', icon: 'candle', name: '오래 가는 사람',
     tagline: '티 안 나게 끝까지 해내요',
     nature:
-      '크게 떠들지 않지만 필요한 자리에 정확히 빛을 둬요. 사람의 표정 변화나 말끝을 잘 알아채고, 한 가지에 깊게 파고드는 힘이 있어요.',
+      '조용히 주변을 살피고 필요한 일을 챙기는 편이에요. 표정이나 말투의 변화를 잘 알아채고, 한 가지 일에 깊이 집중해요.',
     strengths: ['집중력', '눈치', '깊이'],
     shadow: '너무 잘 알아채서 혼자 마음을 앓을 때가 많아요.',
     shines: '아무도 못 본 디테일을 짚어낼 때',
@@ -90,7 +90,7 @@ const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     id: 'mu', hanja: '戊', kor: '무토', icon: 'mountain', name: '단단한 사람',
     tagline: '흔들려도 자리를 지켜요',
     nature:
-      '급하게 움직이지 않아요. 대신 한번 맡으면 끝까지 있고, 사람들이 기대 쉬어가는 자리가 돼요. 판단은 느려 보여도 웬만해선 틀리지 않아요.',
+      '급하게 움직이기보다 맡은 일을 꾸준히 해내는 편이에요. 사람들이 편하게 의지하고, 판단할 때도 충분히 생각해요.',
     strengths: ['안정감', '포용력', '신뢰'],
     shadow: '움직여야 할 때도 일단 버티는 쪽을 골라요.',
     shines: '모두가 흔들릴 때 혼자 그대로 서 있을 때',
@@ -145,7 +145,7 @@ const DAY_MASTERS: Record<DayMasterId, DayMasterInfo> = {
     id: 'gye', hanja: '癸', kor: '계수', icon: 'drop', name: '스며드는 사람',
     tagline: '조용히 분위기를 바꿔요',
     nature:
-      '큰 소리를 내지 않아요. 그런데 지나간 자리는 달라져 있어요. 감정을 잘 읽고, 말하지 않은 것까지 알아채요.',
+      '말수가 적어도 주변을 세심하게 살피는 편이에요. 사람들의 감정을 잘 읽고 말하지 못한 사정에도 관심을 가져요.',
     strengths: ['공감력', '직관', '차분함'],
     shadow: '남의 감정까지 다 받아서 혼자 무거워져요.',
     shines: '누군가 "너한테는 말할 수 있어" 할 때',

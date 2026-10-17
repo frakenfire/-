@@ -4,6 +4,7 @@ import { computeFourPillars } from './fourPillars.ts';
 import { computeTiming } from './timing.ts';
 import { buildDeepRead } from './deepRead.ts';
 import { CONCERNS, type ConcernKey } from '../data/concerns.ts';
+import { UNSEONG, SINSAL_KO } from './sinsal.ts';
 
 const INPUT = { year: 1992, month: 3, day: 3, hour: 20 };
 const P = computeFourPillars(INPUT);
@@ -193,10 +194,10 @@ test('오늘 글자와 내 글자가 만나는 자리가 날마다 바뀐다', (
 test('명식 기둥마다 십이운성 단계가 붙는다', () => {
   const t = computeTiming(INPUT, P, 'female', 'work', new Date('2026-09-17T12:00:00+09:00'));
   const r = buildDeepRead(P, t, 'work', null, '2026-09-17');
-  for (const c of r.chart.pillars) assert.ok(c.step.length > 2, `${c.k} 단계 비었음`);
-  assert.ok(r.chart.gongmang.includes('비어 있어요'));
+  for (const c of r.chart.pillars) assert.ok((UNSEONG as readonly string[]).includes(c.step), `${c.k} 단계 비었음`);
+  assert.ok(r.chart.gongmang.includes('공망'));
   for (const x of r.chart.sinsal) {
-    assert.ok(x.k.length > 2 && x.v.length > 10, `${x.k} 설명 비었음`);
+    assert.ok(Object.keys(SINSAL_KO).includes(x.k) && x.v.length > 10, `${x.k} 설명 비었음`);
   }
 });
 

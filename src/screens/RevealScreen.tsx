@@ -7,22 +7,22 @@ import type { FortuneType } from '../types/fortune.ts';
 // 단계별 멘트가 기대감(두근두근)을 만들고, 결과 타율을 높여 보이게 한다.
 
 const COMMON_STEPS = [
-  '쪽지들을 살살 뒤섞고 있어요',
-  '오늘 어떤 날인지 조심조심 읽는 중',
+  '오늘의 쪽지를 준비하고 있어요',
+  '오늘의 운세를 살펴보고 있어요',
 ];
 
 const TYPE_STEP: Record<FortuneType, string> = {
   tomorrow: '오늘의 나를 살펴보는 중',
   month: '이번 달을 쭉 펼쳐보는 중',
-  love: '사랑운을 살짝 들여다보는 중',
-  money: '돈운을 살짝 들여다보는 중',
-  work: '일운을 차곡차곡 살피는 중',
+  love: '연애운을 살펴보고 있어요',
+  money: '금전운을 살펴보고 있어요',
+  work: '직장운을 살펴보고 있어요',
   caution: '조심할 순간을 콕 짚어보는 중',
-  luck: '행운 세트를 예쁘게 담는 중',
+  luck: '행운의 색과 숫자를 살펴보고 있어요',
 };
 
 const LAST_STEP = '거의 다 됐어요';
-const SPECIAL_STEP = '앗, 이건 조금 특별한 쪽지예요';
+const SPECIAL_STEP = '조금 특별한 쪽지가 나왔어요';
 
 type Props = {
   fortuneType: FortuneType;

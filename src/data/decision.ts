@@ -65,9 +65,9 @@ export const WHEN_ACT: Record<ConcernKey, { best: string; hard: string; year: st
     year: '누구를 오래 볼지는 이 해에 골라도 돼요.',
   },
   health: {
-    best: '검진을 받고 운동을 이때 시작하세요.',
+    best: '검진 일정을 확인하고 몸에 맞는 운동을 계획해보세요.',
     hard: '일정은 이때 늘리지 말고 비워둬요.',
-    year: '생활 습관을 바꾸면 이 해에 그대로 붙어요.',
+    year: '올해는 생활 습관을 꾸준히 살펴보면 좋아요.',
   },
   mind: {
     best: '미뤄둔 결정을 이때 끝내세요.',

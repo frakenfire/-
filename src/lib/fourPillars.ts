@@ -213,7 +213,7 @@ export function computeFourPillars(
   if (off.note) notes.push(off.note);
   if (trueSolar) {
     notes.push(
-      `해 뜨는 시간에 맞춰 ${Math.abs(Math.round(trueSolarMin))}분 ${trueSolarMin >= 0 ? '늦게' : '일찍'} 봤어요`,
+      `지역과 태양의 위치에 맞춰 태어난 시각을 ${Math.abs(Math.round(trueSolarMin))}분 ${trueSolarMin >= 0 ? '늦게' : '일찍'} 보정했어요`,
     );
   }
 

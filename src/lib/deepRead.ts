@@ -171,7 +171,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
   },
   love: {
     now: [
-      '아는 사람을 통해 닿는 자리를 만들어요. 낯선 자리보다 잘 붙어요',
+      '아는 사람에게 소개를 부탁해보세요. 처음 만나는 자리에서도 조금 더 편할 수 있어요',
       '먼저 연락하는 쪽이 되어봐요. 지금은 그게 통해요',
       '만나면 다음 약속을 그 자리에서 잡아요',
     ],
@@ -190,7 +190,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
     now: [
       '먼저 연락해요. 지금은 내가 여는 쪽이 이득이에요',
       '도움을 청해도 되는 달이에요. 혼자 안고 가지 말아요',
-      '고마운 사람한테 표시를 해둬요. 오래 가요',
+      '고마운 사람에게 마음을 표현해보세요. 작은 인사가 오래 기억될 수 있어요',
     ],
     soon: [
       '오해가 있으면 지금 풀지 말고 사실만 정리해둬요',
@@ -206,7 +206,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
   health: {
     now: [
       '미뤄둔 검진을 이번 달에 잡아요',
-      '운동을 시작하기 좋은 때예요. 작게 시작해서 붙여요',
+      '운동을 시작한다면 가볍게 해보세요. 무리 없이 꾸준히 할 수 있는 정도면 좋아요',
       '자는 시간을 먼저 고정해요. 나머지는 따라와요',
     ],
     soon: [
@@ -222,7 +222,7 @@ const ACTIONS: Record<ConcernKey, Record<Verdict, string[]>> = {
   },
   mind: {
     now: [
-      '하고 싶었던 말을 한 번 꺼내봐요. 지금은 잘 나가요',
+      '하고 싶었던 말을 차분히 꺼내보세요. 상대의 이야기도 함께 들어보세요',
       '기록을 남겨요. 지나고 나면 이 달이 기준이 돼요',
       '미뤄둔 결정을 이번에 하나만 끝내요',
     ],
@@ -424,12 +424,12 @@ export function buildDeepRead(
           // 같은 문장이 두 번 나온다. 층마다 말하는 자리는 하나씩만 둔다.
           //   십 년 → 십 년 카드 · 올해 → 올해내년 줄 · 이번 달 → 열두 달 차트
           //   오늘 → 오늘 글자 카드 · 왜 그렇게 읽었나 → 이 줄
-          ? `${TEN_GOD_KO[god]}이 겹쳐요. ${G(god).pull} 쪽으로 읽었어요. 층이 겹치면 그 방향이 더 또렷해져요.`
-          : `${TEN_GOD_KO[god]}이 들어와요. ${G(god).pull} 쪽으로 읽었어요.`,
+          ? `여러 시기에서 ${withJosa(TEN_GOD_KO[god], '이가')} 함께 나타나요. ${G(god).pull} 시기로 풀이해요.`
+          : `이 시기에는 ${withJosa(TEN_GOD_KO[god], '을를')} 기준으로 봐요. ${G(god).pull} 시기로 풀이해요.`,
     })),
     ...(timing.daeunSlot
       ? []
-      : [{ k: '십 년', v: '아직 첫 십 년이 시작되기 전이라 태어난 자리를 그대로 봐요.' }]),
+      : [{ k: '십 년', v: '아직 첫 대운이 시작되기 전이라, 태어난 사주를 기준으로 풀이해요.' }]),
   ];
 
   // 명식을 그대로 펼친다. 용어가 나오면 바로 옆에 뜻을 붙인다.
@@ -460,12 +460,12 @@ export function buildDeepRead(
   const focusCount = prof.gods.filter((g) => timing.favor.good.includes(GOD_GROUP_OF[g.god])).length;
   const focus =
     focusCount > 0
-      ? `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 그 자리가 원국에 ${focusCount >= 3 ? '두껍게' : '얇게'} 깔려 있어요.`
-      : `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 태어난 글자에는 그 자리가 없어서, 해와 달이 들어올 때 열려요.`;
+      ? `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 관련 십성이 사주에 ${focusCount}개 있어요.`
+      : `${withJosa(concern.label, '은는')} ${withRo(favorNames)} 봐요. 관련 십성이 태어난 사주에는 없어, 해와 달의 운도 함께 살펴봐요.`;
 
   // pull 은 근거 줄의 집이다. 여기서 또 쓰면 오늘 기운과 같은 기운이 다른
   // 층에 있을 때 같은 문장이 두 번 나온다. line 은 이제 여기가 집이다.
-  const chartToday = `내 글자에 맞춰보면 오늘은 ${TEN_GOD_KO[todayGod]}이 와요. ${G(todayGod).line}`;
+  const chartToday = `내 일간과 오늘의 천간을 비교하면 ${TEN_GOD_KO[todayGod]} 관계예요. ${G(todayGod).line}`;
 
   // 조견표로 대조만 하는 것들. 해석을 고르지 않으니 누가 계산해도 같다.
   const stars = sinsalOf(pillars).map((x) => ({
@@ -478,20 +478,20 @@ export function buildDeepRead(
   // 읽는 사람은 그게 언제 오는 해인지 알 길이 없다. 지지 차례와 띠 차례가
   // 같으니 띠 이름으로 적는다. 달은 뺐다 - 띠로는 달을 가리킬 수 없다.
   const gongmangZodiac = (b: number) => findZodiac(BRANCHES[b].animal)?.label ?? BRANCHES[b].kor;
-  const gongmang = `${withJosa(gongmangZodiac(g1), '과와')} ${gongmangZodiac(g2)} 해가 비어 있어요. 이 두 해에는 크게 벌여도 손에 남는 게 덜해요.`;
+  const gongmang = `${withJosa(gongmangZodiac(g1), '과와')} ${gongmangZodiac(g2)} 해를 공망으로 봐요. 공망은 계획에 비해 성과가 아쉬울 수 있다고 풀이하는 사주 용어예요. 중요한 일은 실제 조건도 꼼꼼히 살펴보세요.`;
 
   const chart = {
     pillars: chartPillars,
-    dayMaster: `${pillars.dayMaster.kor}, 다섯 갈래 중 ${ELEMENT_KO[myEl]}에 속해요. ${dm.tagline.replace(/\.?$/, '.')}`,
+    dayMaster: `나를 나타내는 일간은 ${pillars.dayMaster.kor}이고, 오행 중 ${ELEMENT_KO[myEl]}에 속해요. ${dm.tagline.replace(/\.?$/, '.')}`,
     elements,
     strength:
       prof.strength === 'strong'
-        ? '내 힘이 많은 편이에요. 밀고 나가는 쪽이 맞고, 도움을 더 받으면 오히려 무거워져요.'
-        : '내 힘을 받아 쓰는 편이에요. 혼자 밀기보다 배우고 기대는 쪽이 결과가 좋아요.',
+        ? '일간을 돕는 오행이 많은 편이에요. 사주에서 신강이라고 부르며, 스스로 판단하고 추진하는 성향으로 풀이해요.'
+        : '일간을 돕는 오행이 적은 편이에요. 사주에서 신약이라고 부르며, 주변의 도움과 배움을 중요하게 풀이해요.',
     season: prof.hasSeasonalSupport
-      ? '태어난 달이 나를 돕는 자리예요. 계절이 내 편이라 기본 체력은 있는 편이에요.'
-      : '태어난 달이 나를 돕지는 않아요. 그래서 때를 고르는 게 더 중요해져요.',
-    useful: `${ELEMENT_KO[prof.usefulElement]} 쪽이 채워질 때 한쪽으로 쏠린 게 풀려요.`,
+      ? '태어난 달의 오행이 일간을 돕는 관계예요. 사주에서는 이를 득령이라고 해요.'
+      : '태어난 달의 오행이 일간을 직접 돕는 관계는 아니에요. 다른 오행과 시기별 운도 함께 살펴봐요.',
+    useful: `${withJosa(ELEMENT_KO[prof.usefulElement], '을를')} 보완하면 좋다고 보는 사주예요. 보완에 필요한 오행을 용신이라고 해요.`,
     focus,
     today: chartToday,
     sinsal: stars,
@@ -516,15 +516,15 @@ export function buildDeepRead(
         const need = ELEMENT_KO[prof.usefulElement];
         let verdict: string;
         if (fills && smooth) {
-          verdict = `이름에 ${need} 쪽 소리가 들어 있고, 소리도 앞에서 뒤로 순하게 이어져요. 명식에서 치우친 자리를 이름이 제대로 되돌려주는 배열이에요.`;
+          verdict = `이름에 사주를 보완하는 ${need}의 소리가 있어요. 이름 소리의 오행도 서로 돕는 순서로 이어져요.`;
         } else if (fills && blocked) {
-          verdict = `이름에 ${need} 쪽 소리는 들어 있어요. 다만 글자끼리 부딪히는 배열이라, 닿기는 해도 세게 밀어주지는 않아요.`;
+          verdict = `이름에 사주를 보완하는 ${need}의 소리가 있어요. 다만 소리의 오행끼리는 서로 제약하는 관계예요.`;
         } else if (fills) {
-          verdict = `이름에 ${need} 쪽 소리가 있긴 해요. 배열은 순한 자리와 부딪히는 자리가 반반이라 무난한 쪽이에요.`;
+          verdict = `이름에 사주를 보완하는 ${need}의 소리가 있어요. 소리의 오행에는 서로 돕는 관계와 제약하는 관계가 함께 있어요.`;
         } else if (smooth) {
-          verdict = `이름 소리는 순하게 이어져요. 다만 명식이 아쉬워하는 ${need} 쪽 소리는 없어서, 이름이 채워주는 자리는 아니에요.`;
+          verdict = `이름 소리의 오행은 서로 돕는 관계예요. 다만 사주를 보완하는 ${need}의 소리는 포함되지 않았어요.`;
         } else {
-          verdict = `이름에는 ${ELEMENT_KO[sound.lead]} 쪽 소리가 가장 많아요. 명식이 아쉬워하는 ${need} 쪽은 아니라, 이름으로 뭘 바꾸려 하기보다 때를 고르는 쪽이 빨라요.`;
+          verdict = `이름에는 ${ELEMENT_KO[sound.lead]}의 소리가 가장 많아요. 사주를 보완하는 ${need}의 소리와는 구분해서 풀이해요.`;
         }
         return {
           letters: sound.letters.map((l) => ({ ch: l.ch, el: ELEMENT_KO[l.el] })),
@@ -579,8 +579,8 @@ export function buildDeepRead(
     tomorrowGod === todayGod && tomorrowRels.length === meetRows.length
       ? '내일도 오늘과 비슷한 날이라, 오늘 잡아둔 것이 그대로 이어져요.'
       : tomorrowGod === todayGod
-        ? `내일도 같은 날 글자인데, 내 글자와 닿는 자리가 달라져요. 오늘과 조금 다른 답이 나와요.`
-        : `내일은 ${G(tomorrowGod).pull} 쪽으로 기울어요. 오늘과 다른 답이 나와요.`;
+        ? `내일도 오늘과 같은 십성이지만, 내 사주의 지지와 맺는 관계가 달라져요.`
+        : `내일은 ${G(tomorrowGod).pull} 날로 풀이해요. 오늘과 비교해보세요.`;
 
   const todayStep = unseongOf(pillars.dayStem, todayPillar.branch);
   // 네 가지 나. 다섯 칸을 사람이 자기를 생각하는 말로 다시 묶는다.
@@ -631,7 +631,7 @@ export function buildDeepRead(
       label: '올해와 이번 달',
       score: near,
       line: thisMonthPart.god === todayPart.god
-        ? '오늘 온 글자가 이번 달에도 그대로 이어져요.'
+        ? '오늘과 이번 달에 같은 십성이 나타나요.'
         : `${pullOf(thisMonthPart.god)} 때예요.`,
       vs: vsNatal(near, 'near'),
     },
@@ -645,7 +645,7 @@ export function buildDeepRead(
       line: !daeunPart.god
         ? '아직 첫 십 년이 시작되기 전이에요.'
         : daeunPart.god === todayPart.god
-          ? '오늘 온 글자가 이 십 년 내내 배경으로 깔려 있어요.'
+          ? '오늘과 현재 대운에 같은 십성이 나타나요.'
           : `${pullOf(daeunPart.god)} 십 년이에요.`,
       vs: vsNatal(daeunPart.score, 'far'),
     },
@@ -658,9 +658,9 @@ export function buildDeepRead(
       // 걷어내면서 둘 다 보이게 됐고, 거기서 드러났다.
       // 여기서는 원국에서 이 고민 자리가 몇 글자인지를 말한다. 그건 다른
       // 어디서도 숫자로는 안 나오고, '기준' 이라는 역할과도 맞는다.
-      line: `여덟 글자 중 ${score.natalCount}개가 ${withJosa(concern.shortName, '을를')} 맡고 있어요. `
-        + `${score.natalCount >= 3 ? '많은 편이라 때를 덜 타요.' : '적은 편이라 때를 더 타요.'}`,
-      vs: '이 점수가 평소의 나예요. 위 셋은 여기에 견준 거예요.',
+      line: `사주의 여덟 글자 중 ${score.natalCount}개를 ${withJosa(concern.shortName, '과와')} 관련된 십성으로 봐요. `
+        + `${score.natalCount >= 3 ? '관련 십성이 많은 편이에요.' : '관련 십성이 적어 시기별 운도 함께 살펴봐요.'}`,
+      vs: '평소의 나를 비교 기준으로 삼은 점수예요. 나머지 세 점수와 비교해보세요.',
     },
   ];
 
@@ -672,7 +672,7 @@ export function buildDeepRead(
   const todayMeet = {
     // '무술날' 이라고 적어 놓고 있었다. 간지 이름은 읽는 사람에게 아무것도
     // 아니고, 하필 무술은 운동으로 읽힌다. 오행과 띠로 풀어 적는다.
-    pillar: `${ELEMENT_KO[STEMS[todayPillar.stem].el]}에 드는 ${
+    pillar: `오행은 ${ELEMENT_KO[STEMS[todayPillar.stem].el]}, 지지는 ${
       findZodiac(BRANCHES[todayPillar.branch].animal)?.label ?? BRANCHES[todayPillar.branch].kor
     }`,
     step: UNSEONG_KO[todayStep].word,
@@ -680,7 +680,7 @@ export function buildDeepRead(
     rows: meetRows,
     quiet:
       meetRows.length === 0
-        ? '오늘 글자는 내 여덟 글자 중 어느 것과도 엮이지 않아요. 흔들림이 적은 날이라 하던 대로 가면 돼요.'
+        ? '오늘의 지지와 내 사주의 지지 사이에는 특별한 관계가 없어요. 평소 하던 일을 이어가보세요.'
         : null,
     nextDay,
   };
@@ -689,15 +689,15 @@ export function buildDeepRead(
   const left = timing.daeun.yearsToNext;
   // 대운 이름(기묘 같은 것)을 그대로 쓰면 아무 뜻이 없다. 무슨 기운인지로 말한다.
   const daeunLine = cur
-    ? `${cur.startAge}세부터 ${cur.endAge}세까지가 지금 지나는 십 년이에요.` +
+    ? `${cur.startAge}세부터 ${cur.endAge}세까지가 현재 대운이에요. 대운은 10년 단위로 보는 운세예요.` +
       (timing.daeunSlot
         // 예전에는 고민을 안 보는 GOD_SCALE 문장에 고민별 line 을 덧붙여
         // 구체성을 벌충했다. daeun 이 고민을 보고 쓰였으니 line 은 뺀다.
         // 안 빼면 '빌려주는 돈은 못 돌아오기 쉬워요' 가 한 문단에 두 번 나온다.
         ? ` ${G(timing.daeunSlot.tenGod).daeun}`
         : '') +
-      (left !== null && left > 0 ? ` 다음 십 년으로 넘어가기까지 ${left}년 남았어요.` : '')
-    : `${timing.daeun.startAge}세부터 첫 십 년이 시작돼요. 그전까지는 태어날 때 자리를 그대로 써요.`;
+      (left !== null && left > 0 ? ` 다음 대운이 시작되기까지 ${left}년 남았어요.` : '')
+    : `${timing.daeun.startAge}세부터 첫 대운이 시작돼요. 그전에는 태어난 사주를 기준으로 풀이해요.`;
 
   // 십 년을 자리별로 쪼갠다. '틀을 깨는 십 년입니다' 로 끝내면 아무것도 안 남는다.
   const areas: DecadeAreas | null = timing.daeunSlot ? DECADE_AREAS[timing.daeunSlot.tenGod] : null;
@@ -715,7 +715,7 @@ export function buildDeepRead(
           ],
           next:
             left !== null && left > 0
-              ? `${left}년 뒤에 다음 십 년으로 넘어가요. 그때가 되면 여기 적힌 배경 자체가 바뀌어요.`
+              ? `${left}년 뒤에 다음 대운이 시작돼요. 그때는 10년 운세의 풀이도 달라져요.`
               : null,
         }
       : null;

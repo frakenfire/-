@@ -104,7 +104,7 @@ export function readNameSound(name: string): NameSound | null {
 }
 
 export const FLOW_KO: Record<NameSound['flow'], string> = {
-  smooth: '소리가 앞에서 뒤로 순하게 이어져요. 부를수록 편하게 읽히는 배열이에요.',
-  mixed: '순하게 이어지는 자리도 있고 부딪히는 자리도 있어요. 흔한 배열이라 크게 볼 것은 아니에요.',
-  blocked: '앞 글자와 뒤 글자가 서로 부딪히는 배열이에요. 이름이 뭘 더 보태주지는 않는 쪽이에요.',
+  smooth: '이름 소리의 오행이 서로 돕는 관계로 이어져요. 성명학에서는 상생이라고 해요.',
+  mixed: '이름 소리의 오행에 서로 돕는 관계와 제약하는 관계가 함께 있어요.',
+  blocked: '이름 소리의 오행이 서로 제약하는 관계예요. 성명학에서는 상극이라고 해요.',
 };

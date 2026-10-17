@@ -222,7 +222,7 @@ export function scoreVerdictLine(
   const head = `${withJosa(c.label, '은는')} ${score.total}점이에요.`;
 
   if (!top || !low || top === low || top.score - low.score < 8) {
-    return `${head} 다섯 칸이 비슷한 높이라 어느 한쪽이 끌고 가지 않아요. 크게 벌이기보다 하던 것을 이어가는 쪽이 남아요.`;
+    return `${head} 다섯 항목의 점수가 비슷해요. 한 가지 운만 두드러지지 않으니 하던 일을 차근차근 이어가보세요.`;
   }
   // 합계는 아래 설명 줄이 말한다. 여기서는 어느 칸이 올리고 어느 칸이 눌렀는지만 짚는다.
   //
