@@ -56,7 +56,7 @@ export const NOTE_DIRECTION: Record<string, NoteDirection> = {
 const PUSH_WORDS =
   /내딛|밀어붙|시작해|도전|먼저 (연락|말|손)|움직이|잡으|나서|꺼내|던져|시도|질러|뛰어들|열어/;
 const HOLD_WORDS =
-  /쉬어|미루|천천히|기다|참|늦추|접어|아끼|줄이|비우|가만|무리하지|서두르지|루틴|평소처럼|그대로|지키/;
+  /쉬어|미루|천천히|기다|참|늦추|접어|아끼|줄이|비우|가만|무리(?:하)지|서두르지|루틴|평소처럼|그대로|지키/;
 
 /** 문장 뭉치에서 방향을 읽는다. 양쪽 다 걸리거나 아무것도 안 걸리면 'any'. */
 export function directionOfText(text: string): NoteDirection {

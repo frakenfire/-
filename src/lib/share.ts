@@ -1,6 +1,7 @@
 // 공유 — 앱인토스 공식 share() 우선, 미지원 시 웹 표준(navigator.share)·클립보드 폴백.
 // 중요: 사용자가 공유창을 '취소'한 것을 성공으로 처리하지 않는다(보상 무결성).
 import { share as tossShare, getTossShareLink } from '@apps-in-toss/web-framework';
+import { buildGiftShareText } from '../data/gifts.ts';
 
 // 공유가 곧 '친구에게 도움 주기'가 되도록, 받는 사람이 바로 쓸 수 있는
 // 행동 처방 브리핑 형태로 보낸다.
@@ -153,6 +154,11 @@ export async function shareMessage(text: string, path = '/'): Promise<ShareOutco
 export async function shareForUnlock(text: string, path = '/compat'): Promise<boolean> {
   const outcome = await shareMessage(text, path);
   return outcome === 'shared' || outcome === 'copied';
+}
+
+/** 행운 반쪽 — 봉투 번호만 링크에 싣는다. 보낸 사람의 결과는 안 나간다. */
+export async function shareGift(giftId: number): Promise<ShareOutcome> {
+  return shareMessage(buildGiftShareText(), `/gift?m=${giftId}`);
 }
 
 /** 결과 공유(자랑). 상태를 그대로 돌려줘 화면이 취소/성공을 구분해 안내한다. */

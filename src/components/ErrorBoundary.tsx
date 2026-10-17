@@ -29,7 +29,7 @@ export class ErrorBoundary extends Component<Props, State> {
               화면을 불러오지 못했어요
             </h1>
             <p className="lead" style={{ textAlign: 'center' }}>
-              일시적인 오류가 생겼어요. 다시 열어주세요.
+              잠시 문제가 생겼어요. 다시 열어주세요.
             </p>
             <button
               type="button"

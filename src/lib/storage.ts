@@ -337,6 +337,45 @@ export function addUnlockedConcern(dateKey: string, key: string): string[] {
 }
 
 
+// ── 어제의 쪽지 ─────────────────────────────────────────────────────────────
+// 위에서 '뽑은 기록은 남기지 않는다' 고 했다. 아이폰이 웹 저장소를 지우면
+// 지난 기록 목록이 통째로 사라지기 때문이다. 이건 그 약속을 깨지 않는다.
+// 마지막 한 장만, 다음 날 한 번 돌아보는 데만 쓴다. 지워졌으면 카드가
+// 안 뜰 뿐이고, '기록이 사라졌다' 고 느낄 화면이 없다.
+// 담는 건 화면에 나왔던 제목과 할 일 한 줄뿐이다. 생년월일·고민은 안 담는다.
+const LAST_NOTE_KEY = 'tomorrowNoteLastNote';
+const REFLECT_KEY = 'tomorrowNoteReflected';
+
+export type LastNote = { dateKey: string; title: string; doItem: string };
+
+export function saveLastNote(n: LastNote): boolean {
+  return safeSet(LAST_NOTE_KEY, JSON.stringify({
+    dateKey: n.dateKey,
+    title: n.title.slice(0, 60),
+    doItem: n.doItem.slice(0, 80),
+  }));
+}
+
+/** 어제 뽑은 쪽지. 어제 것이 아니거나 오늘 이미 돌아봤으면 null */
+export function loadYesterdayNote(todayKey: string, yesterdayKey: string): LastNote | null {
+  if (safeGet(REFLECT_KEY) === todayKey) return null;
+  const raw = safeGet(LAST_NOTE_KEY);
+  if (!raw) return null;
+  try {
+    const v = JSON.parse(raw) as Partial<LastNote>;
+    if (v?.dateKey !== yesterdayKey) return null;
+    if (typeof v.title !== 'string' || typeof v.doItem !== 'string') return null;
+    return { dateKey: v.dateKey, title: v.title, doItem: v.doItem };
+  } catch {
+    return null;
+  }
+}
+
+/** 오늘은 다시 묻지 않는다 */
+export function markReflected(todayKey: string): boolean {
+  return safeSet(REFLECT_KEY, todayKey);
+}
+
 // ── 알림을 물어봤는가 ───────────────────────────────────────────────────────
 // 알림 동의는 한 번만 묻는다. 거절한 사람에게 다시 묻는 건 그 자체로 이탈이다.
 const NOTI_ASK_KEY = 'tomorrowNoteNotiAsked';

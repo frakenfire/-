@@ -8,7 +8,10 @@ import { generateFortune } from './lib/generateFortune.ts';
 import { luckPercentile } from './lib/luck.ts';
 import { showRewardAd, preloadAd, isRewarded, isUnsupportedFreePass } from './lib/ads.ts';
 import { shouldShowNoteAd } from './lib/adPolicy.ts';
-import { shareBriefing, shareForUnlock, shareMessage } from './lib/share.ts';
+import { shareBriefing, shareForUnlock, shareMessage, shareGift } from './lib/share.ts';
+import { findGift, giftChoices, readGiftId, type Gift } from './data/gifts.ts';
+import { GiftScreen } from './screens/GiftScreen.tsx';
+import type { Reflection } from './components/YesterdayCard.tsx';
 import { ConcernScreen } from './screens/ConcernScreen.tsx';
 import { ConcernAskScreen } from './screens/ConcernAskScreen.tsx';
 import { computeTiming } from './lib/timing.ts';
@@ -20,7 +23,8 @@ import {
   incrementDailyDrawCount,
   markVisit,
   updateStreak,
-  peekStreak, loadSkipBirth } from './lib/storage.ts';
+  peekStreak, loadSkipBirth,
+  saveLastNote, loadYesterdayNote, markReflected, type LastNote } from './lib/storage.ts';
 import { clearAllData } from './lib/storage.ts';
 import { getTrustedDateKey, subscribeSafeArea, subscribeBackEvent, logEvent, reportError, askReview, canAskNotification, askNotificationAgreement } from './lib/toss.ts';
 import { findZodiac } from './data/zodiac.ts';
@@ -44,7 +48,7 @@ import { hashSeed } from './lib/dateSeed.ts';
 
 type ScreenName =
   | 'home' | 'pick' | 'reveal' | 'result' | 'compat' | 'birth'
-  | 'concern' | 'concernAsk';
+  | 'concern' | 'concernAsk' | 'gift';
 
 function wait(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -53,9 +57,17 @@ function wait(ms: number): Promise<void> {
 export default function App() {
   // 공유·딥링크로 재현 가능한 화면(궁합)은 URL 해시와 연결한다.
   // (결과·심층은 뽑기 시점 상태에 의존해 재현 대상이 아니므로 홈으로 시작)
-  const [screen, setScreenRaw] = useState<ScreenName>(() =>
-    typeof window !== 'undefined' && window.location.hash === '#/compat' ? 'compat' : 'home',
+  // 친구가 보낸 행운 봉투 링크로 들어왔으면 봉투 번호.
+  const [giftId, setGiftId] = useState<number | null>(() =>
+    typeof window !== 'undefined' ? readGiftId(window.location) : null,
   );
+  const [screen, setScreenRaw] = useState<ScreenName>(() => {
+    if (giftId !== null) return 'gift';
+    return typeof window !== 'undefined' && window.location.hash === '#/compat' ? 'compat' : 'home';
+  });
+  // 봉투로 들어온 사람이 실제로 쪽지까지 뽑는지 본다. 링크를 연 것과
+  // 앱을 쓴 것은 다르다. 공유가 사람을 데려왔는지는 뒤쪽 숫자가 말한다.
+  const cameFromGift = useRef(false);
   // 뒤로가기는 '한 단계 앞' 으로 가야 한다. 화면마다 돌아갈 곳을 손으로 적어두면
   // 흐름이 바뀔 때마다 한 군데씩 틀어져서, 결국 어디서 눌러도 홈으로 떨어진다.
   // 그래서 지나온 길을 쌓아두고 그대로 되짚는다.
@@ -160,6 +172,19 @@ export default function App() {
   // 스트릭은 '앱을 연 순간'이 아니라 '쪽지를 뽑은 날' 기준으로 오른다(handlePick).
   // 홈에는 부작용 없이 현재 값만 보여준다.
   const [streak, setStreak] = useState(() => peekStreak());
+
+  // 어제 뽑은 쪽지 — 홈에서 한 번 돌아본다. 날이 바뀌면 다시 읽는다.
+  const [yesterdayNote, setYesterdayNote] = useState<LastNote | null>(null);
+  useEffect(() => {
+    setYesterdayNote(loadYesterdayNote(dateKey, yesterdayKey));
+  }, [dateKey, yesterdayKey]);
+
+  function handleReflect(r: Reflection) {
+    markReflected(dateKey);
+    logEvent('yesterday_reflected', { answer: r });
+    // 고맙다는 한 줄을 잠깐 보여준 뒤 접는다. 바로 걷으면 눌린 건지 모른다.
+    window.setTimeout(() => setYesterdayNote(null), r === 'skip' ? 0 : 2400);
+  }
 
 
   // 내 사주 — 띠(1/12)로는 '나를 위한 결과'가 안 나온다.
@@ -271,6 +296,14 @@ export default function App() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const onHash = () => {
+      // 앱을 켜둔 채 봉투 링크를 또 누르면 주소만 바뀌고 앱은 새로 안 뜬다.
+      // 처음 한 번만 읽으면 그 봉투는 안 열린다.
+      const g = readGiftId(window.location);
+      if (g !== null) {
+        setGiftId(g);
+        setScreen('gift');
+        return;
+      }
       if (window.location.hash === '#/compat') setScreen('compat');
       else if (screenRef.current === 'compat') goBack();
     };
@@ -359,6 +392,18 @@ export default function App() {
       }
       setStreak(updateStreak(dateKey, yesterdayKey)); // 실제 뽑은 날에만 스트릭 갱신
       logEvent('result_viewed', { fortuneType, engineVersion: generated.engineVersion });
+      if (cameFromGift.current) {
+        cameFromGift.current = false;
+        logEvent('gift_to_draw', { gift: giftId ?? 0 });
+      }
+      // 내일 홈에서 돌아볼 한 장. 하루에 여러 번 뽑으면 마지막 것이 남는다.
+      // 화면 맨 위에서 읽은 말을 담는다. generated.title 은 '오늘의 나' 같은
+      // 운세 종류 이름이라, 그걸 내일 보여주면 무슨 쪽지였는지 모른다.
+      saveLastNote({
+        dateKey,
+        title: deep ? deep.read.headline : generated.summaryLines[0],
+        doItem: deep ? deep.read.today.doIt : generated.dayPlan.steps[0].text,
+      });
       paidAtEntry.current = false;
       commitDraw();
       replaceScreen('result');
@@ -376,7 +421,7 @@ export default function App() {
       }
     } catch (e) {
       reportError('handlePick', e);
-      flash('앗, 쪽지를 여는 중 문제가 생겼어요. 다시 시도해 주세요');
+      flash('쪽지를 열지 못했어요. 다시 시도해 주세요.');
       setScreen('pick');
     } finally {
       setBusy(false);
@@ -405,17 +450,38 @@ export default function App() {
     });
     logEvent('share', { outcome: r });
     if (r === 'shared') flash('친구에게 공유했어요');
-    else if (r === 'copied') flash('공유 문구 복사 완료!');
+    else if (r === 'copied') flash('공유할 글을 복사했어요.');
     else if (r === 'cancelled') return; // 취소 — 아무 안내 없이 조용히
-    else flash('앗, 공유를 못 했어요');
+    else flash('공유하지 못했어요. 다시 시도해 주세요.');
   }
+
+  async function handleSendGift(g: Gift) {
+    const r = await shareGift(g.id);
+    logEvent('gift_created', { gift: g.id, outcome: r });
+    if (r === 'shared') flash('행운 반쪽을 보냈어요');
+    else if (r === 'copied') flash('봉투에 담긴 글을 복사했어요.');
+    else if (r === 'failed') flash('보내지 못했어요. 다시 시도해 주세요.');
+    return r;
+  }
+
+  // 봉투 링크로 열린 주소를 그대로 두면, 다시 열 때마다 같은 봉투가 뜬다.
+  // 번호는 이미 읽어뒀으니 주소에서 걷는다.
+  useEffect(() => {
+    if (giftId === null) return;
+    try {
+      const path = window.location.pathname.replace(/\/gift\/?$/, '/');
+      window.history.replaceState(null, '', `${path}#/`);
+    } catch {
+      /* no-op */
+    }
+  }, [giftId]);
 
   async function handleShareWeek(text: string) {
     const r = await shareMessage(text);
     logEvent('share_week', { outcome: r });
     if (r === 'shared') flash('이번 주 운세를 공유했어요');
-    else if (r === 'copied') flash('공유 문구 복사 완료!');
-    else if (r === 'failed') flash('앗, 공유를 못 했어요');
+    else if (r === 'copied') flash('공유할 글을 복사했어요.');
+    else if (r === 'failed') flash('공유하지 못했어요. 다시 시도해 주세요.');
   }
 
   //  내 사주 
@@ -479,16 +545,21 @@ export default function App() {
 
   // 뽑기 시작 — 이름·성별을 받고, 고민과 보고 싶은 부분을 물은 뒤에 쪽지를 고른다.
   // 기분은 묻지 않는다. 보통 기분이 기본이다.
-  function startDraw(type: FortuneType = 'tomorrow') {
+  // 홈에서 고민을 이미 골랐으면 고민 고르기 화면을 건너뛰고 상황 묻기로 간다.
+  function startDraw(type: FortuneType = 'tomorrow', concern: ConcernKey | null = null) {
     markVisit(dateKey);
     setSpin((v) => v + 1);
     setFortuneType(type);
     setMood((m) => m ?? 'soso');
-    setConcernKey(null);
+    setConcernKey(concern);
     setConcernOption(null);
     setConcernInFlow(true);
-    setScreen('concern');
+    if (concern) setScreen('concernAsk');
+    else setScreen('concern'); // 봉투로 들어온 사람은 아직 고민을 안 골랐다
   }
+
+  // 생년월일을 받으러 갔다 오는 동안 홈에서 고른 고민을 들고 있는다.
+  const pendingConcern = useRef<ConcernKey | null>(null);
 
   function handleSaveBirth(b: StoredBirth) {
     setBirth(b);
@@ -497,8 +568,8 @@ export default function App() {
     // 들고 있으므로 앱을 켜둔 동안에는 다시 안 묻는다.
     saveBirth(b);
     logEvent('birth_saved', { hasTime: b.time !== null, viaFlow: birthFromFlow });
-    if (birthNext === 'concern' || birthFromFlow) startDraw();
-    else startDraw();
+    startDraw('tomorrow', pendingConcern.current);
+    pendingConcern.current = null;
     setBirthFromFlow(false);
     setBirthNext('saju');
   }
@@ -526,7 +597,7 @@ export default function App() {
     setStreak(0);
     setSkipBirth(false);
     logEvent('birth_deleted', {});
-    flash(ok ? '내 정보를 모두 지웠어요' : '앗, 데이터를 지우지 못했어요');
+    flash(ok ? '내 정보를 모두 지웠어요' : '정보를 지우지 못했어요. 다시 시도해 주세요.');
     setScreen('home');
   }
 
@@ -568,31 +639,57 @@ export default function App() {
     return isRewarded(result) || isUnsupportedFreePass(result);
   }
 
+  // 한 번 넣었으면 다시 안 묻는다.
+  //
+  // 여태는 뽑을 때마다 이름·생년월일 화면을 거쳤다. 값은 채워져
+  // 있었지만 남자·여자 칸이 매번 눈앞에 다시 떴고, 쓰는 사람에게는
+  // '계속 골랐는데 또 고르라고 한다' 로 읽혔다. 매일 여는 앱에서
+  // 이미 답한 것을 매일 다시 보여주면 안 된다.
+  //
+  // 고칠 길은 홈에 따로 낸다(onEditBirth). 화면을 건너뛰면서
+  // 고칠 데까지 없애면 생년월일을 영영 못 고친다.
+  function beginDraw(concern: ConcernKey | null = null) {
+    if (birthReady) {
+      startDraw('tomorrow', concern);
+      return;
+    }
+    pendingConcern.current = concern;
+    setBirthNext('concern');
+    setScreen('birth');
+  }
+
+  function handleHomeConcern(key: ConcernKey) {
+    logEvent('home_concern', { concern: key });
+    beginDraw(key);
+  }
+
+  const gift = giftId !== null ? findGift(giftId) : null;
+
   return (
     <>
+      {screen === 'gift' && gift && (
+        <GiftScreen
+          gift={gift}
+          onOpened={() => logEvent('gift_opened', { gift: gift.id })}
+          onStart={() => {
+            cameFromGift.current = true;
+            goHome();
+            beginDraw();
+          }}
+          onClose={goHome}
+        />
+      )}
+
       {screen === 'home' && (
         <HomeScreen
           onShareRanking={handleShareWeek}
           streak={streak}
           zodiac={zodiac}
           spin={spin}
-          // 한 번 넣었으면 다시 안 묻는다.
-          //
-          // 여태는 뽑을 때마다 이름·생년월일 화면을 거쳤다. 값은 채워져
-          // 있었지만 남자·여자 칸이 매번 눈앞에 다시 떴고, 쓰는 사람에게는
-          // '계속 골랐는데 또 고르라고 한다' 로 읽혔다. 매일 여는 앱에서
-          // 이미 답한 것을 매일 다시 보여주면 안 된다.
-          //
-          // 고칠 길은 홈에 따로 낸다(아래 onEditBirth). 화면을 건너뛰면서
-          // 고칠 데까지 없애면 생년월일을 영영 못 고친다.
-          onStart={() => {
-            if (birthReady) {
-              startDraw();
-              return;
-            }
-            setBirthNext('concern');
-            setScreen('birth');
-          }}
+          yesterday={yesterdayNote}
+          onReflect={handleReflect}
+          onPickConcern={handleHomeConcern}
+          userName={birth?.name ?? null}
           savedBirth={birthReady ? birthSummary : null}
           onEditBirth={() => {
             setBirthNext('saju');
@@ -634,6 +731,8 @@ export default function App() {
           onOpenConcern={openConcern}
           onAskNoti={canAskNotification() && !notiAsked ? handleAskNoti : undefined}
           onShareWeek={handleShareWeek}
+          giftChoices={giftChoices(dateKey)}
+          onSendGift={handleSendGift}
           onBack={() => goBack()}
         />
       )}
@@ -656,7 +755,7 @@ export default function App() {
         <AppLayout onBack={() => goBack()} title="오늘의 쪽지">
           <div className="empty-state">
             <p className="empty-state__title">쪽지를 불러오지 못했어요</p>
-            <p className="empty-state__desc">잠시 문제가 있었어요. 다시 뽑아볼까요?</p>
+            <p className="empty-state__desc">잠시 문제가 생겼어요. 다시 뽑아볼까요?</p>
             <button
               type="button"
               className="btn btn--primary"

@@ -19,7 +19,6 @@ const GRAMMAR_OK = [
   '확인해보세요',
   '될 수 있어',
   '하기 쉬워요',
-  '도 괜찮아요',
 ];
 
 function phrases(s: string, n: number): Set<string> {

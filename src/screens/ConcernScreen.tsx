@@ -44,7 +44,7 @@ export function ConcernScreen({ userName, onSelect, onBack, inFlow = false }: Pr
         ))}
       </div>
 
-      <Sentences className="ask-foot" text="고른 주제에 맞춰 사주와 시기별 운세를 살펴봐요. 계산은 이 기기에서 이뤄져요." />
+      <Sentences className="ask-foot" text="고른 주제에 따라 사주와 시기별 운세를 살펴봐요. 계산은 이 기기에서 이뤄져요." />
     </AppLayout>
   );
 }

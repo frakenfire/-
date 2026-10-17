@@ -18,10 +18,10 @@ import type { TenGod } from '../lib/tenGods.ts';
 const TODAY_WHY: Record<ConcernKey, Record<TenGod, string>> = {
   work: {
     bijian: '오늘은 함께 일하는 사람과 협력해보세요.',
-    geopjae: '오늘은 같은 자리를 노리는 사람이 눈에 들어와요.',
-    siksin: '오늘은 만들어 낸 것으로 평가받아요.',
-    sanggwan: '오늘은 하고 싶은 말이 세게 나가요.',
-    pyeonjae: '오늘은 회사 밖에서 제안이 올 수 있어요.',
+    geopjae: '오늘은 같은 자리를 두고 경쟁하는 사람이 신경 쓰일 수 있어요. 남을 의식하기보다 내가 할 일을 정리해보세요.',
+    siksin: '오늘은 내가 만든 결과물로 평가받을 수 있어요.',
+    sanggwan: '오늘은 말이 조금 거칠게 나갈 수 있어요. 전하기 전에 한번 더 생각해보세요.',
+    pyeonjae: '오늘은 회사 밖에서 새로운 제안을 받을 수도 있어요.',
     jeongjae: '오늘은 연봉과 조건 얘기가 오가요.',
     pyeongwan: '오늘은 버거운 일이 먼저 와요.',
     jeonggwan: '오늘은 맡을 업무와 책임을 정하기 좋은 날이에요.',
@@ -98,7 +98,7 @@ const TODAY_WHY: Record<ConcernKey, Record<TenGod, string>> = {
 const OVERRIDE: Partial<Record<ConcernKey, Record<string, Partial<Record<TenGod, string>>>>> = {
   work: {
     // 제 일을 시작하려는 사람에게 연봉 협상은 남의 얘기다.
-    own: { jeongjae: '오늘은 값을 얼마로 부를지 정하게 돼요.' },
+    own: { jeongjae: '오늘은 금액을 얼마로 제시할지 정해보세요.' },
   },
 };
 

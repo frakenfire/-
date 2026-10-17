@@ -12,17 +12,17 @@ const COMMON_STEPS = [
 ];
 
 const TYPE_STEP: Record<FortuneType, string> = {
-  tomorrow: '오늘의 나를 살펴보는 중',
-  month: '이번 달을 쭉 펼쳐보는 중',
+  tomorrow: '오늘 내 사주를 살펴보고 있어요',
+  month: '이번 달의 흐름을 살펴보고 있어요',
   love: '연애운을 살펴보고 있어요',
   money: '금전운을 살펴보고 있어요',
   work: '직장운을 살펴보고 있어요',
-  caution: '조심할 순간을 콕 짚어보는 중',
+  caution: '오늘 조심해야 할 순간을 살펴보고 있어요',
   luck: '행운의 색과 숫자를 살펴보고 있어요',
 };
 
 const LAST_STEP = '거의 다 됐어요';
-const SPECIAL_STEP = '조금 특별한 쪽지가 나왔어요';
+const SPECIAL_STEP = '오늘은 조금 특별한 쪽지가 나왔어요';
 
 type Props = {
   fortuneType: FortuneType;

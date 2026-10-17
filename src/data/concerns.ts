@@ -68,7 +68,7 @@ export const CONCERNS: Concern[] = [
   {
     key: 'work',
     shortName: '일',
-    luckyWhere: '일 얘기를 꺼내기 좋은 쪽',
+    luckyWhere: '일 이야기를 꺼내기 좋은 쪽',
     luckyWhen: '중요한 일은',
     label: '일과 이직',
     hook: '옮길까 말까, 언제가 좋을까',
@@ -131,7 +131,7 @@ export const CONCERNS: Concern[] = [
     hook: '사람들과 어떻게 지내면 좋을까',
     icon: 'chat',
     question: '누구와의 관계가 고민인가요?',
-    questionLead: '상대가 누구냐에 따라 답이번 달라져요.',
+    questionLead: '상대가 누구냐에 따라 답이 달라져요.',
     options: [
       { key: 'work', label: '회사 사람이에요', line: '함께 일하는 사람과의 관계군요. 업무에 필요한 대화부터 차분하게 정리해보세요.' },
       { key: 'friend', label: '친구예요', line: '오래된 사이일수록 말 한마디가 크게 남아요.' },

@@ -21,9 +21,12 @@ import { useDayPart } from '../lib/useDayPart.ts';
 import { findConcern, type ConcernKey } from '../data/concerns.ts';
 import { ohaengWhy } from '../data/ohaeng.ts';
 import type { Band } from '../lib/timing.ts';
+import { GiftCard } from '../components/GiftCard.tsx';
+import type { Gift } from '../data/gifts.ts';
+import type { ShareOutcome } from '../lib/share.ts';
 
 // 고민 점수의 등급말 - 숫자 옆에 한 단어가 있어야 '이게 높은 건가' 가 안 생긴다
-const BAND_LABEL: Record<Band, string> = { good: '좋은 편이에요', ok: '무난해요', hard: '신중하게 보세요' };
+const BAND_LABEL: Record<Band, string> = { good: '좋은 편이에요', ok: '무난해요', hard: '오늘은 조금 신중하게 해보세요' };
 import type { DeepRead } from '../lib/deepRead.ts';
 import type { TimingRead } from '../lib/timing.ts';
 
@@ -48,12 +51,15 @@ type Props = {
   onOpenConcern?: (key: ConcernKey) => void;
   /** 내일 알림을 받겠다고 하면 동의 UI 를 띄운다. 없으면 줄이 안 나온다 */
   onAskNoti?: () => void;
+  /** 오늘 건넬 수 있는 행운 반쪽 세 장 */
+  giftChoices?: Gift[];
+  onSendGift?: (g: Gift) => Promise<ShareOutcome>;
   onBack: () => void;
 };
 
 // 마지막 장 — 한눈 요약, 오늘의 행운 네 칸, 공유, 오늘 이렇게 보내요. 그게 전부다.
 // 리포트·편지·광고 배너·내일 예고는 전부 뺐다. 보고 나서 할 일은 친구에게 보내는 것 하나.
-export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onShareWeek, onBack }: Props) {
+export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, deep = null, zodiac, chartScores = null, unlockedConcerns = [], onUnlockConcern, onOpenConcern, onAskNoti, onShareWeek, giftChoices = [], onSendGift, onBack }: Props) {
   const { luck } = result;
   const isMonth = result.reading.scale === 'month';
   // 지금이 하루의 어느 토막인지. 지나간 토막은 오늘의 풀이에서 접는다.
@@ -220,7 +226,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           {!isMonth && allPartsPassed ? (
             <Sentences
               className="mflow__foot"
-              text="오늘의 시간대별 풀이를 모두 보셨네요. 내일 아침에 새 운세를 확인해보세요."
+              text="오늘의 시간대별 풀이를 모두 보셨어요. 내일 새로운 운세도 확인해보세요."
             />
           ) : null}
         </div>
@@ -239,7 +245,13 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
           69줄짜리 한 덩이가 통째로 여기였다.
           버리지는 않는다 - 매일 보는 재미는 이쪽에 있다. 대신 접는다.
           답을 받으러 온 사람에게는 답까지만 보이고, 더 볼 사람만 연다. */}
-      <Chapter title="재미로 하나 더" hint="행운 여섯 가지, 오늘 잘 맞는 띠, 이번 주 운세">
+      {/* 행운 반쪽 — 본 풀이가 끝난 바로 다음, 접힌 묶음 밖에 둔다.
+          접힌 안에 넣으면 안 펴는 사람은 이런 게 있는지도 모른다. */}
+      {onSendGift && giftChoices.length > 0 ? (
+        <GiftCard choices={giftChoices} onSend={onSendGift} />
+      ) : null}
+
+      <Chapter title="재미로 하나 더 볼까요?" hint="행운 여섯 가지, 오늘 잘 맞는 띠, 이번 주 운세">
       {/* 2. 네 가지 운 — 사랑·돈·일·건강 점수.
           고민을 골라 들어왔으면 안 그린다. 돈을 물어본 사람에게 사랑운·일운·
           건강운을 같이 내밀면 화면이 물어본 것 말고 딴 얘기로 채워진다.
@@ -327,7 +339,7 @@ export function ResultScreen({ result, note, busy, onShare, userName, spin = 0, 
             <span className="match__hint">{result.detail.match.goodReason}</span>
           </div>
           <div className="match__cell">
-            <span className="match__badge match__badge--bad">살짝 조심</span>
+            <span className="match__badge match__badge--bad">조금 조심해요</span>
             <ZodiacBadge zodiac={result.detail.match.caution} size={44} />
             <span className="match__label">{result.detail.match.caution.label}</span>
             <span className="match__hint">{result.detail.match.cautionReason}</span>

@@ -16,14 +16,14 @@ export type DayAct = { doIt: string; avoid: string; hold: string };
 export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
   work: {
     bijian: {
-      doIt: '같은 일을 하는 사람에게 요즘 시장이 어떤지 물어보기',
-      avoid: '남의 자리와 견주다가 감정으로 넘어가는 것',
+      doIt: '같은 일을 하는 사람에게 요즘 업계 분위기 물어보기',
+      avoid: '다른 사람과 비교하다가 감정적으로 결정하는 것',
       hold: '이력서 전체를 다시 쓰는 일',
     },
     geopjae: {
-      doIt: '지금 내가 할 수 있는 일의 범위를 한 장으로 적어두기',
-      avoid: '누가 어디까지 하는지 안 정하고 일을 시작하는 것',
-      hold: '역할을 다시 나누자고 먼저 꺼내는 일',
+      doIt: '내가 지금 할 수 있는 일을 한 장으로 정리하기',
+      avoid: '담당할 일을 분명히 나누지 않고 시작하는 것',
+      hold: '역할을 다시 나누자고 먼저 이야기하기',
     },
     siksin: {
       doIt: '올해 만든 결과물 하나를 눈에 보이게 정리하기',
@@ -42,7 +42,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     },
     jeongjae: {
       doIt: '희망 연봉과 직책을 숫자로 적어 기준선 만들기',
-      avoid: '조건을 흐린 채 구두로 합의하는 것',
+      avoid: '조건을 분명히 하지 않고 말로만 약속하는 것',
       hold: '새로운 곳을 더 찾아보는 일',
     },
     pyeongwan: {
@@ -58,7 +58,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     pyeonin: {
       doIt: '경력을 다르게 묶어볼 수 있는지 한 번 굴려보기',
       avoid: '떠오른 생각을 바로 실행으로 옮기는 것',
-      hold: '방향을 아예 틀겠다고 결론 내리는 일',
+      hold: '상황을 충분히 살펴보지 않고 방향부터 바꾸는 것',
     },
     jeongin: {
       doIt: '추천해줄 만한 사람 한 명에게 안부 묻기',
@@ -78,7 +78,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
       hold: '돈을 빌려주거나 보증을 서는 일',
     },
     siksin: {
-      doIt: '내가 만든 것 중 값을 받을 수 있는 것 하나 골라보기',
+      doIt: '내가 해온 일 중 돈을 받을 수 있는 일 하나 골라보기',
       avoid: '수입이 늘 것을 기대하고 먼저 쓰는 것',
       hold: '판을 키우는 지출',
     },
@@ -94,7 +94,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     },
     jeongjae: {
       doIt: '들어온 돈에서 남길 금액을 먼저 떼어 옮기기',
-      avoid: '자잘한 지출을 세지 않고 넘기는 것',
+      avoid: '작은 지출이라고 확인하지 않고 넘기는 것',
       hold: '수익률을 더 올릴 곳을 찾는 일',
     },
     pyeongwan: {
@@ -146,7 +146,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     },
     jeongjae: {
       doIt: '만나면 다음 약속을 그 자리에서 잡기',
-      avoid: '서운한 티만 내고 무슨 일인지 말 안 하는 것',
+      avoid: '서운한 이유는 말하지 않고 티만 내는 것',
       hold: '현실 조건을 저울질하는 일',
     },
     pyeongwan: {
@@ -182,7 +182,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
       hold: '누가 더 손해인지 따지는 대화',
     },
     siksin: {
-      doIt: '고마운 사람에게 표시 한 번 남기기',
+      doIt: '고마운 사람에게 마음을 전해보기',
       avoid: '가볍게 던진 말이 남을 자리를 만드는 것',
       hold: '새 자리에 얼굴을 넓히는 일',
     },
@@ -198,7 +198,7 @@ export const CONCERN_DAY: Record<ConcernKey, Record<TenGod, DayAct>> = {
     },
     jeongjae: {
       doIt: '주고받을 것이 있는 사이를 한 번 챙기기',
-      avoid: '돈이나 누가 얼마 낼지를 안 정하고 넘어가는 것',
+      avoid: '누가 얼마를 낼지 정하지 않고 넘어가는 것',
       hold: '새 사람을 소개받는 일',
     },
     pyeongwan: {

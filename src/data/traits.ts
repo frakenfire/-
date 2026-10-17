@@ -5,12 +5,12 @@ import type { StarSignId } from './starSign.ts';
 // 띠(12) × 별자리(12) = 144가지 캐릭터 문구가 조합으로 생긴다.
 
 export const ZODIAC_TRAIT: Record<ZodiacId, string> = {
-  rat: '눈치 빠른',
+  rat: '눈치가 빠른',
   ox: '우직한',
   tiger: '직진하는',
   rabbit: '다정한',
   dragon: '카리스마 넘치는',
-  snake: '은근 치밀한',
+  snake: '속으로는 꼼꼼히 따지는',
   horse: '자유로운',
   sheep: '부드러운',
   monkey: '재치 넘치는',

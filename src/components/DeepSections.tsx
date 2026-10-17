@@ -33,9 +33,9 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
   // '네, 오늘 꺼내도 돼요' 바로 밑에 '가장 좋은 때는 4달 뒤' 가 붙으면 두 줄이
   // 서로 싸우는 것처럼 읽힌다. 층이 달라서 그런 건데 읽는 사람이 알 리 없다.
   const whenAsk = read.todayAsk.band === 'good'
-    ? '오늘 할 일과 앞으로의 계획을 나눠볼게요'
+    ? '오늘 할 수 있는 일과 앞으로의 계획을 나눠서 볼게요.'
     : read.todayAsk.band === 'hard'
-      ? '오늘 말고 언제가 좋아요?'
+      ? '오늘 말고 다른 날이 더 좋을까요?'
       : '그럼 언제가 좋아요?';
   const concern = findConcern(concernKey);
   const max = Math.max(...timing.months.map((m) => m.score));
@@ -82,7 +82,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           오늘 답 두 줄은 위 쪽지 카드의 큰 글씨가 맡는다. 여기서 또 그리면
           한 화면에 같은 문장이 두 번 나온다. 여기는 오늘 할 일과, 언제가
           좋은지만 맡는다. */}
-      <Chapter title="지금 어떻게 하면 될까요" hint="오늘의 조언과 앞으로의 좋은 시기">
+      <Chapter title="지금 어떻게 하면 될까요" hint="오늘의 조언과 앞으로 좋은 시기">
       {/* 오늘 하면 좋은 것 / 피할 것 — 오늘 답 바로 밑이 제자리다. */}
       <div className="sec-card">
         <p className="cat4__head">오늘은 이렇게</p>
@@ -149,7 +149,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       {/* '이 고민' 은 앱이 아는 것을 일부러 안 말하는 것이다. 돈을 물었으면
           돈이라고 적는다. */}
-      <Chapter title="왜 그렇게 해야 할까요" hint={`점수의 근거와 요즘 ${concern.shortName}에 관한 풀이`}>
+      <Chapter title="왜 그렇게 해야 할까요" hint={`점수를 매긴 이유와 요즘 ${concern.shortName}에 대한 풀이`}>
       {/* 점수가 어디서 나왔는지 — '87점입니다' 하고 끝내면 아무도 안 믿는다.
           바탕 30, 십 년 20, 올해 20, 이번 달 20, 오늘 10 을 그대로 펼쳐 보여준다. */}
       <div className="sec-card">
@@ -191,7 +191,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
             </li>
           ))}
         </ul>
-        <Sentences className="mflow__foot" text="생년월일시를 바탕으로 본 성향이에요. 날짜에 따라 달라지는 오늘의 운세와는 구분해서 읽어주세요." />
+        <Sentences className="mflow__foot" text="생년월일과 태어난 시간을 바탕으로 살펴본 성향이에요. 매일 달라지는 오늘의 운세와는 구분해서 봐주세요." />
       </div>
 
       {/* 왜 지금 이 고민이 커졌나 — 타고난 구조가 '원래 어떤 사람이냐' 라면
@@ -215,7 +215,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       </Chapter>
 
-      <Chapter title="시기별로는 이렇게 하는 게 좋아요" hint="가장 좋은 때와 조심할 때, 앞으로 열두 달">
+      <Chapter title="시기에 따라 이렇게 해보세요" hint="좋은 때와 조심할 때, 앞으로 12개월">
       <div className="sec-card">
         <p className="cat4__head">언제가 좋을까요</p>
         <ul className="when4">
@@ -263,8 +263,8 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           className="mflow__foot"
           text={
             `${timing.months[0].label}부터 ${timing.months[timing.months.length - 1].label}까지예요. ` +
-            `맨 왼쪽이 이번 달이고, 세로선 오른쪽이 ${timing.months[timing.months.length - 1].year}년이에요. ` +
-            '표를 옆으로 밀면 그 달 풀이가 나와요.'
+            `맨 왼쪽이 이번 달이에요. 세로선 오른쪽부터는 ${timing.months[timing.months.length - 1].year}년이에요. ` +
+            '표를 옆으로 넘기면 월별 풀이를 볼 수 있어요.'
           }
         />
         <div className="mpick">
@@ -296,7 +296,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
               {/* 밴드 칩이 같은 화면에서 '좋아요 92' 로 쓰이고 있다.
                   여기까지 '좋아요' 라고 적으면 한 단어가 두 가지 뜻이 된다.
                   점수를 말하는 자리와 내용을 말하는 자리를 갈라놓는다. */}
-              <span className="slot__pt-k">잘 되는 것</span>
+              <span className="slot__pt-k">잘 풀리는 일</span>
               <Sentences className="slot__pt-v" text={picked.good} />
             </li>
             <li className="slot__pt slot__pt--care">
@@ -308,7 +308,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
       </div>
 
       <div className="sec-card">
-        <p className="cat4__head">올해와 내년, 무엇이 다른가요</p>
+        <p className="cat4__head">올해와 내년은 어떻게 다를까요?</p>
         <ul className="yline">
           {read.yearLines.map((y) => (
             <li key={y.k} className="yline__row">
@@ -366,7 +366,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
       </Chapter>
 
-      <Chapter title="다양한 관점에서 본 나의 사주" hint="태어난 날로 본 성향, 시기별 운세, 사주 구성과 오늘의 일진">
+      <Chapter title="여러 각도에서 살펴본 내 사주" hint="태어난 날의 성향부터 시기별 운세, 사주 구성과 오늘의 일진까지">
       {/* 내 일주 — 사주에서 사람을 가리키는 제일 작은 단위. 진짜 사주를 보러
           온 사람이 제일 먼저 찾는 자리라 이 덩이 맨 위에 둔다. 일간 열 가지만
           읽던 때는 열 명 중 한 명이 같은 말을 받았는데, 이제 예순 명 중 하나다. */}
@@ -387,7 +387,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           </ul>
           <Sentences
             className="mflow__foot"
-            text="일주는 태어난 날의 두 글자예요. 예순 가지 중 하나라, 해가 바뀌어도 안 바뀌어요."
+            text="일주는 태어난 날을 나타내는 두 글자예요. 60가지 중 하나로, 해가 바뀌어도 달라지지 않아요."
           />
         </div>
       ) : null}
@@ -395,7 +395,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
       {/* 네 가지 나 — 여러 각도에서 본 요약이라 이 덩이 머리에 둔다.
           오늘이 맨 위다. 매일 새로 뽑는 건 그 줄뿐이다. */}
       <div className="sec-card">
-        <p className="cat4__head">시기별로 살펴본 나</p>
+        <p className="cat4__head">시기별로 보는 나의 운</p>
         <ul className="selves">
           {read.selves.map((x) => (
             <li key={x.k} className="selves__row">
@@ -405,13 +405,13 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
               </span>
               <span className="selves__v num">{x.score}</span>
               <Sentences className="selves__line" text={x.line} />
-              <Sentences className="selves__vs" text={x.vs ?? '여기가 기준이에요'} />
+              <Sentences className="selves__vs" text={x.vs ?? '이 내용을 기준으로 풀이해요'} />
             </li>
           ))}
         </ul>
         <Sentences
           className="mflow__foot"
-          text={'오늘의 운세부터 보여드려요. 가까운 미래의 점수는 올해와 이번 달 점수의 평균이에요. 타고난 성향을 기준으로 시기별 차이를 비교해보세요.'}
+          text={'오늘 운세부터 볼게요. 가까운 미래의 점수는 올해와 이번 달 점수의 평균이에요. 타고난 성향을 기준으로 시기별 차이를 비교해보세요.'}
         />
       </div>
 
@@ -488,7 +488,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
 
         {read.name ? (
           <>
-            <p className="cat4__head cat4__head--sub">이름에 담긴 소리</p>
+            <p className="cat4__head cat4__head--sub">이름 소리로 보는 풀이</p>
             <ul className="nameel">
               {read.name.letters.map((l, i) => (
                 <li key={`${l.ch}${i}`} className="nameel__box">
@@ -502,7 +502,7 @@ export function DeepSections({ concernKey, read, timing, userName, compact = fal
           </>
         ) : null}
 
-        <p className="cat4__head cat4__head--sub">이 주제의 풀이 기준</p>
+        <p className="cat4__head cat4__head--sub">이 주제는 이렇게 풀이했어요</p>
         <Sentences className="qa qa--sub" text={read.chart.focus} />
       </div>
 

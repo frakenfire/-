@@ -62,7 +62,7 @@ export function NotePickScreen({
   return (
     <AppLayout onBack={busy ? undefined : onBack} step={4} totalSteps={4}>
       <h2 className="h2" data-screen="pick">{title}</h2>
-      <p className="pick-basis">{personal ? lead : '느낌 오는 걸 하나 고르면 돼요'}</p>
+      <p className="pick-basis">{personal ? lead : '끌리는 쪽지 한 장을 골라보세요'}</p>
       <div className="note-stage">
       <div className="note-grid">
         {notes.map((note, i) => (
@@ -93,7 +93,7 @@ export function NotePickScreen({
       {/* 아래는 비워두지 않는다. 어떻게 뽑히는지, 자주 묻는 것 다섯 줄 */}
       <section className="sec faq">
         <div className="sec__head">
-          <h2 className="sec__title">이렇게 뽑혀요</h2>
+          <h2 className="sec__title">쪽지는 이렇게 뽑아요</h2>
           <span className="faq__count">{faqIdx + 1} / {FAQ_POOL.length}</span>
         </div>
         {/* 한 칸만 보이며 돌아간다. 4초마다 다음, 누르면 바로 다음 */}
@@ -112,7 +112,7 @@ export function NotePickScreen({
 
       {/* 제목이 이미 '하나만 골라볼까요' 라고 묻는다. 바닥에 같은 말을 한 번 더
           붙여두면 빈 화면을 메우려는 문장으로 읽힌다. 펼치는 중일 때만 한 줄. */}
-      {busy ? <p className="note-hint">쪽지 펼치는 중이에요</p> : null}
+      {busy ? <p className="note-hint">쪽지를 펼치고 있어요</p> : null}
     </AppLayout>
   );
 }

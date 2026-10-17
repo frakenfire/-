@@ -74,3 +74,22 @@ test('태어난 곳이 저장되고 아는 값만 돌아온다', () => {
   store.set('tomorrowNoteBirth', JSON.stringify({ date: '1992-03-03', time: null, place: 'atlantis' }));
   assert.equal(loadBirth()?.place, undefined);
 });
+
+// 어제의 쪽지는 마지막 한 장만, 다음 날 한 번만 묻는다.
+test('어제 뽑은 쪽지는 다음 날에만 나오고, 돌아보면 그날은 다시 안 나온다', async () => {
+  const { saveLastNote, loadYesterdayNote, markReflected } = await import('./storage.ts');
+  saveLastNote({ dateKey: '2026-10-16', title: '먼저 말을 꺼내 보세요', doItem: '미뤄둔 연락 하나 보내기' });
+  assert.equal(loadYesterdayNote('2026-10-16', '2026-10-15'), null); // 같은 날
+  assert.equal(loadYesterdayNote('2026-10-18', '2026-10-17'), null); // 이틀 뒤
+  assert.equal(loadYesterdayNote('2026-10-17', '2026-10-16')?.doItem, '미뤄둔 연락 하나 보내기');
+  markReflected('2026-10-17');
+  assert.equal(loadYesterdayNote('2026-10-17', '2026-10-16'), null);
+});
+
+test('저장된 값이 깨져 있으면 카드를 안 띄운다', async () => {
+  const { loadYesterdayNote } = await import('./storage.ts');
+  store.set('tomorrowNoteLastNote', '{"dateKey":"2026-10-16","title":3}');
+  assert.equal(loadYesterdayNote('2026-10-17', '2026-10-16'), null);
+  store.set('tomorrowNoteLastNote', 'not json');
+  assert.equal(loadYesterdayNote('2026-10-17', '2026-10-16'), null);
+});

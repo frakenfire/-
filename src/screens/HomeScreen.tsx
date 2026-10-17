@@ -15,6 +15,9 @@ import { softBreak } from '../lib/softBreak.ts';
 import { buildRankingShareText } from '../lib/share.ts';
 import { findZodiac, type Zodiac } from '../data/zodiac.ts';
 import { Sentences } from '../components/Sentences.tsx';
+import { YesterdayCard, type Reflection } from '../components/YesterdayCard.tsx';
+import type { LastNote } from '../lib/storage.ts';
+import { CONCERNS, type ConcernKey } from '../data/concerns.ts';
 
 // 글자를 세 갈래로 묶는다. 같은 글자는 언제나 같은 색이 되도록, 점수가 아니라
 // 관계 자체로 가른다. 합(찰떡·짝꿍)은 파랑, 부딪히는 쪽은 진한 회색, 나머지는 회색.
@@ -42,8 +45,10 @@ function greeting(dateKey: string, spin: number, slot: DayPart): string {
 type Props = {
   streak: number;
   zodiac: Zodiac | null;
-  /** 쪽지 뽑기 시작 — 주제 고르기(1단계)로 간다 */
-  onStart: () => void;
+  /** 홈에서 고민을 골랐다 — 그 고민으로 바로 뽑기를 시작한다 */
+  onPickConcern: (key: ConcernKey) => void;
+  /** 질문에 부를 이름. 없으면 이름 없이 묻는다 */
+  userName?: string | null;
   /** 저장된 이름·생년월일·성별 한 줄. 없으면 아직 안 넣은 것 */
   savedBirth?: string | null;
   /** 저장된 값을 고치러 가는 길 */
@@ -52,16 +57,22 @@ type Props = {
   spin?: number;
   /** 띠 서열을 단톡방에 던진다. 주간 카드와 같은 자리, 같은 모양 */
   onShareRanking?: (text: string) => void;
+  /** 어제 뽑은 쪽지. 없으면 카드가 안 뜬다 */
+  yesterday?: LastNote | null;
+  onReflect?: (r: Reflection) => void;
 };
 
 // 홈 — '클릭해서 시작'하는 호기심 히어로(물음표)를 중심으로 정리.
 export function HomeScreen({
   streak,
   zodiac,
-  onStart,
+  onPickConcern,
+  userName = null,
   savedBirth = null,
   onEditBirth,
   onShareRanking,
+  yesterday = null,
+  onReflect,
   spin = 0,
 }: Props) {
   // 오늘 이미 뽑았으면 그 결과를 히어로 카드에도 반영한다(잠긴 ?  실제 값).
@@ -113,33 +124,48 @@ export function HomeScreen({
           잠긴 결과(?점·?)로 궁금증/FOMO 유발 뽑아야 전부 열림 */}
       {/* 메인 카드 — 글은 왼쪽, 마스코트는 오른쪽 크게, 버튼은 한 줄 꽉 채워서.
           물음표 세 칸으로 궁금하게 만들던 방식은 걷었다. 누를 게 하나여야 누르고 싶어진다. */}
+      {/* 메인 카드 — 묻고, 바로 고르게 한다.
+          전에는 일진 한 줄과 '오늘 쪽지 열어보기' 버튼 하나였다. 처음 온 사람은
+          누르기 전까지 무엇을 받는지 몰랐고, 누르고 나서야 다음 화면에서
+          고민을 골랐다. 잘되는 운세 앱(점신·포스텔러)은 첫 화면부터 주제를
+          펼쳐두고 한 번 눌러 들어가게 한다. 그래서 고민 여섯 칸을 여기로
+          올렸다. 한 칸이 곧 시작 버튼이라 한 단계가 준다.
+          오늘 일진 한 줄은 버리지 않는다 - 매일 바뀌는 건 이것뿐이라
+          다시 열 이유가 된다. 칸 아래로 내린다. */}
       <div className="today-hook">
         <div className="today-hook__head">
           <div className="today-hook__txt">
             <span className="today-hook__kw">오늘은 {iljin.kor}일</span>
-            {zodiac && saju ? (
-              <>
-                <p className="today-hook__line">{softBreak(saju.title, 14)}</p>
-                <p className="today-hook__hint">{saju.headline}</p>
-              </>
-            ) : (
-              <>
-                {/* '오늘은 [낱말]이 어울리는 날이에요' 틀을 걷었다. 낱말을 끼우는
-                    틀은 낱말마다 문법이 달라 '다정이 어울리는 날' 처럼 문장이
-                    안 되는 게 나왔다. 이제 한 문장씩 손으로 쓴 것을 그대로 쓴다. */}
-                <p className="today-hook__line">{softBreak(vibe.head, 14)}</p>
-                <p className="today-hook__hint">{vibe.line}</p>
-              </>
-            )}
+            <p className="today-hook__line">
+              {softBreak(userName ? `${userName}님, 요즘 뭐가 제일 신경 쓰여요?` : '요즘 뭐가 제일 신경 쓰여요?', 12)}
+            </p>
+            <p className="today-hook__hint">하나 고르면 오늘 할 일을 알려드려요.</p>
           </div>
           <span className="today-hook__art" aria-hidden>
-            <Mascot size={96} score={streak >= 3 ? 90 : 80} bare />
+            <Mascot size={80} score={streak >= 3 ? 90 : 80} bare />
           </span>
         </div>
-        <button type="button" className="btn btn--primary today-hook__cta" onClick={onStart}>
-          오늘 쪽지 열어보기
-        </button>
+        <div className="home-ask">
+          {CONCERNS.map((c) => (
+            <button key={c.key} type="button" className="home-ask__tile" onClick={() => onPickConcern(c.key)}>
+              <span className="home-ask__icon" aria-hidden><Icon name={c.icon} size={20} /></span>
+              <span className="home-ask__label">{c.label}</span>
+            </button>
+          ))}
+        </div>
+        {/* '오늘은 [낱말]이 어울리는 날이에요' 틀을 걷었다. 낱말을 끼우는
+            틀은 낱말마다 문법이 달라 '다정이 어울리는 날' 처럼 문장이
+            안 되는 게 나왔다. 이제 한 문장씩 손으로 쓴 것을 그대로 쓴다. */}
+        <p className="home-ask__today">
+          <b>{zodiac && saju ? saju.title : vibe.head}</b>
+          {' '}
+          {zodiac && saju ? saju.headline : vibe.line}
+        </p>
       </div>
+
+      {/* 어제 쪽지는 오늘 쪽지 버튼 아래에 둔다. 위에 두면 오늘 할 일보다
+          어제 일이 먼저 읽힌다. 답하거나 닫으면 그날은 다시 안 뜬다. */}
+      {yesterday && onReflect ? <YesterdayCard note={yesterday} onAnswer={onReflect} /> : null}
 
       {/* 오늘의 띠 서열 — 매일 갈리는 열두 띠 순위. 아직 아무것도 안 넣은 사람도
           볼 수 있는 유일한 콘텐츠라 '내 띠' 를 아는 척하지 않는다. 순위만 보여준다. */}

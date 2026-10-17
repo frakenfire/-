@@ -1617,20 +1617,6 @@ strong {
    이 앱에서 '좋다'는 파랑이다 — 진하기로 단계를 만들고, 주의만 주황으로 뺀다. */
 /* 사주 근거 칩 — 일진×내 띠 관계를 가볍게(한자 없이) 보여줌 */
 /* 칸 사이는 박스가 아니라 얇은 선으로 나눈다 */
-.today-hook__cta {
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  font-size: 15px;
-  line-height: 22.5px;
-  font-weight: 700;
-  color: var(--brand-strong);
-  background: #fff;
-  border-radius: 14px;
-
-  display: inline-flex;
-  align-self: flex-start;
-  padding: 12px 20px;}
 @media (prefers-reduced-motion: reduce) {
   .today-hook:active {
     transform: none;
@@ -2057,20 +2043,6 @@ strong {
   color: var(--gray-700);
   word-break: keep-all;
 }
-.today-hook .today-hook__cta {
-  display: block;
-  width: 100%;
-  margin-top: 16px;
-  background: var(--brand);
-  color: var(--white);
-  font-size: 17px;
-  line-height: 25.5px;
-  font-weight: 700;
-  min-height: 54px;
-  border-radius: 14px;
-  padding: 0 16px;
-  text-align: center;
-}
 
 /* ── 누르는 맛: 토스는 누르는 것마다 손끝에 반응이 온다 ── */
 .btn,
@@ -2084,7 +2056,7 @@ strong {
 .btn:active,
 .compat-pick:active,
 .zodiac-chip:active,
-.today-hook__cta:active {
+.home-ask__tile:active {
   transform: scale(0.97);
 }
 .btn--primary:active {
@@ -4302,3 +4274,339 @@ strong {
   border-top: 1px solid var(--gray-100);
 }
 .chap__body .sec-card:first-child { border-top: 0; }
+
+/* ── 행운 반쪽: 받은 봉투 ──
+   봉투는 그림이 아니라 면 세 장이다. 뒷면, 앞주머니, 뚜껑. 그 사이에 쪽지가 끼어 있다.
+   누르면 뚜껑이 뒤로 젖혀지고 쪽지가 위로 올라온다. 색은 토스 파랑 램프의 옅은 쪽만 쓴다.
+   진한 파랑 봉투는 '버튼' 처럼 보여 누르는 곳이 두 개가 된다. */
+.gift {
+  padding-top: var(--space-4);
+  text-align: center;
+}
+.gift__k {
+  margin: 0 0 var(--space-2);
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
+  color: var(--brand-strong);
+}
+.gift__title {
+  word-break: keep-all;
+}
+.gift__msg {
+  margin: var(--space-6) auto 0;
+  max-width: 300px;
+  font-size: 22px;
+  line-height: 31px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+.gift__note {
+  margin: var(--space-4) auto 0;
+  max-width: 280px;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
+.envelope {
+  position: relative;
+  display: block;
+  width: 264px;
+  height: 176px;
+  margin: 136px auto 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.envelope:disabled {
+  cursor: default;
+}
+.envelope__back,
+.envelope__front,
+.envelope__flap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-radius: 14px;
+}
+.envelope__back {
+  top: 0;
+  bottom: 0;
+  background: #90c2ff;
+}
+.envelope__letter {
+  position: absolute;
+  z-index: 1;
+  left: 28px;
+  right: 28px;
+  top: 32px;
+  height: 140px;
+  display: flex;
+  justify-content: center;
+  padding: 18px;
+  border-radius: 10px;
+  background: var(--white);
+  box-shadow: var(--shadow-note);
+  transform: translateY(0);
+  transition: transform 0.7s var(--ease-spring) 0.25s;
+}
+.envelope__front {
+  z-index: 2;
+  top: 0;
+  bottom: 0;
+  background: #c9e2ff;
+  clip-path: polygon(0 34%, 50% 66%, 100% 34%, 100% 100%, 0 100%);
+}
+.envelope__flap {
+  z-index: 3;
+  top: 0;
+  height: 66%;
+  background: #64a8ff;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  transition: transform 0.4s var(--ease-spring);
+}
+.envelope--open .envelope__flap {
+  z-index: 0;
+  transform: rotateX(180deg);
+}
+.envelope--open .envelope__letter {
+  transform: translateY(-120px);
+}
+.envelope:not(:disabled):active .envelope__flap {
+  transform: translateY(-3px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .envelope__letter,
+  .envelope__flap {
+    transition: none;
+  }
+}
+
+/* ── 행운 반쪽: 보내는 카드 ── */
+.giftcard__head {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+.giftcard__icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+}
+.giftcard__title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 27px;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.giftcard__hint {
+  margin: 2px 0 0;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
+.giftcard__list {
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.giftcard__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 14px 12px 16px;
+  border: 1px solid var(--gray-200);
+  border-radius: 14px;
+  background: var(--white);
+  text-align: left;
+}
+.giftcard__row:active {
+  background: var(--gray-50);
+}
+.giftcard__row--sent {
+  border-color: var(--brand);
+  background: var(--brand-soft);
+}
+.giftcard__line {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+.giftcard__go {
+  flex: none;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
+  color: var(--brand-strong);
+}
+
+/* ── 어제의 쪽지 ──
+   오늘 쪽지 카드 바로 아래. 오늘 카드보다 한 단계 가볍게: 흰 면에 얇은 선. */
+.yday {
+  margin: calc(-1 * var(--space-3)) 0 var(--space-6);
+  padding: 16px 18px 18px;
+  border: 1px solid var(--gray-200);
+  border-radius: 16px;
+  background: var(--white);
+}
+.yday__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.yday__k {
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+.yday__close {
+  position: relative;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 600;
+  color: var(--gray-700);
+}
+.yday__close::after {
+  content: '';
+  position: absolute;
+  inset: -12px -10px;
+}
+.yday__title {
+  margin: 6px 0 0;
+  font-size: 17px;
+  line-height: 25.5px;
+  font-weight: 700;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+.yday__do {
+  margin: 2px 0 0;
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
+.yday__q {
+  margin: 14px 0 8px;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 600;
+  color: var(--gray-900);
+}
+.yday__answers {
+  display: flex;
+  gap: var(--space-2);
+}
+.yday__a {
+  flex: 1;
+  min-height: 44px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--gray-100);
+  font-size: 14px;
+  line-height: 21px;
+  font-weight: 600;
+  color: var(--gray-800);
+}
+.yday__a:active {
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+}
+.yday--done {
+  padding: 14px 18px;
+  background: var(--brand-soft);
+  border-color: var(--brand-soft);
+}
+.yday__thanks {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 600;
+  color: var(--brand-strong);
+  word-break: keep-all;
+}
+
+/* ── 홈: 고민 여섯 칸 ──
+   메인 카드의 시작 버튼 자리. 한 칸이 곧 시작이라 모양은 버튼이지만 무게는
+   가볍게 둔다. 파란 큰 버튼 여섯 개가 나란히 서면 누를 곳이 아니라 벽이 된다.
+   연파랑 카드 위 흰 칸, 아이콘은 파랑 한 가지. */
+.home-ask {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+.home-ask__tile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--white);
+  text-align: left;
+  transition: transform 0.12s ease;
+}
+.home-ask__icon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--brand-soft);
+  color: var(--brand-strong);
+}
+.home-ask__label {
+  min-width: 0;
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 700;
+  color: var(--gray-900);
+  word-break: keep-all;
+}
+.home-ask__today {
+  margin: 14px 0 0;
+  font-size: 13px;
+  line-height: 19.5px;
+  font-weight: 500;
+  color: var(--gray-700);
+  word-break: keep-all;
+}
+.home-ask__today b {
+  font-weight: 600;
+  color: var(--gray-900);
+}

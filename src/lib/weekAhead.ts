@@ -72,10 +72,10 @@ export function computeWeekAhead(todayKey: string, zodiac: ZodiacId): WeekAhead 
   const bestLabel = best.isToday ? '오늘' : `${best.weekday}요일(${best.short})`;
   const headline =
     TONE_RANK[best.tone] >= 3
-      ? `이번 주에는 ${bestLabel}이 가장 좋은 날이에요`
+      ? `이번 주에는 ${bestLabel}이 가장 좋은 날이에요.`
       : TONE_RANK[best.tone] === 2
-        ? `이번 주에는 ${bestLabel}을 편안하게 보내기 좋아요`
-        : `이번 주는 큰 변화 없이 무난해요`;
+        ? `이번 주에는 ${bestLabel}을 비교적 편안하게 보낼 수 있어요.`
+        : `이번 주는 큰 변화 없이 차분히 지낼 수 있어요.`;
 
   return { days, best, caution, headline };
 }
@@ -89,6 +89,6 @@ export function buildWeekShareText(week: WeekAhead, zodiacLabel: string, zodiacE
     ...week.days.map((d) => `${mark[d.tone]} ${d.weekday} ${d.short} · ${d.toneWord}`),
     ``,
     ` ${week.headline}`,
-    `네 띠는 이번 주 어떤지 봐봐 `,
+    `이번 주엔 네 띠의 운이 어떨까? `,
   ].join('\n');
 }
